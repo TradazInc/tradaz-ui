@@ -1,7 +1,8 @@
-import React from "react";
+import { Box } from "@chakra-ui/react";
+import { JSX } from "react";
 
-const page = () => {
-  return <div>page</div>;
+const CampaignPage = (): JSX.Element => {
+  return <Box>Home Page</Box>;
 };
 
-export default page;
+export default CampaignPage;
