@@ -1,4 +1,4 @@
-import { ApiClient } from "../lib/apiClient";
+import { ApiClient } from "../lib/api-client";
 import { RegisterData, RegisterResponse } from "../lib/definitions";
 
 // Register Service
