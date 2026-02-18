@@ -12,13 +12,15 @@
     "@chakra-ui/react": "^3.32.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "framer-motion": "^12.34.0",
+    "check-password-strength": "^3.0.0",
+    "framer-motion": "^12.34.2",
     "next": "16.1.6",
     "next-themes": "^0.4.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.1",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "react-type-animation": "^3.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
