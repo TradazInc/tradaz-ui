@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation"; // ✅ Swapped redirect for useRouter
+import { useRouter } from "next/navigation"; 
 import { useForm } from "react-hook-form";
 import { PasswordInput } from "../../../components/ui/password-input";
 
