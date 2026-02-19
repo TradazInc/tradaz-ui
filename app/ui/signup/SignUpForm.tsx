@@ -44,7 +44,7 @@ const SignUpForm = () => {
     console.log("Successfully signed in:", user);
 
     
-    router.push("/");
+    router.push("/dashboard");
   });
 
   return (
