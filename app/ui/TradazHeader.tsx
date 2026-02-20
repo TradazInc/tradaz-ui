@@ -20,7 +20,6 @@ export default function TradazHeader() {
                 <Icon as={LuShoppingBag} color="white" boxSize={5} strokeWidth={2.5} fill="whiteAlpha.300" />
             </Flex>
 
-            {/* Brand Text */}
             <Text
                 fontSize="xl"
                 fontWeight="extrabold"

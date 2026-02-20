@@ -22,7 +22,7 @@ const Navbar = () => {
       w="full"
       top={0}
       zIndex={50}
-      bg="rgba(23, 25, 35, 0.85)" // #171923 with opacity for glass effect
+      bg="rgba(23, 25, 35, 0.85)" 
       backdropFilter="blur(12px)"
       borderBottom="1px solid"
       borderColor="whiteAlpha.100"

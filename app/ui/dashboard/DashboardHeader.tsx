@@ -68,10 +68,10 @@ export const DashboardHeader = ({
                     <Flex 
                         onClick={() => setIsOnboardingOpen(true)} //  TRIGGER
                         align="center" justify="center" gap={2}
-                        bg="#171923" border="1px solid" borderColor="whiteAlpha.100" 
+                        bg="#171923" border="1px solid" borderColor="orange.400" 
                         rounded="lg" px={4} py={1.5} cursor="pointer"
-                        _hover={{ bg: "whiteAlpha.50", borderColor: "orange.400", color: "orange.400" }}
-                        color="gray.400" transition="all 0.2s"
+                        _hover={{ bg: "whiteAlpha.50", borderColor: "orange.300", color: "orange.300" }}
+                        color="orange.400" transition="all 0.2s"
                     >
                         <Icon as={LuPlus} boxSize="18px" />
                         <Text fontSize="sm" fontWeight="semibold" display={{ base: "none", sm: "block" }}>

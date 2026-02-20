@@ -1,32 +1,11 @@
 'use client';
 import { VStack, Box, Text, Input, SimpleGrid, Button, HStack, Heading } from '@chakra-ui/react';
-
-
 import { Field } from '../field'; 
 
-
-export interface OnboardingData {
-    businessName: string;
-    subDomain: string;
-    about: string;
-    address: string;
-    phone: string;
-    category: string;
-    primaryColor: string;
-    secondaryColor: string;
-    tertiaryColor: string;
-    logo: File | null;
-}
-
-interface BrandingFormProps {
-    data: OnboardingData;
-    update: (newData: Partial<OnboardingData>) => void;
-    onBack: () => void;
-    onFinish: () => void;
-}
+import { StepFormProps } from '@/app/lib/definitions';
 
 
-export function BrandingForm({ data, update, onBack, onFinish }: BrandingFormProps) {
+export function BrandingForm({ data, update, onBack, onFinish }: StepFormProps) {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         update({ [e.target.name]: e.target.value });
     };
@@ -38,7 +17,7 @@ export function BrandingForm({ data, update, onBack, onFinish }: BrandingFormPro
 
     return (
         <VStack gap={6} align="stretch" w="full">
-            <Heading size="md" color="white">Store Appearance</Heading>
+            <Heading size="md" color="white">Brand Appearance</Heading>
 
             <Field label="Store Logo" helperText="Upload your brand logo">
                 <Box

@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { ApiClient } from "../lib/api-client"; 
 
+=======
+import { ApiClient } from "../lib/api-client";
+>>>>>>> main
 import { RegisterData, RegisterResponse } from "../lib/definitions";
 
 
