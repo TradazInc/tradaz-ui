@@ -10,8 +10,9 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { Field } from "../field";
+import { StepFormProps } from '@/app/lib/definitions';
 
-export function BrandingForm({ data, update, onBack }: any) {
+export function BrandingForm({ data, update, onBack }: StepFormProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     update({ [e.target.name]: e.target.value });
   };
@@ -34,7 +35,6 @@ export function BrandingForm({ data, update, onBack }: any) {
         >
           <Input
             type="file"
-            variant="ghost"
             p={0}
             h="auto"
             accept="image/*"
