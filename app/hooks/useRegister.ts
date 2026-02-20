@@ -1,7 +1,12 @@
+<<<<<<< HEAD
+import { ApiClient } from "../lib/api-client"; 
+
+=======
 import { ApiClient } from "../lib/api-client";
+>>>>>>> main
 import { RegisterData, RegisterResponse } from "../lib/definitions";
 
-// Register Service
+
 const registerService = new ApiClient<RegisterResponse>("/register");
 
 const useRegister = async (data: RegisterData) => {
@@ -9,7 +14,7 @@ const useRegister = async (data: RegisterData) => {
     const response = await registerService.post(JSON.stringify(data), {
       is_forever_free: "true",
     });
-    console.log(response); // save the response in state/local storage
+    console.log(response); 
     return { data: response };
   } catch (error) {
     console.error(error);
