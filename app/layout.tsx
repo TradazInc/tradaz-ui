@@ -8,7 +8,7 @@ interface Props {
 
 export default function RootLayout({ children }: Readonly<Props>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={nunito.className}>
         <Provider>
           <ColorModeProvider defaultTheme="dark" forcedTheme="dark">

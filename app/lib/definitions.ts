@@ -32,4 +32,27 @@ export interface RegisterData {
   subscribed_email_campaigns: boolean;
 }
 
-export interface RegisterResponse {}
+
+
+// Onboarding Type Definitions
+export interface OnboardingData {
+  businessName: string;
+  subDomain: string;
+  about: string;
+  address: string;
+  phone: string;
+  category: string;
+  primaryColor: string;
+  secondaryColor: string;
+  tertiaryColor: string;
+  logo: File | null;
+}
+
+// A reusable interface for all three of your form steps!
+export interface StepFormProps {
+  data: OnboardingData;
+  update: (newData: Partial<OnboardingData>) => void;
+  onNext?: () => void;
+  onBack?: () => void;
+  onFinish?: () => void;
+}

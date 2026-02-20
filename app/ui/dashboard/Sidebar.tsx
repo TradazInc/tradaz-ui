@@ -50,7 +50,11 @@ export const Sidebar = ({
             zIndex={1000} display="flex" flexDirection="column" p={6} transition="transform 0.3s ease"
         >
             <Flex justify="space-between" align="center" mb={10}>
+                <Link href='/'>
+                
                 <TradazHeader/>
+                </Link>
+                
                 <IconButton aria-label="Close" variant="ghost" display={{ base: "flex", lg: "none" }} onClick={onClose} color="gray.400">
                     <Icon as={LuX} />
                 </IconButton>

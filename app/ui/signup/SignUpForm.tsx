@@ -20,6 +20,7 @@ import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
 import SignUpButton from "./SignUpButton";
+import Link from "next/link";
 
 const SignUpForm = () => {
   const router = useRouter(); 
@@ -44,7 +45,7 @@ const SignUpForm = () => {
     console.log("Successfully signed in:", user);
 
     
-    router.push("/");
+    router.push("/dashboard");
   });
 
   return (
@@ -88,9 +89,11 @@ const SignUpForm = () => {
             <Box w={"full"} textAlign={"right"}>
               <LinkText>Forgot Password?</LinkText>
             </Box>
+<Link href='/dashboard'>
+<SignUpButton type="submit">Sign Up</SignUpButton>
 
-            <SignUpButton type="submit">Sign Up</SignUpButton>
-
+</Link>
+            
             <SeparatorText />
 
             <SignUpButton>
