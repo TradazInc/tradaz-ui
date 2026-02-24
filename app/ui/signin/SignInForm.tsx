@@ -9,10 +9,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation"; 
+import Link from "next/link"; 
 import { useForm } from "react-hook-form";
 import { PasswordInput } from "../../../components/ui/password-input";
-import useSignIn from "../../hooks/useSignIn";
+import { default as signInApi } from "../../hooks/useSignIn"; 
 import { SignInData } from "../../lib/definitions";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
@@ -20,6 +21,8 @@ import SeparatorText from "./SeparatorText";
 import SignInButton from "./SignInButton";
 
 const SignInForm = () => {
+  const router = useRouter(); 
+
   const {
     register,
     handleSubmit,
@@ -27,8 +30,20 @@ const SignInForm = () => {
   } = useForm<SignInData>();
 
   const onSubmit = handleSubmit(async (data) => {
-    const { data: user, error } = await useSignIn(data);
-    redirect("/");
+    
+    const { data: user, error } = await signInApi(data);
+
+    
+    if (error) {
+      console.error(error);
+      alert("Sign in failed. Please check your credentials.");
+      return; 
+    }
+
+    
+    if (user) {
+      router.push("/");
+    }
   });
 
   return (
@@ -93,7 +108,11 @@ const SignInForm = () => {
               >
                 Don’t have an account?
               </Text>
-              <LinkText>Sign Up</LinkText>
+              
+              
+              <Link href="/signup">
+                <LinkText>Sign Up</LinkText>
+              </Link>
             </HStack>
           </VStack>
         </Stack>

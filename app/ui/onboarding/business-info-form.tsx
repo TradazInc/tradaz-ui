@@ -8,8 +8,9 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { Field } from "../field";
+import { StepFormProps } from '@/app/lib/definitions';
 
-export function BusinessInfoForm({ data, update, onNext }: any) {
+export function BusinessInfoForm({ data, update, onNext }: StepFormProps) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {

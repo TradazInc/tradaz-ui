@@ -7,9 +7,9 @@ import { LuMenu, LuX } from "react-icons/lu";
 import TradazHeader from "../TradazHeader";
 
 const NAV_LINKS = [
-  { label: "Features", href: "#features" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Benefits", href: "#benefits" },
+  { label: "Home", href: "#" },
+  { label: "How It Works", href: "#how-it-work" },
+  { label: "What We Offer", href: "#what-we-offer" },
 ];
 
 const Navbar = () => {

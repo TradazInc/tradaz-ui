@@ -1,24 +1,25 @@
 "use client";
 import { Flex, VStack } from "@chakra-ui/react";
-import NetworkHeader from "../ui/signin/NetworkHeader";
+
 import SignUpForm from "../ui/signup/SignUpForm";
 import SignUpHeader from "../ui/signup/SignUpHeader";
 import SignupSidePanel from "../ui/signup/SignUpSidePanel";
 import BackToHome from "../ui/component/BackToHome";
+import TradazHeader from "../ui/TradazHeader";
 
 const SignupPage = () => {
   return (
     <Flex minH="100vh" w="full" bg="#0B0D14" align="center" justify="center" p={4}>
       
-      <VStack w="full" maxW="1000px" align="flex-start" gap={6}>
+  
+      <VStack w="full" maxW="1000px" align="flex-start" gap={4}>
         
-       
         <BackToHome />
 
         {/* The Main Split Card */}
         <Flex
           w="full"
-          h={{ base: "auto", lg: "750px" }} 
+          h={{ base: "auto", lg: "min(650px, 85vh)" }} 
           bg="#0B0D14" 
           rounded="2xl"
           overflow="hidden"
@@ -29,9 +30,9 @@ const SignupPage = () => {
         >
           
           {/* LEFT SIDE: Your Form */}
-          <Flex flex={1} align="center" justify="center" p={{ base: 6, md: 10 }}>
-            <VStack w="full" maxW="400px" gap="24px" marginX="auto">
-              <NetworkHeader />
+          <Flex flex={1} align="center" justify="center" p={{ base: 6, md: 8 }} overflowY="auto">
+            <VStack w="full" maxW="400px" gap="20px" marginX="auto">
+              <TradazHeader/>
               <SignUpHeader />
               <SignUpForm />
             </VStack>

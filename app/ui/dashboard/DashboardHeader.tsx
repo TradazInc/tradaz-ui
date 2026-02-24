@@ -2,22 +2,10 @@
 import React, { useState } from "react";
 import { Flex, Box, Text, Icon, IconButton } from "@chakra-ui/react";
 import { LuBell, LuChevronDown, LuBuilding2, LuCheck, LuMenu, LuPlus } from "react-icons/lu";
-
-
 import { OnboardingModal } from "../onboarding/OnboardingModel"; 
+import {  DashboardHeaderProps } from "@/app/lib/definitions";
 
-interface Business {
-    id: string;
-    name: string;
-    category: string;
-}
 
-interface DashboardHeaderProps {
-    businesses: Business[];
-    activeBusiness: Business;
-    onBusinessChange: (id: string) => void;
-    onOpenSidebar: () => void;
-}
 
 export const DashboardHeader = ({ 
     businesses, 
