@@ -116,7 +116,7 @@ export function BrandingForm({ data, update, onBack }: StepFormProps) {
       </Box>
 
       <HStack w="full" gap={3} mt={2}>
-        <Button variant="ghost" onClick={onBack} size="lg" color="gray.600">
+        <Button onClick={onBack} size="lg" color="gray.600">
           Back
         </Button>
         <Button

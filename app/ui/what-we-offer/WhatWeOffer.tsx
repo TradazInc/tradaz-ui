@@ -19,7 +19,7 @@ const WhatWeOffer = () => {
             <Container maxW="container.xl" position="relative">
                 <WhatWeOfferHeader />
 
-                {/* --- The Clean 6-Card Grid --- */}
+                {/* --- Card Grid --- */}
                 <Box mb={{ base: 16, md: 20 }}>
                     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>
                         {OFFERINGS.map((item, index) => (

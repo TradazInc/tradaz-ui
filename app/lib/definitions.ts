@@ -48,11 +48,43 @@ export interface OnboardingData {
   logo: File | null;
 }
 
-// A reusable interface for all three of your form steps!
+//  interface for all three of your form steps!
 export interface StepFormProps {
   data: OnboardingData;
   update: (newData: Partial<OnboardingData>) => void;
   onNext?: () => void;
   onBack?: () => void;
   onFinish?: () => void;
+}
+
+
+
+// Dashboard & Store Definitions
+export interface Business {
+    id: string;
+    name: string;
+    category: string;
+}
+
+export interface Store {
+    id: string;
+    name: string;
+    address: string;
+}
+
+export interface SidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+    activeBusiness: Business;
+    availableStores: Store[];
+    activeStoreId: string;
+    onStoreChange: (id: string) => void;
+}
+
+//Dashboard Header
+export interface DashboardHeaderProps {
+    businesses: Business[];
+    activeBusiness: Business;
+    onBusinessChange: (id: string) => void;
+    onOpenSidebar: () => void;
 }

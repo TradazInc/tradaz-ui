@@ -14,6 +14,7 @@ const HowItWorks = () => {
             py={{ base: 16, md: 24 }}
             position="relative" 
             overflow="hidden"
+            id="how-it-work"
         >
             <SectionBackground />
             
