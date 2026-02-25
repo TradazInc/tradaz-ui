@@ -11,7 +11,6 @@ const SignupPage = () => {
   return (
     <Flex minH="100vh" w="full" bg="#0B0D14" align="center" justify="center" p={4}>
       
-  
       <VStack w="full" maxW="1000px" align="flex-start" gap={4}>
         
         <BackToHome />
@@ -30,7 +29,15 @@ const SignupPage = () => {
         >
           
           {/* LEFT SIDE: Your Form */}
-          <Flex flex={1} align="center" justify="center" p={{ base: 6, md: 8 }} overflowY="auto">
+          <Flex 
+            flex={1} 
+            align="center" 
+            justify="center" 
+            p={{ base: 6, md: 8 }} 
+            overflowY="auto"
+            
+            css={{ '&::-webkit-scrollbar': { display: 'none' }, scrollbarWidth: 'none' }}
+          >
             <VStack w="full" maxW="400px" gap="20px" marginX="auto">
               <TradazHeader/>
               <SignUpHeader />

@@ -4,17 +4,15 @@ import { Box, VStack, Text, Accordion, Icon, Flex, IconButton, Button } from "@c
 import Link from "next/link";
 import { 
     LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
-    LuStore, LuX, LuPlus, LuCreditCard, LuPackage, LuScale, LuLandmark, LuTicketPercent 
+    LuStore, LuX, LuPlus, LuScale, LuLandmark, LuTicketPercent 
 } from "react-icons/lu";
 import TradazHeader from "../TradazHeader";
 import { SidebarProps, Store } from "@/app/lib/definitions";
 import { AddStoreModal } from "../onboarding/AddStoreModal";
 
 const OTHER_NAV_ITEMS = [
-    { label: "Products", icon: LuShoppingBag, children: ["Inventory", "Categories", "Collections"] },
+    { label: "Products", icon: LuShoppingBag, children: ["Add Product", "Inventory", "Collections"] },
     { label: "Customers", icon: LuUsers, children: ["Customer List", "Segments", "Reviews"] },
-    { label: "POS", icon: LuCreditCard, children: ["POS"] },
-    { label: "Online Orders", icon: LuPackage, children: ["Online Orders"] },
     { label: "Finance", icon: LuLandmark, children: ["Sales Record", "Staff Salary", "Expenses", "Revenue", "Tax Calculation"] },
     { label: "Dispute Resolution", icon: LuScale, children: ["Customers Chats", "Products exchange", "Customers Refund", "Sales Reconciliation"] },
     { label: "Marketing & Promos", icon: LuTicketPercent, children: ["Promotions", "Set Coupon", "Pop up", "Vouchers", "Promo Banners"] },
@@ -37,11 +35,9 @@ export const Sidebar = ({
             w="280px" h="100vh" bg="#121212" borderRight="1px solid" borderColor="whiteAlpha.100"
             position={{ base: "fixed", lg: "sticky" }} top={0} left={0}
             transform={{ base: isOpen ? "translateX(0)" : "translateX(-100%)", lg: "translateX(0)" }}
-            // ✅ Reduced vertical padding from 6 (24px) to 4 (16px) to save space
             zIndex={1000} display="flex" flexDirection="column" py={4} px={6} transition="transform 0.3s ease"
         >
             {/* HEADER (Fixed at top) */}
-            {/* ✅ Reduced margin bottom from 8 to 5 */}
             <Flex justify="space-between" align="center" mb={5}>
                 <Link href='/'>
                     <TradazHeader/>
@@ -67,11 +63,21 @@ export const Sidebar = ({
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent pl={9}>
                             <VStack align="start" gap={2} pt={1} pb={2}>
-                                {["Overview", "Analytics", "Sales record"].map((child, cIdx) => (
-                                    <Text key={cIdx} fontSize="sm" color="gray.500" cursor="pointer" _hover={{ color: "#5cac7d" }} onClick={onClose}>
-                                        {child}
-                                    </Text>
-                                ))}
+                                {["Overview", "Analytics", "Sales record", "POS", "Online Orders"].map((child, cIdx) => {
+                                    
+                                    //  "/dashboard". Otherwise, generate the slug.
+                                    const path = child === "Overview" 
+                                        ? "/dashboard" 
+                                        : `/dashboard/${child.toLowerCase().replace(/\s+/g, '-')}`;
+                                        
+                                    return (
+                                        <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
+                                            <Text fontSize="sm" color="gray.500" cursor="pointer" _hover={{ color: "#5cac7d" }} display="block" w="full">
+                                                {child}
+                                            </Text>
+                                        </Link>
+                                    );
+                                })}
                             </VStack>
                         </Accordion.ItemContent>
                     </Accordion.Item>
@@ -118,11 +124,17 @@ export const Sidebar = ({
                             </Accordion.ItemTrigger>
                             <Accordion.ItemContent pl={9}>
                                 <VStack align="start" gap={2} pt={1} pb={2}>
-                                    {item.children.map((child, cIdx) => (
-                                        <Text key={cIdx} fontSize="sm" color="gray.500" cursor="pointer" _hover={{ color: "#5cac7d" }} onClick={onClose}>
-                                            {child}
-                                        </Text>
-                                    ))}
+                                    {item.children.map((child, cIdx) => {
+                                        // Auto-generate the URL slug for all other items
+                                        const path = `/dashboard/${child.toLowerCase().replace(/\s+/g, '-')}`;
+                                        return (
+                                            <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
+                                                <Text fontSize="sm" color="gray.500" cursor="pointer" _hover={{ color: "#5cac7d" }} display="block" w="full">
+                                                    {child}
+                                                </Text>
+                                            </Link>
+                                        );
+                                    })}
                                 </VStack>
                             </Accordion.ItemContent>
                         </Accordion.Item>
@@ -130,15 +142,11 @@ export const Sidebar = ({
                 </Accordion.Root>
             </VStack>
 
-            {/* FIXED BOTTOM SECTION (Always visible) */}
-            {/* ✅ Reduced margin top from 4 to 2 */}
             <Box mt={2}>
                 {/* Subscription / Used Capacity Card */}
-                {/* ✅ Reduced padding, margins, and tightened layout */}
                 <Box p={3} bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" mb={2}>
                     <Flex align="center" justify="space-between" mb={2}>
-                        <Flex align="center" gap={2}>
-                            {/* ✅ Shrunk circle from 42px to 32px */}
+                        <Flex align="center" gap={2}>  
                             <Flex justify="center" align="center" w="32px" h="32px" rounded="full" border="2px solid" borderColor="#5cac7d" borderTopColor="whiteAlpha.300" transform="rotate(-45deg)">
                                 <Text fontSize="10px" fontWeight="bold" color="#5cac7d" transform="rotate(45deg)">
                                     45%
@@ -150,7 +158,6 @@ export const Sidebar = ({
                         </Flex>
                     </Flex>
                     
-                    {/* ✅ Used a smaller button to save vertical space */}
                     <Button h="30px" fontSize="xs" w="full" bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} transition="all 0.2s" border="none">
                         Upgrade plan
                     </Button>
@@ -167,6 +174,6 @@ export const Sidebar = ({
                 isOpen={isAddStoreOpen} 
                 onClose={() => setIsAddStoreOpen(false)} 
             />
-            </>
+        </>
     );
 };
