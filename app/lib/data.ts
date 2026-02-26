@@ -94,3 +94,110 @@ export const generateDummyOnlineOrders = (count: number, startIndex: number = 0)
         };
     });
 };
+
+// dummy data for customers 
+import { Customer } from "./definitions";
+
+export const generateDummyCustomers = (count: number, startIndex: number = 0): Customer[] => {
+
+    const names = ["John Doe", "Jane Smith", "Alice Customer", "Bob Tester", "Charlie Demo", "Diana Placeholder"];
+    const statuses: Customer["status"][] = ["Active", "Active", "Active", "Inactive"]; 
+    // const tiers: Customer["tier"][] = ["VIP", "Loyal", "Standard", "New"];
+
+    return Array.from({ length: count }).map((_, i) => {
+        const index = startIndex + i;
+        const name = names[index % names.length];
+        const firstName = name.split(" ")[0].toLowerCase();
+        const lastName = name.split(" ")[1]?.toLowerCase() || "demo";
+        
+        return {
+            id: `CUST-${8000 + index}`,
+            name: name,
+            handle: `@${firstName}_${lastName}`,
+            email: `${firstName}.${lastName}@example.com`,
+            orders: (index % 15) + 1,
+            spend: 15000 + ((index * 25000) % 850000),
+            status: statuses[index % statuses.length],
+            // tier: tiers[index % tiers.length],
+            joinedDate: `Feb ${10 + (index % 18)}, 2026`,
+        };
+    });
+};
+
+
+
+import { CartItem } from "./definitions";
+
+export const initialPosCart: CartItem[] = [
+    { id: "1", name: "Vortex 11 Sneakers", variant: "Size 42 | Black", price: 87000, qty: 1, stock: 4 },
+    { id: "2", name: "Graphic Tee", variant: "L | White", price: 15000, qty: 2, stock: 12 },
+];
+
+import { StaffSalary } from "./definitions";
+
+export const generateDummyStaffSalaries = (count: number, startIndex: number = 0): StaffSalary[] => {
+    const names = ["David Opeyemi", "Sarah Connor", "Ahmed Musa", "Grace Effiong", "Samuel Okafor", "Linda Ikeji", "Chinedu Okeke", "Amina Yusuf"];
+    const roles = ["Store Manager", "Inventory Clerk", "Sales Associate", "Customer Support", "Logistics Driver", "Social Media Manager"];
+    const banks = ["GTBank", "Access Bank", "Zenith Bank", "UBA", "First Bank", "Kuda"];
+
+    return Array.from({ length: count }).map((_, i) => {
+        const index = startIndex + i;
+        return {
+            id: `STF-${(index + 1).toString().padStart(3, '0')}`,
+            name: names[index % names.length],
+            role: roles[index % roles.length],
+            salary: 85000 + ((index * 15000) % 150000),
+            status: index % 4 === 0 ? "Pending" : (index % 5 === 0 ? "Unpaid" : "Paid"), 
+            bank: banks[index % banks.length],
+            accountLast4: `${1000 + (index * 123) % 9000}`
+        };
+    });
+};
+
+
+
+import { CustomerChat } from "./definitions";
+
+export const initialChats: CustomerChat[] = [
+    {
+        id: "CHAT-001",
+        customerName: "Joy Iwuofor",
+        customerEmail: "joy@example.com",
+        status: "Pending",
+        lastMessage: "I haven't received my tracking number yet.",
+        timestamp: "10:41 AM",
+        unreadCount: 2,
+        messages: [
+            { id: "m1", text: "Hello, I placed an order yesterday.", timestamp: "10:30 AM", isAgent: false },
+            { id: "m2", text: "Hi Joy! I'd be happy to check on that for you. What is your order number?", timestamp: "10:35 AM", isAgent: true },
+            { id: "m3", text: "It is ORD-20268004.", timestamp: "10:40 AM", isAgent: false },
+            { id: "m4", text: "I haven't received my tracking number yet.", timestamp: "10:41 AM", isAgent: false },
+        ]
+    },
+    {
+        id: "CHAT-002",
+        customerName: "Adebayo Ogunlesi",
+        customerEmail: "adebayo@example.com",
+        status: "Open",
+        lastMessage: "Can I change the shipping address?",
+        timestamp: "09:15 AM",
+        unreadCount: 1,
+        messages: [
+            { id: "m1", text: "Can I change the shipping address for my recent purchase?", timestamp: "09:15 AM", isAgent: false },
+        ]
+    },
+    {
+        id: "CHAT-003",
+        customerName: "Sarah Connor",
+        customerEmail: "sarah@example.com",
+        status: "Resolved",
+        lastMessage: "Thanks, that worked perfectly!",
+        timestamp: "Yesterday",
+        unreadCount: 0,
+        messages: [
+            { id: "m1", text: "My discount code isn't applying at checkout.", timestamp: "Yesterday", isAgent: false },
+            { id: "m2", text: "I've refreshed the code on our end. Please try applying it one more time!", timestamp: "Yesterday", isAgent: true },
+            { id: "m3", text: "Thanks, that worked perfectly!", timestamp: "Yesterday", isAgent: false },
+        ]
+    }
+];
