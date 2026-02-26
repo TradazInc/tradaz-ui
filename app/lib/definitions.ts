@@ -172,21 +172,3 @@ export interface StaffSalary {
 }
 
 
-
-export interface ChatMessage {
-    id: string;
-    text: string;
-    timestamp: string;
-    isAgent: boolean;
-}
-
-export interface CustomerChat {
-    id: string;
-    customerName: string;
-    customerEmail: string;
-    status: "Open" | "Pending" | "Resolved";
-    lastMessage: string;
-    timestamp: string;
-    unreadCount: number;
-    messages: ChatMessage[];
-}
