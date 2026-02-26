@@ -5,8 +5,6 @@ import { LuBell, LuChevronDown, LuBuilding2, LuCheck, LuMenu, LuPlus } from "rea
 import { OnboardingModal } from "../onboarding/OnboardingModel"; 
 import {  DashboardHeaderProps } from "@/app/lib/definitions";
 
-
-
 export const DashboardHeader = ({ 
     businesses, 
     activeBusiness, 
@@ -14,12 +12,9 @@ export const DashboardHeader = ({
     onOpenSidebar 
 }: DashboardHeaderProps) => {
     const [isBizOpen, setIsBizOpen] = useState(false);
-    
-   
     const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
     return (
-        
         <>
             <Flex as="header" position="sticky" top={0} zIndex={100} justify="space-between" align="center" wrap="nowrap" w="full" bg="rgba(30, 30, 32, 0.85)" backdropFilter="blur(12px)" px={{ base: 3, md: 8 }} py={3} borderBottom="1px solid" borderColor="whiteAlpha.100" gap={{ base: 2, md: 4 }}>
                 
@@ -28,8 +23,8 @@ export const DashboardHeader = ({
                 </IconButton>
                 
                 <Flex align="center" gap={4}>
-                    {/*The Dropdown */}
-                    <Box position="relative" onMouseLeave={() => setIsBizOpen(false)}>
+                    {/* The Dropdown */}
+                    <Box position="relative">
                         <Flex onClick={() => setIsBizOpen(!isBizOpen)} align="center" gap={2} px={3} py={1.5} bg="#171923" rounded="lg" border="1px solid" borderColor="whiteAlpha.100" cursor="pointer" w={{ base: "110px", md: "200px" }}>
                             <Icon as={LuBuilding2} color="orange.500" display={{ base: "none", md: "block" }} />
                             
@@ -37,18 +32,28 @@ export const DashboardHeader = ({
                                 {activeBusiness?.name}
                             </Text>
                             
-                            <Icon as={LuChevronDown} color="gray.400" ml="auto" />
+                            <Icon as={LuChevronDown} color="gray.400" ml="auto" transition="transform 0.2s" transform={isBizOpen ? "rotate(180deg)" : "none"} />
                         </Flex>
                         
                         {isBizOpen && (
-                            <Box position="absolute" top="100%" left={0} mt={2} w="220px" bg="#1e1e20" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" py={2} zIndex={50}>
-                                {businesses.map((biz) => (
-                                    <Flex key={biz.id} onClick={() => { onBusinessChange(biz.id); setIsBizOpen(false); }} align="center" justify="space-between" px={4} py={2} cursor="pointer" _hover={{ bg: "whiteAlpha.50" }}>
-                                        <Text fontSize="sm" color={biz.id === activeBusiness?.id ? "#5cac7d" : "white"}>{biz.name}</Text>
-                                        {biz.id === activeBusiness?.id && <Icon as={LuCheck} color="#5cac7d" />}
-                                    </Flex>
-                                ))}
-                            </Box>
+                            <>
+                
+                                <Box 
+                                    position="fixed" 
+                                    top={0} left={0} w="100vw" h="100vh" 
+                                    zIndex={40} 
+                                    onClick={() => setIsBizOpen(false)} 
+                                />
+                                
+                                <Box position="absolute" top="100%" left={0} mt={2} w="220px" bg="#1e1e20" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" py={2} zIndex={50} shadow="xl" maxH="300px" overflowY="auto" css={{ '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' } }}>
+                                    {businesses.map((biz) => (
+                                        <Flex key={biz.id} onClick={() => { onBusinessChange(biz.id); setIsBizOpen(false); }} align="center" justify="space-between" px={4} py={3} cursor="pointer" _hover={{ bg: "whiteAlpha.50" }}>
+                                            <Text fontSize="sm" color={biz.id === activeBusiness?.id ? "#5cac7d" : "white"} fontWeight={biz.id === activeBusiness?.id ? "bold" : "normal"}>{biz.name}</Text>
+                                            {biz.id === activeBusiness?.id && <Icon as={LuCheck} color="#5cac7d" />}
+                                        </Flex>
+                                    ))}
+                                </Box>
+                            </>
                         )}
                     </Box>
 
@@ -77,7 +82,7 @@ export const DashboardHeader = ({
                 </Flex>
             </Flex>
 
-            {/*  RENDER THE MODAL HERE */}
+            {/* RENDER THE MODAL HERE */}
             <OnboardingModal 
                 isOpen={isOnboardingOpen} 
                 onClose={() => setIsOnboardingOpen(false)} 
