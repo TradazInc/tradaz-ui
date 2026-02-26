@@ -137,3 +137,56 @@ export interface OnlineOrder {
     shippingMethod: string;
     total: number;
 }
+
+
+export interface Customer {
+    id: string;
+    name: string;
+    handle: string;
+    email: string;
+    orders: number;
+    spend: number;
+    status: "Active" | "Inactive";
+    // tier: "VIP" | "Loyal" | "New" | "Standard";
+    joinedDate: string;
+}
+
+
+export interface CartItem {
+    id: string;
+    name: string;
+    variant: string;
+    price: number;
+    qty: number;
+    stock: number;
+}
+
+export interface StaffSalary {
+    id: string;
+    name: string;
+    role: string;
+    salary: number;
+    status: "Paid" | "Pending" | "Unpaid";
+    bank: string;
+    accountLast4: string;
+}
+
+
+
+export interface ChatMessage {
+    id: string;
+    text: string;
+    timestamp: string;
+    isAgent: boolean;
+}
+
+export interface CustomerChat {
+    id: string;
+    customerName: string;
+    customerEmail: string;
+    status: "Open" | "Pending" | "Resolved";
+    lastMessage: string;
+    timestamp: string;
+    unreadCount: number;
+    messages: ChatMessage[];
+}
