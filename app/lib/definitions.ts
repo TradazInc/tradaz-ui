@@ -2,10 +2,9 @@ import { ElementType } from "react";
 
 // Sign In Type Definitions
 export interface SignInData {
-  login: string;
+  email: string; 
   password: string;
 }
-
 export interface SignInResponse {
   token: string;
   user: User;
@@ -22,16 +21,11 @@ export interface User {
   phone_verified: boolean;
 }
 
-// Register Type Definitions
-export interface RegisterData {
-  first_name: string;
-  last_name: string;
+// signup
+export interface SignUpData {
+  name: string;
   email: string;
-  phone: string;
-  username: string;
   password: string;
-  subscribed_sms_campaigns: boolean;
-  subscribed_email_campaigns: boolean;
 }
 
 
@@ -172,3 +166,24 @@ export interface StaffSalary {
 }
 
 
+export interface Expense {
+    id: string;
+    description: string;
+    category: "Inventory" | "Marketing" | "Operations" | "Utilities" | "Payroll";
+    amount: number;
+    date: string;
+    status: "Cleared" | "Pending";
+    reference: string;
+}
+
+
+
+export interface RevenueTransaction {
+    id: string;
+    source: string; 
+    channel: "Online" | "POS" | "Subscription";
+    amount: number;
+    date: string;
+    status: "Completed" | "Pending" | "Refunded";
+    reference: string;
+}
