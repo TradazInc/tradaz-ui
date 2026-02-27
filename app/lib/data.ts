@@ -155,3 +155,47 @@ export const generateDummyStaffSalaries = (count: number, startIndex: number = 0
 };
 
 
+
+
+import { Expense } from "./definitions";
+
+export const generateDummyExpenses = (count: number, startIndex: number = 0): Expense[] => {
+    const descriptions = ["Facebook Ads Campaign", "Restock: Summer Collection", "Shopify Subscription", "Electricity Bill", "Staff Lunch", "Packaging Materials"];
+    const categories: Expense["category"][] = ["Marketing", "Inventory", "Operations", "Utilities", "Payroll", "Operations"];
+    
+    return Array.from({ length: count }).map((_, i) => {
+        const index = startIndex + i;
+        return {
+            id: `EXP-10${index + 20}`,
+            description: descriptions[index % descriptions.length],
+            category: categories[index % categories.length],
+            amount: 15000 + ((index * 27000) % 350000),
+            date: `Feb ${20 - (index % 15)}, 2026`,
+            status: index % 5 === 0 ? "Pending" : "Cleared",
+            reference: `REF-${Math.floor(1000 + Math.random() * 9000)}`
+        };
+    });
+};
+
+
+
+import { RevenueTransaction } from "./definitions";
+
+export const generateDummyRevenue = (count: number, startIndex: number = 0): RevenueTransaction[] => {
+    const sources = ["Walk-in Customer", "Jane Doe", "Michael Smith", "Guest Checkout", "Sarah Connor", "B2B Bulk Order"];
+    const channels: RevenueTransaction["channel"][] = ["POS", "Online", "Online", "POS", "Subscription", "Online"];
+    
+    return Array.from({ length: count }).map((_, i) => {
+        const index = startIndex + i;
+        const isRefunded = index % 12 === 0;
+        return {
+            id: `REV-90${index + 40}`,
+            source: sources[index % sources.length],
+            channel: channels[index % channels.length],
+            amount: isRefunded ? -(15000 + ((index * 12000) % 80000)) : 25000 + ((index * 34000) % 450000),
+            date: `Feb ${20 - (index % 15)}, 2026`,
+            status: isRefunded ? "Refunded" : (index % 8 === 0 ? "Pending" : "Completed"),
+            reference: `TXN-${Math.floor(10000 + Math.random() * 90000)}`
+        };
+    });
+};
