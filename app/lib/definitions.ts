@@ -237,3 +237,58 @@ export interface GiftVoucher {
     expiryDate: string;
     status: "Active" | "Fully Redeemed" | "Expired" | "Revoked";
 }
+
+
+export interface PromotionCampaign {
+    id: string;
+    title: string;
+    type: "Store-wide" | "Category Discount" | "Buy X Get Y" | "Free Shipping";
+    target: string; // e.g., "All Products", "Sneakers", "Orders over ₦50k"
+    discountValue: string; // e.g., "20%", "Free", "₦5,000"
+    startDate: string;
+    endDate: string;
+    revenueGenerated: number;
+    status: "Scheduled" | "Active" | "Paused" | "Ended";
+}
+
+
+
+export interface PopupCampaign {
+    id: string;
+    name: string;
+    type: "Email Capture" | "Announcement" | "Discount Offer" | "Exit Intent";
+    trigger: string; // e.g., "After 5 seconds", "On Exit", "Scroll 50%"
+    views: number;
+    conversions: number; // e.g., emails submitted or buttons clicked
+    status: "Active" | "Paused";
+}
+
+
+
+export interface PromoBanner {
+    id: string;
+    name: string;
+    message: string;
+    ctaText: string;
+    ctaLink: string;
+    position: "Top Announcement Bar" | "Hero Slider" | "Checkout Page" | "Mobile Only";
+    bgColor: string;
+    textColor: string;
+    status: "Active" | "Draft" | "Scheduled";
+}
+
+
+export interface ShippingTier {
+    id: string;
+    name: string;
+    estimatedTime: string;
+    flatRate: number; // Use 0 if the price strictly depends on the state
+    status: "Active" | "Disabled";
+}
+
+export interface ShippingZone {
+    id: string;
+    stateName: string;
+    basePrice: number;
+    status: "Active" | "Disabled";
+}
