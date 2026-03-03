@@ -289,4 +289,62 @@ export const generateDummyVouchers = (): GiftVoucher[] => {
         { id: "VCH-104", code: "TRDZ-J7N8-W4R1", recipientName: "Emmanuel K.", recipientEmail: "emmanuel@example.com", initialValue: 15000, remainingBalance: 15000, issueDate: "2024-12-01", expiryDate: "2025-12-01", status: "Expired" },
         { id: "VCH-105", code: "TRDZ-T9H2-F6D5", recipientName: "Tolu F.", recipientEmail: "tolu@example.com", initialValue: 75000, remainingBalance: 75000, issueDate: "2026-03-01", expiryDate: "2027-03-01", status: "Revoked" },
     ];
+}
+
+import { PromotionCampaign } from "./definitions";
+
+export const generateDummyPromotions = (): PromotionCampaign[] => {
+    return [
+        { id: "PRM-001", title: "Easter Mega Sale", type: "Store-wide", target: "All Products", discountValue: "15%", startDate: "2026-03-25", endDate: "2026-04-10", revenueGenerated: 0, status: "Scheduled" },
+        { id: "PRM-002", title: "Sneakerhead Week", type: "Category Discount", target: "Men's Sneakers", discountValue: "₦10,000", startDate: "2026-02-28", endDate: "2026-03-07", revenueGenerated: 850000, status: "Active" },
+        { id: "PRM-003", title: "Weekend Free Delivery", type: "Free Shipping", target: "Orders over ₦50,000", discountValue: "Free", startDate: "2026-02-27", endDate: "2026-03-01", revenueGenerated: 420000, status: "Ended" },
+        { id: "PRM-004", title: "Clearance BOGO", type: "Buy X Get Y", target: "Winter Collection", discountValue: "50% Off 2nd Item", startDate: "2026-03-01", endDate: "2026-03-15", revenueGenerated: 120000, status: "Paused" },
+    ];
+};
+
+
+
+import { PopupCampaign } from "./definitions";
+
+export const generateDummyPopups = (): PopupCampaign[] => {
+    return [
+        { id: "POP-001", name: "Welcome 10% Off", type: "Email Capture", trigger: "After 5 seconds", views: 12500, conversions: 850, status: "Active" },
+        { id: "POP-002", name: "Wait! Don't Leave Empty Handed", type: "Exit Intent", trigger: "On Mouse Leave", views: 3200, conversions: 145, status: "Active" },
+        { id: "POP-003", name: "Free Delivery This Weekend", type: "Announcement", trigger: "Immediately", views: 45000, conversions: 3200, status: "Paused" },
+        { id: "POP-004", name: "Summer Collection 2026", type: "Discount Offer", trigger: "Scroll 50%", views: 8900, conversions: 420, status: "Active" },
+    ];
+};
+
+
+import { PromoBanner } from "./definitions";
+
+export const generateDummyBanners = (): PromoBanner[] => {
+    return [
+        { id: "BNR-001", name: "Free Shipping Alert", message: "Free Delivery on all orders over ₦50,000 this weekend!", ctaText: "Shop Now", ctaLink: "/collections/all", position: "Top Announcement Bar", bgColor: "#5cac7d", textColor: "#ffffff", status: "Active" },
+        { id: "BNR-002", name: "Easter Mega Sale", message: "Up to 40% OFF across all categories.", ctaText: "View Deals", ctaLink: "/sale/easter", position: "Hero Slider", bgColor: "#1A202C", textColor: "#F6AD55", status: "Scheduled" },
+        { id: "BNR-003", name: "App Download Push", message: "Get 10% off your first order when you shop on our mobile app.", ctaText: "Download", ctaLink: "/app", position: "Mobile Only", bgColor: "#2B6CB0", textColor: "#E2E8F0", status: "Active" },
+        { id: "BNR-004", name: "Cart Abandonment Warning", message: "Stock is running out! Complete your checkout to secure your items.", ctaText: "Checkout", ctaLink: "/checkout", position: "Checkout Page", bgColor: "#C53030", textColor: "#FFF5F5", status: "Draft" },
+    ];
+};
+
+
+import { ShippingTier, ShippingZone } from "./definitions";
+
+export const generateDummyShippingTiers = (): ShippingTier[] => {
+    return [
+        { id: "TIER-1", name: "Standard Delivery", estimatedTime: "3 - 5 Business Days", flatRate: 0, status: "Active" },
+        { id: "TIER-2", name: "Express Delivery", estimatedTime: "1 - 2 Business Days", flatRate: 3000, status: "Active" },
+        { id: "TIER-3", name: "Same Day (Lagos Only)", estimatedTime: "Under 12 Hours", flatRate: 5000, status: "Disabled" },
+    ];
+};
+
+export const generateDummyShippingZones = (): ShippingZone[] => {
+    return [
+        { id: "ZONE-1", stateName: "Lagos", basePrice: 2500, status: "Active" },
+        { id: "ZONE-2", stateName: "Abuja (FCT)", basePrice: 4500, status: "Active" },
+        { id: "ZONE-3", stateName: "Rivers", basePrice: 4000, status: "Active" },
+        { id: "ZONE-4", stateName: "Kano", basePrice: 5000, status: "Active" },
+        { id: "ZONE-5", stateName: "Oyo", basePrice: 3000, status: "Disabled" },
+        { id: "ZONE-6", stateName: "Enugu", basePrice: 4500, status: "Active" },
+    ];
 };
