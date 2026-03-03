@@ -187,3 +187,28 @@ export interface RevenueTransaction {
     status: "Completed" | "Pending" | "Refunded";
     reference: string;
 }
+
+
+
+export interface TaxableSale {
+    id: string;
+    date: string;
+    timestamp: number; // Used for the 1M/3M/6M time toggles
+    reference: string;
+    customer: string;
+    grossAmount: number;
+    status: "Remitted" | "Pending";
+}
+
+
+export interface ProductReview {
+    id: string;
+    productName: string;
+    category: "Fashion" | "Electronics" | "Beauty" | "Home";
+    customerName: string;
+    rating: number; // 1 to 5
+    comment: string;
+    date: string;
+    timestamp: number;
+    status: "Pending" | "Approved" | "Disapproved";
+}

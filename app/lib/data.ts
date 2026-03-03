@@ -199,3 +199,67 @@ export const generateDummyRevenue = (count: number, startIndex: number = 0): Rev
         };
     });
 };
+
+
+
+import { TaxableSale } from "./definitions";
+
+export const generateDummyTaxableSales = (count: number): TaxableSale[] => {
+    const customers = ["Walk-in Customer", "Jane Doe", "Michael Smith", "TechCorp Ltd", "Sarah Connor"];
+    const now = new Date().getTime();
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    return Array.from({ length: count }).map((_, i) => {
+        // Spread dates randomly over the last 365 days
+        const daysAgo = Math.floor(Math.random() * 365);
+        const pastDate = new Date(now - (daysAgo * oneDay));
+        
+      return {
+            id: `TAX-${Math.floor(10000 + Math.random() * 90000)}`,
+            date: pastDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+            timestamp: pastDate.getTime(),
+            reference: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+            customer: customers[i % customers.length],
+            grossAmount: 50000 + (Math.random() * 450000),
+            status: (daysAgo > 30 ? "Remitted" : "Pending") as "Remitted" | "Pending",
+        };
+    }).sort((a, b) => b.timestamp - a.timestamp); // Sort newest to oldest
+};
+
+
+
+import { ProductReview } from "./definitions";
+
+export const generateDummyReviews = (count: number): ProductReview[] => {
+    const products = ["Classic White Sneakers", "Wireless Noise-Canceling Headphones", "Vitamin C Serum", "Minimalist Desk Lamp", "Leather Crossbody Bag"];
+    const categories: ProductReview["category"][] = ["Fashion", "Electronics", "Beauty", "Home", "Fashion"];
+    const customers = ["Amina Y.", "Chuka Obi", "Sarah L.", "Emmanuel K.", "Tolu F."];
+    const comments = [
+        "Absolutely love this! The quality is way better than I expected.",
+        "It's okay, but shipping took forever.",
+        "Terrible experience. The item arrived broken.",
+        "Five stars! Will definitely be ordering from Tradaz again.",
+        "Looks exactly like the pictures. Very satisfied."
+    ];
+    
+    const now = new Date().getTime();
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    return Array.from({ length: count }).map((_, i) => {
+        const daysAgo = Math.floor(Math.random() * 60);
+        const pastDate = new Date(now - (daysAgo * oneDay));
+        const rating = i % 5 === 2 ? 1 : (i % 5 === 1 ? 3 : 5); // Mix of ratings
+        
+        return {
+            id: `REV-${Math.floor(10000 + Math.random() * 90000)}`,
+            productName: products[i % products.length],
+            category: categories[i % categories.length],
+            customerName: customers[i % customers.length],
+            rating: rating,
+            comment: comments[i % comments.length],
+            date: pastDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+            timestamp: pastDate.getTime(),
+            status: (i % 4 === 0 ? "Pending" : (i % 5 === 2 ? "Disapproved" : "Approved")) as "Pending" | "Approved" | "Disapproved",
+        };
+    }).sort((a, b) => b.timestamp - a.timestamp); 
+};
