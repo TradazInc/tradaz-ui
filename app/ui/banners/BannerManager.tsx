@@ -30,13 +30,13 @@ export const BannerManager = () => {
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
             
-            {/* --- Sticky Header & Filters --- */}
+            {/* --- Sticky Header (Slimmed down for mobile!) --- */}
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
                 bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
                 py={4} mb={6} mx={-4} px={4} 
             >
-                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4} mb={6}>
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
                         <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
                             <Icon as={LuLayoutTemplate} /> Promo Banners
@@ -48,21 +48,22 @@ export const BannerManager = () => {
                         <Icon as={LuPlus} mr={2} /> Create Banner
                     </Button>
                 </Flex>
-
-                <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={6}>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(92, 172, 125, 0.3)">
-                        <Text color="#5cac7d" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Banners</Text>
-                        <Text color="white" fontSize="2xl" fontWeight="black">{activeCount}</Text>
-                    </Box>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor={topBarActive ? "rgba(66, 153, 225, 0.3)" : "whiteAlpha.100"}>
-                        <Text color={topBarActive ? "blue.400" : "gray.500"} fontSize="xs" fontWeight="bold" textTransform="uppercase">Top Bar Status</Text>
-                        <Flex align="center" gap={2} mt={1}>
-                            <Box boxSize="8px" rounded="full" bg={topBarActive ? "blue.400" : "gray.500"} />
-                            <Text color="white" fontSize="lg" fontWeight="bold">{topBarActive ? "Currently Displaying" : "Empty / Hidden"}</Text>
-                        </Flex>
-                    </Box>
-                </SimpleGrid>
             </Box>
+
+            {/* --- STATS & SEARCH (Moved outside sticky header to scroll away) --- */}
+            <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} mb={6}>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(92, 172, 125, 0.3)">
+                    <Text color="#5cac7d" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Banners</Text>
+                    <Text color="white" fontSize="2xl" fontWeight="black">{activeCount}</Text>
+                </Box>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor={topBarActive ? "rgba(66, 153, 225, 0.3)" : "whiteAlpha.100"}>
+                    <Text color={topBarActive ? "blue.400" : "gray.500"} fontSize="xs" fontWeight="bold" textTransform="uppercase">Top Bar Status</Text>
+                    <Flex align="center" gap={2} mt={1}>
+                        <Box boxSize="8px" rounded="full" bg={topBarActive ? "blue.400" : "gray.500"} />
+                        <Text color="white" fontSize="lg" fontWeight="bold">{topBarActive ? "Currently Displaying" : "Empty / Hidden"}</Text>
+                    </Flex>
+                </Box>
+            </SimpleGrid>
 
             {/* --- BANNERS LIST --- */}
             <VStack gap={4} align="stretch" mb={8}>

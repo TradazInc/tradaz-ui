@@ -43,13 +43,13 @@ export const PopupManager = () => {
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
             
-            {/* --- Sticky Header & Filters --- */}
+            {/* --- Sticky Header (Slimmed down for mobile!) --- */}
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
                 bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
                 py={4} mb={6} mx={-4} px={4} 
             >
-                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4} mb={6}>
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
                         <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
                             <Icon as={LuAppWindow} /> Website Pop-ups
@@ -61,22 +61,23 @@ export const PopupManager = () => {
                         <Icon as={LuPlus} mr={2} /> Create Pop-up
                     </Button>
                 </Flex>
-
-                <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(92, 172, 125, 0.3)">
-                        <Text color="#5cac7d" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Pop-ups</Text>
-                        <Text color="white" fontSize="2xl" fontWeight="black">{activeCount}</Text>
-                    </Box>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Views</Text>
-                        <Text color="white" fontSize="2xl" fontWeight="black">{totalViews.toLocaleString()}</Text>
-                    </Box>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(237, 137, 54, 0.3)">
-                        <Text color="orange.400" fontSize="xs" fontWeight="bold" textTransform="uppercase">Avg Conversion Rate</Text>
-                        <Text color="orange.400" fontSize="2xl" fontWeight="black">{avgConversionRate}%</Text>
-                    </Box>
-                </SimpleGrid>
             </Box>
+
+            {/* --- STATS & SEARCH (Moved outside sticky header to scroll away) --- */}
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(92, 172, 125, 0.3)">
+                    <Text color="#5cac7d" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Pop-ups</Text>
+                    <Text color="white" fontSize="2xl" fontWeight="black">{activeCount}</Text>
+                </Box>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
+                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Views</Text>
+                    <Text color="white" fontSize="2xl" fontWeight="black">{totalViews.toLocaleString()}</Text>
+                </Box>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(237, 137, 54, 0.3)">
+                    <Text color="orange.400" fontSize="xs" fontWeight="bold" textTransform="uppercase">Avg Conversion Rate</Text>
+                    <Text color="orange.400" fontSize="2xl" fontWeight="black">{avgConversionRate}%</Text>
+                </Box>
+            </SimpleGrid>
 
             {/* --- POP-UPS LIST --- */}
             <VStack gap={4} align="stretch" mb={8}>
