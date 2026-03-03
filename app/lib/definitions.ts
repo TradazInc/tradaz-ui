@@ -212,3 +212,28 @@ export interface ProductReview {
     timestamp: number;
     status: "Pending" | "Approved" | "Disapproved";
 }
+
+
+export interface DiscountCoupon {
+    id: string;
+    code: string;
+    type: "Percentage" | "Fixed";
+    value: number; // e.g., 15 for 15% or 5000 for ₦5,000
+    usageCount: number;
+    usageLimit: number | "Unlimited";
+    expiryDate: string;
+    status: "Active" | "Expired" | "Disabled";
+}
+
+
+export interface GiftVoucher {
+    id: string;
+    code: string;
+    recipientName: string;
+    recipientEmail: string;
+    initialValue: number;
+    remainingBalance: number;
+    issueDate: string;
+    expiryDate: string;
+    status: "Active" | "Fully Redeemed" | "Expired" | "Revoked";
+}

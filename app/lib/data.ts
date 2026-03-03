@@ -263,3 +263,30 @@ export const generateDummyReviews = (count: number): ProductReview[] => {
         };
     }).sort((a, b) => b.timestamp - a.timestamp); 
 };
+
+
+
+import { DiscountCoupon } from "./definitions";
+
+export const generateDummyCoupons = (): DiscountCoupon[] => {
+    return [
+        { id: "CPN-1", code: "WELCOME20", type: "Percentage", value: 20, usageCount: 145, usageLimit: "Unlimited", expiryDate: "2026-12-31", status: "Active" },
+        { id: "CPN-2", code: "FLASH5K", type: "Fixed", value: 5000, usageCount: 50, usageLimit: 50, expiryDate: "2026-03-15", status: "Expired" },
+        { id: "CPN-3", code: "VIPFREESHIP", type: "Percentage", value: 100, usageCount: 12, usageLimit: 20, expiryDate: "2026-06-01", status: "Active" },
+        { id: "CPN-4", code: "BLACKFRIDAY", type: "Percentage", value: 40, usageCount: 890, usageLimit: 1000, expiryDate: "2025-11-30", status: "Disabled" },
+        { id: "CPN-5", code: "NAIJASALES", type: "Fixed", value: 2500, usageCount: 34, usageLimit: 100, expiryDate: "2026-10-01", status: "Active" },
+    ];
+};
+
+
+import { GiftVoucher } from "./definitions";
+
+export const generateDummyVouchers = (): GiftVoucher[] => {
+    return [
+        { id: "VCH-101", code: "TRDZ-A8F9-K2M4", recipientName: "Amina Y.", recipientEmail: "amina@example.com", initialValue: 50000, remainingBalance: 12500, issueDate: "2026-01-10", expiryDate: "2027-01-10", status: "Active" },
+        { id: "VCH-102", code: "TRDZ-B2X1-P9Q7", recipientName: "Chuka Obi", recipientEmail: "chuka@example.com", initialValue: 100000, remainingBalance: 0, issueDate: "2025-11-20", expiryDate: "2026-11-20", status: "Fully Redeemed" },
+        { id: "VCH-103", code: "TRDZ-M5V3-C8L2", recipientName: "Sarah L.", recipientEmail: "sarah@example.com", initialValue: 25000, remainingBalance: 25000, issueDate: "2026-02-28", expiryDate: "2027-02-28", status: "Active" },
+        { id: "VCH-104", code: "TRDZ-J7N8-W4R1", recipientName: "Emmanuel K.", recipientEmail: "emmanuel@example.com", initialValue: 15000, remainingBalance: 15000, issueDate: "2024-12-01", expiryDate: "2025-12-01", status: "Expired" },
+        { id: "VCH-105", code: "TRDZ-T9H2-F6D5", recipientName: "Tolu F.", recipientEmail: "tolu@example.com", initialValue: 75000, remainingBalance: 75000, issueDate: "2026-03-01", expiryDate: "2027-03-01", status: "Revoked" },
+    ];
+};
