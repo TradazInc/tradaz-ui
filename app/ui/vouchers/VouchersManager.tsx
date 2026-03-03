@@ -53,13 +53,13 @@ export const VoucherManager = () => {
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
             
-            {/* --- Sticky Header & Filters --- */}
+            {/* --- Sticky Header (Slimmed down for mobile!) --- */}
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
                 bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
                 py={4} mb={6} mx={-4} px={4} 
             >
-                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4} mb={6}>
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
                         <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
                             <Icon as={LuGift} /> Gift Vouchers & Store Credit
@@ -71,40 +71,41 @@ export const VoucherManager = () => {
                         <Icon as={LuPlus} mr={2} /> Issue New Voucher
                     </Button>
                 </Flex>
-
-                <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(92, 172, 125, 0.3)">
-                        <Text color="#5cac7d" fontSize="xs" fontWeight="bold" textTransform="uppercase">Outstanding Liability (Active)</Text>
-                        <Text color="white" fontSize="2xl" fontWeight="black">₦{totalOutstandingLiability.toLocaleString()}</Text>
-                    </Box>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Value Redeemed</Text>
-                        <Text color="white" fontSize="2xl" fontWeight="black">₦{totalRedeemedValue.toLocaleString()}</Text>
-                    </Box>
-                    
-                    <Flex direction="column" gap={2}>
-                        <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="xl" px={4} h="44px" _focusWithin={{ borderColor: "#5cac7d" }}>
-                            <Icon as={LuSearch} color="gray.400" />
-                            <Input 
-                                placeholder="Search code or customer..." 
-                                border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full"
-                                value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </Flex>
-                        <select 
-                            style={selectStyles} 
-                            value={statusFilter} 
-                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value as "All" | "Active" | "Fully Redeemed" | "Expired" | "Revoked")}
-                        >
-                            <option value="All">All Statuses</option>
-                            <option value="Active">Active</option>
-                            <option value="Fully Redeemed">Fully Redeemed</option>
-                            <option value="Expired">Expired</option>
-                            <option value="Revoked">Revoked</option>
-                        </select>
-                    </Flex>
-                </SimpleGrid>
             </Box>
+
+            {/* --- STATS & SEARCH (Moved outside sticky header to scroll away) --- */}
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(92, 172, 125, 0.3)">
+                    <Text color="#5cac7d" fontSize="xs" fontWeight="bold" textTransform="uppercase">Outstanding Liability (Active)</Text>
+                    <Text color="white" fontSize="2xl" fontWeight="black">₦{totalOutstandingLiability.toLocaleString()}</Text>
+                </Box>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
+                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Value Redeemed</Text>
+                    <Text color="white" fontSize="2xl" fontWeight="black">₦{totalRedeemedValue.toLocaleString()}</Text>
+                </Box>
+                
+                <Flex direction="column" gap={2}>
+                    <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="xl" px={4} h="44px" _focusWithin={{ borderColor: "#5cac7d" }}>
+                        <Icon as={LuSearch} color="gray.400" />
+                        <Input 
+                            placeholder="Search code or customer..." 
+                            border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full"
+                            value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </Flex>
+                    <select 
+                        style={selectStyles} 
+                        value={statusFilter} 
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value as "All" | "Active" | "Fully Redeemed" | "Expired" | "Revoked")}
+                    >
+                        <option value="All">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Fully Redeemed">Fully Redeemed</option>
+                        <option value="Expired">Expired</option>
+                        <option value="Revoked">Revoked</option>
+                    </select>
+                </Flex>
+            </SimpleGrid>
 
             {/* --- VOUCHERS LIST --- */}
             <VStack gap={4} align="stretch" mb={8}>

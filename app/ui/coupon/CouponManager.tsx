@@ -45,13 +45,13 @@ export const CouponManager = () => {
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
             
-            {/* --- Sticky Header & Filters --- */}
+            {/* --- Sticky Header (Slimmed down for mobile!) --- */}
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
                 bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
                 py={4} mb={6} mx={-4} px={4} 
             >
-                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4} mb={6}>
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
                         <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
                             <Icon as={LuTicket} /> Discount Coupons
@@ -63,26 +63,27 @@ export const CouponManager = () => {
                         <Icon as={LuPlus} mr={2} /> Create Coupon
                     </Button>
                 </Flex>
-
-                <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Coupons</Text>
-                        <Text color="white" fontSize="2xl" fontWeight="black">{activeCount}</Text>
-                    </Box>
-                    <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Uses</Text>
-                        <Text color="white" fontSize="2xl" fontWeight="black">{totalUses.toLocaleString()}</Text>
-                    </Box>
-                    <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="xl" px={4} _focusWithin={{ borderColor: "#5cac7d" }}>
-                        <Icon as={LuSearch} color="gray.400" />
-                        <Input 
-                            placeholder="Search by coupon code..." 
-                            border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full" py={3}
-                            value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </Flex>
-                </SimpleGrid>
             </Box>
+
+            {/* --- STATS & SEARCH (Moved outside sticky header to scroll away) --- */}
+            <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
+                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Coupons</Text>
+                    <Text color="white" fontSize="2xl" fontWeight="black">{activeCount}</Text>
+                </Box>
+                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
+                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Uses</Text>
+                    <Text color="white" fontSize="2xl" fontWeight="black">{totalUses.toLocaleString()}</Text>
+                </Box>
+                <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="xl" px={4} _focusWithin={{ borderColor: "#5cac7d" }}>
+                    <Icon as={LuSearch} color="gray.400" />
+                    <Input 
+                        placeholder="Search by coupon code..." 
+                        border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full" py={3}
+                        value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </Flex>
+            </SimpleGrid>
 
             {/* --- COUPONS LIST --- */}
             <VStack gap={4} align="stretch" mb={8}>
