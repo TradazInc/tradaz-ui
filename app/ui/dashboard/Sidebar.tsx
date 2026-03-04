@@ -17,7 +17,7 @@ const OTHER_NAV_ITEMS = [
     { label: "Finance", icon: LuLandmark, children: ["Sales Record", "Staff Salary", "Expenses", "Revenue", "Tax Calculation"] },
     { label: "Dispute Resolution", icon: LuScale, children: ["Customers Chats", "Products exchange", "Customers Refund", "Sales Reconciliation"] },
     { label: "Marketing & Promos", icon: LuTicketPercent, children: ["Promotions", "Set Coupon", "Pop up", "Vouchers", "Promo Banners"] },
-    { label: "Settings", icon: LuSettings, children: ["Logistics", "Loyalty Point Rules", "VAT", "Terms", "Conditions & Policies"] },
+    { label: "Settings", icon: LuSettings, children: ["Logistics", "Loyalty Point Rules", "VAT", "Terms", "Conditions & Policies", "UI config"] },
 ];
 
 export const Sidebar = ({ 
