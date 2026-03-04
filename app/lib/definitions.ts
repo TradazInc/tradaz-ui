@@ -320,3 +320,61 @@ export interface VatRemittance {
     status: "Pending" | "Remitted" | "Overdue";
     firsReceiptNo?: string;
 }
+
+
+export interface ChatMessage {
+    id: string;
+    sender: "Customer" | "Admin";
+    text: string;
+    timestamp: string;
+}
+
+export interface CustomerChat {
+    id: string;
+    customerName: string;
+    customerEmail: string;
+    status: "Unread" | "Pending" | "Replied";
+    lastMessageTime: string;
+    messages: ChatMessage[];
+}
+
+
+export interface ExchangeRequest {
+    id: string;
+    orderId: string;
+    customerName: string;
+    customerEmail: string;
+    returnItem: string; // What they are sending back
+    returnItemImage: string;
+    requestItem: string; // What they want instead
+    requestItemImage: string;
+    reason: string;
+    dateRequested: string;
+    status: "Pending" | "Approved" | "Rejected" | "Completed";
+}
+
+
+export interface RefundRequest {
+    id: string;
+    orderId: string;
+    customerName: string;
+    customerEmail: string;
+    itemName: string;
+    itemImage: string;
+    refundAmount: number;
+    reason: string;
+    dateRequested: string;
+    status: "Pending" | "Processing" | "Refunded" | "Rejected";
+}
+
+
+export interface ReconciliationRecord {
+    id: string;
+    settlementDate: string;
+    gateway: "OPay" | "Monie Point" |"Bank Transfer" | "Cash on Delivery";
+    expectedAmount: number; // What the store recorded
+    actualPayout: number;   // What hit the bank
+    gatewayFee: number;     // The exact fee the gateway took
+    status: "Matched" | "Discrepancy" | "Pending";
+    notes?: string;
+}

@@ -383,3 +383,207 @@ export const generateDummyVatRecords = (): VatRemittance[] => {
         { id: "VAT-2511", period: "November 2025", collectedAmount: 195000, remittedAmount: 195000, dueDate: "2025-12-21", status: "Remitted", firsReceiptNo: "FIRS-202511-C7K" },
     ];
 };
+
+
+import { CustomerChat } from "./definitions";
+
+export const generateDummyChats = (): CustomerChat[] => {
+    return [
+        {
+            id: "CHAT-101",
+            customerName: "Amina Yusuf",
+            customerEmail: "amina.y@example.com",
+            status: "Unread",
+            lastMessageTime: "10:42 AM",
+            messages: [
+                { id: "M1", sender: "Customer", text: "Hello! I ordered the vintage denim jacket yesterday. Can I change the size from M to L before it ships?", timestamp: "10:42 AM" }
+            ]
+        },
+        {
+            id: "CHAT-102",
+            customerName: "Chuka Obi",
+            customerEmail: "chuka.o@example.com",
+            status: "Pending",
+            lastMessageTime: "Yesterday",
+            messages: [
+                { id: "M1", sender: "Customer", text: "My tracking number says delivered, but I haven't received anything.", timestamp: "Yesterday, 4:15 PM" },
+                { id: "M2", sender: "Admin", text: "Hi Chuka, I'm so sorry about that. Let me check with GIG Logistics immediately.", timestamp: "Yesterday, 4:20 PM" },
+                { id: "M3", sender: "Customer", text: "Please do. I really need those items by Friday.", timestamp: "Yesterday, 4:22 PM" }
+            ]
+        },
+        {
+            id: "CHAT-103",
+            customerName: "Sarah Lawal",
+            customerEmail: "sarah.l@example.com",
+            status: "Replied",
+            lastMessageTime: "Mon",
+            messages: [
+                { id: "M1", sender: "Customer", text: "Do you guys do wholesale discounts? I want to buy 50 pieces for my boutique.", timestamp: "Mon, 9:00 AM" },
+                { id: "M2", sender: "Admin", text: "Hello Sarah! Yes we do. For 50 pieces, we can offer a 20% bulk discount. Would you like me to send a custom invoice?", timestamp: "Mon, 10:15 AM" }
+            ]
+        }
+    ];
+};
+
+
+import { ExchangeRequest } from "./definitions";
+
+export const generateDummyExchanges = (): ExchangeRequest[] => {
+    return [
+        {
+            id: "EXC-9021",
+            orderId: "#TRD-8021",
+            customerName: "Amina Yusuf",
+            customerEmail: "amina.y@example.com",
+            returnItem: "Vintage Denim Jacket (Size: M)",
+            returnItemImage: "data:image/jpeg;base64,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",
+            requestItem: "Vintage Denim Jacket (Size: L)",
+            requestItemImage: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxAPEA8PDw8PDw8PDw8PDw8QDw8NDw8PFRUWFxURFRYYHSggGBomGxUVITEhJSkrLi4vFx8zODMsNyktLisBCgoKDg0OGxAQGjAlICU3ListMC0tLS0tLS0tLSstLSsrKysrLS0tLSstLS0tLS0tLS0tKy0tLS0tLS0tLTUtLf/AABEIARMAtwMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAABAgAEAwYHBQj/xAA/EAABBAEBBAgCBwYFBQAAAAABAAIDEQQhBRIxQQYHEyJRYXGBkbEUIzJCUqHBYnKCkqLwJENTstEVM0Rj8f/EABoBAQACAwEAAAAAAAAAAAAAAAAEBQECAwb/xAAtEQACAQMDAgMIAwEAAAAAAAAAAQIDBBESITEyQQUiMxNRYYGRodHwI3HBFP/aAAwDAQACEQMRAD8A3ilKT0jSASkaTUjSASkaTUjSASkaTUjSASkaTUpSAWkaTUpSAWlKTUpSAWkKT0hSAxkJaWUhLSAxkJCFmISEIDCQgQsjglIQGItUT0igLlI0mpGkAtKUnpSkAlI0npSkAlKUnpSkAtKUmpSkAtI0mpSkAtKUmpSkAlKUmpSkBjIS0spCWkBjISkLKQlIQGEhIQsxCRAYyFE5CCAu0jSNI0gAAjSNI0gFpSk1KUgFpSkyiAVRGkUAtKUmUpACkKTIIAUoiogEKWlkKWkAhCUrIQlIWQYykpZCEtLAEIUTEKIC2AmpSkaWQSlKRpGlgC0ompSkAFEUEAEFU2rtBuNE+Z+oYBTRoXOJAaPiQuTbV6zc1sz2wujaxpquyjcARxFuBPkpNK1nUWpbL4mkqijsdkUXCpeszaZ4TNb6Q4/6sXnZXTnaUmjsuUfuHs/9tLr/AMTXMl9zX2q9x9DFRaP1YbWlniMcj3SVFC9pcS52847jxZ8XFtDzK3gFR61F0paTeMtSyRRFRcTYUoJkEApSkJylKyDGQlWQpSEAhCiYhRAW6RRUWARRFRABRFeZtrbuPhtuV/fItsTdZHe3IeZW8Kcpy0xWWYbSWWelS1zb/S7HxQ5rSJpRfdae60/tO/Qa+i0fpD01mybY09lEf8thOo/adxd6aDyWo5eXdE8LF+l6q7t/CVFaqz+S/wBZDqXWdoHXOsSR0eD3jbmswZHngC+QZO8a8LY34BcOMTCSe8CSSdb1XYeszL7TY0WQP/KxMJpPhNDMzu+tTTfyLjcRPNLRx0aGuGKuc5THGOznvH3A/RMIYhruA+pcUhCxyNPiVMelLpOSbfc6z1Rs3g5wG6DLiRMA4aSumcB6Ng/NWcnpc/FzMuIASwMyZ91hO65g7R1hrvC70N+ysdTjBHhRzvrci+m5kp5iqhjP8rMlc1zcx0ks8h+0+Ql1fiOrv6iVGoQhXrS1rbb9+33Ok26cFg7XsbpHjZdCN+7J/pPpr/bk72JXrFfPcWUQQRyr1C3LYPT6WGmTnt4+HeP1rR5OP2vQ/FcrnwhrzUX8n+Tandp7SOopVU2VtWHLZ2kDw4feHB7D4OHJXFSyjKL0yWGS001lAKUpylKwZEKUpykKAhUUKiAuKKIrAAoiggPD6YbeGBjOl07Rx3IWnW3n71eAGvw8VxfKznzEyPeXueSXOJskq91i7cdmTycRHCXRRMOhAadXEciSL+A5LXsF/wBWPdeo8PoqgtLW7WX+CtuJ691xwZnOVeYF43BqTpxr8/BWHKnM4jUcQbCmVXscKfJsk22Zp8TH2X3ZN2QvjAvedI8UGje/aLq/fK18wFpLXAtcCQWuBa5p5gg6g+S9fZWWJZMUkd5k0bmVpR7RpI+K7v0g6GYW0STNFuyDQZEJ7KXyBPB38QNKBXuIW7jlbPPBJjTdRPD3R84GNIW6Fdtk6n8UWPpmS3w3mwu/MAWlx+qPAbRlmypiQS1hcyFpArU7rd4D+LmucvErfG2foZVvU7mp7L6Qsw+jpZvXLkTzRkc2wMfe77ucR/E7wWi7OkJY4u4ucT7nUn4qdJyHNx3NEETXGVoxoN8djuOA3n7xO851nUkmhxUgFRgLpZdcsfH6v8GK/SjM13NebJM7eJvmrxOhXnO5qTcSeFg5UlybD0Y6QS40rZIzRboQfsvbzDvELuWwtrx5kLZojx0ew6ujfzaf71FL5ywx4Le+gOVlMymMxmOl7ShNHwaYhxeSdG1r3j6c6US6tlXpa3tJd/edqdTRPSuGdhKBTJSvOk8QpU5SoBVEUVgFtFRRABQCyB5op4BbggNI6zegAyWPzMRtZLQXSxDhkADUt/b+fquMYn2W+gPxX1NnyENFL5w6UANz8wNAa0ZEtAaAam/ztXfhdeUnol24IV1BJZRQdwVHIVx50VGcq3rvykWmtzNsTLEUkbnfZZNG81qaDhdL6hjynM3AWinEdk9pPZyNIsangfI/mvk+Ln6hfTXQbPdk4OI0i2jFiEjjTgaG6B69324+CoL7eEX7tifR2kzZY3GQG9GixfHed4jyC8faEskXaved/uUxw/CONjxuvVejml8TSW95oGg4bnw5ea1/OyC3Eypprs40sjRr3GNa4tJ8yST5ClWxWXgkHzLOS57fUn816h0aAvNgFyei9CReotlhSZW1eUhie6vPfxKvu4KnLobW9bfBrTPX6K7HkzsiLFhrffq5x+zGwfaefID46DmvonYWwMfZ8IggbroZJDXaSu/E4/IcByWhdSGyQyKfMIBdLJ2MZ8I2AF1erjX8AXT3lUd9cSlL2aeyJ1KCS1d2UZW0SsZVnKHAquVXnYQhIVkKUhZAqihCKwC2ioogAs2INT6LErGIOJQGHbT92Mnw1Xzht2XfzMp34smYj03yvoTpRIRjy1+B3yXzhM65Xk83uJ9yVbeF9TZFuuECQ6KnOrUhVWfgrmtuiHTMeE0FxB4fBfRPVlE8bLxHMNgMka+OgCXtkc0vB5mgND4ey+dMQ08eei731TZ7pMJkLb7jnku/02lxJ99fiqa7SdDPfP5JlNv2mDeGW8240wEXy33fg9BxPw8Vo/WPM3Gwc4sdYnaIt0my3ec1rqHgd5bptOI1vRup7WmgXHddpzvn5rk/WNOY9n7znB0s+S3jRLI2doWjytzCT6AclXUFmpEkS4ZynZ7dXE+KtvOqw4h7u8TZJJJ8ynJXpaSxTSK+e82ZCVhmH5hZLSyfdW890ax2Z37qwhEezMJo+8x8h9Xvc79VtpWp9XMods/Er7sLWH1C2ory1Xrf9ss48Czix6KoVdOopUyFzMmMoFMlKACiKCAtoqKICKzjDT4qsrcOjQgNf6cTBmHO4mqY4/kvnkauefP5ld16yX/4GceLSPiuGSAAv/fIHoP/AKrbwzlkS64RjesDwszlhermfBFiU26O913vqixmvwC4Exv7eTvtOrvskNcOY158Na5rgrxquy9U+RIMdjAKbLJJuPru6GnEu5VpodTYriqa82pNfFEyn1ZOhTtc6VscmjG1v+EgJFNHjfPyBXMOuuRjo4i2t58rXPqhdMeG/k4/kurZrY2xhpIH2qk+/vEUXg+P6LivWWD2TN7VxlB3qI+qMf1ZB8CGuPv4hQbX1V+9jtPpNDxT3QFkWLFOiyOK9FB+VECXUS0ZuA9Ulp3atTOTHc7l1TE/9PjB5OfXoSt2WidUF/8ATwTzlkA9Af8Am1vbF5uusVJL4ljDpQb0VWUa+qsHisWQOa4mxgKUpylKAUqIqIC0ioogAVaGgVYDUeoViQ6IDSus6QfQnjXVzR+a47trD7CRsZNu7KGV/DR8rGyFvsHgey6z1pvvDI87+C5d0tk3s3IPg8M9mNa0fJWnhvW/6I110o8YrE5ZCl3VdPdENFV41XZOpLIacbKZJuG5+8HAmRwLGluv7wefU2uPEalb11TTPbNM1kLJbEZc913A0FwMmmu73ta8lWXsf4pfvclUn5kdc2zE0d1zt6FtGTm6vuxXy3iKvwvmuc9aMjMqWCEOZFeQyJ0rr3Iw7eFmuQ1PxXS83KjZEWinNvUm++41bj4fpS5B1hROZACRXazMmY7mYwx4YCORp1n94KrtvVRIn0mjFgY97A4PDHOZvt+y/dJG8PI1fumeq0Hj4rOr+m/KQp8ip2O7rr/u/wCwg5e91fZLY9o42+GuZI50D2uAcC2RpZz8yFictKyEs7HS+p+S8Dd/DNIPjR/VdAba5x1UMMH0/FN3j5skevGhTb/pXR2OKoK7zUkydBYihg1Y5mmime88tEmvNcTYwBBQcx4FQoBSoiogLSKARQBj40ss1UscI73spkFAaF1mRb0Oh0bqR4rlG3X72ROfGaX/AHFdU6xHjsHAcS4D/hck2k65ZD4yyn+oq18O6myLc8IqOKN6IOCF0rhPBEEYNT5reOqXM7DNls010BBq+T2EcFpFA+PHWuNeS2LojGDnObC5xYGksdIWxvLA5upo1ah3npSR3pdSZ2jIxmTjuMcYmkGUDTe57jfXS/L2XO+tPP7aPRtNa5pB8u8B8l0T6cGwAMbusaKAPHTiSfG1zbrBxS3Hc91Dtntk3KoxtDnho9w668SqS39WJMn0s5tBwCskKtHwCzWr+HBBnyNSmPOYpI5RxjeyQerSCPklJSv4LM+DCO79GsSsvOyWG2zTtbI38L+yie148j2hB8wPHTdGyClpHV7L2jcr9tuDLf7+LGL/AKFt+FLvDXiNCPPmvOVFhlgiwCOJSOceSyPF6BZYoq1K0MlB4p3qPzH9lQo5z9QRwDhaBQAUUUQFlFBEIDJF4rFMeJWUGgVUldx8EBpPTN++xkdAFzgSfDzXHsrj8fmux7axTLkxsGoe8NA8iaXGchxJ1FHmPA+CtfD31fIi3PYxWoUthM5wAtWqfvI2BWLYOhcJOS4g1uxOeT4AObqvCgbpZ5r2ei+bBDJMZpWxNdD2bS9rnNcS5ttNAnha4Xa/gbOlL1Dr2ypg+IPolulBw+2R96vX4rT+sqU9jvXvd5pviBR5j1HD1WxbI21hmNlZeKBXDt421XkSD8VrHWVlw/R9yOaJ7nva4sY9khIAPf0OnEBUdun7SOxNn0s55tLaD8maXIk3d+aQvdujdbZ8AsYWFo09CsrToFex22IUhkj0znLGNUm+xhHauqbIbJFNukHchwY3eTmRubXwAW7HuSA8nfPmud9STh2WYBxEkJPpT6+RXSpmbw8xqPVUVwsVGidB5jksxm1lkdpSqYzwRr8FZ3QeC4GxTyoe643yKxwP3mtd4tB9+as5J7pCoYDu6W/he4e3EfNAWEUFEBZRadQktYcvNZA0ySuayNtbz3Hda2yACTyFkaoC3O7RVnMJ4+qkO1scje7WMt8Q9pHxtNNnwubbHAg8C3UfEJgHi4kQdlA8dxr3D14fqufdb+wYoXxZUMJZ2vafSHMH1Yktu44j7pdb9edePHpezIu/JJyIDWnx1s/oqHSjIZGWPmjyBFuOH0vHBkdASdRIwA2wiuLXNtuo4LvQqOEso0nFSWD51dIl7TRdkGxdnZR3o8jY8183QNjmJ/aMUrBf8IWidYGyYcbJiiiZAz6kSOMDpnMdvOcBo9zqPd5HmrGnXc5aThKmorJrcc5NNAs8AACSfZYMgggeZ/RehgxyCRpg3hKN4t3PtUGkur2tdP6mtnRyY+XNLGyQuyGxgyMa/wCywONWP/YutxOUYPVua04pvY45F5K01lB3mB819LP6P4TvtYeKfXHi/wCFpfWvsKCPZ4kgx4YTHkRFzo4o4yWOD2USBw3nN/JQqNwnNI6yp7ZOQQjum0kmmiubXwXYs0mO+SOR0e6C+I7zDvNDgQf4q9lVxsSab/txSykHdPZxvk18NArKdWOhNHDQ8ld1p42+JpezD0VynECQR496hs0jWyH0ibbz/KvbwuiDYt2SZz36jcDozC0uPBrYz9Y918AQ2/A8DDlXijqoNnRurXo2MHFEji4zZTI5ZWmqjFEsYK5gO11Oq3BYMRpEcYIohjARxogCwstqsnJyllkhLCwYz3XeuqtxyWFVkCwZO0YoQTJIyMNGpe9rAPWytDJem1C8zGJbJI08w1w9RYPzC1/anWPs+LujIbIa/wAlrph/M0bv5q10T2kzOYc1heGF0kTGOABG6RbjRPGls4SW7QybDaiW1FgGbeXi9LsUZGK+B27uyuYHAz/RbAcHaP3Xa2BpWq9TeWOaBklCRjH7ptu+1r900RYvgaJHutls8g5Rl9WjD3mR5hv8EmBMPi5zCqzOrtwLGkZzGvexjj/ggGhxALiGynhd8+C6hN0cxH39Q2Mk2XQOfiOJ83RFpKTG6M48cjJWuyi6N28A/Ny5WE/tNe8ghdXVeN2a6Ue7CwMa1rRTWgNaPAAUAmSAo2o5sUczYmJNfa4uNKTxL4Ink+5Cou6H7NOn0DE9oWNPxAXuWot1Uku4NYm6vtluN/Rd0j8E+RGPgH0va2JseDCi7DGZ2ce859Fz5CXGrJLiTyHwVy1LSVSclhswkkPa8PprgOycDKiZRcYi9oIu3MIeB620L2bUtYjLS0zLWT5oytmNc+NuF22SHQQyP3InOcydzbkjpo4A8PVbr0E2fPAydk+zNoSukcx0YaXY0OgIIk33taeXEFdehibG0NY1rGjg1jQxo9AE9qVUutSxg5qnh5NPw9kZ5FMbh7MjP3IYxlT14k91gPs5e3snYMOO7tDvzz0Qcid3aSa8Q37sY8mgBeooozmb4HtLaBKUlamRiVq3S/YmG/8AxeQ3FY5gax82Qx0jdy6a2t9ouzxN+C2a0kjA4EOAcDxBAIPsVtGWGDlxxNlm9zIwCR/pYUDz8nLa+gb/AKqaMNk7NkxLJXwjHbJvDUNbut0FcQK14nVbKGgaAADyFBQlZcsgNopLUWgMtJgFAisAlI0jSiACJRpQoBUUKRAQEUpFRAClKTUhSAWlESggIoojSAQhKQslJSEAlJaWQhKQsgQpSshCUhAIgnpRAWUUaUCwCI0iogIgVCpaAChRRKARFAhEBAEKKUogFKCekKQACiNI0gFQKekCgEKWk5CCASkCFkQIQCUgmIUQGekwUpRARQqIIAKAI0iAgAEaRpFALSlJkEAEEUaQApRFBAAqKI0gFUpNSlIBKUpEoIAII0jSAQhRNSiAyqKKIAFQIKIBkQoogIoFFEAUpUUQECKiiAhSqKICBEKKIAoFRRAKUAgogCooogIgoogP/9k=",
+            reason: "Item is a bit too tight across the shoulders.",
+            dateRequested: "2026-03-03",
+            status: "Pending"
+        },
+        {
+            id: "EXC-9022",
+            orderId: "#TRD-7944",
+            customerName: "Chuka Obi",
+            customerEmail: "chuka.o@example.com",
+            returnItem: "Nike Air Force 1 (White)",
+            returnItemImage: "https://via.placeholder.com/50/1A1C23/FFFFFF?text=WHT",
+            requestItem: "Nike Air Force 1 (Black)",
+            requestItemImage: "https://via.placeholder.com/50/5cac7d/FFFFFF?text=BLK",
+            reason: "Changed my mind, prefer the black colorway.",
+            dateRequested: "2026-03-02",
+            status: "Approved"
+        },
+        {
+            id: "EXC-9023",
+            orderId: "#TRD-7810",
+            customerName: "Sarah Lawal",
+            customerEmail: "sarah.l@example.com",
+            returnItem: "Minimalist Leather Tote (Brown)",
+            returnItemImage: "https://via.placeholder.com/50/1A1C23/FFFFFF?text=BRN",
+            requestItem: "Minimalist Leather Tote (Black)",
+            requestItemImage: "https://via.placeholder.com/50/5cac7d/FFFFFF?text=BLK",
+            reason: "The brown doesn't match my usual outfits.",
+            dateRequested: "2026-02-28",
+            status: "Completed"
+        },
+        {
+            id: "EXC-9024",
+            orderId: "#TRD-7705",
+            customerName: "Emmanuel K.",
+            customerEmail: "emmanuel.k@example.com",
+            returnItem: "Wireless Earbuds Pro",
+            returnItemImage: "https://via.placeholder.com/50/1A1C23/FFFFFF?text=POD",
+            requestItem: "Gaming Headset Max",
+            requestItemImage: "https://via.placeholder.com/50/5cac7d/FFFFFF?text=MAX",
+            reason: "I want to upgrade. Willing to pay the difference.",
+            dateRequested: "2026-02-25",
+            status: "Rejected"
+        }
+    ];
+};
+
+
+
+import { RefundRequest } from "./definitions";
+
+export const generateDummyRefunds = (): RefundRequest[] => {
+    return [
+        {
+            id: "REF-5011",
+            orderId: "#TRD-8102",
+            customerName: "Amina Yusuf",
+            customerEmail: "amina.y@example.com",
+            itemName: "Vintage Denim Jacket (Size: M)",
+            itemImage: "https://via.placeholder.com/50/1A1C23/FFFFFF?text=M",
+            refundAmount: 24500,
+            reason: "Item arrived damaged. I sent pictures to support.",
+            dateRequested: "2026-03-04",
+            status: "Pending"
+        },
+        {
+            id: "REF-5012",
+            orderId: "#TRD-8055",
+            customerName: "Chuka Obi",
+            customerEmail: "chuka.o@example.com",
+            itemName: "Nike Air Force 1 (White)",
+            itemImage: "https://via.placeholder.com/50/1A1C23/FFFFFF?text=WHT",
+            refundAmount: 85000,
+            reason: "Delivery took too long, bought it somewhere else.",
+            dateRequested: "2026-03-01",
+            status: "Processing"
+        },
+        {
+            id: "REF-5013",
+            orderId: "#TRD-7930",
+            customerName: "Sarah Lawal",
+            customerEmail: "sarah.l@example.com",
+            itemName: "Minimalist Leather Tote (Brown)",
+            itemImage: "https://via.placeholder.com/50/1A1C23/FFFFFF?text=BRN",
+            refundAmount: 45000,
+            reason: "Quality wasn't what I expected.",
+            dateRequested: "2026-02-25",
+            status: "Refunded"
+        },
+        {
+            id: "REF-5014",
+            orderId: "#TRD-7812",
+            customerName: "Emmanuel K.",
+            customerEmail: "emmanuel.k@example.com",
+            itemName: "Wireless Earbuds Pro",
+            itemImage: "https://via.placeholder.com/50/1A1C23/FFFFFF?text=POD",
+            refundAmount: 15000,
+            reason: "Changed my mind.",
+            dateRequested: "2026-02-20",
+            status: "Rejected"
+        }
+    ];
+};
+
+
+import { ReconciliationRecord } from "./definitions";
+
+export const generateDummyReconciliations = (): ReconciliationRecord[] => {
+    return [
+        {
+            id: "REC-260304",
+            settlementDate: "2026-03-04",
+            gateway: "OPay",
+            expectedAmount: 450000,
+            gatewayFee: 6750, // Assuming a 1.5% fee
+            actualPayout: 443250,
+            status: "Matched"
+        },
+        {
+            id: "REC-260303",
+            settlementDate: "2026-03-03",
+            gateway: "Cash on Delivery",
+            expectedAmount: 125000,
+            gatewayFee: 0,
+            actualPayout: 115000, // Short by 10k!
+            status: "Discrepancy",
+            notes: "Logistics partner reported one failed delivery, awaiting return."
+        },
+        {
+            id: "REC-260302",
+            settlementDate: "2026-03-02",
+            gateway: "Bank Transfer",
+            expectedAmount: 85000,
+            gatewayFee: 50, // Flat transfer fee
+            actualPayout: 84950,
+            status: "Matched"
+        },
+        {
+            id: "REC-260301",
+            settlementDate: "2026-03-01",
+            gateway: "Monie Point",
+            expectedAmount: 320000,
+            gatewayFee: 4800,
+            actualPayout: 0,
+            status: "Pending",
+            notes: "Awaiting T+1 settlement from gateway."
+        }
+    ];
+};
