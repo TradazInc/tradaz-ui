@@ -348,3 +348,38 @@ export const generateDummyShippingZones = (): ShippingZone[] => {
         { id: "ZONE-6", stateName: "Enugu", basePrice: 4500, status: "Active" },
     ];
 };
+
+
+
+import { EarningRule, RedemptionRule } from "./definitions";
+
+export const generateDummyEarningRules = (): EarningRule[] => {
+    return [
+        { id: "EARN-1", action: "Account Creation", description: "Reward customers for signing up.", pointsAwarded: 500, status: "Active" },
+        { id: "EARN-2", action: "Product Review", description: "Reward points for verified purchase reviews.", pointsAwarded: 200, status: "Active" },
+        { id: "EARN-3", action: "Refer a Friend", description: "Reward points when a referred friend makes a purchase.", pointsAwarded: 1000, status: "Disabled" },
+        { id: "EARN-4", action: "Newsletter Signup", description: "Reward points for subscribing to marketing emails.", pointsAwarded: 100, status: "Active" },
+    ];
+};
+
+export const generateDummyRedemptionRules = (): RedemptionRule[] => {
+    return [
+        { id: "RED-1", title: "₦1,000 Store Credit", pointsRequired: 1000, discountValue: 1000, status: "Active" },
+        { id: "RED-2", title: "₦5,000 Store Credit", pointsRequired: 4500, discountValue: 5000, status: "Active" },
+        { id: "RED-3", title: "₦10,000 Store Credit", pointsRequired: 8000, discountValue: 10000, status: "Active" },
+    ];
+};
+
+
+
+import { VatRemittance } from "./definitions";
+
+export const generateDummyVatRecords = (): VatRemittance[] => {
+    return [
+        { id: "VAT-2603", period: "March 2026", collectedAmount: 145000, remittedAmount: 0, dueDate: "2026-04-21", status: "Pending" },
+        { id: "VAT-2602", period: "February 2026", collectedAmount: 280500, remittedAmount: 0, dueDate: "2026-03-21", status: "Overdue" },
+        { id: "VAT-2601", period: "January 2026", collectedAmount: 310000, remittedAmount: 310000, dueDate: "2026-02-21", status: "Remitted", firsReceiptNo: "FIRS-202601-A9X" },
+        { id: "VAT-2512", period: "December 2025", collectedAmount: 520000, remittedAmount: 520000, dueDate: "2026-01-21", status: "Remitted", firsReceiptNo: "FIRS-202512-B2M" },
+        { id: "VAT-2511", period: "November 2025", collectedAmount: 195000, remittedAmount: 195000, dueDate: "2025-12-21", status: "Remitted", firsReceiptNo: "FIRS-202511-C7K" },
+    ];
+};
