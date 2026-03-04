@@ -292,3 +292,31 @@ export interface ShippingZone {
     basePrice: number;
     status: "Active" | "Disabled";
 }
+
+
+export interface EarningRule {
+    id: string;
+    action: string; // e.g., "Account Creation", "Leave a Review"
+    description: string;
+    pointsAwarded: number;
+    status: "Active" | "Disabled";
+}
+
+export interface RedemptionRule {
+    id: string;
+    title: string;
+    pointsRequired: number;
+    discountValue: number; // The Naira value of the discount
+    status: "Active" | "Disabled";
+}
+
+
+export interface VatRemittance {
+    id: string;
+    period: string; // e.g., "January 2026"
+    collectedAmount: number;
+    remittedAmount: number;
+    dueDate: string;
+    status: "Pending" | "Remitted" | "Overdue";
+    firsReceiptNo?: string;
+}
