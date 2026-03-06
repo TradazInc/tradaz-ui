@@ -372,9 +372,29 @@ export interface ReconciliationRecord {
     id: string;
     settlementDate: string;
     gateway: "OPay" | "Monie Point" |"Bank Transfer" | "Cash on Delivery";
-    expectedAmount: number; // What the store recorded
-    actualPayout: number;   // What hit the bank
-    gatewayFee: number;     // The exact fee the gateway took
+    expectedAmount: number; 
+    actualPayout: number;   
+    gatewayFee: number;     
     status: "Matched" | "Discrepancy" | "Pending";
     notes?: string;
 }
+
+
+
+
+// STOREFRONT DEFINITIONS
+
+export interface CustomerSidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+    activePath?: string;
+    brandColor?: string; 
+    storeName?: string;
+}
+
+export interface HeaderProps {
+    onOpenSidebar: () => void;
+    brandColor?: string;
+    storeName?: string;
+}
+

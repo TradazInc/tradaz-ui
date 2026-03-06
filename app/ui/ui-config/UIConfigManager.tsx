@@ -1,8 +1,7 @@
 "use client";
 import React, { useState } from "react";
-// ✅ FIX 1: Removed unused IconButton
 import { Box, Flex, Text, Icon, Input, Button, HStack, VStack, SimpleGrid } from "@chakra-ui/react";
-// ✅ FIX 2: Swapped LuLayout to LuLayoutTemplate to match the latest Lucide updates
+
 import { 
     LuPalette, LuType, LuImage, LuMousePointerClick, 
     LuCloudUpload, LuCheck, LuClock, LuLayoutTemplate, LuShoppingBag
@@ -13,8 +12,8 @@ export const UIConfigManager = () => {
     const [storeName, setStoreName] = useState("My Awesome Store");
     const [brandColor, setBrandColor] = useState("#5cac7d");
     const [fontFamily, setFontFamily] = useState("Inter, sans-serif");
-    const [buttonRadius, setButtonRadius] = useState("8px"); // 0px, 8px, 9999px
-    const [heroLayout, setHeroLayout] = useState("center"); // center, left
+    const [buttonRadius, setButtonRadius] = useState("8px"); 
+    const [heroLayout, setHeroLayout] = useState("center"); 
     
     const [lastPublished, setLastPublished] = useState<string>("Never");
     const [isPublishing, setIsPublishing] = useState(false);
@@ -159,7 +158,7 @@ export const UIConfigManager = () => {
                 {/* RIGHT PANE: LIVE PREVIEW */}
                 <Box gridColumn={{ base: "span 1", xl: "span 8" }} position={{ xl: "sticky" }} top="100px">
                     <Text color="gray.400" fontSize="xs" fontWeight="bold" textTransform="uppercase" mb={3} display="flex" alignItems="center" gap={2}>
-                        {/* ✅ FIX 2: Updated Icon here */}
+                        
                         <Icon as={LuLayoutTemplate} /> Live Storefront Preview
                     </Text>
 
@@ -177,9 +176,9 @@ export const UIConfigManager = () => {
                             </Flex>
                         </Flex>
 
-                        {/* ========================================= */}
-                        {/* ACTUAL MOCK STOREFRONT (Injected via State) */}
-                        {/* ========================================= */}
+                       
+                        {/* ACTUAL MOCK STOREFRONT  */}
+                        
                         <Box fontFamily={fontFamily} color="gray.800" minH="500px">
                             
                             {/* Mock Navbar */}
