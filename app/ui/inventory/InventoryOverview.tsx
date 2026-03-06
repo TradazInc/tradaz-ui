@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, Image, HStack, VStack, Badge } from "@chakra-ui/react";
 import { 
     LuSearch, LuFilter, LuStar, LuPrinter, 
-    LuPackagePlus, LuPencil, LuTrash2, LuLoaderCircle, LuChevronDown 
+    LuPackagePlus, LuPencil, LuTrash2, LuLoaderCircle, LuChevronDown,
+    LuArrowLeft
 } from "react-icons/lu";
 
 import { generateDummyInventory } from "@/app/lib/data";
@@ -15,36 +16,209 @@ export const InventoryOverview = () => {
     
     const [inventory, setInventory] = useState<InventoryProduct[]>(generateDummyInventory(ITEMS_PER_PAGE, 0));
     const [isLoadingMore, setIsLoadingMore] = useState(false);
+    
+    // --- DETAIL VIEW STATE ---
+    const [selectedProduct, setSelectedProduct] = useState<InventoryProduct | null>(null);
+    const [activeImageIdx, setActiveImageIdx] = useState(0);
 
-    // Infinite scroll
     const handleLoadMore = () => {
         if (inventory.length >= TOTAL_PRODUCTS) return;
-        
         setIsLoadingMore(true);
         setTimeout(() => {
-            setInventory((prev) => [
-                ...prev, 
-                ...generateDummyInventory(ITEMS_PER_PAGE, prev.length)
-            ]);
+            setInventory(prev => [...prev, ...generateDummyInventory(ITEMS_PER_PAGE, prev.length)]);
             setIsLoadingMore(false);
         }, 800);
     };
 
+    // --- MOCK DETAILED DATA GENERATOR ---
+    const getDetailedData = (product: InventoryProduct) => {
+        return {
+            ...product,
+            images: [
+                product.image,
+                "https://via.placeholder.com/600/1A1C23/FFFFFF?text=Side+View",
+                "https://via.placeholder.com/600/1A1C23/FFFFFF?text=Top+View",
+                "https://via.placeholder.com/600/1A1C23/FFFFFF?text=Sole"
+            ],
+            description: "Step into the Future of Fashion with these Stylish Unisex Casual Shoes. They redefine casual footwear, seamlessly blending dynamic design with an all-encompassing appeal for both men and women. Experience a cloud-like sensation with the advanced cushioning technology.",
+            specs: { brand: "Tracer", type: "Shoes", gender: "Unisex", status: "Active", created: "2/18/2026" },
+            variationsData: [
+                { id: "v1", size: "EU41", color: "Navy Blue", colorHex: "#0a192f", stock: 1, salePrice: 87000, costPrice: 51100, sku: `${product.sku}-001` },
+                { id: "v2", size: "EU44", color: "Navy Blue", colorHex: "#0a192f", stock: 5, salePrice: 87000, costPrice: 51100, sku: `${product.sku}-002` },
+                { id: "v3", size: "EU45", color: "Navy Blue", colorHex: "#0a192f", stock: 0, salePrice: 87000, costPrice: 51100, sku: `${product.sku}-003` },
+            ]
+        };
+    };
+
+    const detailedProduct = selectedProduct ? getDetailedData(selectedProduct) : null;
+
+    // ==========================================
+    // RENDER: DETAILED PRODUCT VIEW (Cleaned Up)
+    // ==========================================
+    if (selectedProduct && detailedProduct) {
+        return (
+            <Box w="full" display="flex" flexDirection="column" position="relative" pb={10}>
+                
+                {/* --- Detail Header with Actions --- */}
+                <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={4} mb={6} mx={-4} px={4} borderBottom="1px solid" borderColor="whiteAlpha.100">
+                    <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
+                        <Flex align="center" gap={4}>
+                            <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={() => { setSelectedProduct(null); setActiveImageIdx(0); }} px={2} h="40px">
+                                <Icon as={LuArrowLeft} boxSize="20px" />
+                            </Button>
+                            <Box>
+                                <Text color="white" fontWeight="bold" fontSize="xl" lineClamp={1}>{detailedProduct.name}</Text>
+                                <Text color="gray.500" fontSize="sm">SKU: {detailedProduct.sku}</Text>
+                            </Box>
+                        </Flex>
+
+                        {/* Top-Level Actions */}
+                        <HStack gap={3}>
+                            <Button size="sm" bg="rgba(92, 172, 125, 0.15)" color="#5cac7d" _hover={{ bg: "rgba(92, 172, 125, 0.25)" }} border="none">
+                                <Icon as={LuPackagePlus} mr={2} /> Restock
+                            </Button>
+                            <Button size="sm" bg="rgba(66, 153, 225, 0.15)" color="blue.300" _hover={{ bg: "rgba(66, 153, 225, 0.25)" }} border="none">
+                                <Icon as={LuPencil} mr={2} /> Edit Product
+                            </Button>
+                            <Button size="sm" bg="rgba(245, 101, 101, 0.15)" color="red.400" _hover={{ bg: "rgba(245, 101, 101, 0.25)" }} border="none">
+                                <Icon as={LuTrash2} />
+                            </Button>
+                        </HStack>
+                    </Flex>
+                </Box>
+
+                {/* --- Main Info Split --- */}
+                <SimpleGrid columns={{ base: 1, lg: 12 }} gap={8} mb={8}>
+                    
+                    {/* Left: Image Gallery */}
+                    <Box gridColumn={{ lg: "span 5" }}>
+                        <Box bg="#1A1C23" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" mb={4} h={{ base: "300px", md: "400px" }}>
+                            <Image src={detailedProduct.images[activeImageIdx]} alt="Main Product" w="full" h="full" objectFit="cover" />
+                        </Box>
+                        <HStack gap={3} overflowX="auto" pb={2} css={{ '&::-webkit-scrollbar': { height: '4px' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.2)' } }}>
+                            {detailedProduct.images.map((img, idx) => (
+                                <Box 
+                                    key={idx} cursor="pointer" flexShrink={0}
+                                    w="80px" h="80px" rounded="md" overflow="hidden" 
+                                    border="2px solid" borderColor={activeImageIdx === idx ? "#5cac7d" : "transparent"}
+                                    onClick={() => setActiveImageIdx(idx)}
+                                >
+                                    <Image src={img} w="full" h="full" objectFit="cover" />
+                                </Box>
+                            ))}
+                        </HStack>
+                    </Box>
+
+                    {/* Right: Product Details & Specs */}
+                    <Box gridColumn={{ lg: "span 7" }} bg="#1A1C23" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" p={6} h="fit-content">
+                        <Flex justify="space-between" align="start" mb={4}>
+                            <Box>
+                                <Text color="white" fontSize="2xl" fontWeight="black" mb={1}>{detailedProduct.name}</Text>
+                                <HStack gap={2}>
+                                    <Badge bg="rgba(92, 172, 125, 0.15)" color="#5cac7d" px={2} py={0.5} rounded="md">Active</Badge>
+                                    <Badge bg="whiteAlpha.100" color="gray.300" px={2} py={0.5} rounded="md" textTransform="none">{detailedProduct.specs.brand}</Badge>
+                                    <Badge bg="whiteAlpha.100" color="gray.300" px={2} py={0.5} rounded="md" textTransform="none">{detailedProduct.specs.gender}</Badge>
+                                </HStack>
+                            </Box>
+                            <Text color="#5cac7d" fontSize="3xl" fontWeight="bold">₦{detailedProduct.price.toLocaleString()}</Text>
+                        </Flex>
+
+                        <Box mb={6}>
+                            <Text color="gray.300" fontWeight="bold" mb={2}>Description</Text>
+                            <Text color="gray.400" fontSize="sm" lineHeight="tall">{detailedProduct.description}</Text>
+                        </Box>
+
+                        <Box bg="#121214" p={4} rounded="lg" border="1px solid" borderColor="whiteAlpha.50">
+                            <Text color="gray.300" fontWeight="bold" mb={3}>Categories</Text>
+                            <HStack gap={2}>
+                                <Badge bg="rgba(66, 153, 225, 0.15)" color="blue.300" px={3} py={1} rounded="full" textTransform="none">Sport Wears</Badge>
+                                <Badge bg="whiteAlpha.100" color="gray.300" px={3} py={1} rounded="full" textTransform="none">Foot Wears</Badge>
+                            </HStack>
+                        </Box>
+                    </Box>
+                </SimpleGrid>
+
+                {/* --- Clean Variations Table --- */}
+                <Box bg="#1A1C23" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden">
+                    <Box p={6} borderBottom="1px solid" borderColor="whiteAlpha.50">
+                        <Text color="white" fontWeight="bold" fontSize="lg">Inventory & Variations</Text>
+                        <Text color="gray.500" fontSize="sm">Manage stock levels and pricing per variant.</Text>
+                    </Box>
+
+                    <Box overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' } }}>
+                        <Box as="table" w="full" minW="800px" textAlign="left" style={{ borderCollapse: "collapse" }}>
+                            <Box as="thead" bg="#121214">
+                                <Box as="tr">
+                                    {["Variant", "SKU", "Cost Price", "Sale Price", "Profit", "Stock", ""].map((head, i) => (
+                                        <Box as="th" key={i} py={3} px={6} color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">{head}</Box>
+                                    ))}
+                                </Box>
+                            </Box>
+                            <Box as="tbody">
+                                {detailedProduct.variationsData.map((v, i) => {
+                                    const profit = v.salePrice - v.costPrice;
+                                    const isLowStock = v.stock > 0 && v.stock < 5;
+                                    const isOutOfStock = v.stock === 0;
+
+                                    return (
+                                        <Box as="tr" key={i} borderBottom="1px solid" borderColor="whiteAlpha.50" _hover={{ bg: "whiteAlpha.50" }}>
+                                            
+                                            {/* Variant Name/Color */}
+                                            <Box as="td" py={4} px={6}>
+                                                <Flex align="center" gap={3}>
+                                                    <Box boxSize="16px" rounded="full" bg={v.colorHex} border="1px solid rgba(255,255,255,0.2)" />
+                                                    <Box>
+                                                        <Text color="white" fontSize="sm" fontWeight="bold">{v.size}</Text>
+                                                        <Text color="gray.500" fontSize="xs">{v.color}</Text>
+                                                    </Box>
+                                                </Flex>
+                                            </Box>
+
+                                            <Box as="td" py={4} px={6}><Text color="gray.400" fontSize="sm" fontFamily="monospace">{v.sku}</Text></Box>
+                                            <Box as="td" py={4} px={6}><Text color="gray.400" fontSize="sm">₦{v.costPrice.toLocaleString()}</Text></Box>
+                                            <Box as="td" py={4} px={6}><Text color="white" fontSize="sm" fontWeight="bold">₦{v.salePrice.toLocaleString()}</Text></Box>
+                                            <Box as="td" py={4} px={6}><Text color="#5cac7d" fontSize="sm" fontWeight="bold">₦{profit.toLocaleString()}</Text></Box>
+                                            
+                                            {/* Stock Indicator */}
+                                            <Box as="td" py={4} px={6}>
+                                                <Badge 
+                                                    bg={isOutOfStock ? "rgba(245, 101, 101, 0.15)" : isLowStock ? "rgba(237, 137, 54, 0.15)" : "rgba(92, 172, 125, 0.15)"} 
+                                                    color={isOutOfStock ? "red.400" : isLowStock ? "orange.400" : "#5cac7d"} 
+                                                    px={2} py={1} rounded="md"
+                                                >
+                                                    {v.stock} units
+                                                </Badge>
+                                            </Box>
+
+                                            {/* Quick Actions */}
+                                            <Box as="td" py={4} px={6} textAlign="right">
+                                                <Button size="sm" variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.200" }} px={2}>
+                                                    <Icon as={LuPencil} />
+                                                </Button>
+                                            </Box>
+                                        </Box>
+                                    );
+                                })}
+                            </Box>
+                        </Box>
+                    </Box>
+                </Box>
+            </Box>
+        );
+    }
+
+    // ==========================================
+    // RENDER: STANDARD INVENTORY GRID
+    // ==========================================
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
             
             {/* --- Header & Toolbar --- */}
             <Box 
-                position="sticky" 
-                top={{ base: "70px", md: "85px" }} 
-                zIndex={20} 
-                bg="rgba(11, 13, 20, 0.85)" 
-                backdropFilter="blur(12px)"
-                py={4}
-                mb={6}
-                mx={-4} px={4} 
+                position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
+                bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
+                py={4} mb={6} mx={-4} px={4} 
             >
-                
                 <Flex justify="space-between" align={{ base: "flex-start", lg: "flex-end" }} wrap="wrap" gap={4}>
                     <Box w={{ base: "full", lg: "auto" }}>
                         <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1}>Inventory</Text>
@@ -53,24 +227,16 @@ export const InventoryOverview = () => {
                         </Text>
                     </Box>
                     
-                    
-                    <Flex 
-                        direction={{ base: "column", md: "row" }} 
-                        gap={3} 
-                        w={{ base: "full", lg: "auto" }}
-                    >
-                        {/* Search Bar */}
+                    <Flex direction={{ base: "column", md: "row" }} gap={3} w={{ base: "full", lg: "auto" }}>
                         <Flex w="full" minW={{ md: "300px" }} align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="lg" px={3} _focusWithin={{ borderColor: "#5cac7d" }}>
                             <Icon as={LuSearch} color="gray.400" />
                             <Input placeholder="Search products..." border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="40px" />
                         </Flex>
                         
-                        {/* Filter & Sort Buttons */}
                         <Flex gap={3} w="full">
                             <Button flex={1} variant="outline" borderColor="whiteAlpha.200" color="white" _hover={{ bg: "whiteAlpha.50" }} h="40px" bg="#121214">
                                 <Icon as={LuFilter} mr={2} /> Filters
                             </Button>
-                            
                             <Button flex={1} variant="outline" borderColor="whiteAlpha.200" color="white" _hover={{ bg: "whiteAlpha.50" }} h="40px" bg="#121214">
                                 Sort <Icon as={LuChevronDown} ml={2} />
                             </Button>
@@ -84,11 +250,14 @@ export const InventoryOverview = () => {
                 {inventory.map((product) => (
                     <Box key={product.id} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" _hover={{ borderColor: "whiteAlpha.300", shadow: "lg" }} transition="all 0.2s">
                         
-                        {/* Image Area with Badges */}
-                        <Box position="relative" h="280px" w="full" bg="#121214">
-                            <Image src={product.image} alt={product.name} w="full" h="full" objectFit="cover" opacity={0.9} />
+                        {/* Image Area with Click handler */}
+                        <Box position="relative" h="280px" w="full" bg="#121214" cursor="pointer" onClick={() => setSelectedProduct(product)} group role="group">
+                            <Image src={product.image} alt={product.name} w="full" h="full" objectFit="cover" opacity={0.9} transition="all 0.3s" _groupHover={{ transform: "scale(1.05)", opacity: 1 }} />
                             
-                            {/* Featured Badge */}
+                            <Flex position="absolute" inset={0} bg="blackAlpha.600" opacity={0} _groupHover={{ opacity: 1 }} transition="all 0.2s" justify="center" align="center">
+                                <Button bg="#5cac7d" color="white" border="none" _hover={{ bg: "#4a9c6d" }}>View Details</Button>
+                            </Flex>
+
                             {product.isFeatured && (
                                 <Box position="absolute" top={3} right={3} bg="blackAlpha.800" color="white" fontSize="xs" fontWeight="bold" px={2} py={1} rounded="md" backdropFilter="blur(4px)">
                                     Featured
@@ -96,19 +265,12 @@ export const InventoryOverview = () => {
                             )}
                         </Box>
 
-                        {/* Product Details Area */}
                         <Box p={5}>
                             <Flex justify="space-between" align="start" mb={4}>
                                 <Text color="white" fontWeight="bold" fontSize="lg" lineClamp={1} flex={1} pr={2}>
                                     {product.name}
                                 </Text>
-                                <Icon 
-                                    as={LuStar} 
-                                    color={product.isFavorite ? "orange.400" : "gray.600"} 
-                                    fill={product.isFavorite ? "orange.400" : "transparent"} 
-                                    boxSize="18px" 
-                                    cursor="pointer" 
-                                />
+                                <Icon as={LuStar} color={product.isFavorite ? "orange.400" : "gray.600"} fill={product.isFavorite ? "orange.400" : "transparent"} boxSize="18px" cursor="pointer" />
                             </Flex>
                             
                             <Flex justify="space-between" align="center" mb={3}>
@@ -121,15 +283,14 @@ export const InventoryOverview = () => {
                             
                             <Text color="white" fontWeight="bold" fontSize="lg" mb={5}>₦{product.price.toLocaleString()}</Text>
 
-                            {/* --- Action Btns --- */}
                             <Flex gap={3}>
-                                <Button flex={1} size="sm" bg="rgba(92, 172, 125, 0.15)" color="#5cac7d" _hover={{ bg: "rgba(92, 172, 125, 0.25)" }} border="none" fontSize="xs" px={0} transition="all 0.2s">
+                                <Button flex={1} size="sm" bg="rgba(92, 172, 125, 0.15)" color="#5cac7d" _hover={{ bg: "rgba(92, 172, 125, 0.25)" }} border="none" fontSize="xs" px={0}>
                                     <Icon as={LuPackagePlus} mr={1.5} boxSize="14px" /> Restock
                                 </Button>
-                                <Button flex={1} size="sm" bg="rgba(66, 153, 225, 0.15)" color="blue.300" _hover={{ bg: "rgba(66, 153, 225, 0.25)" }} border="none" fontSize="xs" px={0} transition="all 0.2s">
+                                <Button flex={1} size="sm" bg="rgba(66, 153, 225, 0.15)" color="blue.300" _hover={{ bg: "rgba(66, 153, 225, 0.25)" }} border="none" fontSize="xs" px={0}>
                                     <Icon as={LuPencil} mr={1.5} boxSize="14px" /> Edit
                                 </Button>
-                                <Button flex={1} size="sm" bg="rgba(245, 101, 101, 0.15)" color="red.400" _hover={{ bg: "rgba(245, 101, 101, 0.25)" }} border="none" fontSize="xs" px={0} transition="all 0.2s">
+                                <Button flex={1} size="sm" bg="rgba(245, 101, 101, 0.15)" color="red.400" _hover={{ bg: "rgba(245, 101, 101, 0.25)" }} border="none" fontSize="xs" px={0}>
                                     <Icon as={LuTrash2} mr={1.5} boxSize="14px" /> Delete
                                 </Button>
                             </Flex>
@@ -138,18 +299,12 @@ export const InventoryOverview = () => {
                 ))}
             </SimpleGrid>
 
-            {/* --- Load More Trigger --- */}
             {inventory.length < TOTAL_PRODUCTS && (
                 <Flex justify="center" py={4} mb={8}>
                     <Button 
-                        onClick={handleLoadMore} 
-                        disabled={isLoadingMore} 
-                        bg="whiteAlpha.100" 
-                        color="white" 
-                        border="1px solid" 
-                        borderColor="whiteAlpha.200"
-                        _hover={{ bg: "whiteAlpha.200" }} 
-                        px={8}
+                        onClick={handleLoadMore} disabled={isLoadingMore} 
+                        bg="whiteAlpha.100" color="white" border="1px solid" borderColor="whiteAlpha.200"
+                        _hover={{ bg: "whiteAlpha.200" }} px={8}
                     >
                         {isLoadingMore ? <Icon as={LuLoaderCircle} animation="spin 1s linear infinite" /> : "Load More Products"}
                     </Button>

@@ -587,3 +587,99 @@ export const generateDummyReconciliations = (): ReconciliationRecord[] => {
         }
     ];
 };
+
+
+
+
+export const STORE_BANNERS = [
+  {
+    id: 1,
+    title: "Get Special Offer",
+    subtitle: "Up to 40% Off",
+    image: "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?q=80&w=1000&auto=format&fit=crop",
+    cta: "Claim Now",
+    color: "#E53E3E"
+  },
+  {
+    id: 2,
+    title: "New Arrivals",
+    subtitle: "Premium Urban Wear",
+    image: "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1000&auto=format&fit=crop",
+    cta: "Shop Collection",
+    color: "#5cac7d"
+  },
+  {
+    id: 3,
+    title: "Weekend Deals",
+    subtitle: "Buy 1 Get 1 Free",
+    image: "https://images.unsplash.com/photo-1521334884684-d80222895322?q=80&w=1000&auto=format&fit=crop",
+    cta: "Shop Deals",
+    color: "#3182CE"
+  },
+  {
+    id: 4,
+    title: "Street Style",
+    subtitle: "Urban Fashion Collection",
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1000&auto=format&fit=crop",
+    cta: "Explore Now",
+    color: "#805AD5"
+  },
+  {
+    id: 5,
+    title: "Limited Edition",
+    subtitle: "Exclusive Drops",
+    image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=1000&auto=format&fit=crop",
+    cta: "Shop Now",
+    color: "#DD6B20"
+  }
+];
+
+export const STORE_PRODUCTS = [
+    {
+        id: "PROD-1",
+        name: "Minimalist Urban Jacket",
+        category: "Clothes",
+        price: 45000,
+        originalPrice: 60000,
+        image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=500&auto=format&fit=crop",
+        rating: 4.8,
+        reviews: 124,
+        isNew: true
+    },
+    {
+        id: "PROD-2",
+        name: "Yeezy Boost 350 V2",
+        category: "Shoes",
+        price: 120000,
+        image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=500&auto=format&fit=crop",
+        rating: 4.9,
+        reviews: 312
+    },
+    {
+        id: "PROD-3",
+        name: "Matte Black Smartwatch",
+        category: "Watch",
+        price: 85000,
+        originalPrice: 95000,
+        image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=500&auto=format&fit=crop",
+        rating: 4.5,
+        reviews: 89
+    },
+    {
+        id: "PROD-4",
+        name: "Vintage Leather Tote",
+        category: "Bags",
+        price: 55000,
+        image: "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=500&auto=format&fit=crop",
+        rating: 4.7,
+        reviews: 56
+    }
+];
+
+export const STORE_CATEGORIES = [
+    { name: "Clothes", icon: "👕" },
+    { name: "Electronics", icon: "💻" },
+    { name: "Shoes", icon: "👟" },
+    { name: "Watch", icon: "⌚" },
+    { name: "Bags", icon: "🎒" }
+];
