@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Container, Flex, HStack, Button, Text, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuMenu, LuX } from "react-icons/lu";
-import TradazHeader from "../TradazHeader";
+import TradazHeader from "../../TradazHeader";
 
 const NAV_LINKS = [
   { label: "Home", href: "#" },

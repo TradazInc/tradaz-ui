@@ -52,18 +52,17 @@ export const InventoryOverview = () => {
 
     const detailedProduct = selectedProduct ? getDetailedData(selectedProduct) : null;
 
-    // ==========================================
-    // RENDER: DETAILED PRODUCT VIEW
-    // ==========================================
+   
+   
     if (selectedProduct && detailedProduct) {
         return (
-            // ✅ FIX: overflowX="hidden" prevents the entire page from sliding horizontally
+            
             <Box w="full" maxW="100%" overflowX="hidden" display="flex" flexDirection="column" position="relative" pb={10}>
                 
                 {/* --- Detail Header with Actions --- */}
-                {/* ✅ FIX: Removed negative margins (mx={-4}), changed to simple padding */}
+            
                 <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(18, 18, 20, 0.85)" backdropFilter="blur(12px)" py={4} mb={6} borderBottom="1px solid" borderColor="whiteAlpha.100" w="full">
-                    {/* ✅ FIX: direction column on mobile so buttons don't push off-screen */}
+            
                     <Flex justify="space-between" align={{ base: "flex-start", lg: "center" }} direction={{ base: "column", lg: "row" }} gap={4}>
                         <Flex align="center" gap={4} maxW="full">
                             <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={() => { setSelectedProduct(null); setActiveImageIdx(0); }} px={2} h="40px" flexShrink={0}>
@@ -106,7 +105,7 @@ export const InventoryOverview = () => {
                                     border="2px solid" borderColor={activeImageIdx === idx ? "#5cac7d" : "transparent"}
                                     onClick={() => setActiveImageIdx(idx)}
                                 >
-                                    <Image src={img} w="full" h="full" objectFit="cover" />
+                                   <Image src={img} alt={`${detailedProduct.name} thumbnail ${idx + 1}`} w="full" h="full" objectFit="cover" />
                                 </Box>
                             ))}
                         </HStack>
@@ -141,14 +140,14 @@ export const InventoryOverview = () => {
                     </Box>
                 </SimpleGrid>
 
-                {/* --- Clean Variations Table --- */}
+            
                 <Box bg="#1A1C23" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" w="full">
                     <Box p={6} borderBottom="1px solid" borderColor="whiteAlpha.50">
                         <Text color="white" fontWeight="bold" fontSize="lg">Inventory & Variations</Text>
                         <Text color="gray.500" fontSize="sm">Manage stock levels and pricing per variant.</Text>
                     </Box>
 
-                    {/* ✅ FIX: overflowX="auto" is here, but constrained by parent w="full" so it slides nicely inside the box */}
+                    
                     <Box overflowX="auto" w="full" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' } }}>
                         <Box as="table" w="full" minW="800px" textAlign="left" style={{ borderCollapse: "collapse" }}>
                             <Box as="thead" bg="#121214">
@@ -204,14 +203,11 @@ export const InventoryOverview = () => {
         );
     }
 
-    // ==========================================
-    // RENDER: STANDARD INVENTORY GRID
-    // ==========================================
+
     return (
         <Box w="full" maxW="100%" overflowX="hidden" display="flex" flexDirection="column" position="relative">
             
-            {/* --- Header & Toolbar --- */}
-            {/* ✅ FIX: Removed negative margins. Header now strictly follows container boundaries. */}
+          
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
                 bg="rgba(18, 18, 20, 0.85)" backdropFilter="blur(12px)"
@@ -225,7 +221,7 @@ export const InventoryOverview = () => {
                         </Text>
                     </Box>
                     
-                    {/* ✅ FIX: Reorganized responsive layout so search doesn't overflow mobile width */}
+                  
                     <Flex direction={{ base: "column", md: "row" }} gap={3} w={{ base: "full", xl: "auto" }}>
                         <Flex w="full" minW={{ base: "0", md: "300px" }} align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="lg" px={3} _focusWithin={{ borderColor: "#5cac7d" }}>
                             <Icon as={LuSearch} color="gray.400" />
@@ -249,7 +245,7 @@ export const InventoryOverview = () => {
                 {inventory.map((product) => (
                     <Box key={product.id} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" _hover={{ borderColor: "whiteAlpha.300", shadow: "2xl" }} transition="all 0.2s">
                         
-                        {/* ✅ FIX: Removed the buggy 'group' boolean prop. Now uses pure 'role="group"' */}
+                     
                         <Box position="relative" h="280px" w="full" bg="#121214" cursor="pointer" onClick={() => setSelectedProduct(product)} role="group">
                             <Image src={product.image} alt={product.name} w="full" h="full" objectFit="cover" opacity={0.9} transition="all 0.4s ease" _groupHover={{ transform: "scale(1.05)", opacity: 1 }} />
                             

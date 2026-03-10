@@ -12,7 +12,7 @@ export default function StorefrontLayout({ children }: { children: React.ReactNo
     const tenantConfig = { storeName: "OGDior", brandColor: "#5cac7d" };
 
     return (
-        // The master container is a Flex Row
+        
         <Flex minH="100vh" bg="#0A0A0B">
             
         

@@ -683,3 +683,56 @@ export const STORE_CATEGORIES = [
     { name: "Watch", icon: "⌚" },
     { name: "Bags", icon: "🎒" }
 ];
+
+
+//carts data 
+
+import { CartItems } from "./definitions";
+
+export const MOCK_CART_ITEMS: CartItems[] = [
+    {
+        id: "v1-001",
+        productId: "PROD-1",
+        name: "Minimalist Urban Jacket",
+        image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=500&auto=format&fit=crop",
+        price: 45000,
+        size: "L",
+        color: "Black",
+        quantity: 1
+    },
+    {
+        id: "v2-002",
+        productId: "PROD-2",
+        name: "Yeezy Boost 350 V2",
+        image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=500&auto=format&fit=crop",
+        price: 120000,
+        size: "EU44",
+        color: "Core Black",
+        quantity: 1
+    }
+];
+
+// app/lib/data.ts
+import { ChatSession, Message } from "./definitions";
+
+export const MOCK_CHATS: ChatSession[] = [
+    { 
+        id: "TRD-9823-XYZ", 
+        orderName: "Minimalist Urban Jacket", 
+        lastMessage: "When will my item arrive?", 
+        status: 'active', 
+        unread: true 
+    },
+    { 
+        id: "TRD-4451-ABC", 
+        orderName: "Yeezy Boost 350 V2", 
+        lastMessage: "Thank you for the refund.", 
+        status: 'resolved' 
+    },
+];
+
+export const MOCK_MESSAGES: Message[] = [
+    { id: "1", sender: 'user', text: "Hello, I have an issue with order TRD-9823-XYZ.", timestamp: "10:30 AM" },
+    { id: "2", sender: 'admin', text: "Hi Wada! I'm here to help. What seems to be the problem?", timestamp: "10:32 AM" },
+    { id: "3", sender: 'user', text: "The size I received is L, but I ordered XL.", timestamp: "10:35 AM" },
+];

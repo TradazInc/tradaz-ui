@@ -15,8 +15,8 @@ const MOBILE_NAV_ITEMS = [
     { label: "Home", icon: LuHouse, path: "/store" },
     { label: "Wishlist", icon: LuHeart, path: "/store/saved" },
     { label: "Cart", icon: LuShoppingCart, path: "/store/cart", badge: 2 },
-    { label: "Chat", icon: LuMessageSquare, path: "/account/inbox" },
-    { label: "Profile", icon: LuUser, path: "/account/settings" },
+    { label: "Chat", icon: LuMessageSquare, path: "/store/inbox" },
+    { label: "Profile", icon: LuUser, path: "/store/settings" },
 ];
 
 export const MobileBottomNav = ({ brandColor = "#5cac7d" }: MobileBottomNavProps) => {

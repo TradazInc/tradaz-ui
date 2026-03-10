@@ -2,14 +2,14 @@
 import React from "react";
 import { Box, Container } from "@chakra-ui/react";
 
-import { HeroImage } from "./ui/hero/HeroImage";
-import { HeroContent } from "./ui/hero/HeroContent";
-import { MotionBox } from "./ui/hero/motion";
-import { containerVariants } from "./ui/hero/config";
+import { HeroImage } from "./ui/landingPage/hero/HeroImage";
+import { HeroContent } from "./ui/landingPage/hero/HeroContent";
+import { MotionBox } from "./ui/landingPage/hero/motion";
+import { containerVariants } from "./ui/landingPage/hero/config";
 
 import HowItWorks from "./ui/how-it-works/HowItWorks";
-import WhatWeOffer from "./ui/what-we-offer/WhatWeOffer";
-import Navbar from "./ui/navbar/Navbar";
+import WhatWeOffer from "./ui/landingPage/what-we-offer/WhatWeOffer";
+import Navbar from "./ui/landingPage/navbar/Navbar";
 
 
 
