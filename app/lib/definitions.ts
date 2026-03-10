@@ -398,3 +398,70 @@ export interface HeaderProps {
     storeName?: string;
 }
 
+
+
+export interface CartItems {
+    id: string;
+    productId: string;
+    name: string;
+    image: string;
+    price: number;
+    size: string;
+    color: string;
+    quantity: number;
+}
+
+export interface CartDrawerProps {
+    isOpen: boolean;
+    onClose: () => void;
+    brandColor?: string;
+}
+
+export interface StorefrontProduct {
+    id: string;
+    name: string;
+    category: string;
+    price: number;
+    originalPrice: number;
+    image: string;
+    rating: number;
+    reviews: number;
+    isNew?: boolean;
+}
+
+
+// app/lib/definitions.ts
+
+export interface StoreProduct {
+    id: string;
+    name: string;
+    category: string;
+    price: number;
+    originalPrice?: number;
+    image: string;
+    rating?: number;
+    reviews?: number;
+    isNew?: boolean;
+}
+
+export interface ProductDetailViewProps {
+    product: StoreProduct;
+    onBack: () => void;
+    brandColor?: string;
+}
+
+
+export interface Message {
+    id: string;
+    sender: 'user' | 'admin';
+    text: string;
+    timestamp: string;
+}
+
+export interface ChatSession {
+    id: string; 
+    orderName: string;
+    lastMessage: string;
+    status: 'active' | 'resolved';
+    unread?: boolean;
+}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Box, VStack, Text, Icon, Flex, Badge, IconButton } from "@chakra-ui/react";
+import { Box, VStack, Text, Icon, Flex, Badge, IconButton, Avatar } from "@chakra-ui/react";
 import Link from "next/link";
 
 import { 
@@ -19,9 +19,9 @@ const CUSTOMER_NAV_ITEMS = [
 ];
 
 const CUSTOMER_ACCOUNT_ITEMS = [
-    { label: "My Orders", icon: LuPackage, path: "/account/orders" },
-    { label: "Inbox & Support", icon: LuMessageSquare, path: "/account/inbox" },
-    { label: "Profile Settings", icon: LuUser, path: "/account/settings" },
+    { label: "My Orders", icon: LuPackage, path: "/store/orders" },
+    { label: "Inbox & Support", icon: LuMessageSquare, path: "/store/inbox" },
+    { label: "Profile Settings", icon: LuUser, path: "/store/settings" },
 ];
 
 export const CustomerSidebar = ({ 
@@ -35,7 +35,7 @@ export const CustomerSidebar = ({
     return (
         <Box 
             display={{ base: "none", lg: "flex" }} 
-            w={isCollapsed ? "80px" : "200px"} 
+            w={isCollapsed ? "80px" : "220px"} 
             h="100vh" bg="#121212" 
             borderRight="1px solid" borderColor="whiteAlpha.100" 
             position="sticky" top={0} left={0} 
@@ -111,14 +111,32 @@ export const CustomerSidebar = ({
                 })}
             </VStack>
 
-            {/* User Profile Footer */}
-            <Box mt="auto" p={isCollapsed ? 2 : 3} bg="whiteAlpha.50" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" cursor="pointer" _hover={{ bg: "whiteAlpha.100" }} transition="all 0.2s">
+            {/*User Profile Footer with Avatar */}
+            <Box 
+                mt="auto" 
+                p={isCollapsed ? 2 : 3} 
+                bg="whiteAlpha.50" 
+                rounded="xl" 
+                border="1px solid" 
+                borderColor="whiteAlpha.100" 
+                cursor="pointer" 
+                _hover={{ bg: "whiteAlpha.100" }} 
+                transition="all 0.2s"
+            >
                 <Flex align="center" justify={isCollapsed ? "center" : "flex-start"} gap={3}>
-                    <Flex justify="center" align="center" boxSize={isCollapsed ? "32px" : "36px"} bg={brandColor} color="white" rounded="full" fontWeight="bold" flexShrink={0}>W</Flex>
+                    <Avatar.Root size={isCollapsed ? "xs" : "sm"}>
+                        <Avatar.Fallback name="Wada Gift" bg={brandColor} color="white" />
+                        <Avatar.Image src="https://bit.ly/sage-adebayo" /> 
+                    </Avatar.Root>
+                    
                     {!isCollapsed && (
                         <Box overflow="hidden">
-                            <Text fontSize="sm" fontWeight="bold" color="white" whiteSpace="nowrap">Wada Gift</Text>
-                            <Text fontSize="xs" color="gray.400" whiteSpace="nowrap">Customer</Text>
+                            <Text fontSize="sm" fontWeight="bold" color="white" whiteSpace="nowrap">
+                                Wada Gift
+                            </Text>
+                            <Text fontSize="10px" color="gray.500" whiteSpace="nowrap" textTransform="uppercase" letterSpacing="wider">
+                                Customer
+                            </Text>
                         </Box>
                     )}
                 </Flex>
