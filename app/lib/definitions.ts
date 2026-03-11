@@ -465,3 +465,40 @@ export interface ChatSession {
     status: 'active' | 'resolved';
     unread?: boolean;
 }
+
+export interface Coupon {
+    id: string;
+    code: string;
+    discount: string;
+    description: string;
+    expiryDate: string;
+    minSpend?: number;
+    status: 'active' | 'used' | 'expired';
+}
+
+export interface GiftCard {
+    id: string;
+    code: string;
+    balance: number;
+    initialValue: number;
+    expiryDate: string;
+    status: 'active' | 'empty' | 'expired';
+}
+
+
+export interface PendingReview {
+    id: string;
+    orderId: string;
+    productName: string;
+    productImage: string;
+    deliveredDate: string;
+}
+
+export interface PastReview {
+    id: string;
+    productName: string;
+    productImage: string;
+    rating: number;
+    comment: string;
+    date: string;
+}
