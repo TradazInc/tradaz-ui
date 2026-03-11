@@ -736,3 +736,87 @@ export const MOCK_MESSAGES: Message[] = [
     { id: "2", sender: 'admin', text: "Hi Wada! I'm here to help. What seems to be the problem?", timestamp: "10:32 AM" },
     { id: "3", sender: 'user', text: "The size I received is L, but I ordered XL.", timestamp: "10:35 AM" },
 ];
+
+import { Coupon } from "./definitions";
+
+export const MOCK_COUPONS: Coupon[] = [
+    {
+        id: "CPN-001",
+        code: "TRADAZ10",
+        discount: "10% OFF",
+        description: "Get 10% off your entire order. Valid for all items.",
+        expiryDate: "Mar 31, 2026",
+        minSpend: 20000,
+        status: 'active'
+    },
+    {
+        id: "CPN-002",
+        code: "FREESHIP",
+        discount: "FREE DELIVERY",
+        description: "Free standard delivery on your next purchase.",
+        expiryDate: "Apr 15, 2026",
+        minSpend: 50000,
+        status: 'active'
+    },
+    {
+        id: "CPN-003",
+        code: "WELCOME5",
+        discount: "₦5,000 OFF",
+        description: "Welcome bonus applied to your first order.",
+        expiryDate: "Feb 28, 2026",
+        status: 'used'
+    },
+    {
+        id: "CPN-004",
+        code: "BLACKFRIDAY",
+        discount: "30% OFF",
+        description: "Massive Black Friday discount on selected brands.",
+        expiryDate: "Nov 30, 2025",
+        status: 'expired'
+    }
+];
+
+import { GiftCard } from "./definitions";
+
+export const MOCK_GIFT_CARDS: GiftCard[] = [
+    {
+        id: "GC-001",
+        code: "TRDZ-84F2-9X1P",
+        balance: 25000,
+        initialValue: 50000,
+        expiryDate: "Dec 31, 2026",
+        status: 'active'
+    },
+    {
+        id: "GC-002",
+        code: "TRDZ-11B4-M7Q9",
+        balance: 0,
+        initialValue: 10000,
+        expiryDate: "Jan 15, 2026",
+        status: 'empty'
+    }
+];
+
+
+import { PendingReview, PastReview } from "./definitions";
+
+export const MOCK_PENDING_REVIEWS: PendingReview[] = [
+    {
+        id: "PR-1",
+        orderId: "TRD-9823-XYZ",
+        productName: "Minimalist Urban Jacket",
+        productImage: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=200&auto=format&fit=crop",
+        deliveredDate: "Delivered 2 days ago"
+    }
+];
+
+export const MOCK_PAST_REVIEWS: PastReview[] = [
+    {
+        id: "RV-1",
+        productName: "Yeezy Boost 350 V2",
+        productImage: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=200&auto=format&fit=crop",
+        rating: 5,
+        comment: "Absolutely love these! Fits perfectly and the delivery was incredibly fast.",
+        date: "Feb 20, 2026"
+    }
+];
