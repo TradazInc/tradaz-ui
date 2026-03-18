@@ -84,7 +84,7 @@ export default function AdminUsersPage() {
                 <Grid templateColumns="2fr 1.5fr 1.5fr 1fr 1fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
                     <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">User</Text>
                     <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Platform Role</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Association (Tenant)</Text>
+                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Shop</Text>
                     <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Status</Text>
                     <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Last Login</Text>
                 </Grid>

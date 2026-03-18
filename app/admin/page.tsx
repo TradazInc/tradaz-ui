@@ -4,7 +4,7 @@ import {
     Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar
 } from "@chakra-ui/react";
 import { 
-    LuTrendingUp, LuStore, LuUsers, LuWallet, LuArrowUpRight, LuEllipsisVertical, LuCheck
+    LuTrendingUp, LuStore, LuUsers, LuWallet, LuArrowUpRight, LuEllipsisVertical, LuCheck, LuBriefcase
 } from "react-icons/lu";
 
 // --- MOCK PLATFORM DATA ---
@@ -12,7 +12,12 @@ const PLATFORM_STATS = [
     { label: "Total Platform GMV", value: "₦452,500,000", trend: "+12.5%", icon: LuTrendingUp, color: "green.400" },
     { label: "Platform Revenue (Fees)", value: "₦11,312,500", trend: "+15.2%", icon: LuWallet, color: "#5cac7d" },
     { label: "Active Shops", value: "142", trend: "+5 this week", icon: LuStore, color: "blue.400" },
-    { label: "Total Global Users", value: "45,291", trend: "+1,200", icon: LuUsers, color: "purple.400" },
+    { label: "Total Users", value: "45,291", trend: "+1,200", icon: LuUsers, color: "purple.400" },
+];
+
+const TOP_BUSINESSES = [
+    { id: "BIZ-901", name: "Wada Group Ltd.", shopCount: 3, gmv: "₦45,500,000" },
+    { id: "BIZ-902", name: "Lagos Streetwear Co.", shopCount: 2, gmv: "₦12,400,000" },
 ];
 
 const TOP_SHOPS = [
@@ -69,41 +74,83 @@ export default function SuperAdminDashboard() {
 
             <Grid templateColumns={{ base: "1fr", xl: "2fr 1fr" }} gap={8}>
                 
-                {/* LEFT: Top Performing Shops */}
-                <Box bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
-                    <Flex justify="space-between" align="center" mb={6}>
-                        <Text color="white" fontSize="lg" fontWeight="bold">Top Performing Shops</Text>
-                        <Button size="sm" variant="ghost" color={brandColor}>View All</Button>
-                    </Flex>
+                {/* LEFT COLUMN: Tables */}
+                <Flex direction="column" gap={8}>
                     
-                    <Box overflowX="auto">
-                        <Grid templateColumns="2fr 1.5fr 1fr 50px" gap={4} pb={2} borderBottom="1px solid" borderColor="whiteAlpha.100" mb={4} minW="500px">
-                            <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Shop Name</Text>
-                            <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Owner</Text>
-                            <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">30-Day GMV</Text>
-                        </Grid>
+                    {/* Top Parent Businesses */}
+                    <Box bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+                        <Flex justify="space-between" align="center" mb={6}>
+                            <Flex align="center" gap={2}>
+                                <Icon as={LuBriefcase} color={brandColor} boxSize="20px" />
+                                <Text color="white" fontSize="lg" fontWeight="bold">Top Parent Businesses</Text>
+                            </Flex>
+                            <Button size="sm" variant="ghost" color={brandColor}>View All</Button>
+                        </Flex>
                         
-                        {TOP_SHOPS.map((shop) => (
-                            <Grid key={shop.id} templateColumns="2fr 1.5fr 1fr 50px" gap={4} py={3} alignItems="center" borderBottom="1px solid" borderColor="whiteAlpha.50" minW="500px">
-                                <Flex align="center" gap={3}>
-                                    <Avatar.Root size="sm">
-                                        <Avatar.Fallback name={shop.name} bg="whiteAlpha.200" color="white" />
-                                    </Avatar.Root>
-                                    <Text color="white" fontWeight="bold" fontSize="sm">{shop.name}</Text>
-                                </Flex>
-                                <Text color="gray.400" fontSize="sm">{shop.owner}</Text>
-                                <Text color="white" fontWeight="black" textAlign="right">{shop.gmv}</Text>
-                                <Flex justify="flex-end">
-                                    
-                                    <Icon as={LuEllipsisVertical} color="gray.500" cursor="pointer" />
-                                </Flex>
+                        <Box overflowX="auto">
+                            <Grid templateColumns="2fr 1fr 1.5fr 50px" gap={4} pb={2} borderBottom="1px solid" borderColor="whiteAlpha.100" mb={4} minW="500px">
+                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Business Entity</Text>
+                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Shops</Text>
+                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Aggregated GMV</Text>
                             </Grid>
-                        ))}
+                            
+                            {TOP_BUSINESSES.map((biz) => (
+                                <Grid key={biz.id} templateColumns="2fr 1fr 1.5fr 50px" gap={4} py={3} alignItems="center" borderBottom="1px solid" borderColor="whiteAlpha.50" minW="500px">
+                                    <Flex align="center" gap={3}>
+                                        <Avatar.Root size="sm">
+                                            <Avatar.Fallback name={biz.name} bg="whiteAlpha.200" color="white" />
+                                        </Avatar.Root>
+                                        <Text color="white" fontWeight="bold" fontSize="sm">{biz.name}</Text>
+                                    </Flex>
+                                    <Text color="gray.400" fontSize="sm">{biz.shopCount} Shops</Text>
+                                    <Text color="white" fontWeight="black" textAlign="right">{biz.gmv}</Text>
+                                    <Flex justify="flex-end">
+                                        <Icon as={LuEllipsisVertical} color="gray.500" cursor="pointer" />
+                                    </Flex>
+                                </Grid>
+                            ))}
+                        </Box>
                     </Box>
-                </Box>
 
-                {/* RIGHT: Action Center (Pending Approvals) */}
-                <Box bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+                    {/* Top Performing Shops */}
+                    <Box bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+                        <Flex justify="space-between" align="center" mb={6}>
+                            <Flex align="center" gap={2}>
+                                <Icon as={LuStore} color={brandColor} boxSize="20px" />
+                                <Text color="white" fontSize="lg" fontWeight="bold">Top Performing Shops</Text>
+                            </Flex>
+                            <Button size="sm" variant="ghost" color={brandColor}>View All</Button>
+                        </Flex>
+                        
+                        <Box overflowX="auto">
+                            <Grid templateColumns="2fr 1.5fr 1fr 50px" gap={4} pb={2} borderBottom="1px solid" borderColor="whiteAlpha.100" mb={4} minW="500px">
+                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Shop Name</Text>
+                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Owner</Text>
+                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">30-Day GMV</Text>
+                            </Grid>
+                            
+                            {TOP_SHOPS.map((shop) => (
+                                <Grid key={shop.id} templateColumns="2fr 1.5fr 1fr 50px" gap={4} py={3} alignItems="center" borderBottom="1px solid" borderColor="whiteAlpha.50" minW="500px">
+                                    <Flex align="center" gap={3}>
+                                        <Avatar.Root size="sm">
+                                            <Avatar.Fallback name={shop.name} bg="whiteAlpha.200" color="white" />
+                                        </Avatar.Root>
+                                        <Text color="white" fontWeight="bold" fontSize="sm">{shop.name}</Text>
+                                    </Flex>
+                                    <Text color="gray.400" fontSize="sm">{shop.owner}</Text>
+                                    <Text color="white" fontWeight="black" textAlign="right">{shop.gmv}</Text>
+                                    <Flex justify="flex-end">
+                                        <Icon as={LuEllipsisVertical} color="gray.500" cursor="pointer" />
+                                    </Flex>
+                                </Grid>
+                            ))}
+                        </Box>
+                    </Box>
+
+                </Flex>
+
+                {/* RIGHT COLUMN: Action Center (Pending Approvals) */}
+                <Box bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" h="fit-content">
                     <Flex justify="space-between" align="center" mb={6}>
                         <Text color="white" fontSize="lg" fontWeight="bold">Action Center</Text>
                         <Badge bg="red.500" color="white" rounded="full">2 Pending</Badge>
@@ -120,10 +167,8 @@ export default function SuperAdminDashboard() {
                                     <Text color="gray.500" fontSize="xs">{req.date}</Text>
                                 </Flex>
                                 <Flex gap={2}>
-                                    
                                     <Button flex={1} size="sm" bg={brandColor} color="white" _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2}>
-                                        <Icon as={LuCheck
-                                        } /> Approve
+                                        <Icon as={LuCheck} /> Approve
                                     </Button>
                                     <Button flex={1} size="sm" variant="outline" borderColor="red.900" color="red.400" _hover={{ bg: "red.900" }}>
                                         Reject

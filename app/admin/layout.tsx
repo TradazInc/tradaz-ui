@@ -7,7 +7,6 @@ import {
     LuMenu, LuBell, LuSearch 
 } from "react-icons/lu";
 
-// ✅ Import the new modular Sidebar component
 import { AdminSidebar } from "@/app/ui/admin/AdminSidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
