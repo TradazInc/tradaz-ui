@@ -1,23 +1,32 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
-    Box, Flex, Text, Icon, IconButton, VStack, Avatar, Badge 
+    Box, Flex, Text, Icon, IconButton, VStack, Avatar, 
 } from "@chakra-ui/react";
 import { 
-    LuLayoutDashboard, LuStore, LuUsers, LuActivity, LuWallet, 
-    LuGlobe, LuSettings, LuMenu, LuX 
+    LuLayoutDashboard, LuStore, LuUsers, LuActivity, 
+     LuSettings, LuMenu, LuX, LuCreditCard,
+    LuChevronDown, LuChevronRight, LuBriefcase, LuBuilding2
 } from "react-icons/lu";
 
-// 🔥 UPGRADED FOR MULTI-TENANT SUPER ADMIN 🔥
+// --- NAVIGATION ITEMS FOR SUPER ADMIN ---
 const SUPER_ADMIN_NAV_ITEMS = [
-    { label: "Platform Overview", icon: LuLayoutDashboard, path: "/admin" },
-    { label: "Shops & Tenants", icon: LuStore, path: "/admin/shops", badge: 3 }, // Pending shop approvals
-    { label: "Global Users", icon: LuUsers, path: "/admin/users" },
-    { label: "Global Transactions", icon: LuActivity, path: "/admin/transactions" },
-    { label: "Platform Finance", icon: LuWallet, path: "/admin/finance" },
-    { label: "Marketing & SEO", icon: LuGlobe, path: "/admin/marketing" },
+    { label: "Tradaz Overview", icon: LuLayoutDashboard, path: "/admin" },
+    { 
+        label: "Our Tradaz", 
+        icon: LuStore, 
+        children: [
+            { label: "Businesses", icon: LuBriefcase, path: "/admin/businesses" },
+            { label: "Shops", icon: LuBuilding2, path: "/admin/shops" },
+        ]
+    }, 
+    { label: "Users", icon: LuUsers, path: "/admin/users" },
+    { label: "Transactions", icon: LuActivity, path: "/admin/transactions" },
+    // { label: "Finance", icon: LuWallet, path: "/admin/finance" },
+    { label: "Subscriptions", icon: LuCreditCard, path: "/admin/subscriptions" }, 
+    // { label: "Marketing & SEO", icon: LuGlobe, path: "/admin/marketing" },
     { label: "System Settings", icon: LuSettings, path: "/admin/settings" },
 ];
 
@@ -30,6 +39,14 @@ interface AdminSidebarProps {
 export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: AdminSidebarProps) => {
     const brandColor = "#5cac7d";
     const pathname = usePathname() || "";
+
+    // State to track which accordions are open
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({ "Our Tradaz": true });
+
+    const handleToggleMenu = (label: string) => {
+        if (isCollapsed) setIsCollapsed(false); // Auto-expand sidebar if it was minimized
+        setOpenMenus(prev => ({ ...prev, [label]: !prev[label] }));
+    };
 
     return (
         <Flex direction="column" h="full" w="full">
@@ -57,8 +74,69 @@ export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: A
                 </IconButton>
             </Flex>
 
-            <VStack align="stretch" gap={1} flex={1}>
+            <VStack align="stretch" gap={1} flex={1} overflowY="auto" css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
                 {SUPER_ADMIN_NAV_ITEMS.map((item) => {
+                    const isParentActive = pathname.startsWith(item.path || "some-unmatchable-string") || 
+                                           item.children?.some(child => pathname.startsWith(child.path));
+                    
+                    // --- RENDER ACCORDION IF ITEM HAS CHILDREN ---
+                    if (item.children) {
+                        const isOpen = openMenus[item.label];
+                        return (
+                            <Box key={item.label}>
+                                <Flex 
+                                    align="center" justify={isCollapsed ? "center" : "space-between"} 
+                                    px={isCollapsed ? 0 : 3} py={3} rounded="lg" transition="all 0.2s"
+                                    bg={isParentActive && !isOpen ? "rgba(92, 172, 125, 0.05)" : "transparent"}
+                                    color={isParentActive ? brandColor : "gray.400"}
+                                    cursor="pointer"
+                                    _hover={{ bg: "whiteAlpha.50", color: brandColor }}
+                                    onClick={() => handleToggleMenu(item.label)}
+                                    title={isCollapsed ? item.label : ""}
+                                >
+                                    <Flex align="center" gap={3}>
+                                        <Icon as={item.icon} fontSize="lg" />
+                                        {!isCollapsed && <Text fontSize="sm" fontWeight={isParentActive ? "bold" : "medium"} whiteSpace="nowrap">{item.label}</Text>}
+                                    </Flex>
+                                    
+                                    {!isCollapsed && (
+                                        <Flex align="center" gap={2}>
+                                           
+                                            <Icon as={isOpen ? LuChevronDown : LuChevronRight} boxSize="16px" />
+                                        </Flex>
+                                    )}
+                                    
+                                </Flex>
+
+                                {/* Child Links Dropdown */}
+                                {!isCollapsed && isOpen && (
+                                    <VStack align="stretch" pl={9} pr={3} mt={1} gap={1} animation="fade-in 0.2s ease">
+                                        {item.children.map(child => {
+                                            const isChildActive = pathname === child.path || pathname.startsWith(`${child.path}/`);
+                                            return (
+                                                <Link href={child.path} key={child.label} style={{ textDecoration: "none" }} onClick={() => setIsMobileOpen(false)}>
+                                                    <Flex 
+                                                        align="center" py={2.5} px={3} rounded="lg" transition="all 0.2s"
+                                                        bg={isChildActive ? "rgba(92, 172, 125, 0.1)" : "transparent"}
+                                                        color={isChildActive ? brandColor : "gray.500"}
+                                                        borderLeft="2px solid" borderColor={isChildActive ? brandColor : "transparent"}
+                                                        _hover={{ color: "white", bg: "whiteAlpha.50" }}
+                                                    >
+                                                        <Flex align="center" gap={2.5}>
+                                                            <Icon as={child.icon} fontSize="md" />
+                                                            <Text fontSize="sm" fontWeight={isChildActive ? "bold" : "medium"}>{child.label}</Text>
+                                                        </Flex>
+                                                    </Flex>
+                                                </Link>
+                                            );
+                                        })}
+                                    </VStack>
+                                )}
+                            </Box>
+                        );
+                    }
+
+                    // --- RENDER STANDARD LINK FOR ITEMS WITHOUT CHILDREN ---
                     const isActive = pathname === item.path || (item.path !== '/admin' && pathname.startsWith(`${item.path}/`));
                     return (
                         <Link href={item.path} key={item.label} style={{ textDecoration: "none" }} onClick={() => setIsMobileOpen(false)} title={isCollapsed ? item.label : ""}>
@@ -69,20 +147,20 @@ export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: A
                                 color={isActive ? brandColor : "gray.400"}
                                 border="1px solid" borderColor={isActive ? "rgba(92, 172, 125, 0.2)" : "transparent"}
                                 _hover={{ bg: isActive ? "rgba(92, 172, 125, 0.15)" : "whiteAlpha.50", color: isActive ? brandColor : "white" }}
+                                position="relative"
                             >
                                 <Flex align="center" gap={3}>
                                     <Icon as={item.icon} fontSize="lg" />
                                     {!isCollapsed && <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"} whiteSpace="nowrap">{item.label}</Text>}
                                 </Flex>
-                                {!isCollapsed && item.badge && <Badge bg={brandColor} color="white" rounded="full" px={2} border="none">{item.badge}</Badge>}
-                                {isCollapsed && item.badge && <Box position="absolute" top="8px" right="8px" boxSize="8px" bg={brandColor} rounded="full" />}
+                                
                             </Flex>
                         </Link>
                     );
                 })}
             </VStack>
 
-            <Box mt="auto" pt={6} borderTop="1px solid" borderColor="whiteAlpha.100">
+            <Box mt="auto" pt={6} borderTop="1px solid" borderColor="whiteAlpha.100" flexShrink={0}>
                 <Flex align="center" justify={isCollapsed ? "center" : "flex-start"} gap={3}>
                     <Avatar.Root size="sm">
                         <Avatar.Fallback name="Super Admin" bg="purple.600" color="white" />
