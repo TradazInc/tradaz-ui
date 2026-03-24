@@ -11,7 +11,7 @@ import {
     LuChevronDown, LuChevronRight, LuBriefcase, LuBuilding2
 } from "react-icons/lu";
 
-// --- NAVIGATION ITEMS FOR SUPER ADMIN ---
+
 const SUPER_ADMIN_NAV_ITEMS = [
     { label: "Tradaz Overview", icon: LuLayoutDashboard, path: "/admin" },
     { 
