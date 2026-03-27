@@ -5,18 +5,20 @@ import Link from "next/link";
 import { 
     LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
     LuStore, LuX, LuPlus, LuScale, LuLandmark, LuTicketPercent,
-    LuChevronLeft, LuChevronRight, LuZap
+    LuChevronLeft, LuChevronRight, LuZap, LuUserPlus 
 } from "react-icons/lu";
 import TradazHeader from "../TradazHeader";
 import { SidebarProps, Store } from "@/app/lib/definitions";
 import { AddStoreModal } from "../onboarding/AddStoreModal";
 
+// OTHER_NAV_ITEMS array
 const OTHER_NAV_ITEMS = [
     { label: "Products", icon: LuShoppingBag, children: ["Add Product", "Inventory"] },
     { label: "Customers", icon: LuUsers, children: ["Customer List", "Reviews"] },
     { label: "Finance", icon: LuLandmark, children: ["Sales Record", "Staff Salary", "Expenses", "Revenue", "Tax Calculation"] },
     { label: "Dispute Resolution", icon: LuScale, children: ["Customers Chats", "Products exchange", "Customers Refund", "Sales Reconciliation"] },
     { label: "Marketing & Promos", icon: LuTicketPercent, children: ["Promotions", "Set Coupon", "Pop up", "Vouchers", "Promo Banners"] },
+    { label: "Staff", icon: LuUserPlus, children: ["Staff List"] }, 
     { label: "Settings", icon: LuSettings, children: ["Logistics", "Loyalty Point Rules", "VAT", "Terms", "Conditions & Policies", "UI config"] },
 ];
 
@@ -33,7 +35,7 @@ export const Sidebar = ({
     
     // --- THE SENIOR DEV MAGIC: Tracking open menus ---
     const [openMenus, setOpenMenus] = useState<string[]>([]);
-    const isMenuExpanded = openMenus.length > 0; // True if ANY folder is open
+    const isMenuExpanded = openMenus.length > 0; 
 
     return (
         <>
@@ -93,9 +95,7 @@ export const Sidebar = ({
                     )}
                 </Box>
                 
-                {/* By hooking into 'value' and 'onValueChange', we can actively monitor 
-                    exactly when the user expands or collapses a folder.
-                */}
+                
                 <Accordion.Root 
                     collapsible 
                     variant="plain"
