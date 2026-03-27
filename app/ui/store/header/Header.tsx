@@ -55,12 +55,12 @@ export const Header = ({
             {/* Desktop Logo, Search & Categories */}
             <Flex flex={1} display={{ base: "none", lg: "flex" }} align="center" gap={8}>
                 
-                {/* ✅ NEW: Desktop Store Logo (Avatar) + Store Name */}
+            
                 <Link href="/store" style={{ textDecoration: "none" }}>
                     <Flex align="center" gap={3} cursor="pointer" transition="all 0.2s" _hover={{ opacity: 0.8 }}>
                         <Avatar.Root size="md">
                             <Avatar.Fallback name={storeName} bg={brandColor} color="white" fontWeight="bold" />
-                            {/* <Avatar.Image src="/your-store-logo.png" /> Add this when you have a logo URL */}
+                        
                         </Avatar.Root>
                         <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
                             {storeName}
