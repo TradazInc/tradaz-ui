@@ -1,11 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { Box, VStack, Text, Icon, Flex, Badge, IconButton, Avatar } from "@chakra-ui/react";
+import React from "react";
+import { Box, VStack, Text, Icon, Flex, Badge, Avatar } from "@chakra-ui/react";
 import Link from "next/link";
 
 import { 
     LuHouse, LuHeart, LuShoppingCart, LuPackage, 
-    LuMessageSquare, LuUser, LuX, LuMenu, LuStar, LuGift, LuTicket 
+    LuMessageSquare, LuUser, LuStar, LuGift, LuTicket 
 } from "react-icons/lu";
 import { CustomerSidebarProps } from "@/app/lib/definitions";
 
@@ -27,62 +27,39 @@ const CUSTOMER_ACCOUNT_ITEMS = [
 export const CustomerSidebar = ({ 
     activePath = "/", 
     brandColor = "#5cac7d", 
-    storeName = "TRADAZ." 
+    // storeName is intentionally ignored here since we removed the header block
 }: CustomerSidebarProps) => {
-    
-    const [isCollapsed, setIsCollapsed] = useState(false);
 
     return (
         <Box 
-            display={{ base: "none", lg: "flex" }} 
-            w={isCollapsed ? "80px" : "220px"} 
-            h="100vh" bg="#121212" 
+            w="220px" 
+            h="full" 
+            bg="#121212" 
             borderRight="1px solid" borderColor="whiteAlpha.100" 
-            position="sticky" top={0} left={0} 
-            flexDirection="column" py={6} px={isCollapsed ? 3 : 4} zIndex={100}
-            transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+            flexDirection="column" py={4} px={4} zIndex={100}
             flexShrink={0}
+            animation="slide-in-top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
         >
-            {/* Header & Toggle */}
-            <Flex align="center" justify={isCollapsed ? "center" : "space-between"} px={isCollapsed ? 0 : 2} mb={10} h="32px">
-                {!isCollapsed && (
-                    <Flex align="center" gap={3} overflow="hidden">
-                        <Box boxSize="32px" bg={brandColor} rounded="lg" flexShrink={0} />
-                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight" whiteSpace="nowrap">
-                            {storeName}
-                        </Text>
-                    </Flex>
-                )}
-                <IconButton 
-                    aria-label="Toggle Sidebar" variant="ghost" color="gray.400" size="sm" 
-                    onClick={() => setIsCollapsed(!isCollapsed)}
-                    _hover={{ bg: "whiteAlpha.100", color: "white" }}
-                >
-                    <Icon as={isCollapsed ? LuMenu : LuX} boxSize="20px" />
-                </IconButton>
-            </Flex>
-
-            {/* Main Navigation */}
+            {/* Main Navigation (Store Header removed) */}
             <VStack align="stretch" gap={1} mb={8}>
                 {CUSTOMER_NAV_ITEMS.map((item) => {
                     const isActive = activePath === item.path;
                     return (
-                        <Link href={item.path} key={item.label} style={{ textDecoration: "none" }} title={isCollapsed ? item.label : ""}>
+                        <Link href={item.path} key={item.label} style={{ textDecoration: "none" }}>
                             <Flex 
-                                align="center" justify={isCollapsed ? "center" : "space-between"} 
-                                px={isCollapsed ? 0 : 3} py={2.5} 
+                                align="center" justify="space-between" 
+                                px={3} py={2.5} 
                                 rounded="lg" cursor="pointer" transition="all 0.2s"
                                 bg={isActive ? "whiteAlpha.100" : "transparent"}
                                 color={isActive ? brandColor : "gray.400"}
                                 _hover={{ bg: "whiteAlpha.100", color: isActive ? brandColor : "white" }}
                                 position="relative"
                             >
-                                <Flex align="center" justify="center" gap={3}>
+                                <Flex align="center" gap={3}>
                                     <Icon as={item.icon} fontSize="lg" />
-                                    {!isCollapsed && <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"} whiteSpace="nowrap">{item.label}</Text>}
+                                    <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"} whiteSpace="nowrap">{item.label}</Text>
                                 </Flex>
-                                {!isCollapsed && item.badge && <Badge bg={brandColor} color="white" rounded="full" px={2} border="none">{item.badge}</Badge>}
-                                {isCollapsed && item.badge && <Box position="absolute" top="8px" right="8px" boxSize="8px" bg={brandColor} rounded="full" />}
+                                {item.badge && <Badge bg={brandColor} color="white" rounded="full" px={2} border="none">{item.badge}</Badge>}
                             </Flex>
                         </Link>
                     );
@@ -94,17 +71,17 @@ export const CustomerSidebar = ({
                 {CUSTOMER_ACCOUNT_ITEMS.map((item) => {
                     const isActive = activePath === item.path;
                     return (
-                        <Link href={item.path} key={item.label} style={{ textDecoration: "none" }} title={isCollapsed ? item.label : ""}>
+                        <Link href={item.path} key={item.label} style={{ textDecoration: "none" }}>
                             <Flex 
-                                align="center" justify={isCollapsed ? "center" : "flex-start"} 
-                                px={isCollapsed ? 0 : 3} py={2.5} gap={3}
+                                align="center" justify="flex-start" 
+                                px={3} py={2.5} gap={3}
                                 rounded="lg" cursor="pointer" transition="all 0.2s"
                                 bg={isActive ? "whiteAlpha.100" : "transparent"}
                                 color={isActive ? brandColor : "gray.400"} 
                                 _hover={{ bg: "whiteAlpha.100", color: isActive ? brandColor : "white" }}
                             >
                                 <Icon as={item.icon} fontSize="lg" />
-                                {!isCollapsed && <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"} whiteSpace="nowrap">{item.label}</Text>}
+                                <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"} whiteSpace="nowrap">{item.label}</Text>
                             </Flex>
                         </Link>
                     );
@@ -114,7 +91,7 @@ export const CustomerSidebar = ({
             {/*User Profile Footer with Avatar */}
             <Box 
                 mt="auto" 
-                p={isCollapsed ? 2 : 3} 
+                p={3} 
                 bg="whiteAlpha.50" 
                 rounded="xl" 
                 border="1px solid" 
@@ -123,24 +100,24 @@ export const CustomerSidebar = ({
                 _hover={{ bg: "whiteAlpha.100" }} 
                 transition="all 0.2s"
             >
-                <Flex align="center" justify={isCollapsed ? "center" : "flex-start"} gap={3}>
-                    <Avatar.Root size={isCollapsed ? "xs" : "sm"}>
+                <Flex align="center" justify="flex-start" gap={3}>
+                    <Avatar.Root size="sm">
                         <Avatar.Fallback name="Wada Gift" bg={brandColor} color="white" />
                         <Avatar.Image src="https://bit.ly/sage-adebayo" /> 
                     </Avatar.Root>
                     
-                    {!isCollapsed && (
-                        <Box overflow="hidden">
-                            <Text fontSize="sm" fontWeight="bold" color="white" whiteSpace="nowrap">
-                                Wada Gift
-                            </Text>
-                            <Text fontSize="10px" color="gray.500" whiteSpace="nowrap" textTransform="uppercase" letterSpacing="wider">
-                                Customer
-                            </Text>
-                        </Box>
-                    )}
+                    <Box overflow="hidden">
+                        <Text fontSize="sm" fontWeight="bold" color="white" whiteSpace="nowrap">
+                            Wada Gift
+                        </Text>
+                        <Text fontSize="10px" color="gray.500" whiteSpace="nowrap" textTransform="uppercase" letterSpacing="wider">
+                            Customer
+                        </Text>
+                    </Box>
                 </Flex>
             </Box>
+
+            
         </Box>
     );
 };

@@ -12,27 +12,25 @@ export default function StorefrontLayout({ children }: { children: React.ReactNo
     const tenantConfig = { storeName: "OGDior", brandColor: "#5cac7d" };
 
     return (
-        
         <Flex minH="100vh" bg="#0A0A0B">
             
-        
-            <CustomerSidebar 
-                activePath={pathname}
-                brandColor={tenantConfig.brandColor}
-                storeName={tenantConfig.storeName}
-            />
-
             
+            <Box display={{ base: "block", lg: "none" }}>
+                <CustomerSidebar 
+                    activePath={pathname}
+                    brandColor={tenantConfig.brandColor}
+                    storeName={tenantConfig.storeName}
+                />
+            </Box>
+
             <Flex direction="column" flex={1} minW={0}>
                 
-            
                 <Header 
                     onOpenSidebar={() => console.log("Mobile Nav Used")} 
                     brandColor={tenantConfig.brandColor}
                     storeName={tenantConfig.storeName}
                 />
 
-                
                 <Box 
                     flex={1} 
                     pb={{ base: "80px", lg: 0 }} 
@@ -43,7 +41,7 @@ export default function StorefrontLayout({ children }: { children: React.ReactNo
 
             </Flex>
 
-            {/* Mobile Bottom Navigation (Hidden on Desktop) */}
+           
             <MobileBottomNav brandColor={tenantConfig.brandColor} />
 
         </Flex>
