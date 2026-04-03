@@ -7,26 +7,26 @@ import {
 } from "@chakra-ui/react";
 import { 
     LuLayoutDashboard, LuStore, LuUsers, LuActivity, 
-     LuSettings, LuMenu, LuX, LuCreditCard,
-    LuChevronDown, LuChevronRight, LuBriefcase, LuBuilding2
+    LuSettings, LuMenu, LuX, LuCreditCard,
+    LuChevronDown, LuChevronRight, LuBriefcase, LuBuilding2,
+    LuWallet, LuGlobe, LuLogOut 
 } from "react-icons/lu";
 
-
 const SUPER_ADMIN_NAV_ITEMS = [
-    { label: "Tradaz Overview", icon: LuLayoutDashboard, path: "/admin" },
+    { label: "Platform Overview", icon: LuLayoutDashboard, path: "/admin" },
     { 
         label: "Our Tradaz", 
         icon: LuStore, 
         children: [
-            { label: "Businesses", icon: LuBriefcase, path: "/admin/businesses" },
-            { label: "Shops", icon: LuBuilding2, path: "/admin/shops" },
+            { label: "All Businesses", icon: LuBriefcase, path: "/admin/businesses" },
+            { label: "Live Shops", icon: LuBuilding2, path: "/admin/shops" },
         ]
     }, 
-    { label: "Users", icon: LuUsers, path: "/admin/users" },
     { label: "Transactions", icon: LuActivity, path: "/admin/transactions" },
-    // { label: "Finance", icon: LuWallet, path: "/admin/finance" },
     { label: "Subscriptions", icon: LuCreditCard, path: "/admin/subscriptions" }, 
-    // { label: "Marketing & SEO", icon: LuGlobe, path: "/admin/marketing" },
+    { label: "Payouts & Finance", icon: LuWallet, path: "/admin/finance" }, 
+    { label: "Marketing & SEO", icon: LuGlobe, path: "/admin/marketing" }, 
+    { label: "Admin Staff", icon: LuUsers, path: "/admin/users" },
     { label: "System Settings", icon: LuSettings, path: "/admin/settings" },
 ];
 
@@ -50,6 +50,7 @@ export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: A
 
     return (
         <Flex direction="column" h="full" w="full">
+            {/* --- HEADER LOGO --- */}
             <Flex align="center" justify={isCollapsed ? "center" : "space-between"} mb={10} px={isCollapsed ? 0 : 2} h="32px">
                 {!isCollapsed && (
                     <Flex align="center" gap={3} overflow="hidden">
@@ -74,6 +75,7 @@ export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: A
                 </IconButton>
             </Flex>
 
+            {/* --- MAIN NAVIGATION --- */}
             <VStack align="stretch" gap={1} flex={1} overflowY="auto" css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
                 {SUPER_ADMIN_NAV_ITEMS.map((item) => {
                     const isParentActive = pathname.startsWith(item.path || "some-unmatchable-string") || 
@@ -101,11 +103,9 @@ export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: A
                                     
                                     {!isCollapsed && (
                                         <Flex align="center" gap={2}>
-                                           
                                             <Icon as={isOpen ? LuChevronDown : LuChevronRight} boxSize="16px" />
                                         </Flex>
                                     )}
-                                    
                                 </Flex>
 
                                 {/* Child Links Dropdown */}
@@ -136,7 +136,7 @@ export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: A
                         );
                     }
 
-                    // --- RENDER STANDARD LINK FOR ITEMS WITHOUT CHILDREN ---
+                    // ---  LINK FOR ITEMS ---
                     const isActive = pathname === item.path || (item.path !== '/admin' && pathname.startsWith(`${item.path}/`));
                     return (
                         <Link href={item.path} key={item.label} style={{ textDecoration: "none" }} onClick={() => setIsMobileOpen(false)} title={isCollapsed ? item.label : ""}>
@@ -153,23 +153,35 @@ export const AdminSidebar = ({ isCollapsed, setIsCollapsed, setIsMobileOpen }: A
                                     <Icon as={item.icon} fontSize="lg" />
                                     {!isCollapsed && <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"} whiteSpace="nowrap">{item.label}</Text>}
                                 </Flex>
-                                
                             </Flex>
                         </Link>
                     );
                 })}
             </VStack>
 
+            {/* --- BOTTOM PROFILE & LOGOUT --- */}
             <Box mt="auto" pt={6} borderTop="1px solid" borderColor="whiteAlpha.100" flexShrink={0}>
-                <Flex align="center" justify={isCollapsed ? "center" : "flex-start"} gap={3}>
-                    <Avatar.Root size="sm">
-                        <Avatar.Fallback name="Super Admin" bg="purple.600" color="white" />
-                    </Avatar.Root>
+                <Flex align="center" justify={isCollapsed ? "center" : "space-between"} gap={3}>
+                    <Flex align="center" gap={3}>
+                        <Avatar.Root size="sm">
+                            <Avatar.Fallback name="Super Admin" bg="purple.600" color="white" />
+                        </Avatar.Root>
+                        {!isCollapsed && (
+                            <Box overflow="hidden">
+                                <Text fontSize="sm" fontWeight="bold" color="white" whiteSpace="nowrap">Super Admin</Text>
+                                <Text fontSize="10px" color="gray.500" textTransform="uppercase" letterSpacing="widest" whiteSpace="nowrap">Platform Owner</Text>
+                            </Box>
+                        )}
+                    </Flex>
+                    
+                    {/*Logout Button for Admins */}
                     {!isCollapsed && (
-                        <Box overflow="hidden">
-                            <Text fontSize="sm" fontWeight="bold" color="white" whiteSpace="nowrap">Super Admin</Text>
-                            <Text fontSize="10px" color="gray.500" textTransform="uppercase" letterSpacing="widest" whiteSpace="nowrap">Platform Owner</Text>
-                        </Box>
+                        <IconButton 
+                            aria-label="Logout" variant="ghost" color="red.400" size="sm"
+                            _hover={{ bg: "red.400", color: "white" }} transition="all 0.2s"
+                        >
+                            <Icon as={LuLogOut} boxSize="18px" />
+                        </IconButton>
                     )}
                 </Flex>
             </Box>
