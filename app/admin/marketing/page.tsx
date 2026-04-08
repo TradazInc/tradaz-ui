@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { 
     LuMegaphone, LuTicket, LuSearch, LuFilter, LuPlus, LuGlobe, 
-    LuMail, LuTrendingUp, LuCheck, LuInfo, LuImage, LuMousePointerClick // ✅ Swapped to LuInfo
+    LuMail, LuTrendingUp, LuCheck, LuInfo, LuImage, LuMousePointerClick 
 } from "react-icons/lu";
 
 // --- MOCK MARKETING DATA ---
@@ -178,7 +178,7 @@ export default function SuperAdminMarketingPage() {
                                                     <Text color="gray.400" fontSize="xs">{v.used} used</Text>
                                                     <Text color="gray.500" fontSize="xs">{v.limit} total</Text>
                                                 </Flex>
-                                                {/* ✅ Bulletproof Custom Progress Bar */}
+                                                {/* Bulletproof Custom Progress Bar */}
                                                 <Box w="full" h="6px" bg="whiteAlpha.100" rounded="full" overflow="hidden">
                                                     <Box 
                                                         h="full" 
@@ -254,7 +254,7 @@ export default function SuperAdminMarketingPage() {
                                                     color={seo.issues > 0 ? "white" : "gray.500"} 
                                                     _hover={seo.issues > 0 ? { bg: "whiteAlpha.300" } : undefined} 
                                                     display="flex" gap={2}
-                                                    disabled={seo.issues === 0} // ✅ Fixed to standard HTML prop
+                                                    disabled={seo.issues === 0} 
                                                     opacity={seo.issues === 0 ? 0.5 : 1}
                                                     cursor={seo.issues === 0 ? "not-allowed" : "pointer"}
                                                 >
