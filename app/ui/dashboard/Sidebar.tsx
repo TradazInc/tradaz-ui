@@ -5,7 +5,7 @@ import Link from "next/link";
 import { 
     LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
     LuStore, LuX, LuPlus, LuScale, LuLandmark, LuTicketPercent,
-    LuChevronLeft, LuChevronRight, LuZap, LuUserPlus 
+    LuChevronLeft, LuChevronRight, LuZap, LuUserPlus, LuGift
 } from "react-icons/lu";
 import TradazHeader from "../TradazHeader";
 import { SidebarProps, Store } from "@/app/lib/definitions";
@@ -18,8 +18,9 @@ const OTHER_NAV_ITEMS = [
     { label: "Finance", icon: LuLandmark, children: ["Sales Record", "Staff Salary", "Expenses", "Revenue", "Tax Calculation"] },
     { label: "Dispute Resolution", icon: LuScale, children: ["Customers Chats", "Products exchange", "Customers Refund", "Sales Reconciliation"] },
     { label: "Marketing & Promos", icon: LuTicketPercent, children: ["Promotions", "Set Coupon", "Pop up", "Vouchers", "Promo Banners"] },
+    { label: "Loyalty & Rewards", icon: LuGift, children: ["Loyalty"] }, // ✅ NEW Dedicated Section
     { label: "Staff", icon: LuUserPlus, children: ["Staff List"] }, 
-    { label: "Settings", icon: LuSettings, children: ["Logistics", "Loyalty Point Rules", "VAT", "Terms", "Conditions & Policies", "UI config"] },
+    { label: "Settings", icon: LuSettings, children: ["Logistics", "VAT", "Terms", "Conditions & Policies", "UI config"] }, // ✅ Removed Loyalty from here
 ];
 
 export const Sidebar = ({ 
