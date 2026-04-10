@@ -2,9 +2,7 @@
 
 import { Box, SimpleGrid, Flex, Text, Icon } from "@chakra-ui/react";
 import { LuTrendingUp, LuDollarSign, LuShoppingCart, LuTrendingDown } from "react-icons/lu";
-
 import { MetricCardProps } from '@/app/lib/definitions';
-
 
 const MetricCard = ({ title, value, trend, icon, isNegative = false }: MetricCardProps) => (
     <Box p={6} bg="whiteAlpha.50" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
@@ -26,7 +24,7 @@ const MetricCard = ({ title, value, trend, icon, isNegative = false }: MetricCar
 
 export const AnalyticsOverview = () => {
     return (
-        <Box w="full">
+        <Box w="full" animation="fade-in 0.3s ease">
             <Text color="#5cac7d" fontWeight="bold" mb={6} fontSize="xl">
                 Analytics & Performance
             </Text>
