@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-// 🚀 Removed 'Avatar' from the import list
 import { Box, Flex, Text, SimpleGrid, Icon, Button, Badge } from "@chakra-ui/react";
 import { LuArrowLeft, LuMail, LuPhone, LuMapPin, LuShoppingBag, LuBan, LuTrash2, LuPencil } from "react-icons/lu";
 import { Customer } from "@/app/lib/definitions";
@@ -37,7 +36,7 @@ export const CustomerDetailView = ({ customer, onBack }: CustomerDetailViewProps
                 <Box gridColumn={{ lg: "span 1" }}>
                     <Box bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6} textAlign="center" mb={6}>
                         
-                        {/* 🚀 Custom Avatar built with Chakra Flex! */}
+            
                         <Flex 
                             align="center" justify="center" 
                             boxSize="100px" rounded="full" 
@@ -108,7 +107,7 @@ export const CustomerDetailView = ({ customer, onBack }: CustomerDetailViewProps
                     <Box bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6} h="300px" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
                         <Icon as={LuShoppingBag} boxSize="40px" color="whiteAlpha.200" mb={4} />
                         <Text color="white" fontWeight="bold" fontSize="lg">Recent Orders</Text>
-                        {/* 🚀 Fixed the apostrophe! */}
+                        
                         <Text color="gray.500" fontSize="sm">Customer&apos;s order history will populate here.</Text>
                     </Box>
                 </Box>

@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-// 🚀 1. Removed all the broken Chakra Menu imports
 import { Box, Flex, Text, SimpleGrid, Icon, Input, IconButton, Spinner } from "@chakra-ui/react";
 import { LuSearch, LuFilter, LuEye, LuMail, LuPencil, LuBan, LuTrash2 } from "react-icons/lu";
 import { Customer } from "@/app/lib/definitions";
@@ -8,7 +7,7 @@ import { Customer } from "@/app/lib/definitions";
 const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "40px", rounded: "lg", px: 3, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
 const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#121214", color: "white", height: "40px", borderRadius: "8px", padding: "0 12px", border: "1px solid rgba(255, 255, 255, 0.2)", outline: "none", cursor: "pointer", fontSize: "14px" };
 
-// 🚀 2. Replaced all 'any' with strict React Event Types
+
 interface CustomerGridViewProps {
     visibleItems: Customer[];
     processedCustomersLength: number;
@@ -116,7 +115,7 @@ export const CustomerGridView = ({
                                         </Flex>
                                     </Box>
                                     
-                                    {/* 🚀 3. Replaced Dropdown with sleek inline action buttons */}
+                                    
                                     <Box as="td" py={4} px={5}>
                                         <Flex gap={1} justify="center">
                                             <IconButton aria-label="View Profile" onClick={() => onSelectCustomer(customer)} variant="ghost" size="sm" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }}><Icon as={LuEye} /></IconButton>
