@@ -1,56 +1,47 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Box, SimpleGrid, Text } from "@chakra-ui/react";
+import React from "react";
+import { Box, SimpleGrid, Text, Skeleton } from "@chakra-ui/react";
 
 import { DashboardMetrics } from "../ui/dashboard/DashboardMetrics";
 import { Analytics } from "../ui/dashboard/Analytics";
 import { RecentActivity } from "../ui/dashboard/RecentActivity";
-
-type Store = { id: string; name: string; address: string };
-type Business = { id: string; name: string; category: string };
-
-const DEFAULT_BUSINESSES: Business[] = [
-    { id: "b1", name: "OGTech", category: "Phones & Accessories" },
-    { id: "b2", name: "OGVenture", category: "Clothing & Apparel" }
-];
-
-const DEFAULT_STORES: Record<string, Store[]> = {
-    "b1": [{ id: "s1", name: "OGTech Main", address: "Wuse Zone 2" }],
-    "b2": [{ id: "s4", name: "OGVenture HQ", address: "Garki Area 11" }]
-};
+import { useDashboardData } from "@/app/hooks/useDashboardData"; 
 
 export default function DashboardPage() {
-    const [dbBusinesses, setDbBusinesses] = useState<Business[]>(DEFAULT_BUSINESSES);
-    const [dbStores, setDbStores] = useState<Record<string, Store[]>>(DEFAULT_STORES);
-    const [activeBusinessId] = useState<string>("b1");
-    const [activeStoreId] = useState<string>("s1");
+    //  All logic is destructured cleanly from the hook
+    const { isLoading, activeBusiness, activeStore } = useDashboardData();
 
-    useEffect(() => {
-        const fetchFreshData = () => {
-            const savedBiz = localStorage.getItem("tradaz_businesses");
-            const savedStores = localStorage.getItem("tradaz_stores");
-            if (savedBiz) setDbBusinesses(JSON.parse(savedBiz));
-            if (savedStores) setDbStores(JSON.parse(savedStores));
-        };
+    if (isLoading) {
+        return (
+            <Box w="full" animation="fade-in 0.3s ease">
+                <Skeleton height="28px" width="250px" mb={6} rounded="md" bg="whiteAlpha.100" />
+                
+                <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
+                    {[1, 2, 3].map((i) => (
+                        <Skeleton key={i} height="120px" rounded="2xl" bg="whiteAlpha.100" />
+                    ))}
+                </SimpleGrid>
 
-        fetchFreshData();
-        window.addEventListener('focus', fetchFreshData);
-        return () => window.removeEventListener('focus', fetchFreshData);
-    }, []);
-
-    const activeBusiness = dbBusinesses.find(b => b.id === activeBusinessId) || dbBusinesses[0];
-    const availableStores = dbStores[activeBusiness?.id] || [];
-    const activeStore = availableStores.find((s: Store) => s.id === activeStoreId) || availableStores[0];
+                <SimpleGrid columns={{ base: 1, lg: 3 }} gap={6}>
+                    <Box gridColumn={{ lg: "span 2" }}>
+                        <Skeleton height="400px" rounded="2xl" bg="whiteAlpha.100" />
+                    </Box>
+                    <Skeleton height="400px" rounded="2xl" bg="whiteAlpha.100" />
+                </SimpleGrid>
+            </Box>
+        );
+    }
 
     return (
-       
-        <Box w="full">
+        <Box w="full" animation="fade-in 0.3s ease">
             <Text color="#5cac7d" fontWeight="bold" mb={6} fontSize="xl">
                 Overview: {activeBusiness?.name} {activeStore ? `> ${activeStore.name}` : ''}
             </Text>
             
-            <DashboardMetrics />
+            <Box mb={8}>
+                <DashboardMetrics />
+            </Box>
             
             <SimpleGrid columns={{ base: 1, lg: 3 }} gap={6}>
                 <Box gridColumn={{ lg: "span 2" }}>
