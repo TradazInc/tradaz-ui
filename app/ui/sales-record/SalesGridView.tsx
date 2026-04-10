@@ -102,7 +102,7 @@ export const SalesGridView = ({
                                     <Box as="td" py={5} px={5}>
                                         <Flex gap={2}>
                                             <IconButton aria-label="Download" variant="ghost" size="sm" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }}><Icon as={LuDownload} /></IconButton>
-                                            {/* 🚀 EYE BUTTON TRIGGERS THE SELECTION */}
+                                            
                                             <IconButton aria-label="View" onClick={() => onSelectSale(sale)} variant="ghost" size="sm" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }}><Icon as={LuEye} /></IconButton>
                                         </Flex>
                                     </Box>
