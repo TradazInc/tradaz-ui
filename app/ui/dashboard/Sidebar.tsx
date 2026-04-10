@@ -5,7 +5,7 @@ import Link from "next/link";
 import { 
     LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
     LuStore, LuX, LuPlus, LuScale, LuLandmark, LuTicketPercent,
-    LuChevronLeft, LuChevronRight, LuZap, LuUserPlus, LuGift
+    LuChevronLeft, LuChevronRight, LuZap, LuUserPlus, LuGift, LuScanLine 
 } from "react-icons/lu";
 import TradazHeader from "../TradazHeader";
 import { SidebarProps, Store } from "@/app/lib/definitions";
@@ -13,14 +13,15 @@ import { AddStoreModal } from "../onboarding/AddStoreModal";
 
 // OTHER_NAV_ITEMS array
 const OTHER_NAV_ITEMS = [
+    { label: "Point of Sale", icon: LuScanLine, children: ["POS"] }, 
     { label: "Products", icon: LuShoppingBag, children: ["Add Product", "Inventory"] },
     { label: "Customers", icon: LuUsers, children: ["Customer List", "Reviews"] },
     { label: "Finance", icon: LuLandmark, children: ["Sales Record", "Staff Salary", "Expenses", "Revenue", "Tax Calculation"] },
     { label: "Dispute Resolution", icon: LuScale, children: ["Customers Chats", "Products exchange", "Customers Refund", "Sales Reconciliation"] },
     { label: "Marketing & Promos", icon: LuTicketPercent, children: ["Promotions", "Set Coupon", "Pop up", "Vouchers", "Promo Banners"] },
-    { label: "Loyalty & Rewards", icon: LuGift, children: ["Loyalty"] }, // ✅ NEW Dedicated Section
+    { label: "Loyalty & Rewards", icon: LuGift, children: ["Loyalty"] }, 
     { label: "Staff", icon: LuUserPlus, children: ["Staff List"] }, 
-    { label: "Settings", icon: LuSettings, children: ["Logistics", "VAT", "Terms", "Conditions & Policies", "UI config"] }, // ✅ Removed Loyalty from here
+    { label: "Settings", icon: LuSettings, children: ["Logistics", "VAT", "Terms", "Conditions & Policies", "UI config"] },
 ];
 
 export const Sidebar = ({ 
@@ -96,7 +97,6 @@ export const Sidebar = ({
                     )}
                 </Box>
                 
-                
                 <Accordion.Root 
                     collapsible 
                     variant="plain"
@@ -118,7 +118,8 @@ export const Sidebar = ({
                         </Accordion.ItemTrigger>
                         <Accordion.ItemContent pl={9} display={isCollapsed ? "none" : "block"}>
                             <VStack align="start" gap={0} pt={0} pb={1}>
-                                {["Overview", "Analytics", "Sales record", "POS", "Online Orders"].map((child, cIdx) => {
+                                
+                                {["Overview", "Analytics", "Sales record", "Online Orders"].map((child, cIdx) => {
                                     const path = child === "Overview" ? "/dashboard" : `/dashboard/${child.toLowerCase().replace(/\s+/g, '-')}`;
                                     return (
                                         <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
@@ -202,7 +203,7 @@ export const Sidebar = ({
                 {!isCollapsed ? (
                     <Box position="relative">
                         
-                        {/* 1. THE BULKY CARD (Visible when NO menus are open) */}
+                        {/*  (Visible when NO menus are open) */}
                         <Box 
                             maxH={isMenuExpanded ? "0px" : "150px"} 
                             opacity={isMenuExpanded ? 0 : 1} 
@@ -229,7 +230,7 @@ export const Sidebar = ({
                             </Box>
                         </Box>
 
-                        {/* 2. THE COMPRESSED CARD (Visible when ANY menu is open) */}
+                        {/*  (Visible when ANY menu is open) */}
                         <Box 
                             maxH={isMenuExpanded ? "50px" : "0px"} 
                             opacity={isMenuExpanded ? 1 : 0} 
