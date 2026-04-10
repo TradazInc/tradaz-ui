@@ -16,7 +16,6 @@ export const useSales = () => {
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const loaderRef = useRef<HTMLDivElement>(null);
 
-    // 🚀 NEW: State to track the selected sale for the Details View
     const [selectedSale, setSelectedSale] = useState<SalesRecord | null>(null);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => { setSearchQuery(e.target.value); setVisibleCount(ITEMS_PER_PAGE); };
@@ -60,7 +59,6 @@ export const useSales = () => {
         handleSearch, handleSortBy, handleSortOrder,
         visibleItems, processedSalesLength: processedSales.length,
         visibleCount, isLoadingMore, loaderRef,
-        // 🚀 NEW: Export the selected state
         selectedSale, setSelectedSale
     };
 };
