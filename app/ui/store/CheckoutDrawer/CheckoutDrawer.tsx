@@ -4,7 +4,7 @@ import {
     Box, Flex, Text, Button, Icon, IconButton, VStack, Spinner, Separator, Input, HStack, Badge 
 } from "@chakra-ui/react";
 import { 
-    LuArrowLeft, LuX, LuMapPin, LuTruck, LuCreditCard, LuCheck, LuTicket, LuTrophy, LuInfo
+    LuArrowLeft, LuX, LuMapPin, LuTruck, LuCreditCard, LuCheck, LuTicket, LuTrophy
 } from "react-icons/lu";
 
 interface CheckoutDrawerProps {
