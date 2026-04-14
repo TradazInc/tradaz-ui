@@ -18,8 +18,8 @@ const OTHER_NAV_ITEMS = [
     { label: "Customers", icon: LuUsers, children: ["Customer List", "Reviews"] },
     { label: "Finance", icon: LuLandmark, children: ["Sales Record", "Staff Salary", "Expenses", "Revenue", "Tax Calculation"] },
     { label: "Dispute Resolution", icon: LuScale, children: ["Customers Chats", "Products exchange", "Customers Refund", "Sales Reconciliation"] },
-    { label: "Marketing & Promos", icon: LuTicketPercent, children: ["Promotions", "Set Coupon", "Pop up", "Vouchers", "Promo Banners"] },
-    { label: "Loyalty & Rewards", icon: LuGift, children: ["Loyalty"] }, 
+    { label: "Marketing & Promos", icon: LuTicketPercent, children: ["Promotions",  "Pop up", "Promo Banners"] },
+    { label: "Loyalty & Rewards", icon: LuGift, children: ["Loyalty","Vouchers" ,"Set Coupon"] }, 
     { label: "Staff", icon: LuUserPlus, children: ["Staff List"] }, 
     { label: "Settings", icon: LuSettings, children: ["Logistics", "VAT", "Terms", "Conditions & Policies", "UI config"] },
 ];
