@@ -1,17 +1,19 @@
 "use client";
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
     Flex, Box, Input, IconButton, Icon, Text, Badge, Avatar  
 } from "@chakra-ui/react";
 import { 
     LuSearch, LuBell, LuChevronDown, LuMenu,
-    LuLogOut, LuPackage, LuSettings, LuLayoutGrid, LuShoppingCart
+    LuLogOut, LuPackage, LuSettings, LuLayoutGrid, LuShoppingCart,
+    LuCircleCheck
 } from "react-icons/lu"; 
 import Link from "next/link";
 import { HeaderProps } from "@/app/lib/definitions";
 
 import { CustomerSidebar } from "@/app/ui/store/navigation/CustomerSidebar"; 
+
 
 export const Header = ({ 
     brandColor = "#5cac7d", 
@@ -19,8 +21,10 @@ export const Header = ({
 }: HeaderProps) => {
     
     const pathname = usePathname();
+    const router = useRouter();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isNavOpen, setIsNavOpen] = useState(false); 
+    const [isNotifOpen, setIsNotifOpen] = useState(false); 
     
     const categories = ["Categories", "Foot Wears", "Sport Wears", "Accessories", "Bags"];
 
@@ -54,13 +58,10 @@ export const Header = ({
 
             {/* Desktop Logo, Search & Categories */}
             <Flex flex={1} display={{ base: "none", lg: "flex" }} align="center" gap={8}>
-                
-            
                 <Link href="/store" style={{ textDecoration: "none" }}>
                     <Flex align="center" gap={3} cursor="pointer" transition="all 0.2s" _hover={{ opacity: 0.8 }}>
                         <Avatar.Root size="md">
                             <Avatar.Fallback name={storeName} bg={brandColor} color="white" fontWeight="bold" />
-                        
                         </Avatar.Root>
                         <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
                             {storeName}
@@ -106,38 +107,104 @@ export const Header = ({
                 </IconButton>
 
                 {/* Cart */}
-                <Box position="relative" cursor="pointer" display={{ base: "none", lg: "block" }}>
-                    <Link href="/store/cart">
-                        <IconButton aria-label="Cart" variant="ghost" color="gray.400" rounded="full" _hover={{ bg: "whiteAlpha.100" }}>
-                            <Icon as={LuShoppingCart} boxSize="20px" />
-                        </IconButton>
-                        <Badge 
-                            position="absolute" top="2px" right="2px" 
-                            bg={brandColor} color="white" rounded="full" 
-                            minW="18px" h="18px" 
-                            display="flex" alignItems="center" justifyContent="center"
-                            fontSize="10px" fontWeight="bold" border="2px solid #121212"
-                        >
-                            2
-                        </Badge>
-                    </Link>
+                <Box position="relative" display={{ base: "none", lg: "block" }}>
+                    <Flex 
+                        as="button" 
+                        onClick={() => router.push("/store/cart")}
+                        align="center" justify="center" 
+                        boxSize="40px" rounded="full" 
+                        color="gray.400" _hover={{ bg: "whiteAlpha.100", color: "white" }} 
+                        transition="all 0.2s" cursor="pointer"
+                        border="none" bg="transparent" outline="none" 
+                        position="relative" zIndex={10}
+                    >
+                        <Icon as={LuShoppingCart} boxSize="20px" pointerEvents="none" />
+                    </Flex>
+                    <Badge 
+                        position="absolute" top="0px" right="0px" zIndex={11}
+                        bg={brandColor} color="white" rounded="full" 
+                        minW="18px" h="18px" 
+                        display="flex" alignItems="center" justifyContent="center"
+                        fontSize="10px" fontWeight="bold" border="2px solid #121212"
+                        pointerEvents="none" 
+                    >
+                        2
+                    </Badge>
                 </Box>
 
                 {/* Notifications */}
-                <Box position="relative" cursor="pointer" display={{ base: "none", lg: "block" }}>
-                    <IconButton aria-label="Notifications" variant="ghost" color="gray.400" rounded="full" _hover={{ bg: "whiteAlpha.100" }}>
-                        <Icon as={LuBell} boxSize="20px" />
-                    </IconButton>
+                <Box position="relative" display={{ base: "none", lg: "block" }}>
+                    <Flex 
+                        as="button" 
+                        onClick={() => {
+                            setIsNotifOpen(!isNotifOpen);
+                            setIsProfileOpen(false); 
+                            setIsNavOpen(false); 
+                        }}
+                        align="center" justify="center" 
+                        boxSize="40px" rounded="full" 
+                        color="gray.400" _hover={{ bg: "whiteAlpha.100", color: "white" }} 
+                        transition="all 0.2s" cursor="pointer"
+                        border="none" bg="transparent" outline="none"
+                        position="relative" zIndex={10}
+                    >
+                        <Icon as={LuBell} boxSize="20px" pointerEvents="none" />
+                    </Flex>
                     <Badge 
-                        position="absolute" top="2px" right="2px" 
+                        position="absolute" top="0px" right="0px" zIndex={11}
                         bg="red.500" color="white" rounded="full" 
                         minW="18px" h="18px" 
                         display="flex" alignItems="center" justifyContent="center"
                         fontSize="10px" fontWeight="bold" border="2px solid #121212"
+                        pointerEvents="none" 
                     >
                         5
                     </Badge>
+
+                    {/* Notification Dropdown Panel */}
+                    {isNotifOpen && (
+                        <>
+                            <Box position="fixed" inset={0} zIndex={99} onClick={(e) => { e.stopPropagation(); setIsNotifOpen(false); }} cursor="default" />
+                            <Box position="absolute" right={0} top="100%" mt={2} bg="white" shadow="xl" rounded="xl" border="1px solid" borderColor="gray.100" minW="320px" py={2} zIndex={100} cursor="default" onClick={(e) => e.stopPropagation()}>
+                                <Box px={4} py={3} borderBottom="1px solid" borderColor="gray.100">
+                                    <Text fontSize="sm" fontWeight="bold" color="gray.900">Notifications</Text>
+                                </Box>
+                                
+                                <Flex direction="column" maxH="300px" overflowY="auto">
+                                    <Flex align="start" gap={3} px={4} py={3} _hover={{ bg: "gray.50" }} cursor="pointer" borderBottom="1px solid" borderColor="gray.50">
+                                        <Flex bg="rgba(92, 172, 125, 0.15)" p={2} rounded="full" color={brandColor} flexShrink={0}>
+                                            <Icon as={LuPackage} />
+                                        </Flex>
+                                        <Box>
+                                            <Text fontSize="sm" fontWeight="bold" color="gray.800">New Order Placed</Text>
+                                            <Text fontSize="xs" color="gray.600" mt={0.5}>Order #1024 has been placed successfully.</Text>
+                                            <Text fontSize="xs" color="gray.400" mt={1}>2 mins ago</Text>
+                                        </Box>
+                                    </Flex>
+                                    
+                                    <Flex align="start" gap={3} px={4} py={3} _hover={{ bg: "gray.50" }} cursor="pointer">
+                                        <Flex bg="rgba(66, 153, 225, 0.15)" p={2} rounded="full" color="blue.500" flexShrink={0}>
+                                            <Icon as={LuCircleCheck} />
+                                        </Flex>
+                                        <Box>
+                                            <Text fontSize="sm" fontWeight="bold" color="gray.800">Payment Verified</Text>
+                                            <Text fontSize="xs" color="gray.600" mt={0.5}>Payment for Order #1023 was verified.</Text>
+                                            <Text fontSize="xs" color="gray.400" mt={1}>1 hour ago</Text>
+                                        </Box>
+                                    </Flex>
+                                </Flex>
+
+                                <Box px={4} pt={3} pb={1} borderTop="1px solid" borderColor="gray.100" textAlign="center">
+                                    <Text fontSize="xs" fontWeight="bold" color={brandColor} cursor="pointer" _hover={{ textDecoration: "underline" }}>
+                                        View all notifications
+                                    </Text>
+                                </Box>
+                            </Box>
+                        </>
+                    )}
                 </Box>
+
+               
 
                 {/* Profile Dropdown */}
                 <Box position="relative">
@@ -147,6 +214,7 @@ export const Header = ({
                         onClick={() => {
                             setIsProfileOpen(!isProfileOpen);
                             setIsNavOpen(false); 
+                            setIsNotifOpen(false); 
                         }}
                     >
                         <Flex justify="center" align="center" boxSize="32px" bg={brandColor} color="white" rounded="full" fontWeight="bold" fontSize="sm">
@@ -188,13 +256,14 @@ export const Header = ({
                     )}
                 </Box>
 
-                {/* Desktop Navigation Dropdown (Original Sidebar Injected) */}
+                {/* Desktop Navigation Dropdown */}
                 <Box position="relative" display={{ base: "none", lg: "block" }}>
                     <IconButton 
                         aria-label="Store Menu" variant="ghost" color="gray.400" rounded="full" _hover={{ bg: "whiteAlpha.100", color: "white" }}
                         onClick={() => {
                             setIsNavOpen(!isNavOpen);
                             setIsProfileOpen(false); 
+                            setIsNotifOpen(false); 
                         }}
                     >
                         <Icon as={LuMenu} boxSize="22px" />
