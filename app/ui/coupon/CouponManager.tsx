@@ -9,9 +9,15 @@ import {
 import { generateDummyCoupons } from "@/app/lib/data";
 import { DiscountCoupon } from "@/app/lib/definitions";
 
+// 🚀 1. Import our new form
+import { CreateCouponForm } from "./CreateCouponForm";
+
 export const CouponManager = () => {
     const [coupons, setCoupons] = useState<DiscountCoupon[]>(generateDummyCoupons());
     const [searchTerm, setSearchTerm] = useState("");
+    
+    
+    const [isCreating, setIsCreating] = useState(false);
 
     // --- ACTIONS ---
     const toggleStatus = (id: string, currentStatus: string) => {
@@ -30,7 +36,12 @@ export const CouponManager = () => {
 
     const copyToClipboard = (code: string) => {
         navigator.clipboard.writeText(code);
-        // You would typically show a quick toast notification here!
+    };
+
+    // Add handler to receive the new coupon from the form
+    const handleAddCoupon = (newCoupon: DiscountCoupon) => {
+        setCoupons(prev => [newCoupon, ...prev]);
+        setIsCreating(false); // Close the form automatically
     };
 
     // --- FILTERING ---
@@ -42,10 +53,21 @@ export const CouponManager = () => {
     const activeCount = coupons.filter(c => c.status === "Active").length;
     const totalUses = coupons.reduce((acc, curr) => acc + curr.usageCount, 0);
 
+    //  Route to the Create Form if isCreating is true
+    if (isCreating) {
+        return (
+            <CreateCouponForm 
+                onBack={() => setIsCreating(false)} 
+                onSubmit={handleAddCoupon} 
+            />
+        );
+    }
+
+    // Otherwise, show the normal list view
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
             
-            {/* --- Sticky Header (Slimmed down for mobile!) --- */}
+            {/* --- Sticky Header --- */}
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
                 bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
@@ -59,13 +81,14 @@ export const CouponManager = () => {
                         <Text color="gray.400" fontSize="sm">Create and manage promotional codes for your store.</Text>
                     </Box>
                     
-                    <Button bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} h="44px" px={6}>
+                    
+                    <Button onClick={() => setIsCreating(true)} bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} h="44px" px={6}>
                         <Icon as={LuPlus} mr={2} /> Create Coupon
                     </Button>
                 </Flex>
             </Box>
 
-            {/* --- STATS & SEARCH (Moved outside sticky header to scroll away) --- */}
+            {/* --- STATS & SEARCH --- */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
                 <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
                     <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Coupons</Text>
@@ -96,9 +119,8 @@ export const CouponManager = () => {
                         const isActive = coupon.status === "Active";
                         const isExpired = coupon.status === "Expired";
                         
-                        // Calculate usage progress if there is a limit
                         const usagePercentage = coupon.usageLimit !== "Unlimited" 
-                            ? Math.min((coupon.usageCount / coupon.usageLimit) * 100, 100) 
+                            ? Math.min((coupon.usageCount / (coupon.usageLimit as number)) * 100, 100) 
                             : 0;
 
                         return (
