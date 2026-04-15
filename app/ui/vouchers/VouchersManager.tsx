@@ -6,54 +6,43 @@ import {
     LuBan, LuMail, LuCreditCard, LuUser
 } from "react-icons/lu";
 
-import { generateDummyVouchers } from "@/app/lib/data";
+import { useVouchers } from "@/app/hooks/useVouchers";
 import { GiftVoucher } from "@/app/lib/definitions";
+import { CreateVoucherForm } from "./CreateVoucherForm";
 
 export const VoucherManager = () => {
-    const [vouchers, setVouchers] = useState<GiftVoucher[]>(generateDummyVouchers());
-    const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState<"All" | "Active" | "Fully Redeemed" | "Expired" | "Revoked">("All");
+    
+    const [isCreating, setIsCreating] = useState(false);
 
-    // --- ACTIONS ---
-    const revokeVoucher = (id: string) => {
-        setVouchers(prev => prev.map(v => 
-            v.id === id ? { ...v, status: "Revoked" } : v
-        ));
-    };
-
-    const copyToClipboard = (code: string) => {
-        navigator.clipboard.writeText(code);
-    };
-
-    const resendEmail = (email: string) => {
-        alert(`Voucher email queued to be resent to ${email}!`);
-    };
-
-    // --- FILTERING ---
-    const filteredVouchers = vouchers.filter(v => {
-        const matchesSearch = v.code.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                              v.recipientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                              v.recipientEmail.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = statusFilter === "All" || v.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
-
-    // --- STATS ---
-    const totalOutstandingLiability = vouchers
-        .filter(v => v.status === "Active")
-        .reduce((acc, curr) => acc + curr.remainingBalance, 0);
-        
-    const totalRedeemedValue = vouchers.reduce((acc, curr) => acc + (curr.initialValue - curr.remainingBalance), 0);
+    //  Call the logic hook
+    const {
+        searchTerm, setSearchTerm,
+        statusFilter, setStatusFilter,
+        filteredVouchers,
+        revokeVoucher, copyToClipboard, resendEmail, handleAddVoucher,
+        totalOutstandingLiability, totalRedeemedValue
+    } = useVouchers();
 
     const selectStyles = {
         backgroundColor: "#121214", color: "white", height: "44px", padding: "0 16px",
         borderRadius: "8px", border: "1px solid rgba(255, 255, 255, 0.16)", cursor: "pointer", outline: "none"
     };
 
+    // Submit handler
+    const onFormSubmit = (newVoucher: GiftVoucher) => {
+        handleAddVoucher(newVoucher);
+        setIsCreating(false);
+    };
+
+    // Route to the Create Form if true
+    if (isCreating) {
+        return <CreateVoucherForm onBack={() => setIsCreating(false)} onSubmit={onFormSubmit} />;
+    }
+
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
             
-            {/* --- Sticky Header (Slimmed down for mobile!) --- */}
+            {/* --- Sticky Header --- */}
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
                 bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
@@ -67,13 +56,13 @@ export const VoucherManager = () => {
                         <Text color="gray.400" fontSize="sm">Manage prepaid balances, issue refunds as store credit, and track redemptions.</Text>
                     </Box>
                     
-                    <Button bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} h="44px" px={6}>
+                    <Button onClick={() => setIsCreating(true)} bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} h="44px" px={6}>
                         <Icon as={LuPlus} mr={2} /> Issue New Voucher
                     </Button>
                 </Flex>
             </Box>
 
-            {/* --- STATS & SEARCH (Moved outside sticky header to scroll away) --- */}
+            {/* --- STATS & SEARCH --- */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
                 <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(92, 172, 125, 0.3)">
                     <Text color="#5cac7d" fontSize="xs" fontWeight="bold" textTransform="uppercase">Outstanding Liability (Active)</Text>
@@ -93,16 +82,17 @@ export const VoucherManager = () => {
                             value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </Flex>
+                    
                     <select 
                         style={selectStyles} 
                         value={statusFilter} 
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value as "All" | "Active" | "Fully Redeemed" | "Expired" | "Revoked")}
+                        onChange={(e) => setStatusFilter(e.target.value as "All" | "Active" | "Fully Redeemed" | "Expired" | "Revoked")}
                     >
-                        <option value="All">All Statuses</option>
-                        <option value="Active">Active</option>
-                        <option value="Fully Redeemed">Fully Redeemed</option>
-                        <option value="Expired">Expired</option>
-                        <option value="Revoked">Revoked</option>
+                        <option value="All" style={{ background: "#1A1C23" }}>All Statuses</option>
+                        <option value="Active" style={{ background: "#1A1C23" }}>Active</option>
+                        <option value="Fully Redeemed" style={{ background: "#1A1C23" }}>Fully Redeemed</option>
+                        <option value="Expired" style={{ background: "#1A1C23" }}>Expired</option>
+                        <option value="Revoked" style={{ background: "#1A1C23" }}>Revoked</option>
                     </select>
                 </Flex>
             </SimpleGrid>
@@ -114,19 +104,16 @@ export const VoucherManager = () => {
                         No vouchers match your search criteria.
                     </Flex>
                 ) : (
-                    filteredVouchers.map((voucher) => {
+                    filteredVouchers.map((voucher: GiftVoucher) => {
                         const isActive = voucher.status === "Active";
                         const isRedeemed = voucher.status === "Fully Redeemed";
                         const isRevoked = voucher.status === "Revoked";
-                        
-                        // Calculate balance progress
                         const balancePercentage = (voucher.remainingBalance / voucher.initialValue) * 100;
 
                         return (
                             <Box key={voucher.id} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor={isActive ? "rgba(92, 172, 125, 0.3)" : "whiteAlpha.100"} p={{ base: 4, md: 6 }} shadow="sm" transition="all 0.2s" opacity={(isRedeemed || isRevoked || voucher.status === "Expired") ? 0.6 : 1}>
                                 <Flex direction={{ base: "column", md: "row" }} justify="space-between" align={{ base: "flex-start", md: "center" }} gap={6}>
                                     
-                                    {/* Left: Code & Customer Info */}
                                     <VStack align="start" flex={1} gap={2}>
                                         <HStack gap={3}>
                                             <Flex align="center" justify="center" bg="rgba(255, 255, 255, 0.05)" border="1px dashed" borderColor="gray.500" px={3} py={1} rounded="md" cursor="pointer" onClick={() => copyToClipboard(voucher.code)} _hover={{ bg: "whiteAlpha.200" }}>
@@ -151,7 +138,6 @@ export const VoucherManager = () => {
                                         <Text color="gray.500" fontSize="xs">Issued: {voucher.issueDate} • Expires: {voucher.expiryDate}</Text>
                                     </VStack>
 
-                                    {/* Middle: Financial Balance Progress */}
                                     <VStack align="start" flex={1} w="full" minW={{ md: "250px" }} maxW={{ md: "350px" }} gap={1} bg="whiteAlpha.50" p={3} rounded="lg" border="1px solid" borderColor="whiteAlpha.100">
                                         <Flex justify="space-between" w="full">
                                             <Text color="gray.400" fontSize="xs" fontWeight="bold" textTransform="uppercase">Remaining Balance</Text>
@@ -164,7 +150,6 @@ export const VoucherManager = () => {
                                         </Box>
                                     </VStack>
 
-                                    {/* Right: Actions */}
                                     <Flex direction="column" gap={2} minW="140px" justify="flex-end" w={{ base: "full", md: "auto" }}>
                                         <Button size="sm" onClick={() => resendEmail(voucher.recipientEmail)} variant="outline" borderColor="whiteAlpha.200" color="white" _hover={{ bg: "whiteAlpha.50" }} justifyContent="flex-start">
                                             <Icon as={LuMail} mr={2} /> Resend Email
