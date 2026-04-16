@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Input, Button, Icon, Grid, VStack, SimpleGrid, IconButton 
+    Box, Flex, Text, Input, Button, Icon, Grid, VStack, SimpleGrid
 } from "@chakra-ui/react";
 import { 
-    LuCreditCard, LuShield, LuKey, LuPowerOff, 
-    LuSave, LuGlobe, LuMail, LuPercent, LuServer, LuEye, LuEyeOff
+     LuShield, LuPowerOff, 
+    LuSave, LuGlobe, LuPercent, LuServer, 
 } from "react-icons/lu";
 
 // --- SETTINGS TABS ---
@@ -14,7 +14,7 @@ type SettingsTab = 'general' | 'financial' | 'integrations' | 'security';
 const SETTINGS_TABS = [
     { id: 'general', label: 'Platform Basics', icon: LuGlobe },
     { id: 'financial', label: 'Fees & Payouts', icon: LuPercent },
-    { id: 'integrations', label: 'API & Webhooks', icon: LuKey },
+   
     { id: 'security', label: 'Security & Compliance', icon: LuShield },
 ];
 
@@ -32,7 +32,7 @@ const CustomToggle = ({ isOn }: { isOn: boolean }) => (
 
 export default function AdminSettingsPage() {
     const [activeTab, setActiveTab] = useState<SettingsTab>('general');
-    const [showKey, setShowKey] = useState(false);
+   
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1200px" mx="auto" animation="fade-in 0.3s ease">
@@ -138,47 +138,7 @@ export default function AdminSettingsPage() {
                         </VStack>
                     )}
 
-                    {/* TAB: INTEGRATIONS */}
-                    {activeTab === 'integrations' && (
-                        <VStack align="stretch" gap={8} animation="fade-in 0.3s ease">
-                            <Box borderBottom="1px solid" borderColor="whiteAlpha.100" pb={4}>
-                                <Text color="white" fontSize="xl" fontWeight="bold">API Keys & Webhooks</Text>
-                                <Text color="gray.400" fontSize="sm">Connect external payment gateways and email services.</Text>
-                            </Box>
-
-                            <VStack align="stretch" gap={4}>
-                                <Box bg="#121212" p={5} rounded="xl" border="1px solid" borderColor="whiteAlpha.200">
-                                    <Flex align="center" gap={3} mb={4}>
-                                        <Icon as={LuCreditCard} color="blue.400" boxSize="20px" />
-                                        <Text color="white" fontWeight="bold">Payment Gateway (Paystack)</Text>
-                                    </Flex>
-                                    <Box mb={4}>
-                                        <Text color="gray.500" fontSize="xs" mb={1} textTransform="uppercase" fontWeight="bold">Public Key</Text>
-                                        <Input defaultValue="pk_live_8f7b2c9a...3d4e5f" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" color="white" _focus={{ borderColor: brandColor }} />
-                                    </Box>
-                                    <Box>
-                                        <Text color="gray.500" fontSize="xs" mb={1} textTransform="uppercase" fontWeight="bold">Secret Key</Text>
-                                        <Flex align="center" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" rounded="md" px={3}>
-                                          
-                                            <Input defaultValue="sk_live_1234567890abcdef" type={showKey ? "text" : "password"} border="none" color="white" py={2} _focus={{ outline: "none", boxShadow: "none" }} />
-                                            <IconButton aria-label="Toggle visibility" variant="ghost" size="sm" color="gray.400" onClick={() => setShowKey(!showKey)}>
-                                                {showKey ? <LuEyeOff /> : <LuEye />}
-                                            </IconButton>
-                                        </Flex>
-                                    </Box>
-                                </Box>
-
-                                <Box bg="#121212" p={5} rounded="xl" border="1px solid" borderColor="whiteAlpha.200">
-                                    <Flex align="center" gap={3} mb={4}>
-                                        <Icon as={LuMail} color="purple.400" boxSize="20px" />
-                                        <Text color="white" fontWeight="bold">Email Provider (Resend)</Text>
-                                    </Flex>
-                                    <Input defaultValue="re_123456789" type="password" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" color="white" _focus={{ borderColor: brandColor }} />
-                                </Box>
-                            </VStack>
-                        </VStack>
-                    )}
-
+                   
                     {/* TAB: SECURITY */}
                     {activeTab === 'security' && (
                         <VStack align="stretch" gap={8} animation="fade-in 0.3s ease">
