@@ -1,49 +1,42 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, Avatar, IconButton, SimpleGrid
+    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, Avatar, IconButton, SimpleGrid, Spinner
 } from "@chakra-ui/react";
 import { 
-    LuSearch, LuFilter, LuCreditCard, LuArrowUpRight, LuLoaderCircle, 
+    LuSearch, LuCreditCard, LuArrowUpRight, LuLoaderCircle, 
     LuClock, LuEllipsisVertical, LuX, LuDownload, LuZap, LuBan
 } from "react-icons/lu";
 
-// --- MOCK SUBSCRIPTION DATA ---
-type PlanTier = 'Basic' | 'Pro' | 'Enterprise';
-type SubStatus = 'active' | 'past_due' | 'canceled' | 'trialing';
+import { useAdminSubscriptions, Subscription, PlanTier, SubStatus } from "@/app/hooks/useAdminSubscriptions";
 
-interface Subscription {
-    id: string;
-    tenant: string;
-    owner: string;
-    plan: PlanTier;
-    cycle: 'Monthly' | 'Annually';
-    amount: number;
-    status: SubStatus;
-    nextBilling: string;
-    startedAt: string;
-}
+import { CreateCustomPlanForm } from "../../ui/admin/subscriptions/CreateCustomPlanForm";
 
-const MOCK_SUBSCRIPTIONS: Subscription[] = [
-    { id: "SUB-8812", tenant: "Urban Kicks NG", owner: "Wada Gift", plan: "Pro", cycle: "Monthly", amount: 45000, status: "active", nextBilling: "Nov 12, 2026", startedAt: "Oct 12, 2024" },
-    { id: "SUB-8813", tenant: "Minimalist Hub", owner: "Sarah Connor", plan: "Enterprise", cycle: "Annually", amount: 1500000, status: "active", nextBilling: "Jan 01, 2027", startedAt: "Jan 01, 2024" },
-    { id: "SUB-8814", tenant: "Lagos Streetwear", owner: "Tobi O.", plan: "Basic", cycle: "Monthly", amount: 15000, status: "past_due", nextBilling: "Overdue by 3 days", startedAt: "Mar 15, 2025" },
-    { id: "SUB-8815", tenant: "Tech Gadgets Pro", owner: "John Doe", plan: "Pro", cycle: "Monthly", amount: 45000, status: "trialing", nextBilling: "Trial ends in 5 days", startedAt: "Oct 25, 2026" },
-];
-
-const KPI_STATS = [
-    { label: "Total MRR", value: "₦4,250,000", trend: "+12.5%", color: "#5cac7d" },
-    { label: "Active Subscriptions", value: "1,245", trend: "+42 this month", color: "blue.400" },
-    { label: "Past Due / Failed", value: "₦315,000", trend: "18 shops", color: "red.400" },
-    { label: "Active Trials", value: "84", trend: "Converting at 68%", color: "purple.400" },
-];
+const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "44px", rounded: "lg", px: 3, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
+const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#121214", color: "white", height: "44px", borderRadius: "8px", padding: "0 12px", border: "1px solid rgba(255, 255, 255, 0.2)", outline: "none", cursor: "pointer", fontSize: "14px" };
 
 export default function AdminSubscriptionsPage() {
     const brandColor = "#5cac7d";
     
-    const [searchQuery, setSearchQuery] = useState("");
-    const [subscriptions] = useState<Subscription[]>(MOCK_SUBSCRIPTIONS);
+
+    const [isCreating, setIsCreating] = useState(false);
+
+    // handleAddSubscription from the hook
+    const {
+        searchQuery, planFilter, statusFilter, sortBy, sortOrder,
+        handleSearch, handlePlanFilter, handleStatusFilter, handleSortBy, handleSortOrder,
+        visibleItems, processedCount, totalLimit,
+        visibleCount, isLoadingMore, loaderRef,
+        kpiStats, handleAddSubscription
+    } = useAdminSubscriptions();
+
     const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
+
+    //  Form submission handler
+    const onFormSubmit = (newSub: Subscription) => {
+        handleAddSubscription(newSub);
+        setIsCreating(false); // Close form automatically
+    };
 
     const getStatusUI = (status: SubStatus) => {
         switch (status) {
@@ -51,6 +44,7 @@ export default function AdminSubscriptionsPage() {
             case "past_due": return { color: "red.400", bg: "rgba(229, 62, 62, 0.15)", icon: LuLoaderCircle };
             case "trialing": return { color: "purple.400", bg: "rgba(159, 122, 234, 0.15)", icon: LuClock };
             case "canceled": return { color: "gray.400", bg: "whiteAlpha.100", icon: LuBan };
+            default: return { color: "gray.400", bg: "whiteAlpha.100", icon: LuBan };
         }
     };
 
@@ -59,26 +53,82 @@ export default function AdminSubscriptionsPage() {
             case "Basic": return "gray.300";
             case "Pro": return "blue.400";
             case "Enterprise": return "purple.400";
+            default: return "gray.300";
         }
     };
 
+    // Intercept the render to show the form
+    if (isCreating) {
+        return (
+            <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto">
+                <CreateCustomPlanForm onBack={() => setIsCreating(false)} onSubmit={onFormSubmit} />
+            </Box>
+        );
+    }
+
     return (
-        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease">
+        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative">
             
             {/* --- HEADER --- */}
-            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={8} gap={4}>
+            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} pt={2} gap={4}>
                 <Box>
-                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">SaaS Subscriptions</Text>
+                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">SaaS Subscriptions ({totalLimit})</Text>
                     <Text color="gray.400" fontSize="sm">Track MRR, manage tenant billing plans, and handle failed payments.</Text>
                 </Box>
-                <Button bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2}>
+                {/*  Wire up the button */}
+                <Button onClick={() => setIsCreating(true)} bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2}>
                     <Icon as={LuArrowUpRight} /> Create Custom Plan
                 </Button>
             </Flex>
 
+            {/* --- STICKY TOOLBAR --- */}
+            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} mx={{ base: -4, lg: 0 }} px={{ base: 4, lg: 0 }} borderBottom="1px solid" borderColor="whiteAlpha.100">
+                <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
+                    <Flex flex={1} minW="300px" align="center" {...controlStyles}>
+                        <Icon as={LuSearch} color="gray.500" mr={2} />
+                        <Input 
+                            placeholder="Search by Tenant, Owner, or Sub ID..." border="none" color="white" h="full" px={0} 
+                            _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={handleSearch}
+                        />
+                    </Flex>
+                    
+                    <Flex gap={3} w={{ base: "full", md: "auto" }} wrap="wrap">
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                            <select value={statusFilter} onChange={handleStatusFilter} style={nativeSelectStyle}>
+                                <option value="all" style={{ background: "#1A1C23" }}>All Statuses</option>
+                                <option value="active" style={{ background: "#1A1C23" }}>Active</option>
+                                <option value="trialing" style={{ background: "#1A1C23" }}>Trialing</option>
+                                <option value="past_due" style={{ background: "#1A1C23" }}>Past Due</option>
+                                <option value="canceled" style={{ background: "#1A1C23" }}>Canceled</option>
+                            </select>
+                        </Box>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                            <select value={planFilter} onChange={handlePlanFilter} style={nativeSelectStyle}>
+                                <option value="all" style={{ background: "#1A1C23" }}>All Plans</option>
+                                <option value="Basic" style={{ background: "#1A1C23" }}>Basic</option>
+                                <option value="Pro" style={{ background: "#1A1C23" }}>Pro</option>
+                                <option value="Enterprise" style={{ background: "#1A1C23" }}>Enterprise</option>
+                            </select>
+                        </Box>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "160px" }}>
+                            <select value={sortBy} onChange={handleSortBy} style={nativeSelectStyle}>
+                                <option value="amount" style={{ background: "#1A1C23" }}>Sort: MRR</option>
+                                <option value="tenant" style={{ background: "#1A1C23" }}>Sort: Tenant Name</option>
+                            </select>
+                        </Box>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "160px" }}>
+                            <select value={sortOrder} onChange={handleSortOrder} style={nativeSelectStyle}>
+                                <option value="desc" style={{ background: "#1A1C23" }}>Highest / Z-A</option>
+                                <option value="asc" style={{ background: "#1A1C23" }}>Lowest / A-Z</option>
+                            </select>
+                        </Box>
+                    </Flex>
+                </Flex>
+            </Box>
+
             {/* --- KPI CARDS --- */}
             <SimpleGrid columns={{ base: 1, md: 2, xl: 4 }} gap={6} mb={8}>
-                {KPI_STATS.map((stat, idx) => (
+                {kpiStats.map((stat: { label: string; value: string; trend: string; color: string }, idx: number) => (
                     <Box key={idx} bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
                         <Flex justify="space-between" align="start" mb={2}>
                             <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">{stat.label}</Text>
@@ -89,83 +139,76 @@ export default function AdminSubscriptionsPage() {
                 ))}
             </SimpleGrid>
 
-            {/* --- FILTERS --- */}
-            <Flex gap={4} mb={6}>
-                <Flex flex={1} align="center" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={4} _focusWithin={{ borderColor: brandColor }}>
-                    <Icon as={LuSearch} color="gray.500" />
-                    <Input 
-                        placeholder="Search by Tenant, Owner, or Sub ID..." border="none" color="white" h="50px" 
-                        _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </Flex>
-                <Button h="50px" px={6} bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" color="white" rounded="xl" _hover={{ bg: "whiteAlpha.50" }} display="flex" gap={2}>
-                    <Icon as={LuFilter} /> <Text display={{ base: "none", sm: "block" }}>Filter Plan</Text>
-                </Button>
-            </Flex>
-
             {/* --- SUBSCRIPTIONS GRID --- */}
-            <VStack align="stretch" gap={3}>
-                <Grid templateColumns="1.5fr 1fr 1fr 1fr 1.5fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Tenant (Shop)</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Plan Tier</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Billing</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Status</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Next Invoice</Text>
-                </Grid>
+            {visibleItems.length === 0 ? (
+                <Flex justify="center" align="center" py={20} direction="column">
+                    <Text color="gray.400" fontSize="lg" fontWeight="bold">No subscriptions found.</Text>
+                </Flex>
+            ) : (
+                <VStack align="stretch" gap={3}>
+                    <Grid templateColumns="1.5fr 1fr 1fr 1fr 1.5fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Tenant (Shop)</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Plan Tier</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Billing</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Status</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Next Invoice</Text>
+                    </Grid>
 
-                {subscriptions.map((sub) => {
-                    const statusUI = getStatusUI(sub.status);
-                    return (
-                        <Grid 
-                            key={sub.id} 
-                            templateColumns={{ base: "1fr", md: "1.5fr 1fr 1fr", xl: "1.5fr 1fr 1fr 1fr 1.5fr 50px" }} 
-                            gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor={sub.status === 'past_due' ? "rgba(229, 62, 62, 0.3)" : "whiteAlpha.50"}
-                            alignItems="center" cursor="pointer" transition="all 0.2s"
-                            _hover={{ borderColor: brandColor, transform: "translateY(-2px)", shadow: "lg" }}
-                            onClick={() => setSelectedSub(sub)}
-                        >
-                            {/* Tenant Info */}
-                            <Flex align="center" gap={3}>
-                                <Avatar.Root size="sm"><Avatar.Fallback name={sub.tenant} bg="whiteAlpha.200" color="white" /></Avatar.Root>
-                                <Box overflow="hidden">
-                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{sub.tenant}</Text>
-                                    <Text color="gray.500" fontSize="xs" lineClamp={1}>{sub.id}</Text>
+                    {visibleItems.map((sub: Subscription) => {
+                        const statusUI = getStatusUI(sub.status);
+                        return (
+                            <Grid 
+                                key={sub.id} 
+                                templateColumns={{ base: "1fr", md: "1.5fr 1fr 1fr", xl: "1.5fr 1fr 1fr 1fr 1.5fr 50px" }} 
+                                gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor={sub.status === 'past_due' ? "rgba(229, 62, 62, 0.3)" : "whiteAlpha.50"}
+                                alignItems="center" cursor="pointer" transition="all 0.2s"
+                                _hover={{ borderColor: brandColor, transform: "translateY(-2px)", shadow: "lg" }}
+                                onClick={() => setSelectedSub(sub)}
+                            >
+                                <Flex align="center" gap={3}>
+                                    <Avatar.Root size="sm"><Avatar.Fallback name={sub.tenant} bg="whiteAlpha.200" color="white" /></Avatar.Root>
+                                    <Box overflow="hidden">
+                                        <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{sub.tenant}</Text>
+                                        <Text color="gray.500" fontSize="xs" lineClamp={1}>{sub.id}</Text>
+                                    </Box>
+                                </Flex>
+
+                                <Text color={getPlanColor(sub.plan)} fontWeight="bold" fontSize="sm" display={{ base: "none", md: "block" }}>
+                                    {sub.plan}
+                                </Text>
+
+                                <Box display={{ base: "none", xl: "block" }}>
+                                    <Text color="white" fontWeight="bold" fontSize="sm">₦{sub.amount.toLocaleString()}</Text>
+                                    <Text color="gray.500" fontSize="xs">{sub.cycle}</Text>
                                 </Box>
-                            </Flex>
 
-                            {/* Plan Tier */}
-                            <Text color={getPlanColor(sub.plan)} fontWeight="bold" fontSize="sm" display={{ base: "none", md: "block" }}>
-                                {sub.plan}
-                            </Text>
+                                <Flex display={{ base: "none", md: "flex" }}>
+                                    <Badge bg={statusUI.bg} color={statusUI.color} px={2.5} py={1} rounded="md" display="flex" alignItems="center" gap={1.5} textTransform="uppercase">
+                                        <Icon as={statusUI.icon} /> {sub.status.replace('_', ' ')}
+                                    </Badge>
+                                </Flex>
 
-                            {/* Amount & Cycle */}
-                            <Box display={{ base: "none", xl: "block" }}>
-                                <Text color="white" fontWeight="bold" fontSize="sm">₦{sub.amount.toLocaleString()}</Text>
-                                <Text color="gray.500" fontSize="xs">{sub.cycle}</Text>
-                            </Box>
+                                <Text color={sub.status === 'past_due' ? "red.400" : "gray.300"} fontWeight={sub.status === 'past_due' ? "bold" : "medium"} fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right">
+                                    {sub.nextBilling}
+                                </Text>
 
-                            {/* Status */}
-                            <Flex display={{ base: "none", md: "flex" }}>
-                                <Badge bg={statusUI.bg} color={statusUI.color} px={2.5} py={1} rounded="md" display="flex" alignItems="center" gap={1.5} textTransform="uppercase">
-                                    <Icon as={statusUI.icon} /> {sub.status.replace('_', ' ')}
-                                </Badge>
-                            </Flex>
+                                <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
+                                    <Icon as={LuEllipsisVertical} color="gray.500" />
+                                </Flex>
+                            </Grid>
+                        );
+                    })}
 
-                            {/* Next Billing */}
-                            <Text color={sub.status === 'past_due' ? "red.400" : "gray.300"} fontWeight={sub.status === 'past_due' ? "bold" : "medium"} fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right">
-                                {sub.nextBilling}
-                            </Text>
+                    {visibleCount < processedCount && (
+                        <Flex ref={loaderRef} justify="center" align="center" py={8} h="80px">
+                            {isLoadingMore && <Spinner color="#5cac7d" size="md" />}
+                        </Flex>
+                    )}
+                </VStack>
+            )}
 
-                            {/* Actions Icon */}
-                            <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                                <Icon as={LuEllipsisVertical} color="gray.500" />
-                            </Flex>
-                        </Grid>
-                    );
-                })}
-            </VStack>
-
-            {/* --- SUBSCRIPTION DETAILS DRAWER --- */}
+            {/* --- SUBSCRIPTION DETAILS DRAWER (Remains Unchanged) --- */}
+            
             <Box position="fixed" inset={0} zIndex={9999} pointerEvents={selectedSub ? "auto" : "none"}>
                 <Box position="absolute" inset={0} bg="blackAlpha.700" backdropFilter="blur(4px)" opacity={selectedSub ? 1 : 0} transition="opacity 0.3s ease" onClick={() => setSelectedSub(null)} />
                 
@@ -185,7 +228,6 @@ export default function AdminSubscriptionsPage() {
 
                             <Box flex={1} overflowY="auto" p={6} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
                                 
-                                {/* Header Info */}
                                 <Flex direction="column" align="center" textAlign="center" mb={8}>
                                     <Avatar.Root size="xl" mb={4}><Avatar.Fallback name={selectedSub.tenant} bg="whiteAlpha.200" color="white" /></Avatar.Root>
                                     <Text color="white" fontSize="xl" fontWeight="black">{selectedSub.tenant}</Text>
@@ -195,7 +237,6 @@ export default function AdminSubscriptionsPage() {
                                     </Badge>
                                 </Flex>
 
-                                {/* Current Plan Card */}
                                 <Text color="white" fontWeight="bold" mb={4} fontSize="sm" textTransform="uppercase" letterSpacing="wider">Current Plan</Text>
                                 <Box bg="#1A1C23" border="1px solid" borderColor={selectedSub.status === 'past_due' ? "red.900" : "whiteAlpha.100"} rounded="xl" p={5} mb={8}>
                                     <Flex justify="space-between" align="center" mb={4}>
@@ -212,7 +253,6 @@ export default function AdminSubscriptionsPage() {
                                     </Flex>
                                 </Box>
 
-                                {/* Quick Actions */}
                                 <Text color="white" fontWeight="bold" mb={4} fontSize="sm" textTransform="uppercase" letterSpacing="wider">Plan Actions</Text>
                                 <SimpleGrid columns={2} gap={3} mb={8}>
                                     <Button variant="outline" borderColor="whiteAlpha.200" color="white" h="45px" display="flex" gap={2} _hover={{ bg: "whiteAlpha.100" }}>
@@ -223,7 +263,6 @@ export default function AdminSubscriptionsPage() {
                                     </Button>
                                 </SimpleGrid>
 
-                                {/* Invoice History (Mock) */}
                                 <Text color="white" fontWeight="bold" mb={4} fontSize="sm" textTransform="uppercase" letterSpacing="wider">Recent Invoices</Text>
                                 <VStack gap={3} align="stretch" mb={8}>
                                     {[1, 2].map((i) => (
@@ -242,7 +281,6 @@ export default function AdminSubscriptionsPage() {
                                     ))}
                                 </VStack>
 
-                                {/* Danger Zone */}
                                 <Text color="red.400" fontWeight="bold" mb={4} fontSize="sm" textTransform="uppercase" letterSpacing="wider">Danger Zone</Text>
                                 <VStack gap={3} align="stretch">
                                     {selectedSub.status === 'past_due' && (
