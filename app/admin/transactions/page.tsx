@@ -1,48 +1,29 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, IconButton, SimpleGrid, Avatar
+    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, IconButton, SimpleGrid, Avatar, Spinner
 } from "@chakra-ui/react";
 import { 
-    LuSearch, LuFilter, LuDownload, LuArrowUpRight, LuArrowDownLeft, 
+    LuSearch, LuDownload, LuArrowUpRight, LuArrowDownLeft, 
     LuRefreshCcw, LuCreditCard, LuEllipsisVertical, LuX, LuStore, LuUser
 } from "react-icons/lu";
 
-// --- MOCK TRANSACTION DATA ---
-type TxType = 'order_payment' | 'payout' | 'subscription' | 'refund';
-type TxStatus = 'completed' | 'pending' | 'failed';
+import { useAdminTransactions, Transaction, TxType } from "@/app/hooks/useAdminTransaction";
 
-interface Transaction {
-    id: string;
-    date: string;
-    type: TxType;
-    amount: number;
-    platformFee: number;
-    netAmount: number;
-    tenant: string;
-    customer: string;
-    method: string;
-    status: TxStatus;
-}
-
-const MOCK_TRANSACTIONS: Transaction[] = [
-    { id: "TRX-90214", date: "Today, 14:30", type: "order_payment", amount: 150000, platformFee: 3750, netAmount: 146250, tenant: "Urban Kicks NG", customer: "Michael T.", method: "Card ending ****4242", status: "completed" },
-    { id: "TRX-90213", date: "Today, 10:15", type: "payout", amount: 500000, platformFee: 0, netAmount: 500000, tenant: "Minimalist Hub", customer: "N/A", method: "Bank Transfer", status: "pending" },
-    { id: "TRX-90212", date: "Yesterday, 09:00", type: "subscription", amount: 25000, platformFee: 25000, netAmount: 0, tenant: "Tech Gadgets Pro", customer: "John Doe", method: "Wallet Balance", status: "completed" },
-    { id: "TRX-90211", date: "Oct 22, 18:45", type: "refund", amount: 45000, platformFee: -1125, netAmount: -43875, tenant: "Lagos Streetwear Co.", customer: "Sarah K.", method: "Original Payment Method", status: "failed" },
-];
-
-const KPI_STATS = [
-    { label: "Total Volume (30d)", value: "₦142,500,000", trend: "+8.2%" },
-    { label: "Platform Fees Collected", value: "₦3,562,500", trend: "+12.1%" },
-    { label: "Pending Payouts", value: "₦8,240,000", trend: "14 shops" },
-];
+const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "44px", rounded: "lg", px: 3, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
+const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#121214", color: "white", height: "44px", borderRadius: "8px", padding: "0 12px", border: "1px solid rgba(255, 255, 255, 0.2)", outline: "none", cursor: "pointer", fontSize: "14px" };
 
 export default function AdminTransactionsPage() {
     const brandColor = "#5cac7d";
     
-    const [searchQuery, setSearchQuery] = useState("");
-    const [transactions] = useState<Transaction[]>(MOCK_TRANSACTIONS);
+    const {
+        searchQuery, typeFilter, sortBy, sortOrder,
+        handleSearch, handleTypeFilter, handleSortBy, handleSortOrder,
+        visibleItems, processedCount, totalLimit,
+        visibleCount, isLoadingMore, loaderRef,
+        kpiStats
+    } = useAdminTransactions();
+
     const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
 
     const getTypeUI = (type: TxType) => {
@@ -51,16 +32,18 @@ export default function AdminTransactionsPage() {
             case "payout": return { color: "blue.400", bg: "rgba(66, 153, 225, 0.15)", icon: LuArrowUpRight, label: "Seller Payout" };
             case "subscription": return { color: "purple.400", bg: "rgba(159, 122, 234, 0.15)", icon: LuCreditCard, label: "SaaS Fee" };
             case "refund": return { color: "orange.400", bg: "rgba(237, 137, 54, 0.15)", icon: LuRefreshCcw, label: "Refund" };
+            // 🚀 Added default fallback to prevent 'possibly undefined' crashes
+            default: return { color: "gray.400", bg: "whiteAlpha.200", icon: LuCreditCard, label: "Unknown" }; 
         }
     };
 
     return (
-        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease">
+        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative">
             
             {/* --- HEADER --- */}
-            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={8} gap={4}>
+            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} pt={2} gap={4}>
                 <Box>
-                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Global Ledger</Text>
+                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Global Ledger ({totalLimit})</Text>
                     <Text color="gray.400" fontSize="sm">Track all payments, payouts, fees, and refunds across the platform.</Text>
                 </Box>
                 <Button bg="whiteAlpha.100" color="white" rounded="lg" h="45px" px={6} _hover={{ bg: "whiteAlpha.200" }} display="flex" gap={2}>
@@ -68,9 +51,48 @@ export default function AdminTransactionsPage() {
                 </Button>
             </Flex>
 
-            {/* --- KPI CARDS --- */}
+            {/* --- STICKY TOOLBAR --- */}
+            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} mx={{ base: -4, lg: 0 }} px={{ base: 4, lg: 0 }} borderBottom="1px solid" borderColor="whiteAlpha.100">
+                <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
+                    <Flex flex={1} minW="300px" align="center" {...controlStyles}>
+                        <Icon as={LuSearch} color="gray.500" mr={2} />
+                        <Input 
+                            placeholder="Search by Trx ID, Tenant, or Customer..." border="none" color="white" h="full" px={0} 
+                            _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={handleSearch} 
+                        />
+                    </Flex>
+                    
+                    <Flex gap={3} w={{ base: "full", md: "auto" }}>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "160px" }}>
+                            <select value={typeFilter} onChange={handleTypeFilter} style={nativeSelectStyle}>
+                                <option value="all" style={{ background: "#1A1C23" }}>All Types</option>
+                                <option value="order_payment" style={{ background: "#1A1C23" }}>Payment In</option>
+                                <option value="payout" style={{ background: "#1A1C23" }}>Payouts</option>
+                                <option value="subscription" style={{ background: "#1A1C23" }}>Subscriptions</option>
+                                <option value="refund" style={{ background: "#1A1C23" }}>Refunds</option>
+                            </select>
+                        </Box>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "160px" }}>
+                            <select value={sortBy} onChange={handleSortBy} style={nativeSelectStyle}>
+                                <option value="date" style={{ background: "#1A1C23" }}>Sort: Date</option>
+                                <option value="amount" style={{ background: "#1A1C23" }}>Sort: Gross Amount</option>
+                                <option value="fee" style={{ background: "#1A1C23" }}>Sort: Platform Fee</option>
+                            </select>
+                        </Box>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "160px" }}>
+                            <select value={sortOrder} onChange={handleSortOrder} style={nativeSelectStyle}>
+                                <option value="desc" style={{ background: "#1A1C23" }}>Newest / Highest</option>
+                                <option value="asc" style={{ background: "#1A1C23" }}>Oldest / Lowest</option>
+                            </select>
+                        </Box>
+                    </Flex>
+                </Flex>
+            </Box>
+
+            {/* --- DYNAMIC KPI CARDS --- */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
-                {KPI_STATS.map((stat, idx) => (
+                
+                {kpiStats.map((stat: { label: string; value: string; trend: string }, idx: number) => (
                     <Box key={idx} bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
                         <Flex justify="space-between" align="start" mb={2}>
                             <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">{stat.label}</Text>
@@ -81,89 +103,82 @@ export default function AdminTransactionsPage() {
                 ))}
             </SimpleGrid>
 
-            {/* --- FILTERS --- */}
-            <Flex gap={4} mb={6}>
-                <Flex flex={1} align="center" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={4} _focusWithin={{ borderColor: brandColor }}>
-                    <Icon as={LuSearch} color="gray.500" />
-                    <Input 
-                        placeholder="Search by Trx ID, Tenant, or Customer..." border="none" color="white" h="50px" 
-                        _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </Flex>
-                <Button h="50px" px={6} bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" color="white" rounded="xl" _hover={{ bg: "whiteAlpha.50" }} display="flex" gap={2}>
-                    <Icon as={LuFilter} /> <Text display={{ base: "none", sm: "block" }}>Filter Type</Text>
-                </Button>
-            </Flex>
-
             {/* --- TRANSACTIONS GRID --- */}
-            <VStack align="stretch" gap={3}>
-                <Grid templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 1fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Transaction & Date</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Tenant (Shop)</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Type</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Gross Amount</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Platform Fee</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="center">Status</Text>
-                </Grid>
+            {visibleItems.length === 0 ? (
+                <Flex justify="center" align="center" py={20} direction="column">
+                    <Text color="gray.400" fontSize="lg" fontWeight="bold">No transactions found.</Text>
+                </Flex>
+            ) : (
+                <VStack align="stretch" gap={3}>
+                    <Grid templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 1fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Transaction & Date</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Tenant (Shop)</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Type</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Gross Amount</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Platform Fee</Text>
+                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="center">Status</Text>
+                    </Grid>
 
-                {transactions.map((tx) => {
-                    const ui = getTypeUI(tx.type);
-                    return (
-                        <Grid 
-                            key={tx.id} 
-                            templateColumns={{ base: "1fr", md: "1.5fr 1.5fr 1fr", xl: "1.5fr 1.5fr 1fr 1fr 1fr 1fr 50px" }} 
-                            gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.50"
-                            alignItems="center" cursor="pointer" transition="all 0.2s"
-                            _hover={{ borderColor: brandColor, transform: "translateY(-2px)", shadow: "lg" }}
-                            onClick={() => setSelectedTx(tx)}
-                        >
-                            {/* Trx ID & Date */}
-                            <Box overflow="hidden">
-                                <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{tx.id}</Text>
-                                <Text color="gray.500" fontSize="xs">{tx.date}</Text>
-                            </Box>
+                    {visibleItems.map((tx: Transaction) => {
+                        const ui = getTypeUI(tx.type);
+                        return (
+                            <Grid 
+                                key={tx.id} 
+                                templateColumns={{ base: "1fr", md: "1.5fr 1.5fr 1fr", xl: "1.5fr 1.5fr 1fr 1fr 1fr 1fr 50px" }} 
+                                gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.50"
+                                alignItems="center" cursor="pointer" transition="all 0.2s"
+                                _hover={{ borderColor: brandColor, transform: "translateY(-2px)", shadow: "lg" }}
+                                onClick={() => setSelectedTx(tx)}
+                            >
+                                <Box overflow="hidden">
+                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{tx.id}</Text>
+                                    <Text color="gray.500" fontSize="xs">{tx.date}</Text>
+                                </Box>
 
-                            {/* Tenant */}
-                            <Flex align="center" gap={2} display={{ base: "none", md: "flex" }}>
-                                <Avatar.Root size="xs"><Avatar.Fallback name={tx.tenant} bg="whiteAlpha.200" color="white" /></Avatar.Root>
-                                <Text color="gray.300" fontSize="sm" fontWeight="medium" lineClamp={1}>{tx.tenant}</Text>
-                            </Flex>
+                                <Flex align="center" gap={2} display={{ base: "none", md: "flex" }}>
+                                    <Avatar.Root size="xs"><Avatar.Fallback name={tx.tenant} bg="whiteAlpha.200" color="white" /></Avatar.Root>
+                                    <Text color="gray.300" fontSize="sm" fontWeight="medium" lineClamp={1}>{tx.tenant}</Text>
+                                </Flex>
 
-                            {/* Type Badge */}
-                            <Flex display={{ base: "none", xl: "flex" }}>
-                                <Badge bg={ui.bg} color={ui.color} px={2.5} py={1} rounded="md" display="flex" alignItems="center" gap={1.5}>
-                                    <Icon as={ui.icon} /> {ui.label}
-                                </Badge>
-                            </Flex>
+                                <Flex display={{ base: "none", xl: "flex" }}>
+                                    <Badge bg={ui.bg} color={ui.color} px={2.5} py={1} rounded="md" display="flex" alignItems="center" gap={1.5}>
+                                        <Icon as={ui.icon} /> {ui.label}
+                                    </Badge>
+                                </Flex>
 
-                            {/* Gross Amount */}
-                            <Text color="white" fontWeight="black" fontSize="sm" textAlign={{ base: "left", xl: "right" }}>
-                                ₦{tx.amount.toLocaleString()}
-                            </Text>
+                                <Text color="white" fontWeight="black" fontSize="sm" textAlign={{ base: "left", xl: "right" }}>
+                                    ₦{tx.amount.toLocaleString()}
+                                </Text>
 
-                            {/* Platform Fee */}
-                            <Text color={brandColor} fontWeight="bold" fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right">
-                                {tx.platformFee === 0 ? "—" : `₦${tx.platformFee.toLocaleString()}`}
-                            </Text>
+                                <Text color={brandColor} fontWeight="bold" fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right">
+                                    {tx.platformFee === 0 ? "—" : `₦${Math.abs(tx.platformFee).toLocaleString()}`}
+                                </Text>
 
-                            {/* Status */}
-                            <Flex justify={{ base: "flex-start", xl: "center" }}>
-                                <Badge 
-                                    bg={tx.status === 'completed' ? "rgba(92, 172, 125, 0.15)" : tx.status === 'pending' ? "rgba(236, 201, 75, 0.15)" : "rgba(229, 62, 62, 0.15)"} 
-                                    color={tx.status === 'completed' ? brandColor : tx.status === 'pending' ? "yellow.400" : "red.400"} 
-                                    px={2.5} py={1} rounded="md" textTransform="uppercase"
-                                >
-                                    {tx.status}
-                                </Badge>
-                            </Flex>
+                                <Flex justify={{ base: "flex-start", xl: "center" }}>
+                                    <Badge 
+                                        bg={tx.status === 'completed' ? "rgba(92, 172, 125, 0.15)" : tx.status === 'pending' ? "rgba(236, 201, 75, 0.15)" : "rgba(229, 62, 62, 0.15)"} 
+                                        color={tx.status === 'completed' ? brandColor : tx.status === 'pending' ? "yellow.400" : "red.400"} 
+                                        px={2.5} py={1} rounded="md" textTransform="uppercase"
+                                    >
+                                        {tx.status}
+                                    </Badge>
+                                </Flex>
 
-                            <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                                <Icon as={LuEllipsisVertical} color="gray.500" />
-                            </Flex>
-                        </Grid>
-                    );
-                })}
-            </VStack>
+                                <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
+                                    <Icon as={LuEllipsisVertical} color="gray.500" />
+                                </Flex>
+                            </Grid>
+                        );
+                    })}
+
+                    {/* Used isLoadingMore to actually trigger the spinner visibility */}
+                    {visibleCount < processedCount && (
+                        <Flex ref={loaderRef} justify="center" align="center" py={8} h="80px">
+                            {isLoadingMore && <Spinner color="#5cac7d" size="md" />}
+                        </Flex>
+                    )}
+                </VStack>
+            )}
 
             {/* --- TRANSACTION DETAILS DRAWER --- */}
             <Box position="fixed" inset={0} zIndex={9999} pointerEvents={selectedTx ? "auto" : "none"}>

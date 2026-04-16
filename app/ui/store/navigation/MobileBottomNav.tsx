@@ -15,7 +15,7 @@ const MOBILE_NAV_ITEMS = [
     { label: "Home", icon: LuHouse, path: "/store" },
     { label: "Wishlist", icon: LuHeart, path: "/store/saved" },
     { label: "Cart", icon: LuShoppingCart, path: "/store/cart", badge: 2 },
-    // 🚀 Added Bell explicitly as a nav item so it fits perfectly in the row
+    
     { label: "Alerts", icon: LuBell, path: "#notifications", badge: 5 }, 
     { label: "Profile", icon: LuUser, path: "/store/settings" },
 ];
@@ -117,7 +117,7 @@ export const MobileBottomNav = ({ brandColor = "#5cac7d" }: MobileBottomNavProps
                         </Flex>
                     );
 
-                    // 🚀 If it's the Bell, render it as a clickable Box instead of a Link
+                    
                     if (isBell) {
                         return (
                             <Box key={item.label} flex={1} display="flex" justifyContent="center" cursor="pointer" onClick={() => setIsNotifOpen(!isNotifOpen)}>
@@ -126,7 +126,7 @@ export const MobileBottomNav = ({ brandColor = "#5cac7d" }: MobileBottomNavProps
                         );
                     }
 
-                    // Otherwise, render the standard Next.js Link
+                
                     return (
                         <Link href={item.path} key={item.label} style={{ textDecoration: "none", flex: 1, display: "flex", justifyContent: "center" }} onClick={() => setIsNotifOpen(false)}>
                             {content}
