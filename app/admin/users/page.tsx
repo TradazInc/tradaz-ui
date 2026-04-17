@@ -1,13 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, SimpleGrid, Avatar, IconButton, Spinner
+    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, Avatar, IconButton, Spinner
 } from "@chakra-ui/react";
 import { 
     LuSearch, LuPlus, LuShieldAlert, LuKey, LuUserX, LuVenetianMask, 
     LuShield, LuShieldCheck, LuEllipsisVertical, LuX, LuMonitorSmartphone, LuTrash2, LuStore
 } from "react-icons/lu";
-
 
 import { useAdminUsers, AdminUser, Role } from "@/app/hooks/useAdminUsers";
 
@@ -17,7 +16,7 @@ const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor:
 export default function AdminUsersPage() {
     const brandColor = "#5cac7d";
     
-    //Call the Hook
+    // Call the Hook
     const {
         searchQuery, roleFilter, statusFilter, sortBy, sortOrder,
         handleSearch, handleRoleFilter, handleStatusFilter, handleSortBy, handleSortOrder,
@@ -47,19 +46,19 @@ export default function AdminUsersPage() {
             {/* --- HEADER (Scrolls naturally) --- */}
             <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} pt={2} gap={4}>
                 <Box>
-                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Global Users ({totalLimit})</Text>
+                    <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Global Users ({totalLimit})</Text>
                     <Text color="gray.400" fontSize="sm">Showing <Text as="span" color="white" fontWeight="bold">{visibleItems.length}</Text> of <Text as="span" color="white" fontWeight="bold">{processedCount}</Text> • Manage platform admins, shop owners, and customers.</Text>
                 </Box>
-                <Button bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2} onClick={() => handleAction("create-user")}>
+                <Button w={{ base: "full", md: "auto" }} bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2} onClick={() => handleAction("create-user")}>
                     <Icon as={LuPlus} /> Add Global User
                 </Button>
             </Flex>
 
             {/* --- STICKY TOOLBAR --- */}
             <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} mx={{ base: -4, lg: 0 }} px={{ base: 4, lg: 0 }} borderBottom="1px solid" borderColor="whiteAlpha.100">
-                <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
+                <Flex direction={{ base: "column", lg: "row" }} gap={3} w="full">
                     {/* Search */}
-                    <Flex flex={1} minW="300px" align="center" {...controlStyles}>
+                    <Flex flex={1} w={{ base: "full", lg: "auto" }} minW={{ lg: "300px" }} align="center" {...controlStyles}>
                         <Icon as={LuSearch} color="gray.500" mr={2} />
                         <Input 
                             placeholder="Search by name, email, or tenant..." border="none" color="white" h="full" px={0} 
@@ -68,8 +67,8 @@ export default function AdminUsersPage() {
                     </Flex>
                     
                     {/* Functional Dropdowns */}
-                    <Flex gap={3} w={{ base: "full", md: "auto" }} wrap="wrap">
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "150px" }}>
+                    <Flex gap={3} w={{ base: "full", lg: "auto" }} wrap="wrap">
+                        <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "150px" }}>
                             <select value={roleFilter} onChange={handleRoleFilter} style={nativeSelectStyle}>
                                 <option value="all" style={{ background: "#1A1C23" }}>All Roles</option>
                                 <option value="super_admin" style={{ background: "#1A1C23" }}>Platform Admins</option>
@@ -78,21 +77,21 @@ export default function AdminUsersPage() {
                                 <option value="customer" style={{ background: "#1A1C23" }}>Customers</option>
                             </select>
                         </Box>
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                        <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "140px" }}>
                             <select value={statusFilter} onChange={handleStatusFilter} style={nativeSelectStyle}>
                                 <option value="all" style={{ background: "#1A1C23" }}>All Statuses</option>
                                 <option value="active" style={{ background: "#1A1C23" }}>Active</option>
                                 <option value="banned" style={{ background: "#1A1C23" }}>Banned</option>
                             </select>
                         </Box>
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "150px" }}>
+                        <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "150px" }}>
                             <select value={sortBy} onChange={handleSortBy} style={nativeSelectStyle}>
                                 <option value="name" style={{ background: "#1A1C23" }}>Sort: Name</option>
                                 <option value="tenant" style={{ background: "#1A1C23" }}>Sort: Tenant</option>
                                 <option value="role" style={{ background: "#1A1C23" }}>Sort: Role</option>
                             </select>
                         </Box>
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "150px" }}>
+                        <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "150px" }}>
                             <select value={sortOrder} onChange={handleSortOrder} style={nativeSelectStyle}>
                                 <option value="asc" style={{ background: "#1A1C23" }}>A-Z / Ascending</option>
                                 <option value="desc" style={{ background: "#1A1C23" }}>Z-A / Descending</option>
@@ -122,7 +121,8 @@ export default function AdminUsersPage() {
                         return (
                             <Grid 
                                 key={user.id} 
-                                templateColumns={{ base: "1fr", md: "2fr 1.5fr", xl: "2fr 1.5fr 1.5fr 1fr 1fr 50px" }} 
+                                
+                                templateColumns={{ base: "1fr auto", md: "2fr 1.5fr auto", xl: "2fr 1.5fr 1.5fr 1fr 1fr 50px" }} 
                                 gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.50"
                                 alignItems="center" cursor="pointer" transition="all 0.2s"
                                 _hover={{ borderColor: "whiteAlpha.300", transform: "translateY(-2px)", shadow: "lg" }}
@@ -151,8 +151,8 @@ export default function AdminUsersPage() {
                                     {user.tenant}
                                 </Text>
 
-                                {/* Status */}
-                                <Box display={{ base: "none", xl: "block" }}>
+                                {/* Status (Now visible on mobile!) */}
+                                <Box display="block">
                                     <Badge bg={user.status === 'active' ? "rgba(92, 172, 125, 0.15)" : "rgba(229, 62, 62, 0.15)"} color={user.status === 'active' ? brandColor : "red.400"} px={2.5} py={1} rounded="md">
                                         {user.status.toUpperCase()}
                                     </Badge>
@@ -169,7 +169,7 @@ export default function AdminUsersPage() {
                         );
                     })}
 
-                    {/*  Infinite Scroll Trigger */}
+                    {/* Infinite Scroll Trigger */}
                     {visibleCount < processedCount && (
                         <Flex ref={loaderRef} justify="center" align="center" py={8} h="80px">
                             {isLoadingMore && <Spinner color="#5cac7d" size="md" />}
@@ -206,7 +206,7 @@ export default function AdminUsersPage() {
                                     <Text color="white" fontSize="xl" fontWeight="black">{selectedUser.name}</Text>
                                     <Text color="gray.400" fontSize="sm" mb={3}>{selectedUser.email}</Text>
                                     
-                                    <Flex gap={2} mt={1}>
+                                    <Flex gap={2} mt={1} wrap="wrap" justify="center">
                                         <Badge bg={getRoleUI(selectedUser.role).bg} color={getRoleUI(selectedUser.role).color} px={3} py={1} rounded="md">
                                             {getRoleUI(selectedUser.role).label}
                                         </Badge>
@@ -217,14 +217,14 @@ export default function AdminUsersPage() {
                                 </Flex>
 
                                 {/* Quick Actions */}
-                                <SimpleGrid columns={2} gap={3} mb={8}>
+                                <Grid templateColumns={{ base: "1fr", sm: "1fr 1fr" }} gap={3} mb={8}>
                                     <Button variant="outline" borderColor="whiteAlpha.200" color="white" h="45px" display="flex" gap={2} _hover={{ bg: "whiteAlpha.100" }} onClick={() => handleAction("impersonate-user")}>
                                         <Icon as={LuVenetianMask} color={brandColor} /> Impersonate
                                     </Button>
                                     <Button variant="outline" borderColor="whiteAlpha.200" color="white" h="45px" display="flex" gap={2} _hover={{ bg: "whiteAlpha.100" }} onClick={() => handleAction("set-user-password")}>
                                         <Icon as={LuKey} color="yellow.400" /> Reset Pwd
                                     </Button>
-                                </SimpleGrid>
+                                </Grid>
 
                                 {/* Configuration Section */}
                                 <Text color="white" fontWeight="bold" mb={4} fontSize="sm" textTransform="uppercase" letterSpacing="wider">Global Role & Access</Text>
