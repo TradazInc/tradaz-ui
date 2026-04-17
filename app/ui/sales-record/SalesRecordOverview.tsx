@@ -30,6 +30,7 @@ export const SalesRecordOverview = () => {
       visibleCount={salesState.visibleCount}
       isLoadingMore={salesState.isLoadingMore}
       loaderRef={salesState.loaderRef}
+      onAddSale={salesState.addNewSale}
     />
   );
 };

@@ -202,7 +202,7 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
                   </Flex>
                 )}
 
-                {/* 🚀 Replaced Divider with a pure Box */}
+                
                 <Box
                   w="full"
                   borderBottom="1px solid"

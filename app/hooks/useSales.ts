@@ -2,11 +2,15 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { generateDummySales } from "@/app/lib/data";
 import { SalesRecord } from "@/app/lib/definitions";
 
+export interface ExtendedSalesRecord extends SalesRecord {
+    status?: string;
+}
+
 const TOTAL_SALES = 150;
 const ITEMS_PER_PAGE = 10;
 
 export const useSales = () => {
-    const [allSales] = useState<SalesRecord[]>(() => generateDummySales(TOTAL_SALES));
+    const [allSales, setAllSales] = useState<ExtendedSalesRecord[]>(() => generateDummySales(TOTAL_SALES));
     
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("date"); 
@@ -16,7 +20,35 @@ export const useSales = () => {
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const loaderRef = useRef<HTMLDivElement>(null);
 
-    const [selectedSale, setSelectedSale] = useState<SalesRecord | null>(null);
+    const [selectedSale, setSelectedSale] = useState<ExtendedSalesRecord | null>(null);
+
+    // --- NEW ACTION HANDLERS ---
+    
+    // Add New POS Sale
+    const addNewSale = (saleData: { total: number; discount: number; paymentMethod: string; customerName: string }) => {
+        const newSale: ExtendedSalesRecord = {
+            id: `ORD-${Math.floor(Math.random() * 90000) + 10000}`,
+            transaction: saleData.customerName || "Walk-in Customer",
+            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+            payment: saleData.paymentMethod || "Cash",
+            discount: saleData.discount || 0,
+            total: saleData.total || 0,
+            type: "POS",
+            status: "Completed", 
+            tax: 0,      
+            shipping: 0  
+        };
+        
+        setAllSales(prev => [newSale, ...prev]);
+    };
+
+
+    const updateSaleStatus = (id: string, newStatus: string) => {
+        setAllSales(prev => prev.map(sale => 
+            sale.id === id ? { ...sale, status: newStatus } : sale
+        ));
+        setSelectedSale(prev => prev?.id === id ? { ...prev, status: newStatus } : prev);
+    };
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => { setSearchQuery(e.target.value); setVisibleCount(ITEMS_PER_PAGE); };
     const handleSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => { setSortBy(e.target.value); setVisibleCount(ITEMS_PER_PAGE); };
@@ -59,6 +91,7 @@ export const useSales = () => {
         handleSearch, handleSortBy, handleSortOrder,
         visibleItems, processedSalesLength: processedSales.length,
         visibleCount, isLoadingMore, loaderRef,
-        selectedSale, setSelectedSale
+        selectedSale, setSelectedSale,
+        addNewSale, updateSaleStatus 
     };
 };

@@ -102,7 +102,7 @@ export interface SalesRecord {
     payment: string;
     discount: number;
     tax: number;
-    shipping: string;
+    shipping: number;
     total: number;
 }
 
