@@ -5,27 +5,26 @@ import { useInventory } from "@/app/hooks/useInventory";
 import { ProductDetailView } from "./productDetailView";
 import { InventoryGridView } from "./inventoryGridView";
 
-
-
 export const InventoryOverview = () => {
     
     const inventoryState = useInventory();
 
-    //  routing logic
+    // routing logic
     if (inventoryState.selectedProduct && inventoryState.detailedProduct) {
         return (
-            
             <ProductDetailView 
                 product={inventoryState.detailedProduct}
                 activeImageIdx={inventoryState.activeImageIdx}
                 setActiveImageIdx={inventoryState.setActiveImageIdx}
                 onBack={inventoryState.clearSelection}
+                onDelete={inventoryState.deleteProduct}
+                onRestock={inventoryState.restockProduct}
+                onEdit={inventoryState.editProduct}
             />
         );
     }
 
     return (
-        
         <InventoryGridView 
             visibleItems={inventoryState.visibleItems}
             processedInventoryLength={inventoryState.processedInventoryLength}
@@ -39,6 +38,10 @@ export const InventoryOverview = () => {
             visibleCount={inventoryState.visibleCount}
             isLoadingMore={inventoryState.isLoadingMore}
             loaderRef={inventoryState.loaderRef}
+            onDelete={inventoryState.deleteProduct}
+            onRestock={inventoryState.restockProduct}
+            onEdit={inventoryState.editProduct}
+            toggleFavorite={inventoryState.toggleFavorite} 
         />
     );
 };
