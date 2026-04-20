@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, IconButton, Spinner } from "@chakra-ui/react";
-import { LuSearch, LuRefreshCw, LuDownload, LuEye } from "react-icons/lu";
+import { LuSearch, LuRefreshCw, LuDownload, LuEye, LuPlus } from "react-icons/lu";
 import { SalesRecord } from "@/app/lib/definitions";
+
+import { SalesPosModal, NewSalePayload } from "./SalesPosModal";
 
 const controlStyles = { bg: "whiteAlpha.50", border: "1px solid", borderColor: "whiteAlpha.100", color: "white", h: "40px", rounded: "lg", px: 3, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.100" } };
 const nativeSelectStyle: React.CSSProperties = { backgroundColor: "rgba(255, 255, 255, 0.05)", color: "white", height: "40px", borderRadius: "8px", padding: "0 12px", border: "1px solid rgba(255, 255, 255, 0.1)", outline: "none", cursor: "pointer", fontSize: "14px" };
@@ -16,15 +18,21 @@ interface SalesGridViewProps {
     handleSortOrder: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     onSelectSale: (sale: SalesRecord) => void;
     visibleCount: number; isLoadingMore: boolean; loaderRef: React.RefObject<HTMLDivElement | null>;
+    onAddSale: (saleData: NewSalePayload) => void; 
 }
 
 export const SalesGridView = ({
     visibleItems, processedSalesLength, searchQuery, sortBy, sortOrder,
     handleSearch, handleSortBy, handleSortOrder, onSelectSale,
-    visibleCount, loaderRef
+    visibleCount, isLoadingMore, loaderRef, onAddSale
 }: SalesGridViewProps) => {
+
+    
+    const [isAddingSale, setIsAddingSale] = useState(false);
+
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative">
+            
             <Flex justify="space-between" align="flex-end" mb={6} wrap="wrap" gap={4} pt={2}>
                 <Box>
                     <Flex align="center" gap={3} mb={1}>
@@ -35,15 +43,18 @@ export const SalesGridView = ({
                     </Flex>
                     <Text color="gray.500" fontSize="sm">View {processedSalesLength} sales transactions and track performance.</Text>
                 </Box>
-                <Flex gap={3}>
-                    <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={5} py={2}>
+                <Flex gap={3} h="60px">
+                    <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={5} py={2} display={{ base: "none", md: "block" }}>
                         <Text fontSize="xs" color="gray.400" mb={1}>Total Paid Sales</Text>
                         <Text fontSize="xl" fontWeight="bold" color="#5cac7d">₦15,504,834.27</Text>
                     </Box>
-                    <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={5} py={2}>
+                    <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={5} py={2} display={{ base: "none", md: "block" }}>
                         <Text fontSize="xs" color="gray.400" mb={1}>Total Sales</Text>
                         <Text fontSize="xl" fontWeight="bold" color="white">{processedSalesLength}</Text>
                     </Box>
+                    <Button bg="#5cac7d" color="white" h="full" rounded="xl" _hover={{ bg: "#4a9c6d" }} border="none" px={6} onClick={() => setIsAddingSale(true)}>
+                        <Icon as={LuPlus} mr={2} /> Add Record
+                    </Button>
                 </Flex>
             </Flex>
 
@@ -102,7 +113,6 @@ export const SalesGridView = ({
                                     <Box as="td" py={5} px={5}>
                                         <Flex gap={2}>
                                             <IconButton aria-label="Download" variant="ghost" size="sm" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }}><Icon as={LuDownload} /></IconButton>
-                                            
                                             <IconButton aria-label="View" onClick={() => onSelectSale(sale)} variant="ghost" size="sm" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }}><Icon as={LuEye} /></IconButton>
                                         </Flex>
                                     </Box>
@@ -112,7 +122,7 @@ export const SalesGridView = ({
                     </Box>
                     {visibleCount < processedSalesLength && (
                         <Flex ref={loaderRef} justify="center" align="center" py={8} h="80px">
-                            <Spinner color="#5cac7d" size="md" />
+                            {isLoadingMore && <Spinner color="#5cac7d" size="md" />}
                         </Flex>
                     )}
                 </Box>
@@ -145,6 +155,14 @@ export const SalesGridView = ({
                     </Box>
                 </SimpleGrid>
             </Box>
+
+            {/*  Mount the Modular POS Component here */}
+            <SalesPosModal 
+                isOpen={isAddingSale} 
+                onClose={() => setIsAddingSale(false)} 
+                onAddSale={onAddSale} 
+            />
+
         </Box>
     );
 };

@@ -38,7 +38,7 @@ export const generateDummySales = (count: number): SalesRecord[] => {
         payment: i % 2 === 0 ? "Credit Card" : "Transfer",
         discount: i % 4 === 0 ? 4500 : 0,
         tax: 4500,
-        shipping: i % 3 === 0 ? "Delivery" : "In-Store",
+        shipping: i % 3 === 0 ? 1500 : 0, 
         total: 60000 + (i * 1500),
     }));
 };
