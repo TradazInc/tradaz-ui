@@ -36,7 +36,7 @@ export const useSales = () => {
             type: "POS",
             status: "Completed", 
             tax: 0,      
-            shipping: 0  
+            shipping: 0
         };
         
         setAllSales(prev => [newSale, ...prev]);
