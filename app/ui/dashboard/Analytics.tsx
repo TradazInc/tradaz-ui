@@ -7,7 +7,6 @@ export const Analytics = () => {
         <Box 
             bg="#0A0A0A" 
             p={6} 
-            rounded="lg" 
             border="1px solid #1A1A1A" 
             h="full" 
             minH="350px"
@@ -45,7 +44,6 @@ export const Analytics = () => {
                         color="#888888" 
                         fontSize="12px"
                         fontWeight="500"
-                        rounded="md"
                         _hover={{ bg: "#1A1A1A", color: "white" }}
                         transition="all 0.2s"
                     >
@@ -58,7 +56,6 @@ export const Analytics = () => {
                     flex={1}
                     minH="250px" 
                     bg="#000000" 
-                    rounded="md" 
                     border="1px dashed #1A1A1A" 
                     align="center" 
                     justify="center"

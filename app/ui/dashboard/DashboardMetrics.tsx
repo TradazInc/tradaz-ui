@@ -17,7 +17,7 @@ const MetricCard = ({ metric }: { metric: typeof METRICS[0] }) => {
         <Box
             bg="#0A0A0A"
             border="1px solid #1A1A1A"
-            rounded="lg" // Sharper corners than 2xl
+            
             p={5}
             position="relative"
             overflow="hidden"
@@ -54,7 +54,7 @@ const MetricCard = ({ metric }: { metric: typeof METRICS[0] }) => {
                 
              
                 <Flex align="center" gap={2}>
-                    <Text fontSize="xs" fontWeight="600" color="white" bg="#1A1A1A" px={2} py={0.5} rounded="md" border="1px solid #27272A">
+                    <Text fontSize="xs" fontWeight="600" color="white" bg="#1A1A1A" px={2} py={0.5} border="1px solid #27272A">
                         {metric.trend}
                     </Text>
                     <Text fontSize="xs" color="#888888">vs last month</Text>

@@ -15,13 +15,12 @@ export const RecentActivity = () => {
         <Box 
             bg="#0A0A0A" 
             p={6} 
-            rounded="lg" 
             border="1px solid #1A1A1A" 
             h="full"
             position="relative"
             overflow="hidden"
         >
-            {/* 🚀 Faint Background Grid with Radial Fade */}
+            
             <Box
                 position="absolute"
                 inset={0}
@@ -30,7 +29,7 @@ export const RecentActivity = () => {
                 backgroundSize="24px 24px"
                 zIndex={0}
                 style={{
-                    // Shifted the glow to the top-right for a bit of visual variety on the dashboard
+                
                     maskImage: "radial-gradient(ellipse at top right, black 10%, transparent 70%)",
                     WebkitMaskImage: "radial-gradient(ellipse at top right, black 10%, transparent 70%)"
                 }}
@@ -45,12 +44,12 @@ export const RecentActivity = () => {
                 <VStack align="stretch" gap={5}>
                     {ACTIVITIES.map((activity) => (
                         <Flex key={activity.id} gap={4} align="flex-start">
-                            {/* Sharp, minimalist monochrome dot instead of glowing colors */}
+                        
                             <Circle 
                                 size="8px" 
                                 bg="white" 
                                 mt={1.5} 
-                                boxShadow="0 0 0 4px #1A1A1A" // Creates a neat cut-out effect
+                                boxShadow="0 0 0 4px #1A1A1A" 
                             />
                             <Box>
                                 <Text fontSize="13px" color="white" fontWeight="500">
