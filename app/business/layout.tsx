@@ -31,7 +31,7 @@ export default function DashboardLayout({
   const activeBusiness = businesses.find(b => b.id === activeBusinessId) || businesses[0];
 
   return (
-    <Flex h="100vh" w="full" bg="#0B0D14" overflow="hidden">
+    <Flex h="100vh" w="full" bg="#000000" overflow="hidden">
       
       {/* SIDEBAR */}
       <Sidebar

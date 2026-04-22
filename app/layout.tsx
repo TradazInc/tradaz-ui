@@ -1,6 +1,6 @@
 import { Provider } from "./ui/Provider";
-import { nunito } from "./ui/fonts";
-import { ColorModeProvider } from "../components/ui/color-mode";
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 
 interface Props {
   children: React.ReactNode;
@@ -8,12 +8,22 @@ interface Props {
 
 export default function RootLayout({ children }: Readonly<Props>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={nunito.className}>
+    <html lang="en" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <head>
+        
+        <style>{`
+          * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+          }
+          *::-webkit-scrollbar {
+            display: none !important;
+          }
+        `}</style>
+      </head>
+      <body>
         <Provider>
-          <ColorModeProvider defaultTheme="dark" forcedTheme="dark">
             {children}
-          </ColorModeProvider>
         </Provider>
       </body>
     </html>

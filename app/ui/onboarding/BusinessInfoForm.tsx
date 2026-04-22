@@ -29,10 +29,9 @@ export function BusinessInfoForm({ data, update, onNext }: StepFormProps) {
     useEffect(() => {
         const domain = data.subDomain;
         
-        
         if (!domain || domain.length < 2) return;
         
-        // Wait 500ms after the user stops typing before calling the API
+        
         const timer = setTimeout(async () => {
             const isAvailable = await checkSubdomainAvailability(domain);
             setStatus(isAvailable ? 'available' : 'unavailable');
@@ -41,7 +40,16 @@ export function BusinessInfoForm({ data, update, onNext }: StepFormProps) {
         return () => clearTimeout(timer);
     }, [data.subDomain]);
 
-    const inputStyles = { bg: "whiteAlpha.50", border: "1px solid", borderColor: "whiteAlpha.100", color: "white", _hover: { borderColor: "whiteAlpha.300" }, _focusWithin: { borderColor: "#5cac7d" } };
+    
+    const inputStyles = { 
+        bg: "#0A0A0A", 
+        border: "1px solid", 
+        borderColor: "#333333", 
+        color: "white", 
+        rounded: "none", 
+        _hover: { borderColor: "#666666" }, 
+        _focusWithin: { borderColor: "white" } 
+    };
 
     return (
         <VStack gap={4} align="stretch">
@@ -50,8 +58,8 @@ export function BusinessInfoForm({ data, update, onNext }: StepFormProps) {
             </Field>
 
             <Field label="Store URL (Subdomain)" required>
-                {/* Seamless Split Input UI */}
-                <Flex {...inputStyles} rounded="md" overflow="hidden" align="center" transition="all 0.2s">
+                
+                <Flex {...inputStyles} overflow="hidden" align="center" transition="all 0.2s">
                     <Input 
                         name="subDomain" 
                         value={data.subDomain} 
@@ -60,25 +68,26 @@ export function BusinessInfoForm({ data, update, onNext }: StepFormProps) {
                         size="lg" 
                         border="none" 
                         bg="transparent"
+                        rounded="none"
                         _focus={{ outline: "none", boxShadow: "none" }}
                         px={4}
                     />
-                    <Flex align="center" justify="center" bg="whiteAlpha.100" px={4} h="100%" borderLeft="1px solid" borderColor="whiteAlpha.100" color="gray.400" fontSize="sm" fontWeight="medium" userSelect="none">
+                    <Flex align="center" justify="center" bg="#111111" px={4} h="100%" borderLeft="1px solid" borderColor="#333333" color="#888888" fontSize="13px" fontWeight="500" userSelect="none">
                         .tradaz.com
                     </Flex>
                 </Flex>
                 
                 {/* Dynamic Status Indicator */}
                 <Box mt={2} h="20px">
-                    {status === 'idle' && <Text fontSize="xs" color="gray.500">Must be unique letters, numbers, or hyphens.</Text>}
+                    {status === 'idle' && <Text fontSize="12px" color="#888888">Must be unique letters, numbers, or hyphens.</Text>}
                     {status === 'checking' && (
-                        <Flex align="center" gap={2} color="gray.400">
-                            <Spinner size="xs" /> <Text fontSize="xs">Checking availability...</Text>
+                        <Flex align="center" gap={2} color="#888888">
+                            <Spinner size="xs" /> <Text fontSize="12px">Checking availability...</Text>
                         </Flex>
                     )}
-                    {/* domain text updates */}
-                    {status === 'available' && <Text fontSize="xs" color="#5cac7d" fontWeight="medium">  {data.subDomain}.tradaz.com is Available!</Text>}
-                    {status === 'unavailable' && <Text fontSize="xs" color="red.400" fontWeight="medium">  {data.subDomain}.tradaz.com is Not available. Try another one.</Text>}
+                    
+                    {status === 'available' && <Text fontSize="12px" color="white" fontWeight="600"> {data.subDomain}.tradaz.com is Available!</Text>}
+                    {status === 'unavailable' && <Text fontSize="12px" color="red.400" fontWeight="600"> {data.subDomain}.tradaz.com is Not available. Try another one.</Text>}
                 </Box>
             </Field>
 
@@ -95,10 +104,14 @@ export function BusinessInfoForm({ data, update, onNext }: StepFormProps) {
                 <Textarea name="about" value={data.about} onChange={handleChange} placeholder="What do you sell?" size="lg" rows={3} resize="none" {...inputStyles} />
             </Field>
 
+            
             <Button
-                size="lg" w="full" mt={2} bg="#5cac7d" color="white" onClick={onNext}
+                size="lg" w="full" mt={2} 
+                bg="white" color="black" rounded="none" fontWeight="bold" fontSize="14px"
+                onClick={onNext}
                 disabled={!data.businessName || status !== 'available'}
-                _hover={{ bg: "#4a9c6d" }} _disabled={{ opacity: 0.5, cursor: "not-allowed", bg: "whiteAlpha.200", color: "gray.400" }}
+                _hover={{ bg: "#E5E5E5" }} 
+                _disabled={{ opacity: 1, cursor: "not-allowed", bg: "#1A1A1A", color: "#666666" }}
                 transition="all 0.2s ease"
             >
                 Next Step

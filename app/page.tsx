@@ -29,6 +29,7 @@ const Hero = () => {
         display="flex"
         alignItems="center"
       >
+        
         <Container maxW="container.xl" px={{ base: 6, md: 12 }} h="full">
           <MotionBox
             display="grid"
