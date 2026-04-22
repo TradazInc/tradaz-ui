@@ -15,8 +15,7 @@ import {
     LuPercent, LuShield, LuPalette
 } from "react-icons/lu";
 import TradazHeader from "../TradazHeader";
-import { SidebarProps, Store } from "@/app/lib/definitions";
-import { AddStoreModal } from "../onboarding/AddStoreModal";
+import { SidebarProps } from "@/app/lib/definitions";
 
 // --- RESTRUCTURED NAV ITEMS WITH SPECIFIC SUB-ICONS ---
 const OTHER_NAV_ITEMS = [
@@ -40,12 +39,8 @@ const DASHBOARD_CHILDREN = [
 
 export const Sidebar = ({ 
     isOpen, 
-    onClose, 
-    availableStores, 
-    activeStoreId, 
-    onStoreChange 
+    onClose 
 }: SidebarProps) => {
-    const [isAddStoreOpen, setIsAddStoreOpen] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [openMenus, setOpenMenus] = useState<string[]>([]);
     const isMenuExpanded = openMenus.length > 0; 
@@ -57,7 +52,6 @@ export const Sidebar = ({
     const subIconStyle = { strokeWidth: "2.5", boxSize: "14px", flexShrink: 0 };
 
     return (
-        <>
         <Box
             w={{ base: "280px", lg: isCollapsed ? "80px" : "280px" }} 
             h="100vh" 
@@ -67,13 +61,12 @@ export const Sidebar = ({
             position={{ base: "fixed", lg: "sticky" }} top={0} left={0}
             transform={{ base: isOpen ? "translateX(0)" : "translateX(-100%)", lg: "translateX(0)" }}
             zIndex={1000} display="flex" flexDirection="column" 
-            py={4} 
             px={0} 
             transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             color="white"
         >
             {/* --- HEADER --- */}
-            <Flex justify={isCollapsed ? "center" : "space-between"} align="center" mb={6} px={isCollapsed ? 2 : 4} h="32px" overflow="hidden" flexShrink={0}>
+            <Flex justify={isCollapsed ? "center" : "space-between"} align="center" px={isCollapsed ? 2 : 4} h="65px" borderBottom="1px solid #1A1A1A" overflow="hidden" flexShrink={0}>
                 {!isCollapsed ? (
                     <Link href='/'>
                         <TradazHeader/>
@@ -88,7 +81,7 @@ export const Sidebar = ({
 
             {/* --- SCROLLABLE MENU SECTION --- */}
             <Box 
-                flex={1} overflowY="auto" overflowX="hidden"
+                flex={1} overflowY="auto" overflowX="hidden" pt={2}
                 css={{ 
                     '&::-webkit-scrollbar': { width: '4px' }, 
                     '&::-webkit-scrollbar-track': { background: 'transparent' },
@@ -103,7 +96,6 @@ export const Sidebar = ({
                     variant="plain"
                     value={openMenus}
                     onValueChange={(e) => setOpenMenus(e.value)}
-                    borderTop="1px solid #1A1A1A" 
                 >
                     {/* Dashboard */}
                     <Accordion.Item value="Dashboard" border="none" borderBottom="1px solid #1A1A1A" mb={0}>
@@ -123,7 +115,6 @@ export const Sidebar = ({
                         <Accordion.ItemContent p={0} pb={1} display={isCollapsed ? "none" : "block"}>
                             <VStack align="start" gap={0}>
                                 {DASHBOARD_CHILDREN.map((child, cIdx) => {
-                                    
                                     const path = child.label === "Overview" ? "/business" : `/business/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
                                     return (
                                         <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
@@ -134,43 +125,6 @@ export const Sidebar = ({
                                         </Link>
                                     );
                                 })}
-                            </VStack>
-                        </Accordion.ItemContent>
-                    </Accordion.Item>
-
-                    {/* Stores */}
-                    <Accordion.Item value="Stores" border="none" borderBottom="1px solid #1A1A1A" mb={0}>
-                        <Accordion.ItemTrigger 
-                            _hover={triggerHoverStyle} py={3} px={isCollapsed ? 0 : 4} rounded="none" cursor="pointer"
-                            w="full" display="flex" justifyContent={isCollapsed ? "center" : "space-between"}
-                            onClick={() => { if(isCollapsed) setIsCollapsed(false); }}
-                            color={openMenus.includes("Stores") ? "white" : "#A1A1AA"}
-                            transition="all 0.2s"
-                        >
-                            <Flex align="center" justify={isCollapsed ? "center" : "flex-start"} gap={3}>
-                                <Icon as={LuStore} css={iconStyle} />
-                                {!isCollapsed && <Text fontSize="14px" fontWeight="500" whiteSpace="nowrap">Stores</Text>}
-                            </Flex>
-                            {!isCollapsed && <Accordion.ItemIndicator><Icon as={LuChevronDown} color="#666666" css={{ strokeWidth: 2 }} /></Accordion.ItemIndicator>}
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent p={0} pb={1} display={isCollapsed ? "none" : "block"}>
-                            <VStack align="start" gap={0}>
-                                {availableStores?.map((s: Store) => (
-                                    <Flex 
-                                        key={s.id} align="center" gap={3} py={2.5} pl={isCollapsed ? 0 : 10} pr={4} w="full" cursor="pointer" rounded="none"
-                                        color={s.id === activeStoreId ? "white" : "#888888"} 
-                                        bg={s.id === activeStoreId ? "#111111" : "transparent"} 
-                                        _hover={subItemHoverStyle} transition="all 0.2s"
-                                        onClick={() => { onStoreChange(s.id); onClose(); }}
-                                    >
-                                        <Icon as={LuStore} css={subIconStyle} color={s.id === activeStoreId ? "white" : "#52525B"} />
-                                        <Text fontSize="13px" fontWeight={s.id === activeStoreId ? "600" : "400"} whiteSpace="nowrap">{s.name}</Text>
-                                    </Flex>
-                                ))}
-                                <Flex onClick={() => setIsAddStoreOpen(true)} align="center" gap={3} py={2.5} pl={isCollapsed ? 0 : 10} pr={4} rounded="none" color="white" cursor="pointer" _hover={{ bg: "#111111" }} w="full" transition="all 0.2s" whiteSpace="nowrap">
-                                    <Icon as={LuPlus} css={subIconStyle} />
-                                    <Text fontSize="13px" fontWeight="500">Add New Store</Text>
-                                </Flex>
                             </VStack>
                         </Accordion.ItemContent>
                     </Accordion.Item>
@@ -196,7 +150,6 @@ export const Sidebar = ({
                             <Accordion.ItemContent p={0} pb={1} display={isCollapsed ? "none" : "block"}>
                                 <VStack align="start" gap={0}>
                                     {item.children.map((child, cIdx) => {
-                                        
                                         const path = `/business/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
                                         return (
                                             <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
@@ -226,13 +179,13 @@ export const Sidebar = ({
                             transition="all 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
                             mb={isMenuExpanded ? 0 : 3}
                         >
-                            <Box p={3} bg="#0A0A0A" border="1px solid #1A1A1A" rounded="xl">
+                            <Box p={3} bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none">
                                 <Flex align="center" justify="space-between" mb={3}>
                                     <Text fontSize="13px" fontWeight="500" color="#A1A1AA" whiteSpace="nowrap">
                                         Storage: 45%
                                     </Text>
                                 </Flex>
-                                <Button h="32px" fontSize="13px" fontWeight="500" w="full" bg="white" color="black" _hover={{ bg: "#E5E5E5" }} transition="all 0.2s" border="none" rounded="md">
+                                <Button h="32px" fontSize="13px" fontWeight="bold" w="full" bg="white" color="black" _hover={{ bg: "#E5E5E5" }} transition="all 0.2s" border="none" rounded="none">
                                     Upgrade Plan
                                 </Button>
                             </Box>
@@ -246,7 +199,7 @@ export const Sidebar = ({
                             transition="all 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
                             mb={isMenuExpanded ? 2 : 0}
                         >
-                            <Flex align="center" justify="space-between" bg="#0A0A0A" p={2.5} rounded="lg" border="1px solid #1A1A1A">
+                            <Flex align="center" justify="space-between" bg="#0A0A0A" p={2.5} rounded="none" border="1px solid #1A1A1A">
                                 <Text fontSize="13px" color="#A1A1AA" whiteSpace="nowrap">45% Storage</Text>
                                 <Flex align="center" gap={1} color="white" cursor="pointer" _hover={{ opacity: 0.8 }}>
                                     <Text fontSize="12px" fontWeight="500">Upgrade</Text>
@@ -256,26 +209,22 @@ export const Sidebar = ({
                         </Box>
 
                         {/* LOGOUT BUTTON */}
-                        <Flex align="center" gap={3} px={3} py={2} cursor="pointer" rounded="md" color="#A1A1AA" _hover={{ bg: "#111111", color: "white" }} transition="all 0.2s">
-                            <Icon as={LuLogOut} css={iconStyle} />
-                            <Text fontSize="14px" fontWeight="500" whiteSpace="nowrap">Log Out</Text>
+                        <Flex align="center" gap={3} px={3} py={2} cursor="pointer" rounded="none" color="red.500" _hover={{ bg: "rgba(229, 62, 62, 0.1)" }} transition="all 0.2s">
+                    
+                            <Icon as={LuLogOut} color="red.500" css={iconStyle} />
+                            <Text fontSize="14px" fontWeight="600" whiteSpace="nowrap">Log Out</Text>
                         </Flex>
                     </Box>
                 ) : (
                     /* COLLAPSED ICONS */
                     <VStack gap={4} py={2}>
-                        <Flex justify="center" align="center" cursor="pointer" color="#A1A1AA" _hover={{ bg: "#111111", color: "white" }} p={2} rounded="md">
-                            <Icon as={LuLogOut} css={iconStyle} />
+                        <Flex justify="center" align="center" cursor="pointer" color="red.500" _hover={{ bg: "rgba(229, 62, 62, 0.1)" }} p={2} rounded="none">
+                        
+                            <Icon as={LuLogOut} color="red.500" css={iconStyle} />
                         </Flex>
                     </VStack>
                 )}
             </Box>
         </Box>
-        
-        <AddStoreModal 
-            isOpen={isAddStoreOpen} 
-            onClose={() => setIsAddStoreOpen(false)} 
-        />
-        </>
     );
 };

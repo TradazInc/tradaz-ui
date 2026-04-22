@@ -5,7 +5,7 @@ import { LuTrendingUp, LuDollarSign, LuShoppingCart, LuTrendingDown } from "reac
 import { MetricCardProps } from '@/app/lib/definitions';
 
 const MetricCard = ({ title, value, trend, icon, isNegative = false }: MetricCardProps) => (
-    <Box p={6} bg="whiteAlpha.50" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+    <Box p={6} bg="whiteAlpha.50"  border="1px solid" borderColor="whiteAlpha.100">
         <Flex justify="space-between" align="center" mb={4}>
             <Text color="gray.400" fontSize="sm" fontWeight="medium">{title}</Text>
             <Flex justify="center" align="center" w="32px" h="32px" bg="whiteAlpha.100" rounded="lg">
@@ -25,7 +25,7 @@ const MetricCard = ({ title, value, trend, icon, isNegative = false }: MetricCar
 export const AnalyticsOverview = () => {
     return (
         <Box w="full" animation="fade-in 0.3s ease">
-            <Text color="#5cac7d" fontWeight="bold" mb={6} fontSize="xl">
+            <Text color="white" fontWeight="bold" mb={6} fontSize="xl">
                 Analytics & Performance
             </Text>
 
@@ -37,7 +37,7 @@ export const AnalyticsOverview = () => {
             </SimpleGrid>
 
             {/* Chart Placeholder*/}
-            <Box w="full" h="400px" bg="whiteAlpha.50" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6} display="flex" alignItems="center" justifyContent="center" flexDirection="column">
+            <Box w="full" h="400px" bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100" p={6} display="flex" alignItems="center" justifyContent="center" flexDirection="column">
                 <Icon as={LuTrendingUp} boxSize="40px" color="whiteAlpha.200" mb={4} />
                 <Text fontSize="lg" color="white" fontWeight="bold" mb={2}>Revenue Over Time</Text>
                 <Text color="gray.500" fontSize="sm">Your interactive chart will render here.</Text>
