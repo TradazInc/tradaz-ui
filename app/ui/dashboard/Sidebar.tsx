@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Box, VStack, Text, Accordion, Icon, Flex, IconButton, Button } from "@chakra-ui/react";
+import { Box, VStack, Text, Accordion, Icon, Flex, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { 
     // Main Icons
     LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
-    LuStore, LuX, LuPlus, LuScale, LuLandmark, LuTicketPercent,
+    LuPlus, LuScale, LuLandmark, LuTicketPercent,
     LuZap, LuUserPlus, LuGift, LuScanLine, LuChevronDown,
     // Sub-nav Icons
     LuActivity, LuFileText, LuShoppingCart, LuTerminal,
@@ -14,7 +14,7 @@ import {
     LuLayoutGrid, LuImage, LuHeart, LuTicket, LuTag, LuUser, LuTruck,
     LuPercent, LuShield, LuPalette
 } from "react-icons/lu";
-import TradazHeader from "../TradazHeader";
+// import TradazHeader from "../TradazHeader";
 import { SidebarProps } from "@/app/lib/definitions";
 
 // --- RESTRUCTURED NAV ITEMS WITH SPECIFIC SUB-ICONS ---
@@ -65,19 +65,8 @@ export const Sidebar = ({
             transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             color="white"
         >
-            {/* --- HEADER --- */}
-            <Flex justify={isCollapsed ? "center" : "space-between"} align="center" px={isCollapsed ? 2 : 4} h="65px" borderBottom="1px solid #1A1A1A" overflow="hidden" flexShrink={0}>
-                {!isCollapsed ? (
-                    <Link href='/'>
-                        <TradazHeader/>
-                    </Link>
-                ) : (
-                    <Icon as={LuStore} color="white" css={{ strokeWidth: "2.5", boxSize: "22px" }} /> 
-                )}
-                <IconButton aria-label="Close" variant="ghost" display={{ base: "flex", lg: "none" }} onClick={onClose} color="#888888" size="sm" _hover={{ color: "white", bg: "#1A1A1A" }}>
-                    <Icon as={LuX} />
-                </IconButton>
-            </Flex>
+        
+
 
             {/* --- SCROLLABLE MENU SECTION --- */}
             <Box 

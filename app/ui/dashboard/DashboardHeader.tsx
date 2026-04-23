@@ -11,6 +11,7 @@ import { AddStoreModal } from "../onboarding/AddStoreModal";
 import { DashboardHeaderProps, Store } from "@/app/lib/definitions"; 
 
 
+
 interface ExtendedHeaderProps extends DashboardHeaderProps {
     availableStores?: Store[];
     activeStoreId?: string;
@@ -44,12 +45,13 @@ export const DashboardHeader = ({
 
     return (
         <>
+    
             {/* --- GLOBAL OVERLAY TO CLOSE DROPDOWNS --- */}
             {activeDropdown && (
                 <Box position="fixed" inset={0} zIndex={40} onClick={closeAll} />
             )}
 
-            <Flex as="header" position="sticky" top={0} zIndex={100} justify="space-between" align="center" wrap="nowrap" w="full" bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" px={{ base: 3, md: 8 }} h="150px" borderBottom="1px solid #1A1A1A" gap={{ base: 2, md: 4 }}>
+            <Flex as="header" position="sticky" top={0} zIndex={100} justify="space-between" align="center" wrap="nowrap" w="full" bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" px={{ base: 3, md: 8 }} h="80px" borderBottom="1px solid #1A1A1A" gap={{ base: 2, md: 4 }}>
                 
                 <IconButton aria-label="Menu" variant="ghost" display={{ base: "flex", lg: "none" }} onClick={onOpenSidebar} color="#888888" _hover={{ color: "white" }} size="sm">
                     <Icon as={LuMenu} boxSize="22px" css={iconStyle} />
