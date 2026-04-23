@@ -71,10 +71,7 @@ export interface Store {
 export interface SidebarProps {
     isOpen: boolean;
     onClose: () => void;
-    activeBusiness: Business;
-    availableStores: Store[];
-    activeStoreId: string;
-    onStoreChange: (id: string) => void;
+    
 }
 
 //Dashboard Header

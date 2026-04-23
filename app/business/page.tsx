@@ -36,9 +36,7 @@ export default function DashboardPage() {
     return (
         
         <Box w="full" minH="100vh" bg="#000000" p={{ base: 4, md: 8 }} animation="fade-in 0.3s ease">
-            <Text color="white" fontWeight="600" mb={6} fontSize="xl" letterSpacing="tight">
-                Overview: {activeBusiness?.name} {activeStore ? `> ${activeStore.name}` : ''}
-            </Text>
+            
             
             <Box mb={8}>
                 <DashboardMetrics />
