@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { Flex, Box, Text, Icon, IconButton, Button, Avatar, AvatarGroup } from "@chakra-ui/react";
+import { Flex, Box, Text, Icon, Button, Avatar, AvatarGroup } from "@chakra-ui/react";
 import { 
-    LuBell, LuChevronDown, LuCheck, LuMenu, LuPlus, 
+    LuBell, LuChevronDown, LuCheck,  LuPlus, 
     LuImage, LuSettings, LuLogOut, LuShoppingBag,
     LuBuilding2, LuStore 
 } from "react-icons/lu";
@@ -25,7 +25,7 @@ export const DashboardHeader = ({
     availableStores = [],
     activeStoreId,
     onStoreChange,
-    onOpenSidebar 
+    
 }: ExtendedHeaderProps) => {
     const [activeDropdown, setActiveDropdown] = useState<"biz" | "store" | "notif" | "profile" | null>(null);
     const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
@@ -53,9 +53,6 @@ export const DashboardHeader = ({
 
             <Flex as="header" position="sticky" top={0} zIndex={100} justify="space-between" align="center" wrap="nowrap" w="full" bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" px={{ base: 3, md: 8 }} h="80px" borderBottom="1px solid #1A1A1A" gap={{ base: 2, md: 4 }}>
                 
-                <IconButton aria-label="Menu" variant="ghost" display={{ base: "flex", lg: "none" }} onClick={onOpenSidebar} color="#888888" _hover={{ color: "white" }} size="sm">
-                    <Icon as={LuMenu} boxSize="22px" css={iconStyle} />
-                </IconButton>
                 
                 <Flex align="center" gap={4}>
                     {/* --- BREADCRUMB NAVIGATION --- */}

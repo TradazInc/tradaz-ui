@@ -28,7 +28,7 @@ export const SalesRecordOverview = () => {
       handleSortOrder={salesState.handleSortOrder}
       onSelectSale={salesState.setSelectedSale}
       visibleCount={salesState.visibleCount}
-      isLoadingMore={salesState.isLoadingMore}
+     
       loaderRef={salesState.loaderRef}
       onAddSale={salesState.addNewSale}
     />

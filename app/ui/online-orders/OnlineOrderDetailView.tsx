@@ -10,39 +10,41 @@ interface OnlineOrderDetailViewProps {
 }
 
 export const OnlineOrderDetailView = ({ order, onBack }: OnlineOrderDetailViewProps) => {
-    // Determine badge color locally based on status
-    const getStatusColor = (status: string) => {
+    
+    const getStatusStyle = (status: string) => {
         switch (status) {
-            case "Delivered": return { bg: "rgba(92, 172, 125, 0.15)", color: "#5cac7d" };
-            case "Shipped": return { bg: "rgba(66, 153, 225, 0.15)", color: "blue.400" };
-            case "Processing": return { bg: "rgba(237, 137, 54, 0.15)", color: "orange.400" };
-            case "Cancelled": return { bg: "rgba(245, 101, 101, 0.15)", color: "red.400" };
-            default: return { bg: "whiteAlpha.200", color: "gray.300" }; 
+            case "Delivered": return { bg: "#111111", color: "white", border: "1px solid white" };
+            case "Shipped": return { bg: "#111111", color: "#888888", border: "1px solid #888888" };
+            case "Processing": return { bg: "transparent", color: "white", border: "1px dashed #888888" };
+            case "Cancelled": return { bg: "#111111", color: "white", border: "1px solid #333333", textDecoration: "line-through" };
+            default: return { bg: "transparent", color: "#888888", border: "1px solid #333333" }; 
         }
     };
     
-    const statusStyle = getStatusColor(order.status);
+    const statusStyle = getStatusStyle(order.status);
     const trackingId = `TRK-${order.id.replace(/[^0-9]/g, '') || "9827"}`;
 
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative" pb={10}>
             
             {/* Header */}
-            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={4} mb={6} borderBottom="1px solid" borderColor="whiteAlpha.100">
+            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" py={4} mb={6} borderBottom="1px solid" borderColor="#1A1A1A">
                 <Flex justify="space-between" align="center">
                     <Flex align="center" gap={4}>
-                        <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2} h="40px">
-                            <Icon as={LuArrowLeft} boxSize="20px" />
+                        <Button variant="ghost" color="#888888" rounded="none" _hover={{ color: "white", bg: "#111111" }} onClick={onBack} px={2} h="40px">
+                            <Icon as={LuArrowLeft} boxSize="20px" strokeWidth="2.5" />
                         </Button>
                         <Box>
                             <Flex align="center" gap={3}>
-                                <Text color="white" fontWeight="bold" fontSize="xl">Order {order.id}</Text>
-                                <Badge bg={statusStyle.bg} color={statusStyle.color} px={2} py={0.5} rounded="md" textTransform="none">{order.status}</Badge>
+                                <Text color="white" fontWeight="bold" fontSize="xl" letterSpacing="tight">Order {order.id}</Text>
+                                <Badge bg={statusStyle.bg} color={statusStyle.color} border={statusStyle.border} px={2} py={0.5} rounded="none" textTransform="uppercase" letterSpacing="wider" fontSize="10px">
+                                    {order.status}
+                                </Badge>
                             </Flex>
-                            <Text color="gray.500" fontSize="sm">Placed on {order.date}</Text>
+                            <Text color="#888888" fontSize="sm" fontWeight="500">Placed on {order.date}</Text>
                         </Box>
                     </Flex>
-                    <Button size="sm" bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} border="none">
+                    <Button size="sm" bg="white" color="black" rounded="none" fontWeight="bold" _hover={{ bg: "#E5E5E5" }} border="none">
                         Update Status
                     </Button>
                 </Flex>
@@ -52,42 +54,42 @@ export const OnlineOrderDetailView = ({ order, onBack }: OnlineOrderDetailViewPr
                 
                 {/* Left Side: Order Items */}
                 <Box gridColumn={{ lg: "span 2" }}>
-                    <Box bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden">
-                        <Flex align="center" gap={3} p={6} borderBottom="1px solid" borderColor="whiteAlpha.50">
-                            <Flex bg="rgba(92, 172, 125, 0.15)" p={2} rounded="lg"><Icon as={LuPackage} color="#5cac7d" boxSize="20px" /></Flex>
-                            <Text color="white" fontWeight="bold" fontSize="lg">Order Items</Text>
+                    <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" overflow="hidden">
+                        <Flex align="center" gap={3} p={6} borderBottom="1px solid" borderColor="#1A1A1A">
+                            <Flex bg="#111111" p={2} rounded="none" border="1px solid #333333"><Icon as={LuPackage} color="white" boxSize="20px" strokeWidth="2.5" /></Flex>
+                            <Text color="white" fontWeight="bold" fontSize="lg" letterSpacing="tight">Order Items</Text>
                         </Flex>
 
                         <Box p={6}>
-                            <Flex justify="space-between" align="center" py={3} borderBottom="1px dashed" borderColor="whiteAlpha.200">
+                            <Flex justify="space-between" align="center" py={3} borderBottom="1px dashed" borderColor="#333333">
                                 <Box>
                                     <Text color="white" fontSize="sm" fontWeight="bold">Item #1 Dummy Product</Text>
-                                    <Text color="gray.500" fontSize="xs">Qty: 1</Text>
+                                    <Text color="#888888" fontSize="xs" fontWeight="500">Qty: 1</Text>
                                 </Box>
-                                <Text color="white" fontSize="sm">₦{(order.total * 0.7).toLocaleString()}</Text>
+                                <Text color="white" fontSize="sm" fontWeight="600">₦{(order.total * 0.7).toLocaleString()}</Text>
                             </Flex>
 
-                            <Flex justify="space-between" align="center" py={3} borderBottom="1px dashed" borderColor="whiteAlpha.200">
+                            <Flex justify="space-between" align="center" py={3} borderBottom="1px dashed" borderColor="#333333">
                                 <Box>
                                     <Text color="white" fontSize="sm" fontWeight="bold">Item #2 Dummy Product</Text>
-                                    <Text color="gray.500" fontSize="xs">Qty: 2</Text>
+                                    <Text color="#888888" fontSize="xs" fontWeight="500">Qty: 2</Text>
                                 </Box>
-                                <Text color="white" fontSize="sm">₦{(order.total * 0.3).toLocaleString()}</Text>
+                                <Text color="white" fontSize="sm" fontWeight="600">₦{(order.total * 0.3).toLocaleString()}</Text>
                             </Flex>
 
                             <Flex direction="column" gap={3} w={{ base: "full", sm: "300px" }} ml="auto" mt={6}>
                                 <Flex justify="space-between">
-                                    <Text color="gray.400" fontSize="sm">Subtotal</Text>
-                                    <Text color="white" fontSize="sm">₦{order.total.toLocaleString()}</Text>
+                                    <Text color="#888888" fontSize="sm" fontWeight="500">Subtotal</Text>
+                                    <Text color="white" fontSize="sm" fontWeight="600">₦{order.total.toLocaleString()}</Text>
                                 </Flex>
                                 <Flex justify="space-between">
-                                    <Text color="gray.400" fontSize="sm">Shipping Fee</Text>
-                                    <Text color="white" fontSize="sm">₦2,500</Text>
+                                    <Text color="#888888" fontSize="sm" fontWeight="500">Shipping Fee</Text>
+                                    <Text color="white" fontSize="sm" fontWeight="600">₦2,500</Text>
                                 </Flex>
-                                <Box w="full" borderBottom="1px solid" borderColor="whiteAlpha.200" my={1} />
+                                <Box w="full" borderBottom="1px solid" borderColor="#333333" my={1} />
                                 <Flex justify="space-between" align="center">
-                                    <Text color="white" fontWeight="bold" fontSize="lg">Total Paid</Text>
-                                    <Text color="#5cac7d" fontWeight="black" fontSize="2xl">₦{(order.total + 2500).toLocaleString()}</Text>
+                                    <Text color="white" fontWeight="bold" fontSize="lg" letterSpacing="tight">Total Paid</Text>
+                                    <Text color="white" fontWeight="black" fontSize="2xl" letterSpacing="tight">₦{(order.total + 2500).toLocaleString()}</Text>
                                 </Flex>
                             </Flex>
                         </Box>
@@ -98,43 +100,43 @@ export const OnlineOrderDetailView = ({ order, onBack }: OnlineOrderDetailViewPr
                 <Box gridColumn={{ lg: "span 1" }} display="flex" flexDirection="column" gap={6}>
                     
                     {/* Customer Info */}
-                    <Box bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6}>
+                    <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" p={6}>
                         <Flex align="center" gap={3} mb={4}>
-                            <Icon as={LuUser} color="gray.400" boxSize="18px" />
-                            <Text color="white" fontWeight="bold">Customer</Text>
+                            <Icon as={LuUser} color="white" boxSize="18px" strokeWidth="2.5" />
+                            <Text color="white" fontWeight="bold" letterSpacing="tight">Customer</Text>
                         </Flex>
-                        <Text color="gray.300" fontSize="sm" mb={1}>{order.customer}</Text>
-                        <Text color="gray.500" fontSize="xs">Registered User</Text>
+                        <Text color="white" fontSize="sm" fontWeight="600" mb={1}>{order.customer}</Text>
+                        <Text color="#888888" fontSize="xs" fontWeight="500">Registered User</Text>
                     </Box>
 
                     {/* Shipping Info */}
-                    <Box bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6}>
+                    <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" p={6}>
                         <Flex align="center" gap={3} mb={4}>
-                            <Icon as={LuTruck} color="blue.400" boxSize="18px" />
-                            <Text color="white" fontWeight="bold">Shipping Details</Text>
+                            <Icon as={LuTruck} color="white" boxSize="18px" strokeWidth="2.5" />
+                            <Text color="white" fontWeight="bold" letterSpacing="tight">Shipping Details</Text>
                         </Flex>
-                        <Text color="gray.300" fontSize="sm" mb={1}>{order.shippingMethod}</Text>
-                        <Text color="gray.500" fontSize="xs" mb={4}>Tracking: <Text as="span" fontFamily="monospace" color="gray.400">{trackingId}</Text></Text>
+                        <Text color="white" fontSize="sm" fontWeight="600" mb={1}>{order.shippingMethod}</Text>
+                        <Text color="#888888" fontSize="xs" fontWeight="500" mb={4}>Tracking: <Text as="span" fontFamily="monospace" color="white" fontWeight="bold">{trackingId}</Text></Text>
                         
-                        <Flex gap={2} align="start" p={3} bg="#121214" rounded="lg" border="1px solid" borderColor="whiteAlpha.50">
-                            <Icon as={LuMapPin} color="gray.500" mt={1} />
-                            <Text color="gray.400" fontSize="xs">123 Dummy Street, Phase 2, FCT Abuja, Nigeria</Text>
+                        <Flex gap={2} align="start" p={3} bg="#111111" rounded="none" border="1px solid" borderColor="#333333">
+                            <Icon as={LuMapPin} color="#888888" mt={1} strokeWidth="2.5" />
+                            <Text color="#888888" fontSize="xs" fontWeight="500">123 Dummy Street, Phase 2, FCT Abuja, Nigeria</Text>
                         </Flex>
                     </Box>
 
                     {/* Payment Info */}
-                    <Box bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6}>
+                    <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" p={6}>
                         <Flex align="center" gap={3} mb={4}>
-                            <Icon as={LuCreditCard} color="#5cac7d" boxSize="18px" />
-                            <Text color="white" fontWeight="bold">Payment Details</Text>
+                            <Icon as={LuCreditCard} color="white" boxSize="18px" strokeWidth="2.5" />
+                            <Text color="white" fontWeight="bold" letterSpacing="tight">Payment Details</Text>
                         </Flex>
                         <Flex justify="space-between" mb={2}>
-                            <Text color="gray.500" fontSize="xs">Status</Text>
-                            <Text color={order.paymentStatus === "Paid" ? "#5cac7d" : "orange.400"} fontSize="xs" fontWeight="bold">{order.paymentStatus}</Text>
+                            <Text color="#888888" fontSize="xs" fontWeight="500">Status</Text>
+                            <Text color={order.paymentStatus === "Paid" ? "white" : "#888888"} fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">{order.paymentStatus}</Text>
                         </Flex>
                         <Flex justify="space-between">
-                            <Text color="gray.500" fontSize="xs">Method</Text>
-                            <Text color="gray.300" fontSize="xs">Paystack Gateway</Text>
+                            <Text color="#888888" fontSize="xs" fontWeight="500">Method</Text>
+                            <Text color="white" fontSize="xs" fontWeight="600">Paystack Gateway</Text>
                         </Flex>
                     </Box>
 

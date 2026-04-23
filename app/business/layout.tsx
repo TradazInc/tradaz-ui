@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Flex, Box } from "@chakra-ui/react";
+import { Flex, Box, IconButton, Icon } from "@chakra-ui/react";
+import { LuMenu } from "react-icons/lu"; 
 import { Sidebar } from "@/app/ui/dashboard/Sidebar"; 
 import { DashboardHeader } from "@/app/ui/dashboard/DashboardHeader"; 
 import TradazHeader from "../ui/TradazHeader";
@@ -29,7 +30,6 @@ export default function DashboardLayout({
   const activeBusiness = businesses.find(b => b.id === activeBusinessId) || businesses[0];
 
   return (
-    
     <Flex h="100vh" w="full" bg="#000000" overflow="hidden" direction="column">
       
       
@@ -40,14 +40,38 @@ export default function DashboardLayout({
         backdropFilter="blur(12px)"
         borderBottom="1px solid #1A1A1A" 
         zIndex={100}
+        h="65px" 
       >
-         {/* Fixed width to align precisely with the sidebar below it */}
-         <Flex w={{ base: "auto", lg: "280px" }} px={{ base: 4, md: 8 }} align="center" borderRight={{ lg: "1px solid #1A1A1A" }} h="40px" flexShrink={0}>
+         
+         <Flex 
+            w={{ base: "auto", lg: "280px" }} 
+            px={{ base: 4, md: 8 }} 
+            align="center" 
+            gap={4} 
+            borderRight={{ lg: "1px solid #1A1A1A" }} 
+            h="full" 
+            flexShrink={0}
+         >
+            {/* Hamburger  on mobile */}
+            <IconButton 
+                aria-label="Open Menu"
+                variant="ghost" 
+                display={{ base: "flex", lg: "none" }} 
+                onClick={() => setSidebarOpen(true)} 
+                color="#888888" 
+                _hover={{ color: "white", bg: "#111111" }} 
+                size="sm"
+                rounded="none"
+                px={0} 
+            >
+                <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
+            </IconButton>
+
             <TradazHeader />
          </Flex>
 
-         {/* The rest of the Header */}
-         <Box flex={1}>
+         {/* The rest of the Header (Breadcrumbs & Profile) */}
+         <Box flex={1} overflow="hidden">
             <DashboardHeader 
                 businesses={businesses}
                 activeBusiness={activeBusiness}
@@ -60,7 +84,6 @@ export default function DashboardLayout({
          </Box>
       </Flex>
 
-      
       <Flex flex={1} overflow="hidden" position="relative">
          
          {/* SIDEBAR */}

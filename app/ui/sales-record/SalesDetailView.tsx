@@ -36,30 +36,31 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
         position="sticky"
         top={{ base: "70px", md: "85px" }}
         zIndex={20}
-        bg="rgba(11, 13, 20, 0.85)"
+        bg="rgba(0, 0, 0, 0.85)"
         backdropFilter="blur(12px)"
         py={4}
         mb={6}
         borderBottom="1px solid"
-        borderColor="whiteAlpha.100"
+        borderColor="#1A1A1A"
       >
         <Flex justify="space-between" align="center">
           <Flex align="center" gap={4}>
             <Button
               variant="ghost"
-              color="gray.400"
-              _hover={{ color: "white", bg: "whiteAlpha.100" }}
+              color="#888888"
+              rounded="none"
+              _hover={{ color: "white", bg: "#111111" }}
               onClick={onBack}
               px={2}
               h="40px"
             >
-              <Icon as={LuArrowLeft} boxSize="20px" />
+              <Icon as={LuArrowLeft} boxSize="20px" strokeWidth="2.5" />
             </Button>
             <Box>
-              <Text color="white" fontWeight="bold" fontSize="xl">
+              <Text color="white" fontWeight="bold" fontSize="xl" letterSpacing="tight">
                 Order {sale.id}
               </Text>
-              <Text color="gray.500" fontSize="sm">
+              <Text color="#888888" fontSize="sm">
                 {sale.date}
               </Text>
             </Box>
@@ -69,19 +70,22 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               size="sm"
               variant="outline"
               color="white"
-              borderColor="whiteAlpha.200"
-              _hover={{ bg: "whiteAlpha.100" }}
+              rounded="none"
+              borderColor="#333333"
+              _hover={{ bg: "#111111" }}
             >
-              <Icon as={LuDownload} mr={2} /> PDF
+              <Icon as={LuDownload} mr={2} strokeWidth="2.5" /> PDF
             </Button>
             <Button
               size="sm"
-              bg="#5cac7d"
-              color="white"
-              _hover={{ bg: "#4a9c6d" }}
+              bg="white"
+              color="black"
+              rounded="none"
+              fontWeight="bold"
+              _hover={{ bg: "#E5E5E5" }}
               border="none"
             >
-              <Icon as={LuPrinter} mr={2} /> Print Receipt
+              <Icon as={LuPrinter} mr={2} strokeWidth="2.5" /> Print Receipt
             </Button>
           </Flex>
         </Flex>
@@ -91,10 +95,10 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
         {/* Left Column: Receipt Breakdown */}
         <Box gridColumn={{ lg: "span 8" }}>
           <Box
-            bg="#1A1C23"
-            rounded="2xl"
+            bg="#0A0A0A"
+            rounded="none"
             border="1px solid"
-            borderColor="whiteAlpha.100"
+            borderColor="#1A1A1A"
             overflow="hidden"
           >
             <Flex
@@ -102,12 +106,12 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               gap={3}
               p={6}
               borderBottom="1px solid"
-              borderColor="whiteAlpha.50"
+              borderColor="#1A1A1A"
             >
-              <Flex bg="rgba(92, 172, 125, 0.15)" p={2} rounded="lg">
-                <Icon as={LuReceipt} color="#5cac7d" boxSize="20px" />
+              <Flex bg="#111111" p={2} rounded="none" border="1px solid #333333">
+                <Icon as={LuReceipt} color="white" boxSize="20px" strokeWidth="2.5" />
               </Flex>
-              <Text color="white" fontWeight="bold" fontSize="lg">
+              <Text color="white" fontWeight="bold" fontSize="lg" letterSpacing="tight">
                 Transaction Details
               </Text>
             </Flex>
@@ -117,10 +121,11 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               <Box w="full" mb={6}>
                 <Flex
                   justify="space-between"
-                  color="gray.400"
+                  color="#888888"
                   fontSize="xs"
                   fontWeight="bold"
                   textTransform="uppercase"
+                  letterSpacing="wider"
                   mb={3}
                 >
                   <Text>Item</Text>
@@ -132,17 +137,17 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
                   align="center"
                   py={3}
                   borderBottom="1px dashed"
-                  borderColor="whiteAlpha.200"
+                  borderColor="#333333"
                 >
                   <Box>
                     <Text color="white" fontSize="sm" fontWeight="bold">
                       Premium Cotton T-Shirt
                     </Text>
-                    <Text color="gray.500" fontSize="xs">
+                    <Text color="#888888" fontSize="xs">
                       Size: L | Color: Black
                     </Text>
                   </Box>
-                  <Text color="white" fontSize="sm">
+                  <Text color="white" fontSize="sm" fontWeight="600">
                     ₦{(subtotal * 0.6).toLocaleString()}
                   </Text>
                 </Flex>
@@ -152,17 +157,17 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
                   align="center"
                   py={3}
                   borderBottom="1px dashed"
-                  borderColor="whiteAlpha.200"
+                  borderColor="#333333"
                 >
                   <Box>
                     <Text color="white" fontSize="sm" fontWeight="bold">
                       Classic Denim Jeans
                     </Text>
-                    <Text color="gray.500" fontSize="xs">
+                    <Text color="#888888" fontSize="xs">
                       Size: 32
                     </Text>
                   </Box>
-                  <Text color="white" fontSize="sm">
+                  <Text color="white" fontSize="sm" fontWeight="600">
                     ₦{(subtotal * 0.4).toLocaleString()}
                   </Text>
                 </Flex>
@@ -176,45 +181,44 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
                 ml="auto"
               >
                 <Flex justify="space-between">
-                  <Text color="gray.400" fontSize="sm">
+                  <Text color="#888888" fontSize="sm" fontWeight="500">
                     Subtotal
                   </Text>
-                  <Text color="white" fontSize="sm">
+                  <Text color="white" fontSize="sm" fontWeight="600">
                     ₦{subtotal.toLocaleString()}
                   </Text>
                 </Flex>
                 <Flex justify="space-between">
-                  <Text color="gray.400" fontSize="sm">
+                  <Text color="#888888" fontSize="sm" fontWeight="500">
                     VAT (7.5%)
                   </Text>
-                  <Text color="white" fontSize="sm">
+                  <Text color="white" fontSize="sm" fontWeight="600">
                     ₦{vat.toLocaleString()}
                   </Text>
                 </Flex>
                 {sale.discount > 0 && (
                   <Flex justify="space-between">
-                    <Text color="red.400" fontSize="sm">
+                    <Text color="#888888" fontSize="sm" fontWeight="500">
                       Discount Applied
                     </Text>
-                    <Text color="red.400" fontSize="sm">
+                    <Text color="white" fontSize="sm" fontWeight="600">
                       - ₦{sale.discount.toLocaleString()}
                     </Text>
                   </Flex>
                 )}
 
-                
                 <Box
                   w="full"
                   borderBottom="1px solid"
-                  borderColor="whiteAlpha.200"
+                  borderColor="#333333"
                   my={1}
                 />
 
                 <Flex justify="space-between" align="center">
-                  <Text color="white" fontWeight="bold" fontSize="lg">
+                  <Text color="white" fontWeight="bold" fontSize="lg" letterSpacing="tight">
                     Total
                   </Text>
-                  <Text color="#5cac7d" fontWeight="black" fontSize="2xl">
+                  <Text color="white" fontWeight="black" fontSize="2xl" letterSpacing="tight">
                     ₦{sale.total.toLocaleString()}
                   </Text>
                 </Flex>
@@ -226,54 +230,56 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
         {/* Right Column: Customer & Payment Info */}
         <Box gridColumn={{ lg: "span 4" }}>
           <Box
-            bg="#1A1C23"
-            rounded="2xl"
+            bg="#0A0A0A"
+            rounded="none"
             border="1px solid"
-            borderColor="whiteAlpha.100"
+            borderColor="#1A1A1A"
             p={6}
             mb={6}
           >
             <Text
-              color="gray.400"
-              fontSize="xs"
+              color="#888888"
+              fontSize="11px"
               fontWeight="bold"
               textTransform="uppercase"
+              letterSpacing="wider"
               mb={4}
             >
               Customer Information
             </Text>
-            <Text color="white" fontWeight="bold" fontSize="lg" mb={1}>
+            <Text color="white" fontWeight="bold" fontSize="lg" mb={1} letterSpacing="tight">
               {sale.transaction}
             </Text>
-            <Text color="gray.500" fontSize="sm">
+            <Text color="#888888" fontSize="sm" fontWeight="500">
               Walk-in Customer
             </Text>
           </Box>
 
           <Box
-            bg="#1A1C23"
-            rounded="2xl"
+            bg="#0A0A0A"
+            rounded="none"
             border="1px solid"
-            borderColor="whiteAlpha.100"
+            borderColor="#1A1A1A"
             p={6}
           >
             <Text
-              color="gray.400"
-              fontSize="xs"
+              color="#888888"
+              fontSize="11px"
               fontWeight="bold"
               textTransform="uppercase"
+              letterSpacing="wider"
               mb={4}
             >
               Payment Details
             </Text>
 
             <Flex align="center" gap={3} mb={4}>
-              <Icon as={LuCircleCheck} color="#5cac7d" boxSize="24px" />
+              <Icon as={LuCircleCheck} color="white" boxSize="24px" strokeWidth="2.5" />
               <Box>
-                <Text color="white" fontWeight="bold" fontSize="md">
+                <Text color="white" fontWeight="bold" fontSize="md" letterSpacing="tight">
                   Payment Successful
                 </Text>
-                <Text color="gray.500" fontSize="xs">
+                <Text color="#888888" fontSize="xs" fontWeight="500">
                   {sale.date}
                 </Text>
               </Box>
@@ -283,9 +289,9 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               justify="space-between"
               py={2}
               borderTop="1px solid"
-              borderColor="whiteAlpha.100"
+              borderColor="#1A1A1A"
             >
-              <Text color="gray.400" fontSize="sm">
+              <Text color="#888888" fontSize="sm" fontWeight="500">
                 Channel
               </Text>
               <Text color="white" fontSize="sm" fontWeight="bold">
@@ -296,9 +302,9 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               justify="space-between"
               py={2}
               borderTop="1px solid"
-              borderColor="whiteAlpha.100"
+              borderColor="#1A1A1A"
             >
-              <Text color="gray.400" fontSize="sm">
+              <Text color="#888888" fontSize="sm" fontWeight="500">
                 Method
               </Text>
               <Text color="white" fontSize="sm" fontWeight="bold">
@@ -309,12 +315,12 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               justify="space-between"
               py={2}
               borderTop="1px solid"
-              borderColor="whiteAlpha.100"
+              borderColor="#1A1A1A"
             >
-              <Text color="gray.400" fontSize="sm">
+              <Text color="#888888" fontSize="sm" fontWeight="500">
                 Reference
               </Text>
-              <Text color="gray.300" fontSize="sm" fontFamily="monospace">
+              <Text color="#888888" fontSize="sm" fontFamily="monospace" fontWeight="600">
                 {referenceId}
               </Text>
             </Flex>

@@ -1,4 +1,3 @@
-
 "use client";
 import React from "react";
 import { useOnlineOrders } from "@/app/hooks/useOnlineOrders";
@@ -9,7 +8,7 @@ export const OnlineOrdersOverview = () => {
     
     const ordersState = useOnlineOrders();
 
-    //  If an order is selected, show the Details View
+    // If an order is selected, show the Details View
     if (ordersState.selectedOrder) {
         return (
             <OnlineOrderDetailView 
@@ -19,7 +18,7 @@ export const OnlineOrdersOverview = () => {
         );
     }
 
-    //  Otherwise, show the Grid View
+    // Otherwise, show the Grid View
     return (
         <OnlineOrdersGridView 
             visibleItems={ordersState.visibleItems}
