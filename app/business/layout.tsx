@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
-import { Flex, Box, IconButton, Icon } from "@chakra-ui/react";
+import { Flex, Box, IconButton, Icon, Text } from "@chakra-ui/react";
 import { LuMenu } from "react-icons/lu"; 
 import { Sidebar } from "@/app/ui/dashboard/Sidebar"; 
 import { DashboardHeader } from "@/app/ui/dashboard/DashboardHeader"; 
-import TradazHeader from "../ui/TradazHeader";
 
 export default function DashboardLayout({
   children,
@@ -14,7 +13,6 @@ export default function DashboardLayout({
   
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // Placeholder Data
   const [businesses] = useState([
     { id: "1", name: "Tradaz Fashion", category: "Retail" },
     { id: "2", name: "Wada Tech", category: "Software" }
@@ -27,76 +25,129 @@ export default function DashboardLayout({
   ]);
   const [activeStoreId, setActiveStoreId] = useState("1");
 
-  const activeBusiness = businesses.find(b => b.id === activeBusinessId) || businesses[0];
+  const activeBusiness =
+    businesses.find((b) => b.id === activeBusinessId) || businesses[0];
 
   return (
-    <Flex h="100vh" w="full" bg="#000000" overflow="hidden" direction="column">
-      
-      
-      <Flex 
-        w="full" 
-        align="center" 
-        bg="rgba(0, 0, 0, 0.85)" 
-        backdropFilter="blur(12px)"
-        borderBottom="1px solid #1A1A1A" 
+    <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
+
+      {/* HEADER */}
+      <Flex
+        h="50px" 
+        w="full"
+        align="center"
+        bg="#000000"
+        position="relative"
         zIndex={100}
-        h="65px" 
+        flexShrink={0}
       >
-         
-         <Flex 
-            w={{ base: "auto", lg: "280px" }} 
-            px={{ base: 4, md: 8 }} 
-            align="center" 
-            gap={4} 
-            borderRight={{ lg: "1px solid #1A1A1A" }} 
-            h="full" 
-            flexShrink={0}
-         >
-            {/* Hamburger  on mobile */}
-            <IconButton 
-                aria-label="Open Menu"
-                variant="ghost" 
-                display={{ base: "flex", lg: "none" }} 
-                onClick={() => setSidebarOpen(true)} 
-                color="#888888" 
-                _hover={{ color: "white", bg: "#111111" }} 
-                size="sm"
-                rounded="none"
-                px={0} 
+        {/* LEFT SECTION (Inlined Logo & Breadcrumb Separator) */}
+        <Flex
+          w="auto"
+          pl={6}
+          pr={4}
+          align="center"
+          h="full"
+          position="relative"
+          zIndex={2} 
+          flexShrink={0}
+        >
+          <IconButton
+            aria-label="Open Menu"
+            variant="ghost"
+            display={{ base: "flex", md: "none" }}
+            onClick={() => setSidebarOpen(true)}
+            color="#888888"
+            _hover={{ color: "white", bg: "#111111" }}
+            size="sm"
+            rounded="none"
+            mr={2}
+          >
+            <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
+          </IconButton>
+
+          <Flex align="center" gap={3} userSelect="none">
+            <Text
+              fontSize="xl"
+              fontWeight="extrabold"
+              color="white"
+              letterSpacing="tight"
             >
-                <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
-            </IconButton>
+              Tradaz
+              <Text as="span" color="#888888">.</Text>
+            </Text>
+          </Flex>
 
-            <TradazHeader />
-         </Flex>
+          <Text 
+              color="gray.600" 
+              fontSize="xl" 
+              ml={6} 
+              display={{ base: "none", md: "block" }}
+          >
+              /
+          </Text>
+        </Flex>
 
-         {/* The rest of the Header (Breadcrumbs & Profile) */}
-         <Box flex={1} overflow="hidden">
-            <DashboardHeader 
-                businesses={businesses}
-                activeBusiness={activeBusiness}
-                onBusinessChange={setActiveBusinessId}
-                availableStores={availableStores}
-                activeStoreId={activeStoreId}
-                onStoreChange={setActiveStoreId}
-                onOpenSidebar={() => setSidebarOpen(true)}
-            />
-         </Box>
+        {/* RIGHT SECTION (Dropdowns) */}
+
+        <Flex
+          flex={1}
+          h="full"
+          align="center" 
+          overflow="visible" 
+          position="relative"
+          zIndex={2} 
+          pl={2} 
+          pr={{ base: 4, md: 8 }}
+        >
+          <DashboardHeader
+            businesses={businesses}
+            activeBusiness={activeBusiness}
+            onBusinessChange={setActiveBusinessId}
+            availableStores={availableStores}
+            activeStoreId={activeStoreId}
+            onStoreChange={setActiveStoreId}
+            onOpenSidebar={() => setSidebarOpen(true)}
+          />
+        </Flex>
+
+        <Box
+          position="absolute"
+          bottom="0"
+          left="0"
+          right="0"
+          h="1px"
+          bg="#1A1A1A"
+          zIndex={10} 
+          pointerEvents="none"
+        /> 
       </Flex>
 
-      <Flex flex={1} overflow="hidden" position="relative">
-         
-         {/* SIDEBAR */}
-         <Sidebar
-            isOpen={isSidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-         />
+      {/* MAIN CONTENT AREA */}
+      <Flex 
+          flex={1} 
+          position="relative" 
+          bg="#000000" 
+          alignItems="stretch" 
+          minH={0} 
+          overflow="hidden" 
+      >
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
 
-         {/* CONTENT AREA */}
-         <Box flex={1} overflowY="auto" as="main" p={{ base: 4, md: 8 }}>
-            {children}
-         </Box>
-
+        <Box
+          flex={1}
+          overflowY="auto"
+          overflowX="hidden"
+          scrollbarGutter="stable"
+          as="main"
+          p={{ base: 4, md: 8 }}
+          minH={0}
+        >
+          {children}
+        </Box>
       </Flex>
     </Flex>
   );

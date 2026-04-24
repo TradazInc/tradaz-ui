@@ -35,7 +35,7 @@ interface AddStaffFormProps {
     onBack: () => void;
 }
 
-// ✅ Custom Toggle Component to replace the broken Chakra Switch
+
 const CustomToggle = ({ isOn, onToggle }: { isOn: boolean; onToggle: () => void }) => (
     <Flex 
         w="40px" h="22px" bg={isOn ? "#5cac7d" : "whiteAlpha.200"} 
@@ -165,7 +165,7 @@ export const AddStaffForm = ({ onBack }: AddStaffFormProps) => {
                             </Flex>
                         </Flex>
 
-                        {/* ✅ The Toggleable Grid */}
+                       
                         <VStack align="stretch" gap={0} mb={6}>
                             {ALL_PERMISSIONS.map((perm) => {
                                 const isAllowed = permissions[perm.id];
@@ -178,7 +178,7 @@ export const AddStaffForm = ({ onBack }: AddStaffFormProps) => {
                                             <Icon as={isAllowed ? LuCheck : LuX} color={isAllowed ? "green.400" : "red.400"} />
                                             <Text color={isAllowed ? "gray.300" : "gray.500"} fontSize="sm">{perm.label}</Text>
                                         </Flex>
-                                        {/* ✅ Replaced Chakra Switch with CustomToggle */}
+                                        
                                         <CustomToggle 
                                             isOn={isAllowed} 
                                             onToggle={() => handleTogglePermission(perm.id)} 
@@ -192,7 +192,6 @@ export const AddStaffForm = ({ onBack }: AddStaffFormProps) => {
                         <Box pt={6} borderTop="1px solid" borderColor="whiteAlpha.100">
                             <Flex align="start" gap={3} p={3} bg="rgba(66, 153, 225, 0.1)" rounded="lg" border="1px solid" borderColor="rgba(66, 153, 225, 0.2)" mb={6}>
                                 <Icon as={LuInfo} color="blue.400" mt="2px" />
-                                {/* ✅ FIXED: Escaped the apostrophe */}
                                 <Text color="blue.200" fontSize="xs" lineHeight="tall">
                                     Clicking &apos;Send Invite&apos; will apply the permissions configured above. An invite email will be sent for the staff member to activate their account.
                                 </Text>

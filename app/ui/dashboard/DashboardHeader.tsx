@@ -51,7 +51,7 @@ export const DashboardHeader = ({
                 <Box position="fixed" inset={0} zIndex={40} onClick={closeAll} />
             )}
 
-            <Flex as="header" position="sticky" top={0} zIndex={100} justify="space-between" align="center" wrap="nowrap" w="full" bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" px={{ base: 3, md: 8 }} h="80px" borderBottom="1px solid #1A1A1A" gap={{ base: 2, md: 4 }}>
+            <Flex as="header" position="sticky" top={0} zIndex={100} justify="space-between" align="center" wrap="nowrap" w="full" bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" px={{ base: 3, md: 8 }} h="80px"  gap={{ base: 2, md: 4 }}>
                 
                 
                 <Flex align="center" gap={4}>

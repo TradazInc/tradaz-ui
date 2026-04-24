@@ -3,21 +3,16 @@ import React, { useState } from "react";
 import { Box, VStack, Text, Accordion, Icon, Flex, Button } from "@chakra-ui/react";
 import Link from "next/link";
 import { 
-    // Main Icons
     LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
-    LuPlus, LuScale, LuLandmark, LuTicketPercent,
-    LuZap, LuUserPlus, LuGift, LuScanLine, LuChevronDown,
-    // Sub-nav Icons
-    LuActivity, LuFileText, LuShoppingCart, LuTerminal,
-    LuPackage, LuStar, LuWallet, LuTrendingDown, LuTrendingUp, LuCalculator,
-    LuMessageSquare, LuRefreshCw, LuUndo, LuCheck, LuMegaphone,
-    LuLayoutGrid, LuImage, LuHeart, LuTicket, LuTag, LuUser, LuTruck,
-    LuPercent, LuShield, LuPalette
+    LuPlus, LuScale, LuLandmark, LuTicketPercent, LuUserPlus, 
+    LuGift, LuScanLine, LuChevronDown, LuActivity, LuFileText, 
+    LuShoppingCart, LuTerminal, LuPackage, LuStar, LuWallet, 
+    LuTrendingDown, LuTrendingUp, LuCalculator, LuMessageSquare, 
+    LuRefreshCw, LuUndo, LuCheck, LuMegaphone, LuLayoutGrid, LuImage, 
+    LuHeart, LuTicket, LuTag, LuUser, LuTruck, LuPercent, LuShield, LuPalette
 } from "react-icons/lu";
-// import TradazHeader from "../TradazHeader";
 import { SidebarProps } from "@/app/lib/definitions";
 
-// --- RESTRUCTURED NAV ITEMS WITH SPECIFIC SUB-ICONS ---
 const OTHER_NAV_ITEMS = [
     { label: "Point of Sale", icon: LuScanLine, children: [{ label: "POS", icon: LuTerminal }] }, 
     { label: "Products", icon: LuShoppingBag, children: [{ label: "Add Product", icon: LuPlus }, { label: "Inventory", icon: LuPackage }] },
@@ -37,15 +32,10 @@ const DASHBOARD_CHILDREN = [
     { label: "Online Orders", icon: LuShoppingCart }
 ];
 
-export const Sidebar = ({ 
-    isOpen, 
-    onClose 
-}: SidebarProps) => {
+export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [openMenus, setOpenMenus] = useState<string[]>([]);
-    const isMenuExpanded = openMenus.length > 0; 
 
-    // --- EDGE-TO-EDGE HOVER STYLING ---
     const triggerHoverStyle = { bg: "#111111", color: "white" };
     const subItemHoverStyle = { bg: "#111111", color: "white" };
     const iconStyle = { strokeWidth: "2.5", boxSize: "18px" }; 
@@ -53,22 +43,22 @@ export const Sidebar = ({
 
     return (
         <Box
-            w={{ base: "280px", lg: isCollapsed ? "80px" : "280px" }} 
-            h="100vh" 
+            w={{ base: "280px", md: isCollapsed ? "80px" : "280px" }} 
+            minW={{ base: "280px", md: isCollapsed ? "80px" : "280px" }} 
+            maxW={{ base: "280px", md: isCollapsed ? "80px" : "280px" }} 
+         
+            h={{ base: "100%", md: "calc(100vh - 65px)" }} 
             bg="#000000" 
-            borderRight="1px solid" 
-            borderColor="#1A1A1A" 
-            position={{ base: "fixed", lg: "sticky" }} top={0} left={0}
-            transform={{ base: isOpen ? "translateX(0)" : "translateX(-100%)", lg: "translateX(0)" }}
-            zIndex={1000} display="flex" flexDirection="column" 
+            borderRight="1px solid #1A1A1A" 
+            position={{ base: "absolute", md: "static" }} 
+            top={0} left={0}
+            transform={{ base: isOpen ? "translateX(0)" : "translateX(-100%)", md: "translateX(0)" }}
+            zIndex={10} display="flex" flexDirection="column" 
             px={0} 
             transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             color="white"
+            flexShrink={0}
         >
-        
-
-
-            {/* --- SCROLLABLE MENU SECTION --- */}
             <Box 
                 flex={1} overflowY="auto" overflowX="hidden" pt={2}
                 css={{ 
@@ -89,7 +79,7 @@ export const Sidebar = ({
                     {/* Dashboard */}
                     <Accordion.Item value="Dashboard" border="none" borderBottom="1px solid #1A1A1A" mb={0}>
                         <Accordion.ItemTrigger 
-                            _hover={triggerHoverStyle} py={3} px={isCollapsed ? 0 : 4} rounded="none" cursor="pointer"
+                            _hover={triggerHoverStyle} py={3} px={isCollapsed ? 0 : 6} rounded="none" cursor="pointer"
                             w="full" display="flex" justifyContent={isCollapsed ? "center" : "space-between"}
                             onClick={() => { if(isCollapsed) setIsCollapsed(false); }}
                             color={openMenus.includes("Dashboard") ? "white" : "#A1A1AA"}
@@ -107,7 +97,7 @@ export const Sidebar = ({
                                     const path = child.label === "Overview" ? "/business" : `/business/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
                                     return (
                                         <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
-                                            <Flex align="center" gap={3} color="#888888" cursor="pointer" _hover={subItemHoverStyle} py={2.5} pl={isCollapsed ? 0 : 10} pr={4} rounded="none" w="full" transition="all 0.2s">
+                                            <Flex align="center" gap={3} color="#888888" cursor="pointer" _hover={subItemHoverStyle} py={2.5} pl={isCollapsed ? 0 : 12} pr={4} rounded="none" w="full" transition="all 0.2s">
                                                 <Icon as={child.icon} css={subIconStyle} />
                                                 <Text fontSize="13px" whiteSpace="nowrap">{child.label}</Text>
                                             </Flex>
@@ -124,7 +114,7 @@ export const Sidebar = ({
                         return (
                         <Accordion.Item key={idx} value={item.label} border="none" borderBottom="1px solid #1A1A1A" mb={0}>
                             <Accordion.ItemTrigger 
-                                _hover={triggerHoverStyle} py={3} px={isCollapsed ? 0 : 4} rounded="none" cursor="pointer"
+                                _hover={triggerHoverStyle} py={3} px={isCollapsed ? 0 : 6} rounded="none" cursor="pointer"
                                 w="full" display="flex" justifyContent={isCollapsed ? "center" : "space-between"}
                                 onClick={() => { if(isCollapsed) setIsCollapsed(false); }}
                                 color={isActive ? "white" : "#A1A1AA"}
@@ -142,7 +132,7 @@ export const Sidebar = ({
                                         const path = `/business/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
                                         return (
                                             <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
-                                                <Flex align="center" gap={3} color="#888888" cursor="pointer" _hover={subItemHoverStyle} py={2.5} pl={isCollapsed ? 0 : 10} pr={4} rounded="none" w="full" transition="all 0.2s">
+                                                <Flex align="center" gap={3} color="#888888" cursor="pointer" _hover={subItemHoverStyle} py={2.5} pl={isCollapsed ? 0 : 12} pr={4} rounded="none" w="full" transition="all 0.2s">
                                                     <Icon as={child.icon} css={subIconStyle} />
                                                     <Text fontSize="13px" whiteSpace="nowrap">{child.label}</Text>
                                                 </Flex>
@@ -156,59 +146,30 @@ export const Sidebar = ({
                 </Accordion.Root>
             </Box>
 
-            {/* --- SMART DYNAMIC BOTTOM SECTION --- */}
-            <Box px={isCollapsed ? 2 : 4} pt={4} pb={4} mt="auto" flexShrink={0}>
+            {/* --- BOTTOM SECTION (PINNED & PERMANENTLY VISIBLE) --- */}
+            <Box px={isCollapsed ? 2 : 6} pt={4} pb={4} mt="auto" flexShrink={0} borderTop="1px solid #1A1A1A" bg="#000000">
                 {!isCollapsed ? (
-                    <Box position="relative">
-                        {/* (Visible when NO menus are open) */}
-                        <Box 
-                            maxH={isMenuExpanded ? "0px" : "150px"} 
-                            opacity={isMenuExpanded ? 0 : 1} 
-                            overflow="hidden" 
-                            transition="all 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
-                            mb={isMenuExpanded ? 0 : 3}
-                        >
-                            <Box p={3} bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none">
-                                <Flex align="center" justify="space-between" mb={3}>
-                                    <Text fontSize="13px" fontWeight="500" color="#A1A1AA" whiteSpace="nowrap">
-                                        Storage: 45%
-                                    </Text>
-                                </Flex>
-                                <Button h="32px" fontSize="13px" fontWeight="bold" w="full" bg="white" color="black" _hover={{ bg: "#E5E5E5" }} transition="all 0.2s" border="none" rounded="none">
-                                    Upgrade Plan
-                                </Button>
-                            </Box>
-                        </Box>
-
-                        {/* (Visible when ANY menu is open) */}
-                        <Box 
-                            maxH={isMenuExpanded ? "50px" : "0px"} 
-                            opacity={isMenuExpanded ? 1 : 0} 
-                            overflow="hidden" 
-                            transition="all 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
-                            mb={isMenuExpanded ? 2 : 0}
-                        >
-                            <Flex align="center" justify="space-between" bg="#0A0A0A" p={2.5} rounded="none" border="1px solid #1A1A1A">
-                                <Text fontSize="13px" color="#A1A1AA" whiteSpace="nowrap">45% Storage</Text>
-                                <Flex align="center" gap={1} color="white" cursor="pointer" _hover={{ opacity: 0.8 }}>
-                                    <Text fontSize="12px" fontWeight="500">Upgrade</Text>
-                                    <Icon as={LuZap} css={subIconStyle} />
-                                </Flex>
+                    <Box>
+                       
+                        <Box p={3} bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" mb={3}>
+                            <Flex align="center" justify="space-between" mb={3}>
+                                <Text fontSize="13px" fontWeight="500" color="#A1A1AA" whiteSpace="nowrap">
+                                    Storage: 45%
+                                </Text>
                             </Flex>
+                            <Button h="32px" fontSize="13px" fontWeight="bold" w="full" bg="white" color="black" _hover={{ bg: "#E5E5E5" }} transition="all 0.2s" border="none" rounded="none">
+                                Upgrade Plan
+                            </Button>
                         </Box>
 
-                        {/* LOGOUT BUTTON */}
-                        <Flex align="center" gap={3} px={3} py={2} cursor="pointer" rounded="none" color="red.500" _hover={{ bg: "rgba(229, 62, 62, 0.1)" }} transition="all 0.2s">
-                    
+                        <Flex align="center" gap={3} px={0} py={2} cursor="pointer" rounded="none" color="red.500" _hover={{ bg: "rgba(229, 62, 62, 0.1)" }} transition="all 0.2s">
                             <Icon as={LuLogOut} color="red.500" css={iconStyle} />
                             <Text fontSize="14px" fontWeight="600" whiteSpace="nowrap">Log Out</Text>
                         </Flex>
                     </Box>
                 ) : (
-                    /* COLLAPSED ICONS */
                     <VStack gap={4} py={2}>
                         <Flex justify="center" align="center" cursor="pointer" color="red.500" _hover={{ bg: "rgba(229, 62, 62, 0.1)" }} p={2} rounded="none">
-                        
                             <Icon as={LuLogOut} color="red.500" css={iconStyle} />
                         </Flex>
                     </VStack>
