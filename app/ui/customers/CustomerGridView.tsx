@@ -4,7 +4,7 @@ import { Box, Flex, Text, SimpleGrid, Icon, Input, IconButton, Spinner } from "@
 import { LuSearch, LuFilter, LuEye, LuMail, LuPencil, LuBan, LuTrash2 } from "react-icons/lu";
 import { Customer } from "@/app/lib/definitions";
 
-const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "40px", rounded: "lg", px: 3, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
+const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "40px", px: 3, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
 const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#121214", color: "white", height: "40px", borderRadius: "8px", padding: "0 12px", border: "1px solid rgba(255, 255, 255, 0.2)", outline: "none", cursor: "pointer", fontSize: "14px" };
 
 
@@ -39,7 +39,7 @@ export const CustomerGridView = ({
             </Box>
 
             <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} mx={-4} px={4} borderBottom="1px solid" borderColor="whiteAlpha.100">
-                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100" shadow="lg">
+                <Box bg="#1A1C23" p={4} border="1px solid" borderColor="whiteAlpha.100" shadow="lg">
                     <Flex align="center" gap={2} mb={4}>
                         <Icon as={LuFilter} color="gray.400" />
                         <Text color="white" fontWeight="bold">Filters & Search</Text>
@@ -84,7 +84,7 @@ export const CustomerGridView = ({
                     <Text color="gray.400" fontSize="lg" fontWeight="bold">No customers found.</Text>
                 </Flex>
             ) : (
-                <Box bg="whiteAlpha.50" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" mb={8} overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' } }}>
+                <Box bg="whiteAlpha.50"  border="1px solid" borderColor="whiteAlpha.100" mb={8} overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: '10px' } }}>
                     <Box as="table" w="full" minW="1000px" textAlign="center" style={{ borderCollapse: "collapse" }}>
                         <Box as="thead" bg="#1A1C23" borderBottom="1px solid" borderColor="whiteAlpha.100">
                             <Box as="tr">
@@ -109,8 +109,8 @@ export const CustomerGridView = ({
                                     <Box as="td" py={4} px={5}><Text color="white" fontSize="sm" fontWeight="medium">{customer.orders}</Text></Box>
                                     <Box as="td" py={4} px={5}><Text color="#5cac7d" fontSize="sm" fontWeight="bold">₦{customer.spend.toLocaleString()}</Text></Box>
                                     <Box as="td" py={4} px={5}>
-                                        <Flex align="center" justify="center" gap={1.5} px={3} py={1} rounded="full" bg={customer.status === "Active" ? "rgba(92, 172, 125, 0.15)" : "whiteAlpha.100"} color={customer.status === "Active" ? "#5cac7d" : "gray.400"} fontSize="xs" fontWeight="bold" display="inline-flex">
-                                            <Box boxSize="6px" rounded="full" bg={customer.status === "Active" ? "#5cac7d" : "gray.400"} />
+                                        <Flex align="center" justify="center" gap={1.5} px={3} py={1}  bg={customer.status === "Active" ? "rgba(92, 172, 125, 0.15)" : "whiteAlpha.100"} color={customer.status === "Active" ? "#5cac7d" : "gray.400"} fontSize="xs" fontWeight="bold" display="inline-flex">
+                                            <Box boxSize="6px"  bg={customer.status === "Active" ? "#5cac7d" : "gray.400"} />
                                             {customer.status}
                                         </Flex>
                                     </Box>

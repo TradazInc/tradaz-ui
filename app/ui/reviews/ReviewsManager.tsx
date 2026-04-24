@@ -53,7 +53,7 @@ export const ReviewsManager = () => {
         return (
             <HStack gap={1}>
                 {[1, 2, 3, 4, 5].map((star) => (
-                    <Icon key={star} as={LuStar} boxSize="14px" color={star <= rating ? "orange.400" : "whiteAlpha.300"} fill={star <= rating ? "orange.400" : "transparent"} />
+                    <Icon key={star} as={LuStar} boxSize="14px" color={star <= rating ? "orange.400" : "#333333"} fill={star <= rating ? "orange.400" : "transparent"} />
                 ))}
             </HStack>
         );
@@ -61,30 +61,30 @@ export const ReviewsManager = () => {
 
     // Shared styles for our native selects to bypass TypeScript Box errors
     const selectStyles = {
-        backgroundColor: "#121214",
+        backgroundColor: "#0A0A0A",
         color: "white",
         height: "44px",
         padding: "0 16px",
-        borderRadius: "8px",
-        border: "1px solid rgba(255, 255, 255, 0.16)",
+        borderRadius: "0px", 
+        border: "1px solid #1A1A1A", 
         cursor: "pointer",
         outline: "none"
     };
 
     return (
-        <Box w="full" display="flex" flexDirection="column" position="relative">
+        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
             <Box 
                 position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
-                bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
+                bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
                 py={4} mb={6} mx={-4} px={4} 
             >
                 <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4} mb={6}>
                     <Box>
-                        <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
+                        <Text color="white" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
                             <Icon as={LuMessageSquare} /> Product Reviews
                         </Text>
-                        <Text color="gray.400" fontSize="sm">Manage customer feedback, ratings, and public visibility.</Text>
+                        <Text color="gray.500" fontSize="sm">Manage customer feedback, ratings, and public visibility.</Text>
                     </Box>
                     
                     <HStack gap={4}>
@@ -92,7 +92,7 @@ export const ReviewsManager = () => {
                             <Text color="white" fontWeight="bold" fontSize="lg">{avgRating} / 5.0</Text>
                             <Text color="gray.500" fontSize="xs">Average Store Rating</Text>
                         </VStack>
-                        <Box h="40px" w="1px" bg="whiteAlpha.200" />
+                        <Box h="40px" w="1px" bg="#1A1A1A" />
                         <VStack align="flex-end" gap={0}>
                             <Text color="orange.400" fontWeight="bold" fontSize="lg">{totalPending}</Text>
                             <Text color="gray.500" fontSize="xs">Pending Moderation</Text>
@@ -101,9 +101,9 @@ export const ReviewsManager = () => {
                 </Flex>
 
                 <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
-                    <Flex flex={1} minW="250px" align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="lg" px={3} _focusWithin={{ borderColor: "#5cac7d" }}>
+                    <Flex flex={1} minW="250px" align="center" bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" px={3} _focusWithin={{ borderColor: "white" }}>
                         <Icon as={LuSearch} color="gray.400" />
-                        <Input placeholder="Search comments or customers..." border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="44px" />
+                        <Input placeholder="Search comments or customers..." border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="44px" rounded="none" />
                     </Flex>
                     
                     <select 
@@ -142,7 +142,7 @@ export const ReviewsManager = () => {
 
             <VStack gap={4} align="stretch" mb={8}>
                 {filteredAndSortedReviews.length === 0 ? (
-                    <Flex justify="center" py={12} color="gray.500" bg="whiteAlpha.50" rounded="2xl" border="1px dashed" borderColor="whiteAlpha.200">
+                    <Flex justify="center" py={12} color="gray.500" bg="#0A0A0A" rounded="none" border="1px solid #1A1A1A">
                         No reviews found matching your filters.
                     </Flex>
                 ) : (
@@ -151,14 +151,14 @@ export const ReviewsManager = () => {
                         const isApproved = review.status === "Approved";
                         
                         return (
-                            <Box key={review.id} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor={isPending ? "orange.900" : "whiteAlpha.100"} p={{ base: 4, md: 6 }} shadow="sm" transition="all 0.2s">
+                            <Box key={review.id} bg="#0A0A0A" rounded="none" border="1px solid" borderColor={isPending ? "rgba(237, 137, 54, 0.4)" : "#1A1A1A"} p={{ base: 4, md: 6 }} shadow="sm" transition="all 0.2s">
                                 <Flex direction={{ base: "column", md: "row" }} justify="space-between" gap={6}>
                                     
                                     <VStack align="start" flex={1} gap={3}>
                                         <HStack justify="space-between" w="full">
                                             <Flex align="center" gap={2}>
                                         
-                                                <Box boxSize="32px" rounded="md" bg="whiteAlpha.100" display="flex" alignItems="center" justifyContent="center">
+                                                <Box boxSize="32px" rounded="none" bg="#111111" border="1px solid #1A1A1A" display="flex" alignItems="center" justifyContent="center">
                                                     <Icon as={LuTag} color="gray.400" boxSize="14px" />
                                                 </Box>
                                                 <Box>
@@ -167,15 +167,16 @@ export const ReviewsManager = () => {
                                                 </Box>
                                             </Flex>
                                             
-                                            <Flex align="center" px={2.5} py={1} rounded="full" bg={isApproved ? "rgba(92, 172, 125, 0.15)" : isPending ? "rgba(237, 137, 54, 0.15)" : "rgba(245, 101, 101, 0.15)"}>
-                                                <Box boxSize="6px" rounded="full" mr={2} bg={isApproved ? "#5cac7d" : isPending ? "orange.400" : "red.400"} />
+                                            <Flex align="center" px={2.5} py={1} rounded="none" border="1px solid" borderColor={isApproved ? "rgba(92, 172, 125, 0.3)" : isPending ? "rgba(237, 137, 54, 0.3)" : "rgba(245, 101, 101, 0.3)"} bg={isApproved ? "rgba(92, 172, 125, 0.1)" : isPending ? "rgba(237, 137, 54, 0.1)" : "rgba(245, 101, 101, 0.1)"}>
+                                                {/* Even the status dot is perfectly square now */}
+                                                <Box boxSize="6px" rounded="none" mr={2} bg={isApproved ? "#5cac7d" : isPending ? "orange.400" : "red.400"} />
                                                 <Text color={isApproved ? "#5cac7d" : isPending ? "orange.400" : "red.400"} fontSize="xs" fontWeight="bold">
                                                     {review.status}
                                                 </Text>
                                             </Flex>
                                         </HStack>
 
-                                        <Box bg="blackAlpha.300" p={4} rounded="xl" w="full">
+                                        <Box bg="#111111" border="1px solid #1A1A1A" p={4} rounded="none" w="full">
                                             <Flex justify="space-between" mb={2}>
                                                 <Text color="gray.300" fontSize="sm" fontWeight="bold">{review.customerName}</Text>
                                                 {renderStars(review.rating)}
@@ -194,17 +195,17 @@ export const ReviewsManager = () => {
                                     <Flex direction={{ base: "row", md: "column" }} gap={2} minW="140px" justify="flex-start">
                                         
                                         {!isApproved && (
-                                            <Button size="sm" onClick={() => updateReviewStatus(review.id, "Approved")} bg="rgba(92, 172, 125, 0.1)" color="#5cac7d" _hover={{ bg: "#5cac7d", color: "white" }} justifyContent="flex-start">
+                                            <Button size="sm" rounded="none" onClick={() => updateReviewStatus(review.id, "Approved")} bg="rgba(92, 172, 125, 0.1)" border="1px solid rgba(92, 172, 125, 0.3)" color="#5cac7d" _hover={{ bg: "rgba(92, 172, 125, 0.2)" }} justifyContent="flex-start">
                                                 <Icon as={LuCheck} mr={2} /> Approve
                                             </Button>
                                         )}
                                         {review.status !== "Disapproved" && (
-                                            <Button size="sm" onClick={() => updateReviewStatus(review.id, "Disapproved")} bg="rgba(237, 137, 54, 0.1)" color="orange.400" _hover={{ bg: "orange.400", color: "white" }} justifyContent="flex-start">
+                                            <Button size="sm" rounded="none" onClick={() => updateReviewStatus(review.id, "Disapproved")} bg="rgba(237, 137, 54, 0.1)" border="1px solid rgba(237, 137, 54, 0.3)" color="orange.400" _hover={{ bg: "rgba(237, 137, 54, 0.2)" }} justifyContent="flex-start">
                                                 <Icon as={LuX} mr={2} /> Disapprove
                                             </Button>
                                         )}
-                                        <Box w="full" h="1px" bg="whiteAlpha.100" my={1} display={{ base: "none", md: "block" }} />
-                                        <Button size="sm" onClick={() => deleteReview(review.id)} variant="ghost" color="red.400" _hover={{ bg: "red.900", color: "white" }} justifyContent="flex-start">
+                                        <Box w="full" h="1px" bg="#1A1A1A" my={1} display={{ base: "none", md: "block" }} />
+                                        <Button size="sm" rounded="none" onClick={() => deleteReview(review.id)} variant="ghost" color="red.400" _hover={{ bg: "rgba(245, 101, 101, 0.1)" }} justifyContent="flex-start">
                                             <Icon as={LuTrash2} mr={2} /> Delete
                                         </Button>
                                     </Flex>

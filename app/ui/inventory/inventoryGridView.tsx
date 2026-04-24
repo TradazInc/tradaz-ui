@@ -84,7 +84,7 @@ export const InventoryGridView = ({
   onEdit,
   toggleFavorite,
 }: InventoryGridViewProps) => {
-  // Restock Modal State specifically for the Grid View
+
   const [restockTarget, setRestockTarget] = useState<string | null>(null);
   const [restockAmount, setRestockAmount] = useState("");
 
@@ -105,7 +105,7 @@ export const InventoryGridView = ({
       position="relative"
     >
       <Box mb={4} pt={2}>
-        <Text color="#5cac7d" fontWeight="bold" fontSize="3xl" mb={1}>
+        <Text color="#fff" fontWeight="bold" fontSize="3xl" mb={1}>
           Inventory
         </Text>
         <Text color="gray.400" fontSize="sm">
@@ -221,8 +221,8 @@ export const InventoryGridView = ({
           {visibleItems.map((product) => (
             <Box
               key={product.id}
-              bg="#1A1C23"
-              rounded="2xl"
+              bg="black"
+              // rounded="2xl"
               border="1px solid"
               borderColor="whiteAlpha.100"
               overflow="hidden"
@@ -233,7 +233,7 @@ export const InventoryGridView = ({
                 position="relative"
                 h="280px"
                 w="full"
-                bg="#121214"
+                bg="black"
                 cursor="pointer"
                 onClick={() => onSelectProduct(product)}
                 role="group"
@@ -279,7 +279,6 @@ export const InventoryGridView = ({
                     fontWeight="bold"
                     px={3}
                     py={1}
-                    rounded="md"
                     backdropFilter="blur(4px)"
                   >
                     Featured
@@ -355,7 +354,7 @@ export const InventoryGridView = ({
                       </Text>
                     </Text>
                   </Box>
-                  <Text color="#5cac7d" fontWeight="black" fontSize="xl">
+                  <Text color="#fff" fontWeight="black" fontSize="xl">
                     ₦{product.price.toLocaleString()}
                   </Text>
                 </Flex>

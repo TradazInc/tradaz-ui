@@ -40,56 +40,46 @@ export default function DashboardLayout({
         position="relative"
         zIndex={100}
         flexShrink={0}
+        pl={6} 
+        pr={{ base: 4, md: 8 }} 
+        gap={3} 
       >
-        {/* LEFT SECTION (Inlined Logo & Breadcrumb Separator) */}
-        <Flex
-          w="auto"
-          pl={6}
-          pr={4}
-          align="center"
-          h="full"
-          position="relative"
-          zIndex={2} 
-          flexShrink={0}
+        
+        {/* MOBILE MENU */}
+        <IconButton
+          aria-label="Open Menu"
+          variant="ghost"
+          display={{ base: "flex", md: "none" }}
+          onClick={() => setSidebarOpen(true)}
+          color="#888888"
+          _hover={{ color: "white", bg: "#111111" }}
+          size="sm"
+          rounded="none"
         >
-          <IconButton
-            aria-label="Open Menu"
-            variant="ghost"
-            display={{ base: "flex", md: "none" }}
-            onClick={() => setSidebarOpen(true)}
-            color="#888888"
-            _hover={{ color: "white", bg: "#111111" }}
-            size="sm"
-            rounded="none"
-            mr={2}
-          >
-            <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
-          </IconButton>
+          <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
+        </IconButton>
 
-          <Flex align="center" gap={3} userSelect="none">
-            <Text
-              fontSize="xl"
-              fontWeight="extrabold"
-              color="white"
-              letterSpacing="tight"
-            >
-              Tradaz
-              <Text as="span" color="#888888">.</Text>
-            </Text>
-          </Flex>
+        {/* LOGO (Extrabold) */}
+        <Text
+          fontSize="xl"
+          fontWeight="extrabold" 
+          color="white"
+          letterSpacing="tight"
+          userSelect="none"
+        >
+          Tradaz<Text as="span" color="#888888">.</Text>
+        </Text>
 
-          <Text 
-              color="gray.600" 
-              fontSize="xl" 
-              ml={6} 
-              display={{ base: "none", md: "block" }}
-          >
-              /
-          </Text>
-        </Flex>
+        {/* FIRST BREADCRUMB SEPARATOR */}
+        <Text 
+            color="gray.600" 
+            fontSize="xl" 
+            display={{ base: "none", md: "block" }}
+        >
+            /
+        </Text>
 
-        {/* RIGHT SECTION (Dropdowns) */}
-
+        {/* RIGHT SECTION (DashboardHeader) */}
         <Flex
           flex={1}
           h="full"
@@ -97,8 +87,6 @@ export default function DashboardLayout({
           overflow="visible" 
           position="relative"
           zIndex={2} 
-          pl={2} 
-          pr={{ base: 4, md: 8 }}
         >
           <DashboardHeader
             businesses={businesses}
@@ -111,6 +99,7 @@ export default function DashboardLayout({
           />
         </Flex>
 
+        {/* UNBREAKABLE LINE */}
         <Box
           position="absolute"
           bottom="0"
