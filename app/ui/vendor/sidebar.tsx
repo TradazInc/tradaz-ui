@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import { Box, VStack, Text, Icon, Flex, Button, ScrollArea } from "@chakra-ui/react";
 import Link from "next/link";
 import { 
-    LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
-     LuLandmark,LuPackage
+    LuLayoutDashboard, LuUsers, LuSettings, LuLogOut, 
+     LuLandmark,LuPackage, LuPlus
 } from "react-icons/lu";
 import { SidebarProps } from "@/app/lib/definitions";
 
 
 const VENDOR_NAV_ITEMS = [
     { label: "Dashboard", icon: LuLayoutDashboard, path: "/business/vendor" },
-    { label: "Products", icon: LuShoppingBag, path: "/business/vendor/products" },
+    { label: "Add Product", icon: LuPlus, path: "/business/vendor/add-product" },
     { label: "Inventory", icon: LuPackage, path: "/business/vendor/inventory" },
     { label: "Customers", icon: LuUsers, path: "/business/vendor/customers" },
     { label: "Finance", icon: LuLandmark, path: "/business/vendor/finance" },
