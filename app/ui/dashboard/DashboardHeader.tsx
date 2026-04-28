@@ -1,14 +1,57 @@
 "use client";
 import React, { useState } from "react";
-import { Flex, Box, Text, Icon, Button, Avatar, AvatarGroup } from "@chakra-ui/react";
+import { Flex, Box, Text, Icon, Button, Avatar, AvatarGroup, Breadcrumb, Menu, Portal } from "@chakra-ui/react";
 import { 
-    LuBell, LuChevronDown, LuCheck,  LuPlus, 
+    LuBell, LuChevronDown, LuCheck, 
     LuImage, LuSettings, LuLogOut, LuShoppingBag,
     LuBuilding2, LuStore 
 } from "react-icons/lu";
 import { OnboardingModal } from "../onboarding/OnboardingModel"; 
 import { AddStoreModal } from "../onboarding/AddStoreModal"; 
 import { DashboardHeaderProps, Store } from "@/app/lib/definitions"; 
+
+
+interface BreadcrumbMenuItemProps {
+    children: React.ReactNode;
+    items: Array<{ id: string; name: string }>; 
+    activeId?: string;
+    onSelect: (value: string) => void;
+}
+
+const BreadcrumbMenuItem = ({ children, items, activeId, onSelect }: BreadcrumbMenuItemProps) => (
+    <Breadcrumb.Item>
+        <Menu.Root>
+            <Menu.Trigger asChild>{children}</Menu.Trigger>
+            <Portal>
+                <Menu.Positioner zIndex={100}>
+                    <Menu.Content bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" shadow="2xl" minW="260px" p={0}>
+                        <Box maxH="250px" overflowY="auto" py={1} css={{ '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { background: '#1A1A1A', borderRadius: '0px' } }}>
+                            {items.map((item) => (
+                                <Menu.Item 
+                                    key={item.id} 
+                                    value={item.id} 
+                                    onClick={() => onSelect(item.id)}
+                                    px={4} py={3} cursor="pointer" bg="transparent" rounded="none"
+                                    color={item.id === activeId ? "white" : "#888888"}
+                                    fontWeight={item.id === activeId ? "bold" : "normal"}
+                                    _hover={{ bg: "#111111", color: "white" }}
+                                >
+                                    <Flex justify="space-between" w="full" align="center">
+                                        <Text fontSize="13px">{item.name}</Text>
+                                        {item.id === activeId && <Icon as={LuCheck} color="white" boxSize="14px" strokeWidth="2.5" />}
+                                    </Flex>
+                                </Menu.Item>
+                            ))}
+                            {(!items || items.length === 0) && (
+                                <Text fontSize="12px" color="#666666" px={4} py={3}>No items found.</Text>
+                            )}
+                        </Box>
+                    </Menu.Content>
+                </Menu.Positioner>
+            </Portal>
+        </Menu.Root>
+    </Breadcrumb.Item>
+);
 
 interface ExtendedHeaderProps extends DashboardHeaderProps {
     availableStores?: Store[];
@@ -25,11 +68,12 @@ export const DashboardHeader = ({
     onStoreChange,
     
 }: ExtendedHeaderProps) => {
-    const [activeDropdown, setActiveDropdown] = useState<"biz" | "store" | "notif" | "profile" | null>(null);
+   
+    const [activeDropdown, setActiveDropdown] = useState<"notif" | "profile" | null>(null);
     const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
     const [isAddStoreOpen, setIsAddStoreOpen] = useState(false);
 
-    const toggleDropdown = (dropdown: "biz" | "store" | "notif" | "profile") => {
+    const toggleDropdown = (dropdown: "notif" | "profile") => {
         setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
     };
 
@@ -48,95 +92,49 @@ export const DashboardHeader = ({
                 <Box position="fixed" inset={0} zIndex={40} onClick={closeAll} />
             )}
 
-         
             <Flex w="full" justify="space-between" align="center">
                 
-               
-                <Flex align="center" gap={3}>
-                    
-                    {/* BUSINESS BREADCRUMB */}
-                    <Box position="relative">
-                        <Flex onClick={() => toggleDropdown("biz")} align="center" gap={2} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s">
-                            
-                            <Icon as={LuBuilding2} boxSize="18px" css={iconStyle} />
-                            
-                            <Text fontSize="sm" fontWeight="300" lineClamp={1} color="white">
-                                {activeBusiness?.name || "Select Business"}
-                            </Text>
-                            <Icon as={LuChevronDown} boxSize="16px" transition="transform 0.2s" transform={activeDropdown === "biz" ? "rotate(180deg)" : "none"} css={iconStyle} />
-                        </Flex>
+                <Breadcrumb.Root>
+                    <Breadcrumb.List gap={3}>
                         
-                        {activeDropdown === "biz" && (
-                            <Box position="absolute" top="100%" left={0} mt={4} w="260px" bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" shadow="2xl" zIndex={50} overflow="hidden">
-                                <Box maxH="250px" overflowY="auto" py={1} css={{ '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { background: '#1A1A1A', borderRadius: '0px' } }}>
-                                    {businesses?.map((biz) => (
-                                        <Flex key={biz.id} onClick={() => { onBusinessChange(biz.id); closeAll(); }} align="center" justify="space-between" px={4} py={3} cursor="pointer" _hover={{ bg: "#111111" }}>
-                                            <Text fontSize="13px" color={biz.id === activeBusiness?.id ? "white" : "#888888"} fontWeight={biz.id === activeBusiness?.id ? "bold" : "normal"}>{biz.name}</Text>
-                                            {biz.id === activeBusiness?.id && <Icon as={LuCheck} color="white" css={iconStyle} boxSize="14px" />}
-                                        </Flex>
-                                    ))}
-                                    {(!businesses || businesses.length === 0) && (
-                                        <Text fontSize="12px" color="#666666" px={4} py={3}>No businesses found.</Text>
-                                    )}
-                                </Box>
-                                
-                                <Box borderTop="1px solid #1A1A1A" p={2} bg="#0A0A0A">
-                                    <Flex onClick={() => { setIsOnboardingOpen(true); closeAll(); }} align="center" gap={2} px={3} py={2} cursor="pointer" color="#888888" rounded="none" _hover={{ bg: "#111111", color: "white" }} transition="all 0.2s">
-                                        <Icon as={LuPlus} boxSize="14px" css={iconStyle} />
-                                        <Text fontSize="13px" fontWeight="bold">New business</Text>
-                                    </Flex>
-                                </Box>
-                            </Box>
-                        )}
-                    </Box>
-
-                 
-                    <Text 
-                        color="gray.600" 
-                        fontSize="xl" 
-                        display={{ base: "none", md: "block" }}
-                    >
-                        /
-                    </Text>
-
-                    {/* STORE BREADCRUMB */}
-                    <Box position="relative">
-                        <Flex onClick={() => toggleDropdown("store")} align="center" gap={2} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s">
-                            
-                            <Icon as={LuStore} boxSize="18px" css={iconStyle} />
-                            
-                            <Text fontSize="sm" fontWeight="300" lineClamp={1} color="white">
-                                {activeStoreName}
-                            </Text>
-                            <Icon as={LuChevronDown} boxSize="16px" transition="transform 0.2s" transform={activeDropdown === "store" ? "rotate(180deg)" : "none"} css={iconStyle} />
-                        </Flex>
                         
-                        {activeDropdown === "store" && (
-                            <Box position="absolute" top="100%" left={0} mt={4} w="260px" bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" shadow="2xl" zIndex={50} overflow="hidden">
-                                <Box maxH="250px" overflowY="auto" py={1} css={{ '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { background: '#1A1A1A', borderRadius: '0px' } }}>
-                                    {availableStores?.map((s: Store) => (
-                                        <Flex key={s.id} onClick={() => { onStoreChange?.(s.id); closeAll(); }} align="center" justify="space-between" px={4} py={3} cursor="pointer" _hover={{ bg: "#111111" }}>
-                                            <Text fontSize="13px" color={s.id === activeStoreId ? "white" : "#888888"} fontWeight={s.id === activeStoreId ? "bold" : "normal"}>{s.name}</Text>
-                                            {s.id === activeStoreId && <Icon as={LuCheck} color="white" css={iconStyle} boxSize="14px" />}
-                                        </Flex>
-                                    ))}
-                                    {(!availableStores || availableStores.length === 0) && (
-                                        <Text fontSize="12px" color="#666666" px={4} py={3}>No stores found.</Text>
-                                    )}
-                                </Box>
+                        <BreadcrumbMenuItem 
+                            items={businesses || []} 
+                            activeId={activeBusiness?.id} 
+                            onSelect={(id) => onBusinessChange(id)}
+                        >
+                            <Flex as="button" align="center" gap={2} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s" outline="none">
+                                <Icon as={LuBuilding2} boxSize="18px" css={iconStyle} />
+                                <Text fontSize="sm" fontWeight="300" lineClamp={1} color="white">
+                                    {activeBusiness?.name || "Select Business"}
+                                </Text>
+                                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} />
+                            </Flex>
+                        </BreadcrumbMenuItem>
 
-                                <Box borderTop="1px solid #1A1A1A" p={2} bg="#0A0A0A">
-                                    <Flex onClick={() => { setIsAddStoreOpen(true); closeAll(); }} align="center" gap={2} px={3} py={2} cursor="pointer" color="#888888" rounded="none" _hover={{ bg: "#111111", color: "white" }} transition="all 0.2s">
-                                        <Icon as={LuPlus} boxSize="14px" css={iconStyle} />
-                                        <Text fontSize="13px" fontWeight="bold">New store</Text>
-                                    </Flex>
-                                </Box>
-                            </Box>
-                        )}
-                    </Box>
-                </Flex>
+                        <Breadcrumb.Separator color="gray.600" fontSize="xl" display={{ base: "none", md: "block" }}>
+                            /
+                        </Breadcrumb.Separator>
 
-                {/* Right Side: Notification & Avatar */}
+                        {/* STORE BREADCRUMB */}
+                        <BreadcrumbMenuItem 
+                            items={availableStores} 
+                            activeId={activeStoreId} 
+                            onSelect={(id) => onStoreChange?.(id)}
+                        >
+                            <Flex as="button" align="center" gap={2} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s" outline="none">
+                                <Icon as={LuStore} boxSize="18px" css={iconStyle} />
+                                <Text fontSize="sm" fontWeight="300" lineClamp={1} color="white">
+                                    {activeStoreName}
+                                </Text>
+                                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} />
+                            </Flex>
+                        </BreadcrumbMenuItem>
+
+                    </Breadcrumb.List>
+                </Breadcrumb.Root>
+
+              
                 <Flex gap={6} align="center" ml="auto">
                     {/* --- NOTIFICATIONS DROPDOWN --- */}
                     <Box position="relative">

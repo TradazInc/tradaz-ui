@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Flex, Box, IconButton, Icon, Text } from "@chakra-ui/react";
+import { Flex, Box, IconButton, Icon, Text, Breadcrumb } from "@chakra-ui/react";
 import { LuMenu } from "react-icons/lu"; 
 import { Sidebar } from "@/app/ui/dashboard/Sidebar"; 
 import { DashboardHeader } from "@/app/ui/dashboard/DashboardHeader"; 
@@ -59,25 +59,30 @@ export default function DashboardLayout({
           <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
         </IconButton>
 
-        {/* LOGO (Extrabold) */}
-        <Text
-          fontSize="xl"
-          fontWeight="extrabold" 
-          color="white"
-          letterSpacing="tight"
-          userSelect="none"
-        >
-          Tradaz<Text as="span" color="#888888">.</Text>
-        </Text>
+       
+        <Breadcrumb.Root>
+          <Breadcrumb.List gap={3}>
+            
+            {/* LOGO */}
+            <Breadcrumb.Item>
+              <Text
+                fontSize="xl"
+                fontWeight="extrabold" 
+                color="white"
+                letterSpacing="tight"
+                userSelect="none"
+              >
+                Tradaz<Text as="span" color="#888888">.</Text>
+              </Text>
+            </Breadcrumb.Item>
 
-        {/* FIRST BREADCRUMB SEPARATOR */}
-        <Text 
-            color="gray.600" 
-            fontSize="xl" 
-            display={{ base: "none", md: "block" }}
-        >
-            /
-        </Text>
+            {/* BREADCRUMB SEPARATOR */}
+            <Breadcrumb.Separator color="gray.600" fontSize="xl" display={{ base: "none", md: "block" }}>
+              /
+            </Breadcrumb.Separator>
+
+          </Breadcrumb.List>
+        </Breadcrumb.Root>
 
         {/* RIGHT SECTION (DashboardHeader) */}
         <Flex
