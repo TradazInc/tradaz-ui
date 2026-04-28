@@ -7,8 +7,8 @@ import { SalesRecord } from "@/app/lib/definitions";
 import { SalesPosModal, NewSalePayload } from "./SalesPosModal";
 
 
-const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "40px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
-const nativeSelectStyle: React.CSSProperties = { backgroundColor: "#0A0A0A", color: "white", height: "40px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
+const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
+const nativeSelectStyle: React.CSSProperties = { backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
 
 interface SalesGridViewProps {
     visibleItems: SalesRecord[];
@@ -31,7 +31,7 @@ export const SalesGridView = ({
     const [isAddingSale, setIsAddingSale] = useState(false);
 
     return (
-        <Box w="full" display="flex" flexDirection="column" position="relative">
+        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
             <Flex justify="space-between" align="flex-end" mb={6} wrap="wrap" gap={4} pt={2}>
                 <Box>
@@ -62,7 +62,7 @@ export const SalesGridView = ({
                 <Flex gap={3} wrap="wrap">
                     <Flex flex={1} minW="250px" align="center" {...controlStyles}>
                         <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
-                        <Input placeholder="Search by order #, customer..." border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" value={searchQuery} onChange={handleSearch} px={0} />
+                        <Input placeholder="Search by order #, customer..." border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" value={searchQuery} onChange={handleSearch} px={0} h="full" />
                     </Flex>
                     <Box w={{ base: "full", md: "auto" }}>
                         <select value={sortBy} onChange={handleSortBy} style={nativeSelectStyle}>
@@ -81,7 +81,7 @@ export const SalesGridView = ({
             </Box>
 
             {visibleItems.length === 0 ? (
-                <Flex justify="center" align="center" py={20} direction="column">
+                <Flex justify="center" align="center" py={20} direction="column" border="1px dashed #1A1A1A" bg="#0A0A0A">
                     <Text color="#888888" fontSize="lg" fontWeight="bold">No records found.</Text>
                 </Flex>
             ) : (
@@ -104,7 +104,7 @@ export const SalesGridView = ({
                                     <Box as="td" py={5} px={5}><Text color="white" fontSize="sm" fontWeight="500">{sale.transaction}</Text></Box>
                                     <Box as="td" py={5} px={5}><Text color="#888888" fontSize="sm">{sale.date}</Text></Box>
                                     <Box as="td" py={5} px={5}>
-                                       
+                                        {/* Pure monochrome badge for payment */}
                                         <Flex align="center" justify="center" px={2} py={1} rounded="none" bg={sale.payment === "Transfer" ? "white" : "#111111"} color={sale.payment === "Transfer" ? "black" : "white"} border={sale.payment === "Transfer" ? "none" : "1px solid #333333"} fontSize="11px" fontWeight="bold" display="inline-flex">
                                             {sale.payment}
                                         </Flex>
@@ -158,13 +158,11 @@ export const SalesGridView = ({
                 </SimpleGrid>
             </Box>
 
-            {/* Mount the Modular POS Component here */}
             <SalesPosModal 
                 isOpen={isAddingSale} 
                 onClose={() => setIsAddingSale(false)} 
                 onAddSale={onAddSale} 
             />
-
         </Box>
     );
 };
