@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Box, VStack, Text, Icon, Flex, Button, ScrollArea } from "@chakra-ui/react";
 import Link from "next/link";
 import { 
-    LuLayoutDashboard, LuFile, LuSettings, LuLogOut,LuPackage, LuPlus
+    LuLayoutDashboard, LuFile, LuLogOut,LuPackage, LuPlus
 } from "react-icons/lu";
 import { SidebarProps } from "@/app/lib/definitions";
 
@@ -13,7 +13,7 @@ const VENDOR_NAV_ITEMS = [
     { label: "Add Product", icon: LuPlus, path: "/business/vendor/add-product" },
     { label: "Inventory", icon: LuPackage, path: "/business/vendor/inventory" },
     { label: "Sales record", icon: LuFile, path: "/business/vendor/sales-record" },
-    { label: "Settings", icon: LuSettings, path: "/business/vendor/settings" },
+    // { label: "Settings", icon: LuSettings, path: "/business/vendor/settings" },
 ];
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
