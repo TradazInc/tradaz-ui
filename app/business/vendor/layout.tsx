@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Flex, Box, IconButton, Icon, Text, Avatar, AvatarGroup } from "@chakra-ui/react";
 import { LuMenu, LuBell, LuBuilding2, LuStore, LuUser} from "react-icons/lu"; 
-import { Sidebar } from "@/app/ui/dashboard/Sidebar"; 
+import { Sidebar } from "@/app/ui/vendor/sidebar"; 
 
 export default function VendorLayout({
   children,
@@ -69,7 +69,7 @@ export default function VendorLayout({
         {/* STATIC BUSINESS NAME */}
         <Flex align="center" gap={2} display={{ base: "none", md: "flex" }}>
             <Icon as={LuBuilding2} boxSize="18px" color="#888888" strokeWidth="2.5" />
-            <Text fontSize="xl" fontWeight="300" color="white" lineClamp={1}>
+            <Text fontSize="sm" fontWeight="300" color="white" lineClamp={1}>
                 {vendorContext.businessName}
             </Text>
         </Flex>
@@ -82,7 +82,7 @@ export default function VendorLayout({
         {/* STATIC STORE NAME */}
         <Flex align="center" gap={2} display={{ base: "none", md: "flex" }}>
             <Icon as={LuStore} boxSize="18px" color="#888888" strokeWidth="2.5" />
-            <Text fontSize="xl" fontWeight="300" color="white" lineClamp={1}>
+            <Text fontSize="sm" fontWeight="300" color="white" lineClamp={1}>
                 {vendorContext.storeName}
             </Text>
         </Flex>
@@ -94,7 +94,7 @@ export default function VendorLayout({
         {/* VENDOR ROLE BADGE */}
         <Flex align="center" gap={2} display={{ base: "none", md: "flex" }}>
             <Icon as={LuUser} boxSize="18px" color="gray.400" strokeWidth="2.5" />
-            <Text fontSize="xl" fontWeight="300" color="white" lineClamp={1}>
+            <Text fontSize="sm" fontWeight="300" color="white" lineClamp={1}>
                 {vendorContext.role}
             </Text>
         </Flex>

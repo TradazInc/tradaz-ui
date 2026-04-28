@@ -2,7 +2,7 @@
 import React from "react";
 import { Box, Text, VStack, Flex, Circle } from "@chakra-ui/react";
 
-// 🚀 Stripped the vibrant colors to enforce the monochrome aesthetic
+
 const ACTIVITIES = [
     { id: 1, title: "New order #1042", time: "2 mins ago" },
     { id: 2, title: "Payment of ₦15,000 received", time: "1 hour ago" },
@@ -35,7 +35,6 @@ export const RecentActivity = () => {
                 }}
             />
 
-            {/* 🚀 Content Layer */}
             <Box position="relative" zIndex={1}>
                 <Text fontSize="md" color="white" fontWeight="600" mb={6} letterSpacing="tight">
                     Recent Activity

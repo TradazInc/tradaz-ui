@@ -22,7 +22,7 @@ const OTHER_NAV_ITEMS = [
     { label: "Vendors", icon: LuStore, children: [
         { label: "Vendor List", icon: LuUsers }, 
         { label: "Vendor Inventory", icon: LuPackage }, 
-        { label: "Vendor Sales ", icon: LuFileText }
+        { label: "Vendor Sales", icon: LuFileText }
     ]},
 
     { label: "Finance", icon: LuLandmark, children: [{ label: "Sales Record", icon: LuFileText }, { label: "Staff Salary", icon: LuWallet }, { label: "Expenses", icon: LuTrendingDown }, { label: "Revenue", icon: LuTrendingUp }, { label: "Tax Calculation", icon: LuCalculator }] },
