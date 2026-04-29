@@ -60,7 +60,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             position={{ base: "absolute", md: "static" }} 
             top={0} left={0}
             transform={{ base: isOpen ? "translateX(0)" : "translateX(-100%)", md: "translateX(0)" }}
-            zIndex={10} display="flex" flexDirection="column" 
+            zIndex={999999} display="flex" flexDirection="column" 
             px={0} 
             transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             color="white"
