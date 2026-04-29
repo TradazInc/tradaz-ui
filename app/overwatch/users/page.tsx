@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, Avatar, IconButton, Spinner
+    Box, Flex, Text, Input, Button, Icon, Grid,VStack, Avatar, IconButton, Spinner
 } from "@chakra-ui/react";
 import { 
     LuSearch, LuPlus, LuShieldAlert, LuKey, LuUserX, LuVenetianMask, 
@@ -10,12 +10,10 @@ import {
 
 import { useAdminUsers, AdminUser, Role } from "@/app/hooks/useAdminUsers";
 
-const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "44px", rounded: "lg", px: 3, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
-const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#121214", color: "white", height: "44px", borderRadius: "8px", padding: "0 12px", border: "1px solid rgba(255, 255, 255, 0.2)", outline: "none", cursor: "pointer", fontSize: "14px" };
+const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
+const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
 
 export default function AdminUsersPage() {
-    const brandColor = "#5cac7d";
-    
     // Call the Hook
     const {
         searchQuery, roleFilter, statusFilter, sortBy, sortOrder,
@@ -30,36 +28,44 @@ export default function AdminUsersPage() {
         alert(`API Triggered: POST /api/auth/admin/${actionName}\nTarget User: ${selectedUser?.email}`);
     };
 
+    
     const getRoleUI = (role: Role) => {
         switch (role) {
-            case "super_admin": return { color: "purple.400", bg: "rgba(159, 122, 234, 0.15)", icon: LuShieldAlert, label: "Platform Admin" };
-            case "shop_owner": return { color: "blue.400", bg: "rgba(66, 153, 225, 0.15)", icon: LuShieldCheck, label: "Shop Owner" };
-            case "shop_staff": return { color: "teal.400", bg: "rgba(49, 151, 149, 0.15)", icon: LuStore, label: "Shop Staff" };
-            case "customer": return { color: "gray.400", bg: "whiteAlpha.100", icon: LuShield, label: "Customer" };
-            default: return { color: "gray.400", bg: "whiteAlpha.100", icon: LuShield, label: "Unknown" };
+            case "super_admin": return { iconColor: "purple.400", icon: LuShieldAlert, label: "Platform Admin" };
+            case "shop_owner": return { iconColor: "blue.400", icon: LuShieldCheck, label: "Shop Owner" };
+            case "shop_staff": return { iconColor: "teal.400", icon: LuStore, label: "Shop Staff" };
+            case "customer": return { iconColor: "gray.500", icon: LuShield, label: "Customer" };
+            default: return { iconColor: "gray.500", icon: LuShield, label: "Unknown" };
         }
     };
 
     return (
-        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative">
+        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
             
-            {/* --- HEADER (Scrolls naturally) --- */}
-            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} pt={2} gap={4}>
-                <Box>
-                    <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Global Users ({totalLimit})</Text>
-                    <Text color="gray.400" fontSize="sm">Showing <Text as="span" color="white" fontWeight="bold">{visibleItems.length}</Text> of <Text as="span" color="white" fontWeight="bold">{processedCount}</Text> • Manage platform admins, shop owners, and customers.</Text>
-                </Box>
-                <Button w={{ base: "full", md: "auto" }} bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2} onClick={() => handleAction("create-user")}>
-                    <Icon as={LuPlus} /> Add Global User
-                </Button>
-            </Flex>
+            {/* --- COMBINED STICKY HEADER & TOOLBAR --- */}
+            <Box 
+                position="sticky" top="0" zIndex={30} 
+                bg="#000000" 
+                mx={{ base: "-16px", lg: "-32px" }} px={{ base: "16px", lg: "32px" }}
+                pt={{ base: 4, lg: 8 }} pb={6} mb={8} 
+                borderBottom="1px solid #1A1A1A"
+            >
+                {/* Title & Action */}
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} gap={4}>
+                    <Box>
+                        <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Global Users ({totalLimit})</Text>
+                        <Text color="#888888" fontSize="sm">Showing <Text as="span" color="white" fontWeight="bold">{visibleItems.length}</Text> of <Text as="span" color="white" fontWeight="bold">{processedCount}</Text> • Manage platform admins, shop owners, and customers.</Text>
+                    </Box>
+                    <Button w={{ base: "full", md: "auto" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2} onClick={() => handleAction("create-user")} fontWeight="bold">
+                        <Icon as={LuPlus} color="#5cac7d" strokeWidth="2.5" /> Add Global User
+                    </Button>
+                </Flex>
 
-            {/* --- STICKY TOOLBAR --- */}
-            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} mx={{ base: -4, lg: 0 }} px={{ base: 4, lg: 0 }} borderBottom="1px solid" borderColor="whiteAlpha.100">
+                {/* Filters & Search */}
                 <Flex direction={{ base: "column", lg: "row" }} gap={3} w="full">
                     {/* Search */}
                     <Flex flex={1} w={{ base: "full", lg: "auto" }} minW={{ lg: "300px" }} align="center" {...controlStyles}>
-                        <Icon as={LuSearch} color="gray.500" mr={2} />
+                        <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
                         <Input 
                             placeholder="Search by name, email, or tenant..." border="none" color="white" h="full" px={0} 
                             _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={handleSearch}
@@ -70,31 +76,31 @@ export default function AdminUsersPage() {
                     <Flex gap={3} w={{ base: "full", lg: "auto" }} wrap="wrap">
                         <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "150px" }}>
                             <select value={roleFilter} onChange={handleRoleFilter} style={nativeSelectStyle}>
-                                <option value="all" style={{ background: "#1A1C23" }}>All Roles</option>
-                                <option value="super_admin" style={{ background: "#1A1C23" }}>Platform Admins</option>
-                                <option value="shop_owner" style={{ background: "#1A1C23" }}>Shop Owners</option>
-                                <option value="shop_staff" style={{ background: "#1A1C23" }}>Shop Staff</option>
-                                <option value="customer" style={{ background: "#1A1C23" }}>Customers</option>
+                                <option value="all" style={{ background: "#000000" }}>All Roles</option>
+                                <option value="super_admin" style={{ background: "#000000" }}>Platform Admins</option>
+                                <option value="shop_owner" style={{ background: "#000000" }}>Shop Owners</option>
+                                <option value="shop_staff" style={{ background: "#000000" }}>Shop Staff</option>
+                                <option value="customer" style={{ background: "#000000" }}>Customers</option>
                             </select>
                         </Box>
                         <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "140px" }}>
                             <select value={statusFilter} onChange={handleStatusFilter} style={nativeSelectStyle}>
-                                <option value="all" style={{ background: "#1A1C23" }}>All Statuses</option>
-                                <option value="active" style={{ background: "#1A1C23" }}>Active</option>
-                                <option value="banned" style={{ background: "#1A1C23" }}>Banned</option>
+                                <option value="all" style={{ background: "#000000" }}>All Statuses</option>
+                                <option value="active" style={{ background: "#000000" }}>Active</option>
+                                <option value="banned" style={{ background: "#000000" }}>Banned</option>
                             </select>
                         </Box>
                         <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "150px" }}>
                             <select value={sortBy} onChange={handleSortBy} style={nativeSelectStyle}>
-                                <option value="name" style={{ background: "#1A1C23" }}>Sort: Name</option>
-                                <option value="tenant" style={{ background: "#1A1C23" }}>Sort: Tenant</option>
-                                <option value="role" style={{ background: "#1A1C23" }}>Sort: Role</option>
+                                <option value="name" style={{ background: "#000000" }}>Sort: Name</option>
+                                <option value="tenant" style={{ background: "#000000" }}>Sort: Tenant</option>
+                                <option value="role" style={{ background: "#000000" }}>Sort: Role</option>
                             </select>
                         </Box>
                         <Box flex={{ base: "1 1 45%", lg: "initial" }} w={{ lg: "150px" }}>
                             <select value={sortOrder} onChange={handleSortOrder} style={nativeSelectStyle}>
-                                <option value="asc" style={{ background: "#1A1C23" }}>A-Z / Ascending</option>
-                                <option value="desc" style={{ background: "#1A1C23" }}>Z-A / Descending</option>
+                                <option value="asc" style={{ background: "#000000" }}>A-Z / Ascending</option>
+                                <option value="desc" style={{ background: "#000000" }}>Z-A / Descending</option>
                             </select>
                         </Box>
                     </Flex>
@@ -103,67 +109,75 @@ export default function AdminUsersPage() {
 
             {/* --- USERS GRID --- */}
             {visibleItems.length === 0 ? (
-                <Flex justify="center" align="center" py={20} direction="column">
-                    <Text color="gray.400" fontSize="lg" fontWeight="bold">No users found.</Text>
+                <Flex justify="center" align="center" py={20} direction="column" bg="#0A0A0A" border="1px dashed #1A1A1A">
+                    <Text color="#888888" fontSize="lg" fontWeight="bold">No users found.</Text>
                 </Flex>
             ) : (
                 <VStack align="stretch" gap={3}>
                     <Grid templateColumns="2fr 1.5fr 1.5fr 1fr 1fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">User</Text>
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Platform Role</Text>
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Shop</Text>
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Status</Text>
-                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Last Login</Text>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">User</Text>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Platform Role</Text>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Shop</Text>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Status</Text>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Last Login</Text>
+                        <Text></Text>
                     </Grid>
 
                     {visibleItems.map((user: AdminUser) => {
                         const roleUI = getRoleUI(user.role);
+                        const isBanned = user.status === 'banned';
+
                         return (
                             <Grid 
                                 key={user.id} 
-                                
                                 templateColumns={{ base: "1fr auto", md: "2fr 1.5fr auto", xl: "2fr 1.5fr 1.5fr 1fr 1fr 50px" }} 
-                                gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.50"
+                                gap={4} p={4} bg="#0A0A0A" rounded="none" border="1px solid" borderColor= "#1A1A1A"
                                 alignItems="center" cursor="pointer" transition="all 0.2s"
-                                _hover={{ borderColor: "whiteAlpha.300", transform: "translateY(-2px)", shadow: "lg" }}
+                                _hover={{ borderColor: "#333333", bg: "#111111" }}
                                 onClick={() => setSelectedUser(user)}
                             >
                                 {/* User Info */}
                                 <Flex align="center" gap={3}>
-                                    <Avatar.Root size="md">
-                                        <Avatar.Fallback name={user.name} bg={user.status === 'banned' ? "red.900" : "whiteAlpha.200"} color="white" />
+                                    <Avatar.Root size="md" rounded="full">
+                                        <Avatar.Fallback name={user.name} bg="#111111" border="1px solid #333333" color="white" rounded="full" fontWeight="bold" />
                                     </Avatar.Root>
                                     <Box overflow="hidden">
-                                        <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{user.name}</Text>
-                                        <Text color="gray.500" fontSize="xs" lineClamp={1}>{user.email}</Text>
+                                        <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{user.name}</Text>
+                                        <Text color="#888888" fontSize="xs" lineClamp={1}>{user.email}</Text>
                                     </Box>
                                 </Flex>
 
                                 {/* Role */}
                                 <Flex align="center" display={{ base: "none", md: "flex" }}>
-                                    <Badge bg={roleUI.bg} color={roleUI.color} px={2.5} py={1} rounded="md" display="flex" alignItems="center" gap={1.5}>
-                                        <Icon as={roleUI.icon} /> {roleUI.label}
-                                    </Badge>
+                                    <Flex bg="#111111" border="1px solid #333333" px={2.5} py={1} rounded="none" align="center" gap={1.5}>
+                                        <Icon as={roleUI.icon} color={roleUI.iconColor} strokeWidth="2.5" boxSize="14px" />
+                                        <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                            {roleUI.label}
+                                        </Text>
+                                    </Flex>
                                 </Flex>
 
                                 {/* Tenant / Shop */}
-                                <Text color="gray.300" fontSize="sm" fontWeight="medium" display={{ base: "none", xl: "block" }}>
+                                <Text color="white" fontSize="sm" fontWeight="bold" display={{ base: "none", xl: "block" }}>
                                     {user.tenant}
                                 </Text>
 
-                                {/* Status (Now visible on mobile!) */}
+                                {/* Status */}
                                 <Box display="block">
-                                    <Badge bg={user.status === 'active' ? "rgba(92, 172, 125, 0.15)" : "rgba(229, 62, 62, 0.15)"} color={user.status === 'active' ? brandColor : "red.400"} px={2.5} py={1} rounded="md">
-                                        {user.status.toUpperCase()}
-                                    </Badge>
+                                    <Flex align="center" gap={2}>
+                                        <Box boxSize="6px" rounded="none" bg={isBanned ? "red.400" : "#5cac7d"} />
+                                        <Text color={isBanned ? "red.400" : "white"} fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                            {user.status}
+                                        </Text>
+                                    </Flex>
                                 </Box>
 
                                 {/* Last Login */}
-                                <Text color="gray.400" fontSize="sm" display={{ base: "none", xl: "block" }}>{user.lastLogin}</Text>
+                                <Text color="#888888" fontSize="sm" display={{ base: "none", xl: "block" }}>{user.lastLogin}</Text>
 
                                 {/* Actions Icon */}
                                 <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                                    <Icon as={LuEllipsisVertical} color="gray.500" />
+                                    <Icon as={LuEllipsisVertical} color="#888888" strokeWidth="2.5" _hover={{ color: "white" }} />
                                 </Flex>
                             </Grid>
                         );
@@ -172,7 +186,7 @@ export default function AdminUsersPage() {
                     {/* Infinite Scroll Trigger */}
                     {visibleCount < processedCount && (
                         <Flex ref={loaderRef} justify="center" align="center" py={8} h="80px">
-                            {isLoadingMore && <Spinner color="#5cac7d" size="md" />}
+                            {isLoadingMore && <Spinner color="white" size="md" />}
                         </Flex>
                     )}
                 </VStack>
@@ -180,19 +194,19 @@ export default function AdminUsersPage() {
 
             {/* --- USER DETAILS & COMMAND DRAWER --- */}
             <Box position="fixed" inset={0} zIndex={9999} pointerEvents={selectedUser ? "auto" : "none"}>
-                <Box position="absolute" inset={0} bg="blackAlpha.700" backdropFilter="blur(4px)" opacity={selectedUser ? 1 : 0} transition="opacity 0.3s ease" onClick={() => setSelectedUser(null)} />
+                <Box position="absolute" inset={0} bg="rgba(0,0,0,0.85)" backdropFilter="blur(4px)" opacity={selectedUser ? 1 : 0} transition="opacity 0.3s ease" onClick={() => setSelectedUser(null)} />
                 
                 <Flex 
                     position="absolute" top={0} right={0} h="100vh" w={{ base: "full", sm: "450px" }}
-                    bg="#121212" borderLeft="1px solid" borderColor="whiteAlpha.100" direction="column" shadow="2xl"
+                    bg="#000000" borderLeft="1px solid" borderColor="#1A1A1A" direction="column" shadow="2xl"
                     transform={selectedUser ? "translateX(0)" : "translateX(100%)"} transition="transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
                 >
                     {selectedUser && (
                         <>
-                            <Flex align="center" justify="space-between" p={6} borderBottom="1px solid" borderColor="whiteAlpha.100" bg="#1A1C23">
-                                <Text fontSize="lg" fontWeight="bold" color="white">User Overview</Text>
-                                <IconButton aria-label="Close" variant="ghost" color="gray.400" rounded="full" onClick={() => setSelectedUser(null)}>
-                                    <LuX />
+                            <Flex align="center" justify="space-between" p={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#0A0A0A">
+                                <Text fontSize="lg" fontWeight="bold" color="white" letterSpacing="tight">User Overview</Text>
+                                <IconButton aria-label="Close" variant="ghost" color="#888888" rounded="none" onClick={() => setSelectedUser(null)} _hover={{ bg: "#111111", color: "white" }}>
+                                    <LuX strokeWidth="2.5" />
                                 </IconButton>
                             </Flex>
 
@@ -200,45 +214,52 @@ export default function AdminUsersPage() {
                                 
                                 {/* Profile Card */}
                                 <Flex direction="column" align="center" textAlign="center" mb={8}>
-                                    <Avatar.Root size="2xl" width="80px" height="80px" mb={4}>
-                                        <Avatar.Fallback name={selectedUser.name} bg={selectedUser.status === 'banned' ? "red.900" : "whiteAlpha.200"} color="white" />
+                                    <Avatar.Root size="2xl" width="80px" height="80px" rounded="full" mb={4}>
+                                        <Avatar.Fallback name={selectedUser.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" />
                                     </Avatar.Root>
-                                    <Text color="white" fontSize="xl" fontWeight="black">{selectedUser.name}</Text>
-                                    <Text color="gray.400" fontSize="sm" mb={3}>{selectedUser.email}</Text>
+                                    <Text color="white" fontSize="xl" fontWeight="black" letterSpacing="tight">{selectedUser.name}</Text>
+                                    <Text color="#888888" fontSize="sm" mb={3}>{selectedUser.email}</Text>
                                     
                                     <Flex gap={2} mt={1} wrap="wrap" justify="center">
-                                        <Badge bg={getRoleUI(selectedUser.role).bg} color={getRoleUI(selectedUser.role).color} px={3} py={1} rounded="md">
-                                            {getRoleUI(selectedUser.role).label}
-                                        </Badge>
-                                        <Badge bg="whiteAlpha.100" color="gray.300" px={3} py={1} rounded="md">
-                                            Tenant: {selectedUser.tenant}
-                                        </Badge>
+                                        <Flex bg="#111111" border="1px solid #333333" px={3} py={1} rounded="none" align="center" gap={1.5}>
+                                            <Icon as={getRoleUI(selectedUser.role).icon} color={getRoleUI(selectedUser.role).iconColor} strokeWidth="2.5" boxSize="12px" />
+                                            <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                                {getRoleUI(selectedUser.role).label}
+                                            </Text>
+                                        </Flex>
+                                        <Flex bg="#111111" border="1px solid #333333" px={3} py={1} rounded="none" align="center">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                                Tenant: <Text as="span" color="white">{selectedUser.tenant}</Text>
+                                            </Text>
+                                        </Flex>
                                     </Flex>
                                 </Flex>
 
                                 {/* Quick Actions */}
                                 <Grid templateColumns={{ base: "1fr", sm: "1fr 1fr" }} gap={3} mb={8}>
-                                    <Button variant="outline" borderColor="whiteAlpha.200" color="white" h="45px" display="flex" gap={2} _hover={{ bg: "whiteAlpha.100" }} onClick={() => handleAction("impersonate-user")}>
-                                        <Icon as={LuVenetianMask} color={brandColor} /> Impersonate
+                                    <Button bg="#111111" border="1px solid #333333" color="white" h="44px" rounded="none" display="flex" gap={2} _hover={{ bg: "#1A1A1A" }} onClick={() => handleAction("impersonate-user")} fontWeight="bold">
+                                        <Icon as={LuVenetianMask} color="#5cac7d" strokeWidth="2.5" /> Impersonate
                                     </Button>
-                                    <Button variant="outline" borderColor="whiteAlpha.200" color="white" h="45px" display="flex" gap={2} _hover={{ bg: "whiteAlpha.100" }} onClick={() => handleAction("set-user-password")}>
-                                        <Icon as={LuKey} color="yellow.400" /> Reset Pwd
+                                    <Button bg="#111111" border="1px solid #333333" color="white" h="44px" rounded="none" display="flex" gap={2} _hover={{ bg: "#1A1A1A" }} onClick={() => handleAction("set-user-password")} fontWeight="bold">
+                                        <Icon as={LuKey} color="orange.400" strokeWidth="2.5" /> Reset Pwd
                                     </Button>
                                 </Grid>
 
                                 {/* Configuration Section */}
-                                <Text color="white" fontWeight="bold" mb={4} fontSize="sm" textTransform="uppercase" letterSpacing="wider">Global Role & Access</Text>
+                                <Text color="#888888" fontWeight="bold" mb={3} fontSize="10px" textTransform="uppercase" letterSpacing="wider">Global Role & Access</Text>
                                 <VStack gap={4} align="stretch" mb={8}>
                                     <Box>
-                                        <Text color="gray.500" fontSize="xs" mb={2}>System Role (set-role)</Text>
-                                        <Flex wrap="wrap" gap={2} bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.200" rounded="lg" p={2}>
+                                        <Text color="#555555" fontSize="xs" mb={2} fontWeight="bold">System Role (set-role)</Text>
+                                        <Flex wrap="wrap" gap={2} bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" rounded="none" p={2}>
                                             {['customer', 'shop_staff', 'shop_owner', 'super_admin'].map(r => (
                                                 <Button 
-                                                    key={r} flex="1 1 45%" size="xs" rounded="md" textTransform="capitalize" h="30px"
-                                                    bg={selectedUser.role === r ? "whiteAlpha.200" : "transparent"} 
-                                                    color={selectedUser.role === r ? "white" : "gray.500"}
-                                                    border={selectedUser.role === r ? "1px solid" : "none"} borderColor="whiteAlpha.300"
+                                                    key={r} flex="1 1 45%" size="sm" rounded="none" textTransform="capitalize" h="36px"
+                                                    bg={selectedUser.role === r ? "#111111" : "transparent"} 
+                                                    color={selectedUser.role === r ? "white" : "#888888"}
+                                                    border="1px solid" borderColor={selectedUser.role === r ? "#333333" : "transparent"}
                                                     onClick={() => handleAction("set-role")}
+                                                    fontWeight="bold"
+                                                    _hover={{ bg: "#1A1A1A" }}
                                                 >
                                                     {r.replace('_', ' ')}
                                                 </Button>
@@ -246,34 +267,34 @@ export default function AdminUsersPage() {
                                         </Flex>
                                     </Box>
                                     
-                                    <Box bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" rounded="lg" p={4}>
-                                        <Flex justify="space-between" align="center" mb={2}>
+                                    <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" rounded="none" p={4}>
+                                        <Flex justify="space-between" align="center" mb={4}>
                                             <Flex align="center" gap={2}>
-                                                <Icon as={LuMonitorSmartphone} color="gray.400" />
+                                                <Icon as={LuMonitorSmartphone} color="#888888" strokeWidth="2.5" />
                                                 <Text color="white" fontSize="sm" fontWeight="bold">Active Sessions</Text>
                                             </Flex>
-                                            <Badge bg="whiteAlpha.200" color="white">{selectedUser.activeSessions}</Badge>
+                                            <Text color="white" fontWeight="black">{selectedUser.activeSessions}</Text>
                                         </Flex>
-                                        <Button size="sm" w="full" mt={2} variant="outline" borderColor="red.900" color="red.400" _hover={{ bg: "red.900" }} onClick={() => handleAction("revoke-user-sessions")}>
+                                        <Button size="sm" w="full" bg="#111111" border="1px solid #333333" color="red.400" rounded="none" _hover={{ bg: "#1A1A1A" }} onClick={() => handleAction("revoke-user-sessions")} fontWeight="bold">
                                             Revoke All Sessions
                                         </Button>
                                     </Box>
                                 </VStack>
 
                                 {/* Danger Zone */}
-                                <Text color="red.400" fontWeight="bold" mb={4} fontSize="sm" textTransform="uppercase" letterSpacing="wider">Danger Zone</Text>
+                                <Text color="red.400" fontWeight="bold" mb={3} fontSize="10px" textTransform="uppercase" letterSpacing="wider">Danger Zone</Text>
                                 <VStack gap={3} align="stretch">
                                     {selectedUser.status === 'active' ? (
-                                        <Button bg="red.500" color="white" h="50px" rounded="lg" display="flex" justifyItems="flex-start" px={4} gap={3} _hover={{ bg: "red.600" }} onClick={() => handleAction("ban-user")}>
-                                            <Icon as={LuUserX} /> Suspend / Ban User
+                                        <Button bg="#111111" border="1px solid #333333" color="white" h="44px" rounded="none" display="flex" justifyItems="flex-start" px={4} gap={3} _hover={{ bg: "#1A1A1A" }} onClick={() => handleAction("ban-user")} fontWeight="bold">
+                                            <Icon as={LuUserX} color="red.400" strokeWidth="2.5" /> Suspend / Ban User
                                         </Button>
                                     ) : (
-                                        <Button bg={brandColor} color="white" h="50px" rounded="lg" display="flex" justifyItems="flex-start" px={4} gap={3} _hover={{ filter: "brightness(1.1)" }} onClick={() => handleAction("unban-user")}>
-                                            <Icon as={LuShieldCheck} /> Lift Suspension
+                                        <Button bg="white" color="black" h="44px" rounded="none" display="flex" justifyItems="flex-start" px={4} gap={3} _hover={{ bg: "#E5E5E5" }} onClick={() => handleAction("unban-user")} fontWeight="bold" border="none">
+                                            <Icon as={LuShieldCheck} color="#5cac7d" strokeWidth="2.5" /> Lift Suspension
                                         </Button>
                                     )}
-                                    <Button variant="outline" borderColor="red.900" color="red.500" h="50px" rounded="lg" display="flex" justifyItems="flex-start" px={4} gap={3} _hover={{ bg: "red.900", color: "white" }} onClick={() => handleAction("remove-user")}>
-                                        <Icon as={LuTrash2} /> Delete User Permanently
+                                    <Button variant="outline" borderColor="#333333" bg="#0A0A0A" color="white" h="44px" rounded="none" display="flex" justifyItems="flex-start" px={4} gap={3} _hover={{ bg: "#111111" }} onClick={() => handleAction("remove-user")} fontWeight="bold">
+                                        <Icon as={LuTrash2} color="red.400" strokeWidth="2.5" /> Delete User Permanently
                                     </Button>
                                 </VStack>
 

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { 
-    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, Avatar 
+    Box, Flex, Text, Input, Button, Icon, Grid, VStack, Avatar 
 } from "@chakra-ui/react";
 import { 
     LuSearch, LuFilter,  LuPlus, LuEllipsisVertical, LuUsers
@@ -17,37 +17,45 @@ const MOCK_SHOPS = [
 ];
 
 export default function AdminShopsPage() {
-    const brandColor = "#5cac7d";
     const router = useRouter();
     
     const [searchQuery, setSearchQuery] = useState("");
     const [shops] = useState(MOCK_SHOPS);
 
     return (
-        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease">
+        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
             
-            {/* --- HEADER --- */}
-            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={8} gap={4}>
-                <Box>
-                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Registered Shops</Text>
-                    <Text color="gray.400" fontSize="sm">Monitor tenant health, subscription plans, and user counts.</Text>
-                </Box>
-                <Button bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2}>
-                    <Icon as={LuPlus} /> Invite New Business
-                </Button>
-            </Flex>
+            {/* --- STICKY HEADER --- */}
+            <Box 
+                position="sticky" top={{ base: "-16px", lg: "-32px" }} mx={{ base: "-16px", lg: "-32px" }} px={{ base: "16px", lg: "32px" }}
+                zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
+                py={4} mb={8} borderBottom="1px solid #1A1A1A"
+            >
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} gap={4}>
+                    <Box>
+                        <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Registered Shops</Text>
+                        <Text color="#888888" fontSize="sm">Monitor tenant health, subscription plans, and user counts.</Text>
+                    </Box>
+                    <Button 
+                        bg="white" color="black" rounded="none" h="44px" px={6} border="none" fontWeight="bold" 
+                        _hover={{ bg: "#E5E5E5" }} display="flex" gap={2}
+                    >
+                        <Icon as={LuPlus} color="#5cac7d" strokeWidth="2.5" /> Invite New Business
+                    </Button>
+                </Flex>
+            </Box>
 
             {/* --- FILTERS & SEARCH --- */}
-            <Flex gap={4} mb={6}>
-                <Flex flex={1} align="center" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={4} _focusWithin={{ borderColor: brandColor }}>
-                    <Icon as={LuSearch} color="gray.500" />
+            <Flex gap={4} mb={6} direction={{ base: "column", md: "row" }}>
+                <Flex flex={1} align="center" bg="#0A0A0A" border="1px solid" borderColor="#333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
+                    <Icon as={LuSearch} color="#888888" strokeWidth="2.5" />
                     <Input 
-                        placeholder="Search by shop name, owner, or ID..." border="none" color="white" h="50px" 
+                        placeholder="Search by shop name, owner, or ID..." border="none" color="white" h="full" px={2}
                         _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </Flex>
-                <Button h="50px" px={6} bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" color="white" rounded="xl" _hover={{ bg: "whiteAlpha.50" }} display="flex" gap={2}>
-                    <Icon as={LuFilter} /> <Text display={{ base: "none", sm: "block" }}>Filter</Text>
+                <Button h="44px" px={6} bg="#111111" border="1px solid" borderColor="#333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} display="flex" gap={2} fontWeight="bold">
+                    <Icon as={LuFilter} color="#888888" strokeWidth="2.5" /> <Text display={{ base: "none", sm: "block" }}>Filter</Text>
                 </Button>
             </Flex>
 
@@ -56,73 +64,78 @@ export default function AdminShopsPage() {
                 
                 {/* Desktop Table Headers */}
                 <Grid templateColumns="2fr 1.5fr 1fr 1fr 1fr 1.5fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Shop / Tenant</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Owner</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Status</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">SaaS Plan</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Users</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">30-Day GMV</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Shop / Tenant</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Owner</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Status</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">SaaS Plan</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Users</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">30-Day GMV</Text>
+                    <Text></Text>
                 </Grid>
 
                 {/* Table Rows */}
-                {shops.map((shop) => (
-                    <Grid 
-                        key={shop.id} 
-                        templateColumns={{ base: "1fr", md: "2fr 1.5fr 1fr", xl: "2fr 1.5fr 1fr 1fr 1fr 1.5fr 50px" }} 
-                        gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.50"
-                        alignItems="center" cursor="pointer" transition="all 0.2s"
-                        _hover={{ borderColor: brandColor, transform: "translateY(-2px)", shadow: "lg" }}
-                        onClick={() => router.push(`/admin/shops/${shop.id}`)}
-                    >
-                        {/* 1. Shop Info */}
-                        <Flex align="center" gap={3}>
-                            <Avatar.Root size="md">
-                                <Avatar.Fallback name={shop.name} bg="whiteAlpha.200" color="white" />
-                            </Avatar.Root>
-                            <Box overflow="hidden">
-                                <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{shop.name}</Text>
-                                <Text color="gray.500" fontSize="xs" lineClamp={1}>ID: {shop.id}</Text>
+                {shops.map((shop) => {
+                    const isActive = shop.status === 'active';
+                    const isPending = shop.status === 'pending';
+
+                    return (
+                        <Grid 
+                            key={shop.id} 
+                            templateColumns={{ base: "1fr", md: "2fr 1.5fr 1fr", xl: "2fr 1.5fr 1fr 1fr 1fr 1.5fr 50px" }} 
+                            gap={4} p={4} bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A"
+                            alignItems="center" cursor="pointer" transition="all 0.2s"
+                            _hover={{ bg: "#111111", borderColor: "#333333" }}
+                            onClick={() => router.push(`/admin/shops/${shop.id}`)}
+                        >
+                            {/* 1. Shop Info */}
+                            <Flex align="center" gap={4}>
+                                <Avatar.Root size="md" rounded="full">
+                                    <Avatar.Fallback name={shop.name} bg="#111111" border="1px solid #333333" color="white" rounded="full" fontWeight="bold" />
+                                </Avatar.Root>
+                                <Box overflow="hidden">
+                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{shop.name}</Text>
+                                    <Text color="#888888" fontSize="xs" lineClamp={1} fontFamily="monospace" mt={0.5}>ID: {shop.id}</Text>
+                                </Box>
+                            </Flex>
+
+                            {/* Owner */}
+                            <Text color="#888888" fontSize="sm" fontWeight="bold" display={{ base: "none", md: "block" }}>
+                                {shop.owner}
+                            </Text>
+
+                            {/* Status */}
+                            <Box display={{ base: "none", md: "block" }}>
+                                <Flex align="center" gap={2}>
+                                    <Box boxSize="6px" rounded="none" bg={isActive ? "#5cac7d" : isPending ? "orange.400" : "red.400"} />
+                                    <Text color={isActive ? "white" : "#888888"} fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                        {shop.status}
+                                    </Text>
+                                </Flex>
                             </Box>
-                        </Flex>
 
-                        {/*  Owner */}
-                        <Text color="gray.400" fontSize="sm" display={{ base: "none", md: "block" }}>
-                            {shop.owner}
-                        </Text>
+                            {/* SaaS Plan */}
+                            <Text color="#888888" fontWeight="bold" fontSize="10px" textTransform="uppercase" letterSpacing="wider" display={{ base: "none", xl: "block" }}>
+                                {shop.plan}
+                            </Text>
+                            
+                            {/* Staff Count */}
+                            <Flex align="center" gap={2} display={{ base: "none", xl: "flex" }}>
+                                <Icon as={LuUsers} color="#5cac7d" strokeWidth="2.5" />
+                                <Text color="white" fontWeight="bold" fontSize="sm">{shop.users}</Text>
+                            </Flex>
 
-                        {/*  Status */}
-                        <Box display={{ base: "none", md: "block" }}>
-                            <Badge 
-                                bg={shop.status === 'active' ? "rgba(92, 172, 125, 0.15)" : shop.status === 'pending' ? "rgba(236, 201, 75, 0.15)" : "rgba(229, 62, 62, 0.15)"} 
-                                color={shop.status === 'active' ? brandColor : shop.status === 'pending' ? "yellow.400" : "red.400"} 
-                                px={2.5} py={1} rounded="md"
-                            >
-                                {shop.status.toUpperCase()}
-                            </Badge>
-                        </Box>
+                            {/* GMV */}
+                            <Text color="white" fontWeight="black" fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right" letterSpacing="tight" fontFamily="monospace">
+                                {shop.gmv}
+                            </Text>
 
-                        {/*  SaaS Plan */}
-                        <Text color="purple.400" fontWeight="bold" fontSize="sm" display={{ base: "none", xl: "block" }}>
-                            {shop.plan}
-                        </Text>
-                        
-                        {/*  Staff Count */}
-                        <Flex align="center" gap={2} display={{ base: "none", xl: "flex" }}>
-                            <Icon as={LuUsers} color="gray.500" />
-                            <Text color="gray.400" fontSize="sm">{shop.users}</Text>
-                        </Flex>
-
-                        {/* GMV */}
-                        <Text color="white" fontWeight="black" fontSize="sm" display={{ base: "none", xl: "block" }}>
-                            {shop.gmv}
-                        </Text>
-
-                        {/* Action Menu */}
-                        <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                            <Icon as={LuEllipsisVertical} color="gray.500" />
-                        </Flex>
-                    </Grid>
-                ))}
+                            {/* Action Menu */}
+                            <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
+                                <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" strokeWidth="2.5" _hover={{ color: "white" }} />
+                            </Flex>
+                        </Grid>
+                    );
+                })}
             </VStack>
         </Box>
     );

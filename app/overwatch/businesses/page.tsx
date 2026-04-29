@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { 
-    Box, Flex, Text, Input, Button, Icon, Grid, Badge, VStack, Avatar 
+    Box, Flex, Text, Input, Button, Icon, Grid, VStack, Avatar 
 } from "@chakra-ui/react";
 import { 
     LuSearch, LuFilter, LuPlus, LuEllipsisVertical, LuBuilding2
@@ -17,37 +17,45 @@ const MOCK_BUSINESSES = [
 ];
 
 export default function AdminBusinessesPage() {
-    const brandColor = "#5cac7d";
     const router = useRouter();
     
     const [searchQuery, setSearchQuery] = useState("");
     const [businesses] = useState(MOCK_BUSINESSES);
 
     return (
-        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease">
+        <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
             
-            {/* --- HEADER --- */}
-            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={8} gap={4}>
-                <Box>
-                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Parent Businesses</Text>
-                    <Text color="gray.400" fontSize="sm">Manage master tenant accounts, their aggregated GMV, and total shops.</Text>
-                </Box>
-                <Button bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2}>
-                    <Icon as={LuPlus} /> Onboard New Business
-                </Button>
-            </Flex>
+            {/* --- STICKY HEADER --- */}
+            <Box 
+                position="sticky" top={{ base: "-16px", lg: "-32px" }} mx={{ base: "-16px", lg: "-32px" }} px={{ base: "16px", lg: "32px" }}
+                zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
+                py={4} mb={8} borderBottom="1px solid #1A1A1A"
+            >
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} gap={4}>
+                    <Box>
+                        <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Parent Businesses</Text>
+                        <Text color="#888888" fontSize="sm">Manage master tenant accounts, their aggregated GMV, and total shops.</Text>
+                    </Box>
+                    <Button 
+                        bg="white" color="black" rounded="none" h="44px" px={6} border="none" fontWeight="bold" 
+                        _hover={{ bg: "#E5E5E5" }} display="flex" gap={2}
+                    >
+                        <Icon as={LuPlus} color="#5cac7d" strokeWidth="2.5" /> Onboard New Business
+                    </Button>
+                </Flex>
+            </Box>
 
             {/* --- FILTERS & SEARCH --- */}
-            <Flex gap={4} mb={6}>
-                <Flex flex={1} align="center" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" rounded="xl" px={4} _focusWithin={{ borderColor: brandColor }}>
-                    <Icon as={LuSearch} color="gray.500" />
+            <Flex gap={4} mb={6} direction={{ base: "column", md: "row" }}>
+                <Flex flex={1} align="center" bg="#0A0A0A" border="1px solid" borderColor="#333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
+                    <Icon as={LuSearch} color="#888888" strokeWidth="2.5" />
                     <Input 
-                        placeholder="Search by business name, owner, or ID..." border="none" color="white" h="50px" 
+                        placeholder="Search by business name, owner, or ID..." border="none" color="white" h="full" px={2}
                         _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </Flex>
-                <Button h="50px" px={6} bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" color="white" rounded="xl" _hover={{ bg: "whiteAlpha.50" }} display="flex" gap={2}>
-                    <Icon as={LuFilter} /> <Text display={{ base: "none", sm: "block" }}>Filter</Text>
+                <Button h="44px" px={6} bg="#111111" border="1px solid" borderColor="#333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} display="flex" gap={2} fontWeight="bold">
+                    <Icon as={LuFilter} color="#888888" strokeWidth="2.5" /> <Text display={{ base: "none", sm: "block" }}>Filter</Text>
                 </Button>
             </Flex>
 
@@ -56,73 +64,78 @@ export default function AdminBusinessesPage() {
                 
                 {/* Desktop Table Headers */}
                 <Grid templateColumns="2fr 1.5fr 1fr 1fr 1fr 1.5fr 50px" gap={4} px={6} py={2} display={{ base: "none", xl: "grid" }}>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Business Entity</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Primary Owner</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Status</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Shops</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Master Plan</Text>
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Aggregated GMV</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Business Entity</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Primary Owner</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Status</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Active Shops</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Master Plan</Text>
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Aggregated GMV</Text>
+                    <Text></Text>
                 </Grid>
 
                 {/* Table Rows */}
-                {businesses.map((biz) => (
-                    <Grid 
-                        key={biz.id} 
-                        templateColumns={{ base: "1fr", md: "2fr 1.5fr 1fr", xl: "2fr 1.5fr 1fr 1fr 1fr 1.5fr 50px" }} 
-                        gap={4} p={4} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.50"
-                        alignItems="center" cursor="pointer" transition="all 0.2s"
-                        _hover={{ borderColor: brandColor, transform: "translateY(-2px)", shadow: "lg" }}
-                        onClick={() => router.push(`/admin/businesses/${biz.id}`)}
-                    >
-                        {/*  Business Info */}
-                        <Flex align="center" gap={3}>
-                            <Avatar.Root size="md">
-                                <Avatar.Fallback name={biz.name} bg="whiteAlpha.200" color="white" />
-                            </Avatar.Root>
-                            <Box overflow="hidden">
-                                <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{biz.name}</Text>
-                                <Text color="gray.500" fontSize="xs" lineClamp={1}>ID: {biz.id}</Text>
+                {businesses.map((biz) => {
+                    const isActive = biz.status === 'active';
+                    const isPending = biz.status === 'pending';
+
+                    return (
+                        <Grid 
+                            key={biz.id} 
+                            templateColumns={{ base: "1fr", md: "2fr 1.5fr 1fr", xl: "2fr 1.5fr 1fr 1fr 1fr 1.5fr 50px" }} 
+                            gap={4} p={4} bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A"
+                            alignItems="center" cursor="pointer" transition="all 0.2s"
+                            _hover={{ bg: "#111111", borderColor: "#333333" }}
+                            onClick={() => router.push(`/admin/businesses/${biz.id}`)}
+                        >
+                            {/* Business Info */}
+                            <Flex align="center" gap={4}>
+                                <Avatar.Root size="md" rounded="full">
+                                    <Avatar.Fallback name={biz.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
+                                </Avatar.Root>
+                                <Box overflow="hidden">
+                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{biz.name}</Text>
+                                    <Text color="#888888" fontSize="xs" lineClamp={1} fontFamily="monospace" mt={0.5}>ID: {biz.id}</Text>
+                                </Box>
+                            </Flex>
+
+                            {/* Owner */}
+                            <Text color="#888888" fontSize="sm" fontWeight="bold" display={{ base: "none", md: "block" }}>
+                                {biz.owner}
+                            </Text>
+
+                            {/* Status */}
+                            <Box display={{ base: "none", md: "block" }}>
+                                <Flex align="center" gap={2}>
+                                    <Box boxSize="6px" rounded="none" bg={isActive ? "#5cac7d" : isPending ? "orange.400" : "red.400"} />
+                                    <Text color={isActive ? "white" : "#888888"} fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                        {biz.status}
+                                    </Text>
+                                </Flex>
                             </Box>
-                        </Flex>
 
-                        {/*  Owner */}
-                        <Text color="gray.400" fontSize="sm" display={{ base: "none", md: "block" }}>
-                            {biz.owner}
-                        </Text>
+                            {/* Active Shops Count */}
+                            <Flex align="center" gap={2} display={{ base: "none", xl: "flex" }}>
+                                <Icon as={LuBuilding2} color="#5cac7d" strokeWidth="2.5" />
+                                <Text color="white" fontWeight="bold" fontSize="sm">{biz.shopCount} <Text as="span" fontWeight="normal" color="#888888">Shops</Text></Text>
+                            </Flex>
 
-                        {/*  Status */}
-                        <Box display={{ base: "none", md: "block" }}>
-                            <Badge 
-                                bg={biz.status === 'active' ? "rgba(92, 172, 125, 0.15)" : biz.status === 'pending' ? "rgba(236, 201, 75, 0.15)" : "rgba(229, 62, 62, 0.15)"} 
-                                color={biz.status === 'active' ? brandColor : biz.status === 'pending' ? "yellow.400" : "red.400"} 
-                                px={2.5} py={1} rounded="md"
-                            >
-                                {biz.status.toUpperCase()}
-                            </Badge>
-                        </Box>
+                            {/* Master SaaS Plan */}
+                            <Text color="#888888" fontWeight="bold" fontSize="10px" textTransform="uppercase" letterSpacing="wider" display={{ base: "none", xl: "block" }}>
+                                {biz.plan}
+                            </Text>
+                            
+                            {/* Aggregated GMV */}
+                            <Text color="white" fontWeight="black" fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right" letterSpacing="tight" fontFamily="monospace">
+                                {biz.totalGmv}
+                            </Text>
 
-                        {/*  Active Shops Count */}
-                        <Flex align="center" gap={2} display={{ base: "none", xl: "flex" }}>
-                            <Icon as={LuBuilding2} color={brandColor} />
-                            <Text color="white" fontWeight="bold" fontSize="sm">{biz.shopCount} <Text as="span" fontWeight="normal" color="gray.500">Shops</Text></Text>
-                        </Flex>
-
-                        {/* Master SaaS Plan */}
-                        <Text color="purple.400" fontWeight="bold" fontSize="sm" display={{ base: "none", xl: "block" }}>
-                            {biz.plan}
-                        </Text>
-                        
-                        {/*  Aggregated GMV */}
-                        <Text color="white" fontWeight="black" fontSize="sm" display={{ base: "none", xl: "block" }}>
-                            {biz.totalGmv}
-                        </Text>
-
-                        {/*  Action Menu */}
-                        <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                            <Icon as={LuEllipsisVertical} color="gray.500" />
-                        </Flex>
-                    </Grid>
-                ))}
+                            {/* Action Menu */}
+                            <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
+                                <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" strokeWidth="2.5" _hover={{ color: "white" }} />
+                            </Flex>
+                        </Grid>
+                    );
+                })}
             </VStack>
         </Box>
     );

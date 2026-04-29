@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import { 
@@ -31,57 +30,84 @@ const CHART_DATA = [40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 100];
 export default function SuperAdminFinancePage() {
     const brandColor = "#5cac7d";
     const [activeTab, setActiveTab] = useState("payouts");
+    
 
+
+   
     const getStatusUI = (status: string) => {
         switch (status) {
-            case "completed": return { color: "green.400", bg: "rgba(72, 187, 120, 0.15)", icon: LuCheck }; 
-            case "pending": return { color: "yellow.400", bg: "rgba(236, 201, 75, 0.15)", icon: LuClock };
-            case "failed": return { color: "red.400", bg: "rgba(229, 62, 62, 0.15)", icon: LuX }; 
-            default: return { color: "gray.400", bg: "whiteAlpha.100", icon: LuClock };
+            case "completed": return { iconColor: "#5cac7d", icon: LuCheck }; 
+            case "pending": return { iconColor: "orange.400", icon: LuClock };
+            case "failed": return { iconColor: "red.400", icon: LuX }; 
+            default: return { iconColor: "gray.500", icon: LuClock };
         }
     };
 
     return (
-        <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease">
+        <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
             
-            {/* --- HEADER --- */}
-            <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={8} gap={4}>
-                <Box>
-                    <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Financial Overview</Text>
-                    <Text color="gray.400" fontSize="sm">Track platform revenue, GMV, and manage merchant settlements.</Text>
-                </Box>
-                <Flex gap={3}>
-                    <Button bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.200" color="white" rounded="lg" h="45px" px={6} _hover={{ bg: "whiteAlpha.50" }} display="flex" gap={2}>
-                        <Icon as={LuDownload} /> Export CSV
-                    </Button>
-                    <Button bg={brandColor} color="white" rounded="lg" h="45px" px={6} _hover={{ filter: "brightness(1.1)" }}>
-                        Process Payouts
-                    </Button>
+            {/* --- COMBINED STICKY HEADER & TOOLBAR --- */}
+            <Box 
+                position="sticky" top="0" zIndex={30} 
+                bg="#000000" 
+                mx={{ base: "-16px", lg: "-32px" }} px={{ base: "16px", lg: "32px" }}
+                pt={{ base: 4, lg: 8 }} pb={6} mb={8} 
+                borderBottom="1px solid #1A1A1A"
+            >
+                {/* Title & Actions */}
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} gap={4}>
+                    <Box>
+                        <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Financial Overview</Text>
+                        <Text color="#888888" fontSize="sm">Track platform revenue, GMV, and manage merchant settlements.</Text>
+                    </Box>
+                    <Flex gap={3} w={{ base: "full", sm: "auto" }}>
+                        <Button flex={1} bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2} fontWeight="bold">
+                            <Icon as={LuDownload} color="#888888" strokeWidth="2.5" /> Export CSV
+                        </Button>
+                        <Button flex={1} bg="white" color="black" border="none" rounded="none" h="44px" px={6} _hover={{ bg: "#E5E5E5" }} fontWeight="bold">
+                            Process Payouts
+                        </Button>
+                    </Flex>
                 </Flex>
-            </Flex>
+
+                {/* Filters & Search */}
+                <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
+                    <Flex flex={1} minW="300px" align="center" bg="#0A0A0A" border="1px solid #333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
+                        <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
+                        <Input 
+                            placeholder="Search store, owner, or TRX ID..." border="none" color="white" h="full" px={0} 
+                            _focus={{ boxShadow: "none", outline: "none" }}
+                        />
+                    </Flex>
+                    
+                    <Flex gap={3} w={{ base: "full", md: "auto" }}>
+                        <IconButton aria-label="Filter" bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" w="44px" _hover={{ bg: "#1A1A1A" }}>
+                            <Icon as={LuFilter} strokeWidth="2.5" />
+                        </IconButton>
+                    </Flex>
+                </Flex>
+            </Box>
 
             {/* --- KPI CARDS --- */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
                 {KPI_DATA.map((kpi, idx) => (
-                    <Box key={idx} bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" position="relative" overflow="hidden">
-                        
-                        {idx === 1 && <Box position="absolute" top="-20px" right="-20px" boxSize="100px" bg={brandColor} filter="blur(50px)" opacity={0.3} borderRadius="full" />}
-                        
+                    <Box key={idx} bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A" position="relative" overflow="hidden">
                         <Flex justify="space-between" align="flex-start" mb={4}>
-                            <Flex align="center" justify="center" boxSize="40px" rounded="lg" bg={idx === 1 ? "rgba(92, 172, 125, 0.15)" : "whiteAlpha.100"} color={idx === 1 ? brandColor : "gray.400"}>
-                                <Icon as={kpi.icon} fontSize="xl" />
+                            <Flex align="center" justify="center" boxSize="40px" rounded="none" bg="#111111" border="1px solid #333333" color="white">
+                                <Icon as={kpi.icon} fontSize="lg" strokeWidth="2.5" />
                             </Flex>
                             <Badge 
-                                bg={kpi.isPositive ? "rgba(72, 187, 120, 0.1)" : "rgba(229, 62, 62, 0.1)"} 
+                                bg="#111111" 
                                 color={kpi.isPositive ? "green.400" : "red.400"} 
-                                px={2} py={1} rounded="md" display="flex" alignItems="center" gap={1}
+                                border="1px solid #333333"
+                                px={2} py={1} rounded="none" display="flex" alignItems="center" gap={1} fontSize="10px" fontWeight="bold" textTransform="uppercase"
                             >
-                                <Icon as={kpi.isPositive ? LuArrowUpRight : LuArrowDownRight} />
+                                <Icon as={kpi.isPositive ? LuArrowUpRight : LuArrowDownRight} strokeWidth="2.5" />
                                 {kpi.trend}
                             </Badge>
                         </Flex>
-                        <Text color="gray.500" fontSize="sm" fontWeight="bold" textTransform="uppercase" mb={1}>{kpi.label}</Text>
-                        <Text color="white" fontSize="3xl" fontWeight="black">{kpi.value}</Text>
+                        <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>{kpi.label}</Text>
+                        <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">{kpi.value}</Text>
                     </Box>
                 ))}
             </SimpleGrid>
@@ -90,43 +116,35 @@ export default function SuperAdminFinancePage() {
             <Grid templateColumns={{ base: "1fr", xl: "1fr 350px" }} gap={8} mb={8}>
                 
                 {/* Left: Interactive Ledger */}
-                <Box bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden">
+                <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" overflow="hidden">
                     
-                    {/* Tabs & Filters Header */}
-                    <Flex justify="space-between" align="center" p={6} borderBottom="1px solid" borderColor="whiteAlpha.100" flexWrap="wrap" gap={4}>
-                        <Flex bg="blackAlpha.400" p={1} rounded="lg" border="1px solid" borderColor="whiteAlpha.100">
+                    {/* Tabs Header */}
+                    <Flex bg="#111111" borderBottom="1px solid" borderColor="#333333" px={4} py={3}>
+                        <Flex bg="#000000" border="1px solid #333333" p={1} rounded="none" gap={1}>
                             {["payouts", "platform_fees", "refunds"].map((tab) => (
                                 <Button 
-                                    key={tab} size="sm" variant="ghost" rounded="md" px={4} textTransform="capitalize"
-                                    bg={activeTab === tab ? "whiteAlpha.200" : "transparent"} 
-                                    color={activeTab === tab ? "white" : "gray.500"}
-                                    _hover={{ color: "white" }} onClick={() => setActiveTab(tab)}
+                                    key={tab} size="sm" variant="ghost" rounded="none" px={4} h="32px"
+                                    bg={activeTab === tab ? "#111111" : "transparent"} 
+                                    color={activeTab === tab ? "white" : "#888888"}
+                                    border={activeTab === tab ? "1px solid #333333" : "1px solid transparent"}
+                                    _hover={{ bg: "#111111", color: "white" }} onClick={() => setActiveTab(tab)}
+                                    fontWeight="bold" textTransform="uppercase" fontSize="10px" letterSpacing="wider"
                                 >
                                     {tab.replace("_", " ")}
                                 </Button>
                             ))}
                         </Flex>
-
-                        <Flex gap={3}>
-                            <Flex align="center" bg="#121212" border="1px solid" borderColor="whiteAlpha.200" rounded="lg" px={3} h="36px">
-                                <Icon as={LuSearch} color="gray.500" />
-                                <Input placeholder="Search store or TRX ID..." border="none" color="white" h="full" _focus={{ boxShadow: "none" }} fontSize="sm" w="200px" />
-                            </Flex>
-                            <IconButton aria-label="Filter" bg="#121212" border="1px solid" borderColor="whiteAlpha.200" color="gray.400" rounded="lg" h="36px" _hover={{ bg: "whiteAlpha.100" }}>
-                                <Icon as={LuFilter} />
-                            </IconButton>
-                        </Flex>
                     </Flex>
 
                     {/* Table Data */}
-                    <Box overflowX="auto">
+                    <Box overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' } }}>
                         <Box minW="800px">
-                            <Grid templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 50px" gap={4} px={6} py={4} bg="blackAlpha.200" borderBottom="1px solid" borderColor="whiteAlpha.50">
-                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Transaction ID</Text>
-                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Store Details</Text>
-                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Gross Amount</Text>
-                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="right">Platform Fee</Text>
-                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" textAlign="center">Status</Text>
+                            <Grid templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 50px" gap={4} px={6} py={4} bg="#0A0A0A" borderBottom="1px solid" borderColor="#1A1A1A">
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Transaction ID</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Store Details</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Gross Amount</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Platform Fee</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="center">Status</Text>
                             </Grid>
 
                             <VStack align="stretch" gap={0}>
@@ -135,36 +153,38 @@ export default function SuperAdminFinancePage() {
                                     return (
                                         <Grid 
                                             key={idx} templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 50px" gap={4} px={6} py={4} 
-                                            borderBottom="1px solid" borderColor="whiteAlpha.50" alignItems="center"
-                                            _hover={{ bg: "whiteAlpha.50" }} transition="all 0.2s" cursor="pointer"
+                                            borderBottom="1px solid" borderColor="#1A1A1A" alignItems="center"
+                                            _hover={{ bg: "#111111" }} transition="all 0.2s" cursor="pointer"
                                         >
                                             <Box>
-                                                <Text color="white" fontWeight="bold" fontSize="sm">{trx.id}</Text>
-                                                <Text color="gray.500" fontSize="xs">{trx.date}</Text>
+                                                <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{trx.id}</Text>
+                                                <Text color="#888888" fontSize="xs" fontFamily="monospace" mt={0.5}>{trx.date}</Text>
                                             </Box>
                                             
                                             <Flex align="center" gap={3}>
-                                                <Avatar.Root size="sm" rounded="md">
-                                                    <Avatar.Fallback name={trx.store} bg={brandColor} color="white" />
+                                                <Avatar.Root size="sm" rounded="full">
+                                                    <Avatar.Fallback name={trx.store} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
                                                 </Avatar.Root>
                                                 <Box>
-                                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1}>{trx.store}</Text>
-                                                    <Text color="gray.500" fontSize="xs" lineClamp={1}>{trx.owner}</Text>
+                                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{trx.store}</Text>
+                                                    <Text color="#888888" fontSize="xs" lineClamp={1}>{trx.owner}</Text>
                                                 </Box>
                                             </Flex>
 
-                                            <Text color="white" fontWeight="bold" fontSize="sm" textAlign="right">{trx.amount}</Text>
-                                            <Text color={brandColor} fontWeight="bold" fontSize="sm" textAlign="right">-{trx.fee}</Text>
+                                            <Text color="white" fontWeight="black" fontSize="sm" textAlign="right" letterSpacing="tight">{trx.amount}</Text>
+                                            <Text color="white" fontWeight="bold" fontSize="sm" textAlign="right" letterSpacing="tight">-{trx.fee}</Text>
 
                                             <Flex justify="center">
-                                                <Badge bg={statusUI.bg} color={statusUI.color} px={2.5} py={1} rounded="md" textTransform="capitalize" display="flex" alignItems="center" gap={1.5}>
-                                                    <Icon as={statusUI.icon} boxSize="12px" />
-                                                    {trx.status}
-                                                </Badge>
+                                                <Flex align="center" gap={1.5} px={2} py={1} bg="#111111" border="1px solid #333333" rounded="none" display="inline-flex">
+                                                    <Icon as={statusUI.icon} color={statusUI.iconColor} strokeWidth="3" boxSize="12px" />
+                                                    <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                                        {trx.status}
+                                                    </Text>
+                                                </Flex>
                                             </Flex>
 
                                             <Flex justify="flex-end">
-                                                <Button size="xs" variant="ghost" color="gray.400" _hover={{ color: "white" }}>View</Button>
+                                                <Button size="xs" variant="ghost" rounded="none" color="#888888" _hover={{ color: "white", bg: "#1A1A1A" }} fontWeight="bold" textTransform="uppercase" letterSpacing="wider">View</Button>
                                             </Flex>
                                         </Grid>
                                     );
@@ -175,21 +195,20 @@ export default function SuperAdminFinancePage() {
                 </Box>
 
                 {/* Right: Revenue Chart & Quick Actions */}
-                <VStack gap={6} align="stretch">
+                <VStack gap={8} align="stretch">
                     
-                
-                    <Box bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Text color="white" fontSize="lg" fontWeight="bold" mb={1}>Revenue History</Text>
-                        <Text color="gray.500" fontSize="sm" mb={8}>Platform fees over the last 12 months</Text>
+                    <Box bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                        <Text color="white" fontSize="lg" fontWeight="bold" letterSpacing="tight" mb={1}>Revenue History</Text>
+                        <Text color="#888888" fontSize="sm" mb={8}>Platform fees over the last 12 months</Text>
                         
                         <Flex h="150px" align="flex-end" justify="space-between" gap={2} mb={4}>
                             {CHART_DATA.map((val, i) => (
                                 <Flex key={i} direction="column" align="center" gap={2} flex={1}>
-                                    <Box w="full" maxW="20px" h={`${val}%`} bg={i === CHART_DATA.length - 1 ? brandColor : "whiteAlpha.200"} roundedTop="md" transition="all 0.2s" _hover={{ bg: brandColor }} cursor="pointer" />
+                                    <Box w="full" maxW="20px" h={`${val}%`} bg={i === CHART_DATA.length - 1 ? brandColor : "#333333"} rounded="none" transition="all 0.2s" _hover={{ bg: "white" }} cursor="pointer" />
                                 </Flex>
                             ))}
                         </Flex>
-                        <Flex justify="space-between" color="gray.600" fontSize="xs" fontWeight="bold" textTransform="uppercase">
+                        <Flex justify="space-between" color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
                             <Text>Jan</Text>
                             <Text>Jun</Text>
                             <Text>Dec</Text>
@@ -197,13 +216,13 @@ export default function SuperAdminFinancePage() {
                     </Box>
 
                     {/* Quick Transfer Action */}
-                    <Box bgGradient="linear(to-br, #1A1C23, #121212)" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Flex align="center" justify="center" boxSize="48px" bg="rgba(92, 172, 125, 0.15)" color={brandColor} rounded="xl" mb={4}>
-                            <Icon as={LuWallet} fontSize="2xl" />
+                    <Box bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                        <Flex align="center" justify="center" boxSize="48px" bg="#111111" border="1px solid #333333" color="white" rounded="none" mb={5}>
+                            <Icon as={LuWallet} fontSize="xl" strokeWidth="2.5" />
                         </Flex>
-                        <Text color="white" fontSize="lg" fontWeight="bold" mb={2}>Manual Payout</Text>
-                        <Text color="gray.500" fontSize="sm" mb={6}>Force a manual settlement to a specific merchant account outside of the automated schedule.</Text>
-                        <Button w="full" bg="whiteAlpha.100" color="white" _hover={{ bg: "whiteAlpha.200" }} h="45px">
+                        <Text color="white" fontSize="lg" fontWeight="bold" letterSpacing="tight" mb={2}>Manual Payout</Text>
+                        <Text color="#888888" fontSize="sm" mb={6}>Force a manual settlement to a specific merchant account outside of the automated schedule.</Text>
+                        <Button w="full" bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" fontWeight="bold" _hover={{ bg: "#1A1A1A", borderColor: "white" }}>
                             Initiate Transfer
                         </Button>
                     </Box>

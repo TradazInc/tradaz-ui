@@ -17,12 +17,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     return (
-        <Flex h="100vh" bg="#0A0A0B" overflow="hidden">
+        <Flex h="100vh" bg="#000" overflow="hidden">
             
             {/* --- DESKTOP SIDEBAR --- */}
             <Box 
                 display={{ base: "none", lg: "flex" }} w={isCollapsed ? "80px" : "260px"} 
-                bg="#121212" borderRight="1px solid" borderColor="whiteAlpha.100" 
+                bg="#000" borderRight="1px solid" borderColor="whiteAlpha.100" 
                 flexDirection="column" py={6} px={isCollapsed ? 3 : 5} transition="width 0.3s cubic-bezier(0.4, 0, 0.2, 1)" zIndex={100}
                 flexShrink={0}
             >
