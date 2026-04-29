@@ -119,10 +119,12 @@ export const AddProductForm = () => {
                 <Text color="gray.500" fontSize="sm">Fill in the details below to list a new product in your store.</Text>
             </Box>
 
-            {/* --- STICKY FORM COMPLETION GUIDE --- */}
+            {/* --- FORM COMPLETION GUIDE --- */}
             <Box 
-                position="sticky" top={{ base: "70px", md: "85px" }} zIndex={90} 
-                bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" pt={2} pb={4} mb={8} mx={-2} px={2} 
+                position="sticky" top={{ base: "-16px", md: "-32px" }}
+        mx={{ base: "-16px", md: "-32px" }}
+        px={{ base: "16px", md: "32px" }} zIndex={90} 
+                bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" pt={2} pb={4} mb={8}  
             >
                 <Box bg="#0A0A0A" rounded="none" p={5} border="1px solid" borderColor={incompleteSteps === 0 ? "white" : "#1A1A1A"}>
                     <Flex justify="space-between" align="center" wrap="wrap" gap={4}>

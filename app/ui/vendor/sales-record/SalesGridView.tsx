@@ -58,7 +58,20 @@ export const SalesGridView = ({
                 </Flex>
             </Flex>
 
-            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} borderBottom="1px solid" borderColor="#1A1A1A" w="full">
+            
+            <Box 
+                position="sticky" 
+                top={{ base: "-16px", md: "-32px" }} 
+                mx={{ base: "-16px", md: "-32px" }}  
+                px={{ base: "16px", md: "32px" }}    
+                zIndex={20} 
+                bg="rgba(0, 0, 0, 0.85)" 
+                backdropFilter="blur(12px)" 
+                py={4} 
+                mb={6} 
+                borderBottom="1px solid" 
+                borderColor="#1A1A1A" 
+            >
                 <Flex gap={3} wrap="wrap">
                     <Flex flex={1} minW="250px" align="center" {...controlStyles}>
                         <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />

@@ -123,7 +123,9 @@ export const InventoryGridView = ({
 
       <Box
         position="sticky"
-        top={{ base: "70px", md: "85px" }}
+       top={{ base: "-16px", md: "-32px" }}
+        mx={{ base: "-16px", md: "-32px" }}
+        px={{ base: "16px", md: "32px" }}
         zIndex={20}
         bg="rgba(18, 18, 20, 0.85)"
         backdropFilter="blur(12px)"

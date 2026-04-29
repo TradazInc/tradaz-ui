@@ -48,102 +48,100 @@ export const LoyaltyManager = () => {
     const estimatedLiability = outstandingPoints * 1; 
 
     return (
-        <Box w="full" display="flex" flexDirection="column" position="relative">
+        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
-            {/* --- Sticky Header (Mobile Optimized) --- */}
+            {/* --- Sticky Header --- */}
             <Box 
-                position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
-                bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
-                py={4} mb={6} mx={-4} px={4} 
+                position="sticky" top={{ base: "-16px", md: "-32px" }} mx={{ base: "-16px", md: "-32px" }} px={{ base: "16px", md: "32px" }} 
+                zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
+                py={4} mb={6} borderBottom="1px solid #1A1A1A"
             >
                 <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
-                        <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
-                            <Icon as={LuAward} /> Loyalty & Rewards
+                        <Text color="white" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2} letterSpacing="tight">
+                            <Icon as={LuAward} color="#5cac7d" strokeWidth="2.5" /> Loyalty & Rewards
                         </Text>
-                        <Text color="gray.400" fontSize="sm">Configure how customers earn points and what they can spend them on.</Text>
+                        <Text color="#888888" fontSize="sm">Configure how customers earn points and what they can spend them on.</Text>
                     </Box>
-                    <Button bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} h="44px" px={6}>
-                        <Icon as={LuSave} mr={2} /> Save Changes
+                    <Button bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" border="none" fontWeight="bold">
+                        <Icon as={LuSave} mr={2} strokeWidth="2.5" /> Save Changes
                     </Button>
                 </Flex>
             </Box>
 
             {/* --- STATS OVERVIEW --- */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={8}>
-                <Box bg="#1A1C23" p={5} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                    <Flex align="center" gap={2} mb={2} color="gray.400">
-                        <Icon as={LuTrendingUp} />
-                        <Text fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Points Issued</Text>
+                <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                    <Flex align="center" gap={2} mb={2} color="#888888">
+                        <Icon as={LuTrendingUp} color="#5cac7d" strokeWidth="2.5" />
+                        <Text fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Total Points Issued</Text>
                     </Flex>
-                    <Text color="white" fontSize="2xl" fontWeight="black">{totalPointsIssued.toLocaleString()} pts</Text>
+                    <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">{totalPointsIssued.toLocaleString()} pts</Text>
                 </Box>
-                <Box bg="#1A1C23" p={5} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                    <Flex align="center" gap={2} mb={2} color="gray.400">
-                        <Icon as={LuGift} />
-                        <Text fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Points Redeemed</Text>
+                <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                    <Flex align="center" gap={2} mb={2} color="#888888">
+                        <Icon as={LuGift} color="blue.400" strokeWidth="2.5" />
+                        <Text fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Total Points Redeemed</Text>
                     </Flex>
-                    <Text color="white" fontSize="2xl" fontWeight="black">{totalPointsRedeemed.toLocaleString()} pts</Text>
+                    <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">{totalPointsRedeemed.toLocaleString()} pts</Text>
                 </Box>
-                <Box bg="#1A1C23" p={5} rounded="xl" border="1px solid" borderColor="rgba(237, 137, 54, 0.3)">
-                    <Flex align="center" gap={2} mb={2} color="orange.400">
-                        <Icon as={LuCoins} />
-                        <Text fontSize="xs" fontWeight="bold" textTransform="uppercase">Outstanding Liability</Text>
+                <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                    <Flex align="center" gap={2} mb={2} color="#888888">
+                        <Icon as={LuCoins} color="orange.400" strokeWidth="2.5" />
+                        <Text fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Outstanding Liability</Text>
                     </Flex>
-                    <Text color="orange.400" fontSize="2xl" fontWeight="black">~ ₦{estimatedLiability.toLocaleString()}</Text>
+                    <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">~ ₦{estimatedLiability.toLocaleString()}</Text>
                 </Box>
             </SimpleGrid>
 
             <SimpleGrid columns={{ base: 1, xl: 2 }} gap={8} mb={8} alignItems="start">
                 
-               
                 {/* EARNING RULES */}
-           
-                <Box bg="whiteAlpha.50" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6}>
+                <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" p={6}>
                     <Flex align="center" gap={2} color="white" mb={6}>
-                        <Icon as={LuStar} color="orange.400" boxSize="20px" />
-                        <Text fontSize="lg" fontWeight="bold">Earning Rules</Text>
+                        <Icon as={LuStar} color="orange.400" boxSize="20px" strokeWidth="2.5" />
+                        <Text fontSize="lg" fontWeight="bold" letterSpacing="tight">Earning Rules</Text>
                     </Flex>
 
                     {/* Global Spend Rule */}
-                    <Box bg="#1A1C23" rounded="xl" p={5} border="1px solid" borderColor="#5cac7d" mb={6}>
-                        <Text color="#5cac7d" fontSize="sm" fontWeight="bold" mb={3}>Base Purchase Rule</Text>
+                    <Box bg="#111111" rounded="none" p={5} border="1px solid" borderColor="#333333" mb={6}>
+                        <Text color="white" fontSize="sm" fontWeight="bold" mb={3} textTransform="uppercase" letterSpacing="wider">Base Purchase Rule</Text>
                         <Flex align="center" gap={3} wrap="wrap">
-                            <Text color="gray.300" fontSize="sm">Customers earn</Text>
-                            <Box bg="rgba(92, 172, 125, 0.15)" color="#5cac7d" px={3} py={1.5} rounded="md" fontWeight="bold" fontSize="sm">
+                            <Text color="#888888" fontSize="sm" fontWeight="bold">Customers earn</Text>
+                            <Box bg="#000000" color="white" border="1px solid #333333" px={3} py={1.5} rounded="none" fontWeight="bold" fontSize="sm">
                                 1 Point
                             </Box>
-                            <Text color="gray.300" fontSize="sm">for every</Text>
-                            <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="md" px={2} h="36px" w="100px">
-                                <Text color="gray.500" fontSize="sm" mr={1}>₦</Text>
+                            <Text color="#888888" fontSize="sm" fontWeight="bold">for every</Text>
+                            <Flex align="center" bg="#0A0A0A" border="1px solid" borderColor="#333333" rounded="none" px={2} h="36px" w="100px" _focusWithin={{ borderColor: "white" }}>
+                                <Text color="#888888" fontSize="sm" mr={1} fontWeight="bold">₦</Text>
                                 <Input type="number" value={baseSpendConfig} onChange={(e) => setBaseSpendConfig(e.target.value)} border="none" _focus={{ boxShadow: "none" }} color="white" h="full" px={0} fontSize="sm" fontWeight="bold" />
                             </Flex>
-                            <Text color="gray.300" fontSize="sm">spent.</Text>
+                            <Text color="#888888" fontSize="sm" fontWeight="bold">spent.</Text>
                         </Flex>
                     </Box>
 
                     {/* Custom Action Rules */}
                     <VStack gap={3} align="stretch">
-                        <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={1}>Custom Actions</Text>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Custom Actions</Text>
                         {earningRules.map(rule => {
                             const isActive = rule.status === "Active";
                             return (
-                                <Flex key={rule.id} bg="#1A1C23" rounded="lg" p={4} border="1px solid" borderColor={isActive ? "rgba(237, 137, 54, 0.2)" : "whiteAlpha.100"} align="center" justify="space-between" opacity={!isActive ? 0.6 : 1} transition="all 0.2s">
+                                <Flex key={rule.id} bg="#111111" rounded="none" p={4} border="1px solid" borderColor="#1A1A1A" align="center" justify="space-between" opacity={!isActive ? 0.6 : 1} transition="all 0.2s">
                                     <Box flex={1}>
                                         <HStack gap={2} mb={1}>
-                                            <Box boxSize="6px" rounded="full" bg={isActive ? "orange.400" : "gray.500"} />
-                                            <Text color="white" fontWeight="bold" fontSize="sm">{rule.action}</Text>
+                                            <Box boxSize="6px" rounded="none" bg={isActive ? "white" : "#333333"} />
+                                            <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{rule.action}</Text>
                                         </HStack>
-                                        <Text color="gray.500" fontSize="xs" ml={3.5}>{rule.description}</Text>
+                                        <Text color="#888888" fontSize="xs" ml={3.5}>{rule.description}</Text>
                                     </Box>
 
                                     <HStack gap={4}>
-                                        <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="md" px={2} h="36px" w="100px">
+                                        <Flex align="center" bg="#0A0A0A" border="1px solid" borderColor="#333333" rounded="none" px={2} h="36px" w="100px" _focusWithin={{ borderColor: "white" }}>
                                             <Input type="number" value={rule.pointsAwarded} onChange={(e) => updateEarningPoints(rule.id, e.target.value)} border="none" _focus={{ boxShadow: "none" }} color="white" h="full" px={0} fontSize="sm" fontWeight="bold" textAlign="right" mr={1} />
-                                            <Text color="gray.500" fontSize="xs">pts</Text>
+                                            <Text color="#888888" fontSize="xs" fontWeight="bold">pts</Text>
                                         </Flex>
-                                        <IconButton aria-label="Toggle" size="sm" onClick={() => toggleEarningStatus(rule.id, rule.status)} variant="ghost" color={isActive ? "orange.400" : "gray.400"} _hover={{ bg: "whiteAlpha.100" }}>
-                                            <Icon as={isActive ? LuPowerOff : LuPower} />
+                                        <IconButton aria-label="Toggle" size="sm" onClick={() => toggleEarningStatus(rule.id, rule.status)} variant="ghost" color={isActive ? "#5cac7d" : "#555555"} rounded="none" _hover={{ bg: "#1A1A1A" }}>
+                                            <Icon as={isActive ? LuPowerOff : LuPower} strokeWidth="2.5" />
                                         </IconButton>
                                     </HStack>
                                 </Flex>
@@ -153,16 +151,16 @@ export const LoyaltyManager = () => {
                 </Box>
 
                
-                {/*  REDEMPTION RULES */}
+                {/* REDEMPTION RULES */}
               
-                <Box bg="whiteAlpha.50" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" p={6}>
+                <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" p={6}>
                     <Flex justify="space-between" align="center" mb={6} wrap="wrap" gap={4}>
                         <Flex align="center" gap={2} color="white">
-                            <Icon as={LuGift} color="#5cac7d" boxSize="20px" />
-                            <Text fontSize="lg" fontWeight="bold">Spending Rules (Rewards)</Text>
+                            <Icon as={LuGift} color="blue.400" boxSize="20px" strokeWidth="2.5" />
+                            <Text fontSize="lg" fontWeight="bold" letterSpacing="tight">Spending Rules (Rewards)</Text>
                         </Flex>
-                        <Button size="sm" bg="rgba(92, 172, 125, 0.15)" color="#5cac7d" _hover={{ bg: "#5cac7d", color: "white" }}>
-                            <Icon as={LuPlus} mr={2} /> Add Reward
+                        <Button size="sm" bg="white" color="black" _hover={{ bg: "#E5E5E5" }} rounded="none" fontWeight="bold">
+                            <Icon as={LuPlus} mr={2} strokeWidth="2.5" /> Add Reward
                         </Button>
                     </Flex>
 
@@ -170,32 +168,32 @@ export const LoyaltyManager = () => {
                         {redemptionRules.map(rule => {
                             const isActive = rule.status === "Active";
                             return (
-                                <Box key={rule.id} bg="#1A1C23" rounded="xl" p={4} border="1px solid" borderColor={isActive ? "rgba(92, 172, 125, 0.3)" : "whiteAlpha.100"} opacity={!isActive ? 0.6 : 1}>
+                                <Box key={rule.id} bg="#111111" rounded="none" p={4} border="1px solid" borderColor="#1A1A1A" opacity={!isActive ? 0.6 : 1}>
                                     <Flex justify="space-between" align="center" wrap="wrap" gap={4}>
                                         <VStack align="start" gap={1}>
                                             <Flex align="center" gap={2}>
-                                                <Text color="white" fontWeight="bold">{rule.title}</Text>
-                                                <Box px={2} py={0.5} rounded="full" bg={isActive ? "rgba(92, 172, 125, 0.15)" : "whiteAlpha.100"} color={isActive ? "#5cac7d" : "gray.400"} fontSize="xs" fontWeight="bold">
+                                                <Text color="white" fontWeight="bold" letterSpacing="tight">{rule.title}</Text>
+                                                <Box px={2} py={0.5} rounded="none" bg="#0A0A0A" border="1px solid" borderColor="#333333" color={isActive ? "white" : "#555555"} fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
                                                     {rule.status}
                                                 </Box>
                                             </Flex>
-                                            <Flex align="center" gap={1.5} color="gray.400" fontSize="sm">
-                                                <Icon as={LuCoins} boxSize="14px" /> Costs {rule.pointsRequired.toLocaleString()} Points
+                                            <Flex align="center" gap={1.5} color="#888888" fontSize="sm" fontWeight="bold">
+                                                <Icon as={LuCoins} color="orange.400" boxSize="14px" strokeWidth="2.5" /> Costs {rule.pointsRequired.toLocaleString()} Points
                                             </Flex>
                                         </VStack>
 
                                         <Flex align="center" gap={4}>
                                             <VStack align="end" gap={0}>
-                                                <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Value</Text>
-                                                <Text color="white" fontWeight="black">₦{rule.discountValue.toLocaleString()}</Text>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Value</Text>
+                                                <Text color="white" fontWeight="black" fontSize="lg" letterSpacing="tight">₦{rule.discountValue.toLocaleString()}</Text>
                                             </VStack>
-                                            <Box w="1px" h="30px" bg="whiteAlpha.200" />
+                                            <Box w="1px" h="30px" bg="#1A1A1A" />
                                             <Flex gap={1}>
-                                                <IconButton aria-label="Toggle" size="sm" onClick={() => toggleRedemptionStatus(rule.id, rule.status)} variant="ghost" color={isActive ? "orange.400" : "#5cac7d"} _hover={{ bg: "whiteAlpha.100" }}>
-                                                    <Icon as={isActive ? LuPowerOff : LuPower} />
+                                                <IconButton aria-label="Toggle" size="sm" onClick={() => toggleRedemptionStatus(rule.id, rule.status)} variant="ghost" color={isActive ? "#5cac7d" : "#555555"} rounded="none" _hover={{ bg: "#1A1A1A" }}>
+                                                    <Icon as={isActive ? LuPowerOff : LuPower} strokeWidth="2.5" />
                                                 </IconButton>
-                                                <IconButton aria-label="Delete" size="sm" onClick={() => deleteRedemptionRule(rule.id)} variant="ghost" color="red.400" _hover={{ bg: "red.900", color: "white" }}>
-                                                    <Icon as={LuTrash2} />
+                                                <IconButton aria-label="Delete" size="sm" onClick={() => deleteRedemptionRule(rule.id)} variant="ghost" color="red.400" rounded="none" _hover={{ bg: "#1A1A1A" }}>
+                                                    <Icon as={LuTrash2} strokeWidth="2.5" />
                                                 </IconButton>
                                             </Flex>
                                         </Flex>

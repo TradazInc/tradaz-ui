@@ -51,7 +51,7 @@ export const OnlineOrdersGridView = ({
             </Box>
 
             {/* Sticky Toolbar */}
-            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} mx={-4} px={4} borderBottom="1px solid" borderColor="#1A1A1A">
+            <Box position="sticky"  zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)" py={3} mb={6} mx={-4} px={4} borderBottom="1px solid" borderColor="#1A1A1A">
                 <Flex justify="space-between" align={{ base: "flex-start", lg: "center" }} wrap="wrap" gap={4}>
                     <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
                         

@@ -14,7 +14,9 @@ export const CustomerDetailView = ({ customer, onBack }: CustomerDetailViewProps
         <Box w="full" display="flex" flexDirection="column" position="relative" pb={10}>
             
             {/* Header / Back Button */}
-            <Box position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={4} mb={6} borderBottom="1px solid" borderColor="whiteAlpha.100">
+            <Box position="sticky" top={{ base: "-16px", md: "-32px" }}
+        mx={{ base: "-16px", md: "-32px" }}
+        px={{ base: "16px", md: "32px" }} zIndex={20} bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)" py={4} mb={6} borderBottom="1px solid" borderColor="whiteAlpha.100">
                 <Flex justify="space-between" align="center">
                     <Flex align="center" gap={4}>
                         <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2} h="40px">

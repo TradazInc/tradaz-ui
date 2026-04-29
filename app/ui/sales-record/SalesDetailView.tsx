@@ -34,7 +34,9 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
       {/* Header / Back Button */}
       <Box
         position="sticky"
-        top={{ base: "70px", md: "85px" }}
+        top={{ base: "-16px", md: "-32px" }}
+        mx={{ base: "-16px", md: "-32px" }}
+        px={{ base: "16px", md: "32px" }}
         zIndex={20}
         bg="rgba(0, 0, 0, 0.85)"
         backdropFilter="blur(12px)"
@@ -57,7 +59,12 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               <Icon as={LuArrowLeft} boxSize="20px" strokeWidth="2.5" />
             </Button>
             <Box>
-              <Text color="white" fontWeight="bold" fontSize="xl" letterSpacing="tight">
+              <Text
+                color="white"
+                fontWeight="bold"
+                fontSize="xl"
+                letterSpacing="tight"
+              >
                 Order {sale.id}
               </Text>
               <Text color="#888888" fontSize="sm">
@@ -108,10 +115,25 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               borderBottom="1px solid"
               borderColor="#1A1A1A"
             >
-              <Flex bg="#111111" p={2} rounded="none" border="1px solid #333333">
-                <Icon as={LuReceipt} color="white" boxSize="20px" strokeWidth="2.5" />
+              <Flex
+                bg="#111111"
+                p={2}
+                rounded="none"
+                border="1px solid #333333"
+              >
+                <Icon
+                  as={LuReceipt}
+                  color="white"
+                  boxSize="20px"
+                  strokeWidth="2.5"
+                />
               </Flex>
-              <Text color="white" fontWeight="bold" fontSize="lg" letterSpacing="tight">
+              <Text
+                color="white"
+                fontWeight="bold"
+                fontSize="lg"
+                letterSpacing="tight"
+              >
                 Transaction Details
               </Text>
             </Flex>
@@ -215,10 +237,20 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
                 />
 
                 <Flex justify="space-between" align="center">
-                  <Text color="white" fontWeight="bold" fontSize="lg" letterSpacing="tight">
+                  <Text
+                    color="white"
+                    fontWeight="bold"
+                    fontSize="lg"
+                    letterSpacing="tight"
+                  >
                     Total
                   </Text>
-                  <Text color="white" fontWeight="black" fontSize="2xl" letterSpacing="tight">
+                  <Text
+                    color="white"
+                    fontWeight="black"
+                    fontSize="2xl"
+                    letterSpacing="tight"
+                  >
                     ₦{sale.total.toLocaleString()}
                   </Text>
                 </Flex>
@@ -247,7 +279,13 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
             >
               Customer Information
             </Text>
-            <Text color="white" fontWeight="bold" fontSize="lg" mb={1} letterSpacing="tight">
+            <Text
+              color="white"
+              fontWeight="bold"
+              fontSize="lg"
+              mb={1}
+              letterSpacing="tight"
+            >
               {sale.transaction}
             </Text>
             <Text color="#888888" fontSize="sm" fontWeight="500">
@@ -274,9 +312,19 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
             </Text>
 
             <Flex align="center" gap={3} mb={4}>
-              <Icon as={LuCircleCheck} color="white" boxSize="24px" strokeWidth="2.5" />
+              <Icon
+                as={LuCircleCheck}
+                color="white"
+                boxSize="24px"
+                strokeWidth="2.5"
+              />
               <Box>
-                <Text color="white" fontWeight="bold" fontSize="md" letterSpacing="tight">
+                <Text
+                  color="white"
+                  fontWeight="bold"
+                  fontSize="md"
+                  letterSpacing="tight"
+                >
                   Payment Successful
                 </Text>
                 <Text color="#888888" fontSize="xs" fontWeight="500">
@@ -320,7 +368,12 @@ export const SalesDetailView = ({ sale, onBack }: SalesDetailViewProps) => {
               <Text color="#888888" fontSize="sm" fontWeight="500">
                 Reference
               </Text>
-              <Text color="#888888" fontSize="sm" fontFamily="monospace" fontWeight="600">
+              <Text
+                color="#888888"
+                fontSize="sm"
+                fontFamily="monospace"
+                fontWeight="600"
+              >
                 {referenceId}
               </Text>
             </Flex>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Box, Flex, Text, Icon, Input, Button, HStack, VStack, SimpleGrid, Image, Badge } from "@chakra-ui/react";
+import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, HStack, VStack, Badge, Image } from "@chakra-ui/react";
 import { 
     LuUndo2, LuSearch, LuBan, 
     LuBanknote, LuMessageSquare, LuMessageCircle, LuGift
@@ -44,47 +44,47 @@ export const RefundManager = () => {
     const totalRefunded = refunds.filter(r => r.status === "Refunded").reduce((acc, curr) => acc + curr.refundAmount, 0);
 
     const selectStyles = {
-        backgroundColor: "#121214", color: "white", height: "44px", padding: "0 16px",
-        borderRadius: "8px", border: "1px solid rgba(255, 255, 255, 0.16)", cursor: "pointer", outline: "none"
+        backgroundColor: "#0A0A0A", color: "white", height: "44px", padding: "0 16px",
+        borderRadius: "0px", border: "1px solid #333333", cursor: "pointer", outline: "none"
     };
 
     return (
-        <Box w="full" display="flex" flexDirection="column" position="relative">
+        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
             {/* --- Sticky Header --- */}
             <Box 
-                position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
-                bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
-                py={4} mb={6} mx={-4} px={4} 
+                position="sticky" top={{ base: "-16px", md: "-32px" }} mx={{ base: "-16px", md: "-32px" }} px={{ base: "16px", md: "32px" }} 
+                zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
+                py={4} mb={6} borderBottom="1px solid #1A1A1A"
             >
                 <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
-                        <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
-                            <Icon as={LuUndo2} /> Customer Refunds
+                        <Text color="white" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2} letterSpacing="tight">
+                            <Icon as={LuUndo2} color="#5cac7d" strokeWidth="2.5" /> Customer Refunds
                         </Text>
-                        <Text color="gray.400" fontSize="sm">Process money back requests or issue store credit to retain value.</Text>
+                        <Text color="#888888" fontSize="sm">Process money back requests or issue store credit to retain value.</Text>
                     </Box>
                 </Flex>
             </Box>
 
             {/* --- STATS & FILTERS --- */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={8}>
-                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="rgba(245, 101, 101, 0.3)">
-                    <Text color="red.400" fontSize="xs" fontWeight="bold" textTransform="uppercase">Pending Liability</Text>
-                    <Text color="white" fontSize="2xl" fontWeight="black">₦{pendingAmount.toLocaleString()}</Text>
-                    <Text color="gray.500" fontSize="xs" mt={1}>Across {pendingRefunds.length} request(s)</Text>
+                <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                    <Text color="red.400" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Pending Liability</Text>
+                    <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">₦{pendingAmount.toLocaleString()}</Text>
+                    <Text color="#888888" fontSize="xs" mt={1}>Across {pendingRefunds.length} request(s)</Text>
                 </Box>
-                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Refunded (YTD)</Text>
-                    <Text color="white" fontSize="2xl" fontWeight="black">₦{totalRefunded.toLocaleString()}</Text>
+                <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                    <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Total Refunded (YTD)</Text>
+                    <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">₦{totalRefunded.toLocaleString()}</Text>
                 </Box>
                 
-                <Flex direction="column" justify="center" gap={2}>
-                    <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="xl" px={4} h="44px" _focusWithin={{ borderColor: "#5cac7d" }}>
-                        <Icon as={LuSearch} color="gray.400" />
+                <Flex direction="column" justify="center" gap={3}>
+                    <Flex align="center" bg="#0A0A0A" border="1px solid" borderColor="#333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
+                        <Icon as={LuSearch} color="#888888" strokeWidth="2.5" />
                         <Input 
                             placeholder="Search Order ID or Customer..." 
-                            border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full"
+                            border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full" px={0} ml={2}
                             value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </Flex>
@@ -93,11 +93,11 @@ export const RefundManager = () => {
                         value={statusFilter} 
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value as "All" | "Pending" | "Processing" | "Refunded" | "Rejected")}
                     >
-                        <option value="All">All Requests</option>
-                        <option value="Pending">Pending Approval</option>
-                        <option value="Processing">Processing Return</option>
-                        <option value="Refunded">Refunded / Credited</option>
-                        <option value="Rejected">Rejected</option>
+                        <option value="All" style={{ background: "#0A0A0A" }}>All Requests</option>
+                        <option value="Pending" style={{ background: "#0A0A0A" }}>Pending Approval</option>
+                        <option value="Processing" style={{ background: "#0A0A0A" }}>Processing Return</option>
+                        <option value="Refunded" style={{ background: "#0A0A0A" }}>Refunded / Credited</option>
+                        <option value="Rejected" style={{ background: "#0A0A0A" }}>Rejected</option>
                     </select>
                 </Flex>
             </SimpleGrid>
@@ -105,7 +105,7 @@ export const RefundManager = () => {
             {/* --- REFUND REQUESTS LIST --- */}
             <VStack gap={4} align="stretch" mb={8}>
                 {filteredRefunds.length === 0 ? (
-                    <Flex justify="center" py={12} color="gray.500" bg="whiteAlpha.50" rounded="2xl" border="1px dashed" borderColor="whiteAlpha.200">
+                    <Flex justify="center" py={12} color="#888888" bg="#0A0A0A" rounded="none" border="1px dashed" borderColor="#1A1A1A" fontWeight="bold">
                         No refund requests found.
                     </Flex>
                 ) : (
@@ -116,7 +116,7 @@ export const RefundManager = () => {
                         const isRejected = ref.status === "Rejected";
 
                         return (
-                            <Box key={ref.id} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor={isPending || isProcessing ? "rgba(245, 101, 101, 0.3)" : "whiteAlpha.100"} p={{ base: 4, md: 6 }} shadow="sm" transition="all 0.2s" opacity={isRejected || isRefunded ? 0.6 : 1}>
+                            <Box key={ref.id} bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" p={{ base: 4, md: 6 }} transition="all 0.2s" opacity={isRejected || isRefunded ? 0.6 : 1} _hover={{ bg: "#111111" }}>
                                 <Flex direction={{ base: "column", xl: "row" }} justify="space-between" align={{ base: "flex-start", xl: "center" }} gap={6}>
                                     
                                     {/* Customer & Status */}
@@ -124,68 +124,69 @@ export const RefundManager = () => {
                                         <HStack justify="space-between" w="full">
                                             <Text color="white" fontWeight="black" letterSpacing="wider">{ref.orderId}</Text>
                                             <Badge 
-                                                bg={isPending ? "rgba(237, 137, 54, 0.15)" : isProcessing ? "rgba(66, 153, 225, 0.15)" : isRefunded ? "rgba(92, 172, 125, 0.15)" : "rgba(245, 101, 101, 0.15)"} 
+                                                bg="#111111" 
                                                 color={isPending ? "orange.400" : isProcessing ? "blue.400" : isRefunded ? "#5cac7d" : "red.400"} 
-                                                px={2} py={1} rounded="md"
+                                                border="1px solid" borderColor={isPending ? "orange.900" : isProcessing ? "blue.900" : isRefunded ? "green.900" : "red.900"}
+                                                px={2} py={1} rounded="none" fontSize="10px" textTransform="uppercase" letterSpacing="wider" fontWeight="bold"
                                             >
                                                 {ref.status}
                                             </Badge>
                                         </HStack>
                                         <Box>
-                                            <Text color="gray.300" fontSize="sm" fontWeight="bold">{ref.customerName}</Text>
-                                            <Text color="gray.500" fontSize="xs">{ref.customerEmail}</Text>
+                                            <Text color="white" fontSize="sm" fontWeight="bold" letterSpacing="tight">{ref.customerName}</Text>
+                                            <Text color="#888888" fontSize="xs">{ref.customerEmail}</Text>
                                         </Box>
-                                        <Text color="gray.500" fontSize="xs" mt={1}>Requested: {ref.dateRequested}</Text>
+                                        <Text color="#888888" fontSize="xs" mt={1}>Requested: {ref.dateRequested}</Text>
                                     </VStack>
 
-                                    {/*  Item & Refund Amount */}
-                                    <Flex flex={2} w="full" bg="#121214" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100" align="center" justify="space-between" gap={4} wrap="wrap">
+                                    {/* Item & Refund Amount */}
+                                    <Flex flex={2} w="full" bg="#111111" p={4} rounded="none" border="1px solid" borderColor="#1A1A1A" align="center" justify="space-between" gap={4} wrap="wrap">
                                         <Flex align="center" gap={3} flex={1}>
-                                            <Image src={ref.itemImage} alt="Item" boxSize="40px" rounded="md" objectFit="cover" opacity={0.8} />
+                                            <Image src={ref.itemImage} alt="Item" boxSize="40px" rounded="none" objectFit="cover" opacity={0.8} border="1px solid #333333" />
                                             <Box>
-                                                <Text color="gray.500" fontSize="10px" fontWeight="bold" textTransform="uppercase">Returning Item</Text>
-                                                <Text color="gray.300" fontSize="xs" fontWeight="bold" lineClamp={2}>{ref.itemName}</Text>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Returning Item</Text>
+                                                <Text color="white" fontSize="xs" fontWeight="bold" lineClamp={2}>{ref.itemName}</Text>
                                             </Box>
                                         </Flex>
-                                        <Box h="40px" w="1px" bg="whiteAlpha.200" display={{ base: "none", md: "block" }} />
+                                        <Box h="40px" w="1px" bg="#1A1A1A" display={{ base: "none", md: "block" }} />
                                         <VStack align={{ base: "flex-start", md: "flex-end" }} gap={0} flexShrink={0}>
-                                            <Text color="gray.500" fontSize="10px" fontWeight="bold" textTransform="uppercase">Refund Value</Text>
-                                            <Text color={isRefunded ? "gray.400" : "red.400"} fontSize="lg" fontWeight="black">₦{ref.refundAmount.toLocaleString()}</Text>
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Refund Value</Text>
+                                            <Text color={isRefunded ? "white" : "red.400"} fontSize="lg" fontWeight="black" letterSpacing="tight">₦{ref.refundAmount.toLocaleString()}</Text>
                                         </VStack>
                                     </Flex>
 
-                                    {/*  Actions & Reason */}
+                                    {/* Actions & Reason */}
                                     <VStack align="end" flex={1} minW={{ xl: "320px" }} w="full" gap={3}>
-                                        <Flex align="flex-start" gap={2} bg="whiteAlpha.50" p={3} rounded="lg" w="full" border="1px solid" borderColor="whiteAlpha.100">
-                                            <Icon as={LuMessageSquare} color="gray.500" mt={0.5} />
-                                            <Text color="gray.400" fontSize="xs" fontStyle="italic">&quot;{ref.reason}&quot;</Text>
+                                        <Flex align="flex-start" gap={2} bg="#111111" p={3} rounded="none" w="full" border="1px solid" borderColor="#1A1A1A">
+                                            <Icon as={LuMessageSquare} color="#888888" mt={0.5} strokeWidth="2.5" />
+                                            <Text color="#888888" fontSize="xs" fontStyle="italic">&quot;{ref.reason}&quot;</Text>
                                         </Flex>
                                         
                                         <Flex w="full" justify="space-between" align="center" wrap="wrap" gap={2}>
                                             {/* Chat History Button */}
-                                            <Button size="sm" onClick={() => openChatHistory(ref.customerName)} variant="outline" borderColor="whiteAlpha.200" color="white" _hover={{ bg: "whiteAlpha.50" }}>
-                                                <Icon as={LuMessageCircle} mr={2} /> View Chat
+                                            <Button size="sm" h="36px" onClick={() => openChatHistory(ref.customerName)} variant="outline" borderColor="#333333" color="white" rounded="none" _hover={{ bg: "#111111" }}>
+                                                <Icon as={LuMessageCircle} mr={2} strokeWidth="2.5" /> View Chat
                                             </Button>
 
                                             {/* Status Actions */}
                                             <HStack gap={2}>
                                                 {isPending && (
                                                     <>
-                                                        <Button size="sm" onClick={() => updateStatus(ref.id, "Rejected")} variant="ghost" color="red.400" _hover={{ bg: "red.900", color: "white" }}>
-                                                            <Icon as={LuBan} />
+                                                        <Button size="sm" h="36px" onClick={() => updateStatus(ref.id, "Rejected")} variant="ghost" color="red.400" rounded="none" _hover={{ bg: "red.900", color: "white" }}>
+                                                            <Icon as={LuBan} strokeWidth="2.5" />
                                                         </Button>
-                                                        <Button size="sm" onClick={() => updateStatus(ref.id, "Processing")} bg="blue.400" color="white" _hover={{ bg: "blue.500" }}>
+                                                        <Button size="sm" h="36px" onClick={() => updateStatus(ref.id, "Processing")} bg="#111111" color="blue.400" border="1px solid #333333" rounded="none" _hover={{ bg: "#1A1A1A" }}>
                                                             Accept Return
                                                         </Button>
                                                     </>
                                                 )}
                                                 {isProcessing && (
                                                     <>
-                                                        <Button size="sm" onClick={() => issueStoreCredit(ref.customerName, ref.refundAmount, ref.id)} variant="outline" borderColor="#5cac7d" color="#5cac7d" _hover={{ bg: "rgba(92, 172, 125, 0.1)" }}>
-                                                            <Icon as={LuGift} mr={2} /> Issue Credit
+                                                        <Button size="sm" h="36px" onClick={() => issueStoreCredit(ref.customerName, ref.refundAmount, ref.id)} variant="outline" borderColor="#5cac7d" color="#5cac7d" rounded="none" _hover={{ bg: "rgba(92, 172, 125, 0.1)" }}>
+                                                            <Icon as={LuGift} mr={2} strokeWidth="2.5" /> Issue Credit
                                                         </Button>
-                                                        <Button size="sm" onClick={() => updateStatus(ref.id, "Refunded")} bg="red.500" color="white" _hover={{ bg: "red.600" }}>
-                                                            <Icon as={LuBanknote} mr={2} /> Refund Cash
+                                                        <Button size="sm" h="36px" onClick={() => updateStatus(ref.id, "Refunded")} bg="#111111" border="1px solid #333333" color="red.400" rounded="none" _hover={{ bg: "red.900", color: "white" }}>
+                                                            <Icon as={LuBanknote} mr={2} strokeWidth="2.5" /> Refund Cash
                                                         </Button>
                                                     </>
                                                 )}

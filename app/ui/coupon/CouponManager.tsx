@@ -3,19 +3,17 @@ import React, { useState } from "react";
 import { Box, Flex, Text, Icon, Input, Button, HStack, VStack, SimpleGrid } from "@chakra-ui/react";
 import { 
     LuTicket, LuSearch, LuPlus, LuCopy, 
-    LuTrash2, LuPower, LuPowerOff, LuPercent, LuBanknote
+    LuTrash2, LuPower, LuPowerOff, LuPercent, LuBanknote, LuCheck, LuBan, LuClock
 } from "react-icons/lu";
 
 import { generateDummyCoupons } from "@/app/lib/data";
 import { DiscountCoupon } from "@/app/lib/definitions";
 
-// 🚀 1. Import our new form
 import { CreateCouponForm } from "./CreateCouponForm";
 
 export const CouponManager = () => {
     const [coupons, setCoupons] = useState<DiscountCoupon[]>(generateDummyCoupons());
     const [searchTerm, setSearchTerm] = useState("");
-    
     
     const [isCreating, setIsCreating] = useState(false);
 
@@ -65,44 +63,43 @@ export const CouponManager = () => {
 
     // Otherwise, show the normal list view
     return (
-        <Box w="full" display="flex" flexDirection="column" position="relative">
+        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
             {/* --- Sticky Header --- */}
             <Box 
-                position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
-                bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
-                py={4} mb={6} mx={-4} px={4} 
+                position="sticky" top={{ base: "-16px", md: "-32px" }} mx={{ base: "-16px", md: "-32px" }} px={{ base: "16px", md: "32px" }} 
+                zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
+                py={4} mb={6} borderBottom="1px solid #1A1A1A"
             >
                 <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
-                        <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
-                            <Icon as={LuTicket} /> Discount Coupons
+                        <Text color="white" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2} letterSpacing="tight">
+                            <Icon as={LuTicket} color="#5cac7d" strokeWidth="2.5" /> Discount Coupons
                         </Text>
-                        <Text color="gray.400" fontSize="sm">Create and manage promotional codes for your store.</Text>
+                        <Text color="#888888" fontSize="sm">Create and manage promotional codes for your store.</Text>
                     </Box>
                     
-                    
-                    <Button onClick={() => setIsCreating(true)} bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} h="44px" px={6}>
-                        <Icon as={LuPlus} mr={2} /> Create Coupon
+                    <Button onClick={() => setIsCreating(true)} bg="white" color="black" rounded="none" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} fontWeight="bold" border="none">
+                        <Icon as={LuPlus} mr={2} strokeWidth="2.5" /> Create Coupon
                     </Button>
                 </Flex>
             </Box>
 
             {/* --- STATS & SEARCH --- */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={6}>
-                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Active Coupons</Text>
-                    <Text color="white" fontSize="2xl" fontWeight="black">{activeCount}</Text>
+                <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                    <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Active Coupons</Text>
+                    <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">{activeCount}</Text>
                 </Box>
-                <Box bg="#1A1C23" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                    <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Total Uses</Text>
-                    <Text color="white" fontSize="2xl" fontWeight="black">{totalUses.toLocaleString()}</Text>
+                <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                    <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Total Uses</Text>
+                    <Text color="white" fontSize="3xl" fontWeight="black" letterSpacing="tight">{totalUses.toLocaleString()}</Text>
                 </Box>
-                <Flex align="center" bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="xl" px={4} _focusWithin={{ borderColor: "#5cac7d" }}>
-                    <Icon as={LuSearch} color="gray.400" />
+                <Flex align="center" bg="#0A0A0A" border="1px solid" borderColor="#333333" rounded="none" px={4} _focusWithin={{ borderColor: "white" }}>
+                    <Icon as={LuSearch} color="#888888" strokeWidth="2.5" />
                     <Input 
                         placeholder="Search by coupon code..." 
-                        border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full" py={3}
+                        border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full" py={3} ml={2} px={0}
                         value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </Flex>
@@ -111,7 +108,7 @@ export const CouponManager = () => {
             {/* --- COUPONS LIST --- */}
             <VStack gap={4} align="stretch" mb={8}>
                 {filteredCoupons.length === 0 ? (
-                    <Flex justify="center" py={12} color="gray.500" bg="whiteAlpha.50" rounded="2xl" border="1px dashed" borderColor="whiteAlpha.200">
+                    <Flex justify="center" py={12} color="#888888" bg="#0A0A0A" rounded="none" border="1px dashed" borderColor="#1A1A1A" fontWeight="bold">
                         No coupons found. Try creating one!
                     </Flex>
                 ) : (
@@ -124,46 +121,52 @@ export const CouponManager = () => {
                             : 0;
 
                         return (
-                            <Box key={coupon.id} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor={isActive ? "rgba(92, 172, 125, 0.3)" : "whiteAlpha.100"} p={{ base: 4, md: 6 }} shadow="sm" transition="all 0.2s" opacity={isExpired ? 0.6 : 1}>
+                            <Box key={coupon.id} bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" p={{ base: 4, md: 6 }} transition="all 0.2s" opacity={isExpired ? 0.6 : 1} _hover={{ bg: "#111111" }}>
                                 <Flex direction={{ base: "column", md: "row" }} justify="space-between" align={{ base: "flex-start", md: "center" }} gap={6}>
                                     
                                     {/* Left: Code & Details */}
                                     <VStack align="start" flex={1} gap={2}>
                                         <HStack gap={3}>
-                                            <Flex align="center" justify="center" bg="rgba(255, 255, 255, 0.05)" border="1px dashed" borderColor="gray.500" px={3} py={1} rounded="md" cursor="pointer" onClick={() => copyToClipboard(coupon.code)} _hover={{ bg: "whiteAlpha.200" }}>
-                                                <Text color="white" fontWeight="black" letterSpacing="wider" mr={2}>{coupon.code}</Text>
-                                                <Icon as={LuCopy} color="gray.400" boxSize="12px" />
+                                            <Flex align="center" justify="center" bg="#111111" border="1px solid #333333" px={3} py={2} rounded="none" cursor="pointer" onClick={() => copyToClipboard(coupon.code)} _hover={{ borderColor: "white" }} transition="all 0.2s">
+                                                <Text color="white" fontWeight="black" letterSpacing="widest" mr={3}>{coupon.code}</Text>
+                                                <Icon as={LuCopy} color="#888888" boxSize="14px" strokeWidth="2.5" />
                                             </Flex>
                                             
-                                            <Flex align="center" px={2.5} py={0.5} rounded="full" bg={isActive ? "rgba(92, 172, 125, 0.15)" : isExpired ? "rgba(245, 101, 101, 0.15)" : "whiteAlpha.100"}>
-                                                <Box boxSize="6px" rounded="full" mr={2} bg={isActive ? "#5cac7d" : isExpired ? "red.400" : "gray.400"} />
-                                                <Text color={isActive ? "#5cac7d" : isExpired ? "red.400" : "gray.400"} fontSize="xs" fontWeight="bold">
+                                            {/* Strictly monochrome badge with colored icon */}
+                                            <Flex align="center" gap={1.5} px={2.5} py={1} rounded="none" bg="#111111" border="1px solid #333333">
+                                                <Icon 
+                                                    as={isActive ? LuCheck : isExpired ? LuClock : LuBan} 
+                                                    color={isActive ? "#5cac7d" : isExpired ? "red.400" : "orange.400"} 
+                                                    boxSize="12px" strokeWidth="3" 
+                                                />
+                                                <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
                                                     {coupon.status}
                                                 </Text>
                                             </Flex>
                                         </HStack>
 
                                         <Flex align="center" gap={4} mt={2}>
-                                            <Flex align="center" gap={1.5} color="gray.300">
-                                                <Icon as={coupon.type === "Percentage" ? LuPercent : LuBanknote} color="orange.400" />
-                                                <Text fontSize="sm" fontWeight="bold">
+                                            <Flex align="center" gap={1.5}>
+                                                <Icon as={coupon.type === "Percentage" ? LuPercent : LuBanknote} color="orange.400" strokeWidth="2.5" />
+                                                <Text color="white" fontSize="sm" fontWeight="bold">
                                                     {coupon.type === "Percentage" ? `${coupon.value}% OFF` : `₦${coupon.value.toLocaleString()} OFF`}
                                                 </Text>
                                             </Flex>
-                                            <Box w="1px" h="12px" bg="whiteAlpha.300" />
-                                            <Text color="gray.500" fontSize="sm">Expires: {coupon.expiryDate}</Text>
+                                            <Box w="1px" h="14px" bg="#333333" />
+                                            <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Expires: {coupon.expiryDate}</Text>
                                         </Flex>
                                     </VStack>
 
                                     {/* Middle: Usage Progress */}
-                                    <VStack align="start" flex={1} w="full" minW={{ md: "200px" }} maxW={{ md: "300px" }} gap={1}>
+                                    <VStack align="start" flex={1} w="full" minW={{ md: "200px" }} maxW={{ md: "300px" }} gap={2} bg="#111111" p={4} border="1px solid #1A1A1A" rounded="none">
                                         <Flex justify="space-between" w="full">
-                                            <Text color="gray.400" fontSize="xs">Usage</Text>
-                                            <Text color="white" fontSize="xs" fontWeight="bold">{coupon.usageCount} / {coupon.usageLimit}</Text>
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Usage</Text>
+                                            <Text color="white" fontSize="sm" fontWeight="bold">{coupon.usageCount} <Text as="span" color="#888888" fontWeight="normal" fontSize="xs">/ {coupon.usageLimit}</Text></Text>
                                         </Flex>
-                                        <Box w="full" h="6px" bg="whiteAlpha.100" rounded="full" overflow="hidden">
+                                        {/* Strictly monochrome progress bar */}
+                                        <Box w="full" h="6px" bg="#1A1A1A" rounded="none" overflow="hidden">
                                             {coupon.usageLimit !== "Unlimited" && (
-                                                <Box w={`${usagePercentage}%`} h="full" bg={usagePercentage >= 100 ? "red.400" : "#5cac7d"} transition="width 0.3s" />
+                                                <Box w={`${usagePercentage}%`} h="full" bg="white" transition="width 0.3s" />
                                             )}
                                         </Box>
                                     </VStack>
@@ -171,12 +174,12 @@ export const CouponManager = () => {
                                     {/* Right: Actions */}
                                     <Flex gap={2} minW="140px" justify="flex-end" w={{ base: "full", md: "auto" }}>
                                         {!isExpired && (
-                                            <Button size="sm" onClick={() => toggleStatus(coupon.id, coupon.status)} variant="outline" borderColor="whiteAlpha.200" color={isActive ? "orange.400" : "#5cac7d"} _hover={{ bg: "whiteAlpha.50" }}>
-                                                <Icon as={isActive ? LuPowerOff : LuPower} mr={2} /> {isActive ? "Disable" : "Enable"}
+                                            <Button size="sm" h="36px" onClick={() => toggleStatus(coupon.id, coupon.status)} variant="outline" borderColor="#333333" color="white" _hover={{ bg: "#111111" }} rounded="none">
+                                                <Icon as={isActive ? LuPowerOff : LuPower} color={isActive ? "orange.400" : "#5cac7d"} mr={2} strokeWidth="2.5" /> {isActive ? "Disable" : "Enable"}
                                             </Button>
                                         )}
-                                        <Button size="sm" onClick={() => deleteCoupon(coupon.id)} variant="ghost" color="red.400" _hover={{ bg: "red.900", color: "white" }}>
-                                            <Icon as={LuTrash2} />
+                                        <Button size="sm" h="36px" onClick={() => deleteCoupon(coupon.id)} variant="ghost" color="white" _hover={{ bg: "#111111" }} rounded="none">
+                                            <Icon as={LuTrash2} color="red.400" strokeWidth="2.5" />
                                         </Button>
                                     </Flex>
 

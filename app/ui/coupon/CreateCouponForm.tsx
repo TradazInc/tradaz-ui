@@ -4,8 +4,30 @@ import { Box, Flex, Text, Input, Button, Icon, SimpleGrid, VStack } from "@chakr
 import { LuArrowLeft, LuSave, LuDices } from "react-icons/lu";
 import { DiscountCoupon } from "@/app/lib/definitions";
 
-const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "44px", rounded: "lg", px: 4, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
-const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#121214", color: "white", height: "44px", borderRadius: "8px", padding: "0 16px", border: "1px solid rgba(255, 255, 255, 0.2)", outline: "none", cursor: "pointer", fontSize: "14px" };
+const controlStyles = { 
+    bg: "#111111", 
+    border: "1px solid", 
+    borderColor: "#333333", 
+    color: "white", 
+    h: "44px", 
+    rounded: "none", 
+    px: 4, 
+    _focus: { outline: "none", borderColor: "white" }, 
+    _hover: { bg: "#1A1A1A" } 
+};
+
+const nativeSelectStyle: React.CSSProperties = { 
+    width: "100%", 
+    backgroundColor: "#111111", 
+    color: "white", 
+    height: "44px", 
+    borderRadius: "0px", 
+    padding: "0 16px", 
+    border: "1px solid #333333", 
+    outline: "none", 
+    cursor: "pointer", 
+    fontSize: "14px" 
+};
 
 interface CreateCouponFormProps {
     onBack: () => void;
@@ -43,31 +65,31 @@ export const CreateCouponForm = ({ onBack, onSubmit }: CreateCouponFormProps) =>
     };
 
     return (
-        <Box animation="fade-in 0.3s ease">
+        <Box animation="fade-in 0.3s ease" bg="#000000" w="full">
             <Flex align="center" gap={4} mb={8}>
-                <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2}>
-                    <Icon as={LuArrowLeft} boxSize="20px" />
+                <Button variant="ghost" color="#888888" rounded="none" _hover={{ color: "white", bg: "#111111" }} onClick={onBack} px={2} h="40px">
+                    <Icon as={LuArrowLeft} boxSize="20px" strokeWidth="2.5" />
                 </Button>
                 <Box>
-                    <Text color="white" fontWeight="bold" fontSize="2xl">Create New Coupon</Text>
-                    <Text color="gray.400" fontSize="sm">Set up a new discount code for your customers.</Text>
+                    <Text color="white" fontWeight="bold" fontSize="2xl" letterSpacing="tight">Create New Coupon</Text>
+                    <Text color="#888888" fontSize="sm">Set up a new discount code for your customers.</Text>
                 </Box>
             </Flex>
 
-            <Box as="form" onSubmit={handleSubmit} bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+            <Box as="form" onSubmit={handleSubmit} bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
                 <VStack gap={6} align="stretch">
                     
                     {/* Code Generation */}
                     <Box>
-                        <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Coupon Code</Text>
-                        <Flex gap={3}>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Coupon Code</Text>
+                        <Flex gap={3} direction={{ base: "column", md: "row" }}>
                             <Input 
                                 placeholder="e.g. SUMMER24" textTransform="uppercase"
                                 value={code} onChange={(e) => setCode(e.target.value.toUpperCase())}
                                 {...controlStyles} flex={1} required
                             />
-                            <Button onClick={handleGenerateCode} variant="outline" borderColor="whiteAlpha.200" color="white" h="44px" _hover={{ bg: "whiteAlpha.100" }}>
-                                <Icon as={LuDices} mr={2} /> Generate
+                            <Button onClick={handleGenerateCode} bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" _hover={{ bg: "#1A1A1A" }}>
+                                <Icon as={LuDices} color="#5cac7d" mr={2} strokeWidth="2.5" /> Generate
                             </Button>
                         </Flex>
                     </Box>
@@ -75,17 +97,17 @@ export const CreateCouponForm = ({ onBack, onSubmit }: CreateCouponFormProps) =>
                     <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
                         {/* Discount Type */}
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Discount Type</Text>
+                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Discount Type</Text>
                             
                             <select value={type} onChange={(e) => setType(e.target.value as "Percentage" | "Fixed")} style={nativeSelectStyle}>
-                                <option value="Percentage" style={{ background: "#1A1C23" }}>Percentage (%)</option>
-                                <option value="Fixed" style={{ background: "#1A1C23" }}>Fixed Amount (₦)</option>
+                                <option value="Percentage" style={{ background: "#0A0A0A" }}>Percentage (%)</option>
+                                <option value="Fixed" style={{ background: "#0A0A0A" }}>Fixed Amount (₦)</option>
                             </select>
                         </Box>
 
                         {/* Discount Value */}
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Discount Value</Text>
+                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Discount Value</Text>
                             <Input 
                                 type="number" placeholder={type === "Percentage" ? "e.g. 15" : "e.g. 5000"} 
                                 value={value} onChange={(e) => setValue(e.target.value)}
@@ -95,7 +117,7 @@ export const CreateCouponForm = ({ onBack, onSubmit }: CreateCouponFormProps) =>
 
                         {/* Expiry Date */}
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Expiry Date</Text>
+                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Expiry Date</Text>
                             <Input 
                                 type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)}
                                 {...controlStyles} css={{ '&::-webkit-calendar-picker-indicator': { filter: 'invert(1)' } }} required
@@ -104,7 +126,7 @@ export const CreateCouponForm = ({ onBack, onSubmit }: CreateCouponFormProps) =>
 
                         {/* Usage Limit */}
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Usage Limit (Optional)</Text>
+                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Usage Limit (Optional)</Text>
                             <Input 
                                 type="number" placeholder="Leave blank for unlimited" 
                                 value={usageLimit} onChange={(e) => setUsageLimit(e.target.value)}
@@ -113,12 +135,12 @@ export const CreateCouponForm = ({ onBack, onSubmit }: CreateCouponFormProps) =>
                         </Box>
                     </SimpleGrid>
 
-                    <Box pt={4} borderTop="1px solid" borderColor="whiteAlpha.100" display="flex" justifyContent="flex-end" gap={3}>
-                        <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack}>
+                    <Box pt={6} mt={2} borderTop="1px solid" borderColor="#1A1A1A" display="flex" justifyContent="flex-end" gap={3}>
+                        <Button variant="outline" rounded="none" borderColor="#333333" color="#888888" _hover={{ color: "white", bg: "#111111" }} onClick={onBack} h="44px" px={6}>
                             Cancel
                         </Button>
-                        <Button type="submit" bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} px={8}>
-                            <Icon as={LuSave} mr={2} /> Save Coupon
+                        <Button type="submit" bg="white" color="black" rounded="none" fontWeight="bold" border="none" _hover={{ bg: "#E5E5E5" }} h="44px" px={8}>
+                            <Icon as={LuSave} mr={2} strokeWidth="2.5" /> Save Coupon
                         </Button>
                     </Box>
 

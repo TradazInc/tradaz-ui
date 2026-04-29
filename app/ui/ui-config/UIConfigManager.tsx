@@ -12,7 +12,7 @@ export const UIConfigManager = () => {
     const [storeName, setStoreName] = useState("My Awesome Store");
     const [brandColor, setBrandColor] = useState("#5cac7d");
     const [fontFamily, setFontFamily] = useState("Inter, sans-serif");
-    const [buttonRadius, setButtonRadius] = useState("8px"); 
+    const [buttonRadius, setButtonRadius] = useState("0px"); 
     const [heroLayout, setHeroLayout] = useState("center"); 
     
     const [lastPublished, setLastPublished] = useState<string>("Never");
@@ -30,76 +30,80 @@ export const UIConfigManager = () => {
     };
 
     const selectStyles = {
-        backgroundColor: "#121214", color: "white", height: "40px", padding: "0 12px",
-        borderRadius: "8px", border: "1px solid rgba(255, 255, 255, 0.16)", cursor: "pointer", outline: "none", fontSize: "14px", width: "100%"
+        backgroundColor: "#0A0A0A", color: "white", height: "44px", padding: "0 12px",
+        borderRadius: "0px", border: "1px solid #333333", cursor: "pointer", outline: "none", fontSize: "14px", width: "100%"
     };
 
     return (
-        <Box w="full" display="flex" flexDirection="column" position="relative">
+        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
             {/* --- STICKY HEADER --- */}
             <Box 
-                position="sticky" top={{ base: "70px", md: "85px" }} zIndex={20} 
-                bg="rgba(11, 13, 20, 0.85)" backdropFilter="blur(12px)"
-                py={4} mb={6} mx={-4} px={4} borderBottom="1px solid" borderColor="whiteAlpha.100"
+                position="sticky" top={{ base: "-16px", md: "-32px" }} mx={{ base: "-16px", md: "-32px" }} px={{ base: "16px", md: "32px" }}
+                zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
+                py={4} mb={6} borderBottom="1px solid #1A1A1A"
             >
                 <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} wrap="wrap" gap={4}>
                     <Box>
-                        <Text color="#5cac7d" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2}>
-                            <Icon as={LuPalette} /> Storefront Appearance
+                        <Text color="white" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2} letterSpacing="tight">
+                            <Icon as={LuPalette} color="#5cac7d" strokeWidth="2.5" /> Storefront Appearance
                         </Text>
-                        <Text color="gray.400" fontSize="sm">Customize your colors, fonts, and layout to match your brand identity.</Text>
+                        <Text color="#888888" fontSize="sm">Customize your colors, fonts, and layout to match your brand identity.</Text>
                     </Box>
                     
-                    <HStack gap={3}>
-                        <VStack align="flex-end" gap={0} display={{ base: "none", sm: "flex" }} mr={2}>
-                            <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Last Published</Text>
-                            <Flex align="center" gap={1} color={lastPublished === "Never" ? "orange.400" : "gray.300"}>
-                                <Icon as={lastPublished === "Never" ? LuClock : LuCheck} boxSize="12px" />
-                                <Text fontSize="sm" fontWeight="bold">{lastPublished}</Text>
+                    <HStack gap={4}>
+                        <VStack align="flex-end" gap={0} display={{ base: "none", sm: "flex" }}>
+                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Last Published</Text>
+                            <Flex align="center" gap={1.5} mt={0.5}>
+                                <Icon 
+                                    as={lastPublished === "Never" ? LuClock : LuCheck} 
+                                    color={lastPublished === "Never" ? "orange.400" : "#5cac7d"} 
+                                    boxSize="14px" strokeWidth="2.5" 
+                                />
+                                <Text color="white" fontSize="sm" fontWeight="bold" letterSpacing="tight">{lastPublished}</Text>
                             </Flex>
                         </VStack>
-                        <Button 
-                            bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} h="44px" px={6} 
+                        <Button
+                            bg="white" color="black" rounded="none" border="none" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} fontWeight="bold"
                             onClick={handlePublish} loading={isPublishing} loadingText="Publishing..."
                         >
-                            <Icon as={LuCloudUpload} mr={2} /> Publish Live
+                            <Icon as={LuCloudUpload} color="#5cac7d" mr={2} strokeWidth="2.5" /> Publish Live
                         </Button>
                     </HStack>
                 </Flex>
             </Box>
 
-            {/* --- MAIN WORKSPACE (Split Pane) --- */}
+            {/* --- MAIN WORKSPACE --- */}
             <SimpleGrid columns={{ base: 1, xl: 12 }} gap={8} alignItems="start">
                 
                 {/* LEFT PANE: CONTROLS */}
                 <Box gridColumn={{ base: "span 1", xl: "span 4" }} display="flex" flexDirection="column" gap={6}>
                     
                     {/* Brand Identity */}
-                    <Box bg="#1A1C23" p={5} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Flex align="center" gap={2} mb={4} color="white">
-                            <Icon as={LuImage} color="#5cac7d" />
-                            <Text fontWeight="bold">Brand Identity</Text>
+                    <Box bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                        <Flex align="center" gap={2} mb={5} color="white">
+                            <Icon as={LuImage} color="#5cac7d" strokeWidth="2.5" />
+                            <Text fontWeight="bold" letterSpacing="tight">Brand Identity</Text>
                         </Flex>
-                        <VStack align="stretch" gap={4}>
+                        <VStack align="stretch" gap={5}>
                             <Box>
-                                <Text color="gray.400" fontSize="xs" fontWeight="bold" mb={1} textTransform="uppercase">Store Name</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" mb={2} textTransform="uppercase" letterSpacing="wider">Store Name</Text>
                                 <Input 
                                     value={storeName} onChange={(e) => setStoreName(e.target.value)}
-                                    bg="#121214" border="1px solid" borderColor="whiteAlpha.200" color="white" _focus={{ borderColor: "#5cac7d" }}
+                                    bg="#111111" border="1px solid" borderColor="#333333" color="white" rounded="none" h="44px" _focus={{ borderColor: "white" }}
                                 />
                             </Box>
                             <Box>
-                                <Text color="gray.400" fontSize="xs" fontWeight="bold" mb={1} textTransform="uppercase">Primary Color</Text>
-                                <Flex gap={2}>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" mb={2} textTransform="uppercase" letterSpacing="wider">Primary Color</Text>
+                                <Flex gap={3}>
                                     <Input 
                                         type="color" value={brandColor} onChange={(e) => setBrandColor(e.target.value)}
-                                        w="50px" h="40px" p={1} bg="#121214" border="1px solid" borderColor="whiteAlpha.200" rounded="md" cursor="pointer"
+                                        w="50px" h="44px" p={1} bg="#111111" border="1px solid" borderColor="#333333" rounded="none" cursor="pointer"
                                     />
                                     <Input 
                                         value={brandColor} onChange={(e) => setBrandColor(e.target.value)}
-                                        bg="#121214" border="1px solid" borderColor="whiteAlpha.200" color="white" _focus={{ borderColor: "#5cac7d" }}
-                                        fontFamily="monospace" textTransform="uppercase"
+                                        bg="#111111" border="1px solid" borderColor="#333333" color="white" rounded="none" h="44px" _focus={{ borderColor: "white" }}
+                                        fontFamily="monospace" textTransform="uppercase" fontWeight="bold"
                                     />
                                 </Flex>
                             </Box>
@@ -107,14 +111,14 @@ export const UIConfigManager = () => {
                     </Box>
 
                     {/* Typography & Layout */}
-                    <Box bg="#1A1C23" p={5} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Flex align="center" gap={2} mb={4} color="white">
-                            <Icon as={LuType} color="#5cac7d" />
-                            <Text fontWeight="bold">Typography & Layout</Text>
+                    <Box bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                        <Flex align="center" gap={2} mb={5} color="white">
+                            <Icon as={LuType} color="#5cac7d" strokeWidth="2.5" />
+                            <Text fontWeight="bold" letterSpacing="tight">Typography & Layout</Text>
                         </Flex>
-                        <VStack align="stretch" gap={4}>
+                        <VStack align="stretch" gap={5}>
                             <Box>
-                                <Text color="gray.400" fontSize="xs" fontWeight="bold" mb={1} textTransform="uppercase">Heading Font</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" mb={2} textTransform="uppercase" letterSpacing="wider">Heading Font Family</Text>
                                 <select 
                                     style={{ ...selectStyles, fontFamily: fontFamily }} 
                                     value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}
@@ -126,28 +130,28 @@ export const UIConfigManager = () => {
                                 </select>
                             </Box>
                             <Box>
-                                <Text color="gray.400" fontSize="xs" fontWeight="bold" mb={1} textTransform="uppercase">Hero Alignment</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" mb={2} textTransform="uppercase" letterSpacing="wider">Hero Text Alignment</Text>
                                 <HStack gap={2}>
-                                    <Button flex={1} variant={heroLayout === "left" ? "solid" : "outline"} bg={heroLayout === "left" ? "whiteAlpha.200" : "transparent"} color="white" borderColor="whiteAlpha.200" onClick={() => setHeroLayout("left")}>Left</Button>
-                                    <Button flex={1} variant={heroLayout === "center" ? "solid" : "outline"} bg={heroLayout === "center" ? "whiteAlpha.200" : "transparent"} color="white" borderColor="whiteAlpha.200" onClick={() => setHeroLayout("center")}>Center</Button>
+                                    <Button flex={1} rounded="none" variant="outline" h="40px" fontSize="sm" bg={heroLayout === "left" ? "#1A1A1A" : "transparent"} color="white" borderColor={heroLayout === "left" ? "white" : "#333333"} onClick={() => setHeroLayout("left")}>Left</Button>
+                                    <Button flex={1} rounded="none" variant="outline" h="40px" fontSize="sm" bg={heroLayout === "center" ? "#1A1A1A" : "transparent"} color="white" borderColor={heroLayout === "center" ? "white" : "#333333"} onClick={() => setHeroLayout("center")}>Center</Button>
                                 </HStack>
                             </Box>
                         </VStack>
                     </Box>
 
                     {/* UI Elements */}
-                    <Box bg="#1A1C23" p={5} rounded="xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Flex align="center" gap={2} mb={4} color="white">
-                            <Icon as={LuMousePointerClick} color="#5cac7d" />
-                            <Text fontWeight="bold">Buttons & Cards</Text>
+                    <Box bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
+                        <Flex align="center" gap={2} mb={5} color="white">
+                            <Icon as={LuMousePointerClick} color="#5cac7d" strokeWidth="2.5" />
+                            <Text fontWeight="bold" letterSpacing="tight">Buttons & Cards</Text>
                         </Flex>
                         <VStack align="stretch" gap={4}>
                             <Box>
-                                <Text color="gray.400" fontSize="xs" fontWeight="bold" mb={1} textTransform="uppercase">Button Roundness</Text>
+                                <Text color="#888888" fontSize="10px" fontWeight="bold" mb={2} textTransform="uppercase" letterSpacing="wider">Global Corner Radius</Text>
                                 <HStack gap={2}>
-                                    <Button flex={1} rounded="0px" variant={buttonRadius === "0px" ? "solid" : "outline"} bg={buttonRadius === "0px" ? "whiteAlpha.200" : "transparent"} color="white" borderColor="whiteAlpha.200" onClick={() => setButtonRadius("0px")}>Square</Button>
-                                    <Button flex={1} rounded="8px" variant={buttonRadius === "8px" ? "solid" : "outline"} bg={buttonRadius === "8px" ? "whiteAlpha.200" : "transparent"} color="white" borderColor="whiteAlpha.200" onClick={() => setButtonRadius("8px")}>Rounded</Button>
-                                    <Button flex={1} rounded="9999px" variant={buttonRadius === "9999px" ? "solid" : "outline"} bg={buttonRadius === "9999px" ? "whiteAlpha.200" : "transparent"} color="white" borderColor="whiteAlpha.200" onClick={() => setButtonRadius("9999px")}>Pill</Button>
+                                    <Button flex={1} rounded="none" h="40px" fontSize="xs" fontWeight="bold" variant="outline" bg={buttonRadius === "0px" ? "#1A1A1A" : "transparent"} color="white" borderColor={buttonRadius === "0px" ? "white" : "#333333"} onClick={() => setButtonRadius("0px")}>SQUARE</Button>
+                                    <Button flex={1} rounded="none" h="40px" fontSize="xs" fontWeight="bold" variant="outline" bg={buttonRadius === "8px" ? "#1A1A1A" : "transparent"} color="white" borderColor={buttonRadius === "8px" ? "white" : "#333333"} onClick={() => setButtonRadius("8px")}>SOFT</Button>
+                                    <Button flex={1} rounded="none" h="40px" fontSize="xs" fontWeight="bold" variant="outline" bg={buttonRadius === "9999px" ? "#1A1A1A" : "transparent"} color="white" borderColor={buttonRadius === "9999px" ? "white" : "#333333"} onClick={() => setButtonRadius("9999px")}>PILL</Button>
                                 </HStack>
                             </Box>
                         </VStack>
@@ -157,69 +161,65 @@ export const UIConfigManager = () => {
 
                 {/* RIGHT PANE: LIVE PREVIEW */}
                 <Box gridColumn={{ base: "span 1", xl: "span 8" }} position={{ xl: "sticky" }} top="100px">
-                    <Text color="gray.400" fontSize="xs" fontWeight="bold" textTransform="uppercase" mb={3} display="flex" alignItems="center" gap={2}>
-                        
-                        <Icon as={LuLayoutTemplate} /> Live Storefront Preview
+                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4} display="flex" alignItems="center" gap={2}>
+                        <Icon as={LuLayoutTemplate} color="white" strokeWidth="2.5" /> Live Storefront Preview
                     </Text>
 
                     {/* Mini Browser Window */}
-                    <Box bg="#f8f9fa" rounded="xl" border="1px solid" borderColor="whiteAlpha.200" overflow="hidden" boxShadow="2xl">
+                    <Box bg="#FFFFFF" rounded="none" border="2px solid" borderColor="#1A1A1A" overflow="hidden">
                         {/* Browser Header */}
-                        <Flex bg="#e9ecef" px={4} py={2} align="center" gap={2} borderBottom="1px solid #dee2e6">
-                            <Box boxSize="10px" rounded="full" bg="red.400" />
-                            <Box boxSize="10px" rounded="full" bg="orange.400" />
-                            <Box boxSize="10px" rounded="full" bg="green.400" />
+                        <Flex bg="#0A0A0A" px={4} py={3} align="center" gap={3} borderBottom="1px solid #1A1A1A">
+                            <HStack gap={1.5}>
+                                <Box boxSize="8px" rounded="none" bg="#333333" />
+                                <Box boxSize="8px" rounded="none" bg="#333333" />
+                                <Box boxSize="8px" rounded="none" bg="#333333" />
+                            </HStack>
                             <Flex flex={1} justify="center">
-                                <Box bg="white" px={8} py={0.5} rounded="md" fontSize="10px" color="gray.500" shadow="sm">
+                                <Box bg="#111111" border="1px solid #333333" px={6} py={1} rounded="none" fontSize="11px" color="#888888" fontWeight="bold">
                                     https://{storeName.toLowerCase().replace(/\s+/g, '')}.tradaz.com
                                 </Box>
                             </Flex>
                         </Flex>
 
-                       
-                        {/* ACTUAL MOCK STOREFRONT  */}
-                        
-                        <Box fontFamily={fontFamily} color="gray.800" minH="500px">
-                            
+                        {/* ACTUAL MOCK STOREFRONT */}
+                        <Box fontFamily={fontFamily} color="#1A1A1A" minH="500px">
                             {/* Mock Navbar */}
-                            <Flex justify="space-between" align="center" px={8} py={4} borderBottom="1px solid #eaeaea">
-                                <Text fontWeight="black" fontSize="xl" color={brandColor}>{storeName}</Text>
-                                <HStack gap={6} display={{ base: "none", md: "flex" }}>
-                                    <Text fontSize="sm" fontWeight="medium" cursor="pointer">Shop</Text>
-                                    <Text fontSize="sm" fontWeight="medium" cursor="pointer">Categories</Text>
-                                    <Text fontSize="sm" fontWeight="medium" cursor="pointer">About</Text>
-                                    <Icon as={LuShoppingBag} boxSize="20px" />
+                            <Flex justify="space-between" align="center" px={8} py={5} borderBottom="1px solid #EAEAEA">
+                                <Text fontWeight="black" fontSize="2xl" letterSpacing="tighter" color={brandColor}>{storeName}</Text>
+                                <HStack gap={8} display={{ base: "none", md: "flex" }}>
+                                    <Text fontSize="xs" fontWeight="black" textTransform="uppercase" letterSpacing="widest" cursor="pointer">Shop</Text>
+                                    <Text fontSize="xs" fontWeight="black" textTransform="uppercase" letterSpacing="widest" cursor="pointer">Categories</Text>
+                                    <Icon as={LuShoppingBag} boxSize="20px" strokeWidth="2.5" />
                                 </HStack>
                             </Flex>
 
                             {/* Mock Hero Section */}
-                            <Box bg="gray.50" px={8} py={16} textAlign={heroLayout === "center" ? "center" : "left"}>
-                                <Text fontSize="4xl" fontWeight="bold" mb={4} lineHeight="shorter">
-                                    Upgrade your lifestyle <br />with our premium collection.
+                            <Box bg="#F9F9F9" px={8} py={20} textAlign={heroLayout === "center" ? "center" : "left"}>
+                                <Text fontSize="4xl" fontWeight="black" mb={5} lineHeight="1" letterSpacing="tighter">
+                                    UPGRADE YOUR LIFESTYLE <br />WITH OUR PREMIUM COLLECTION.
                                 </Text>
-                                <Text color="gray.600" fontSize="md" mb={8} maxW={heroLayout === "center" ? "600px" : "500px"} mx={heroLayout === "center" ? "auto" : "0"}>
+                                <Text color="#555555" fontSize="md" mb={10} maxW={heroLayout === "center" ? "600px" : "500px"} mx={heroLayout === "center" ? "auto" : "0"} fontWeight="medium" lineHeight="tall">
                                     Discover the latest trends and exclusive drops. Shop now and experience quality like never before.
                                 </Text>
                                 <Button 
-                                    bg={brandColor} color="white" px={8} h="48px" 
-                                    rounded={buttonRadius} _hover={{ opacity: 0.9 }}
-                                    boxShadow={`0 4px 14px ${brandColor}40`} border="none"
+                                    bg={brandColor} color="white" px={10} h="54px" fontSize="xs" fontWeight="black" textTransform="uppercase" letterSpacing="widest"
+                                    rounded={buttonRadius} _hover={{ opacity: 0.9 }} border="none"
                                 >
                                     Shop Collection
                                 </Button>
                             </Box>
 
                             {/* Mock Product Grid */}
-                            <Box px={8} py={12}>
-                                <Text fontSize="xl" fontWeight="bold" mb={6}>Trending Now</Text>
-                                <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
+                            <Box px={8} py={16}>
+                                <Text fontSize="xs" fontWeight="black" textTransform="uppercase" letterSpacing="widest" mb={8}>Trending Now</Text>
+                                <SimpleGrid columns={{ base: 1, md: 3 }} gap={8}>
                                     {[1, 2, 3].map((item) => (
-                                        <Box key={item} bg="white" border="1px solid #eaeaea" rounded="lg" overflow="hidden" transition="transform 0.2s" _hover={{ transform: "translateY(-4px)", shadow: "md" }}>
-                                            <Box h="180px" bg="gray.100" />
-                                            <Box p={4}>
-                                                <Text fontWeight="bold" mb={1}>Premium Product {item}</Text>
-                                                <Text color="gray.500" fontSize="sm" mb={3}>₦45,000</Text>
-                                                <Button w="full" variant="outline" borderColor={brandColor} color={brandColor} rounded={buttonRadius} size="sm" _hover={{ bg: `${brandColor}10` }}>
+                                        <Box key={item} bg="white" border="1px solid #EAEAEA" rounded="none" overflow="hidden" transition="transform 0.2s" _hover={{ transform: "translateY(-4px)" }}>
+                                            <Box h="200px" bg="#F1F1F1" />
+                                            <Box p={5}>
+                                                <Text fontWeight="black" fontSize="sm" mb={1} letterSpacing="tight">PREMIUM PRODUCT {item}</Text>
+                                                <Text color="#888888" fontSize="xs" fontWeight="bold" mb={4}>₦45,000</Text>
+                                                <Button w="full" variant="outline" borderColor={brandColor} color={brandColor} rounded={buttonRadius} size="sm" fontSize="10px" fontWeight="black" textTransform="uppercase" letterSpacing="wider">
                                                     Add to Cart
                                                 </Button>
                                             </Box>
@@ -227,7 +227,6 @@ export const UIConfigManager = () => {
                                     ))}
                                 </SimpleGrid>
                             </Box>
-
                         </Box>
                     </Box>
                 </Box>
