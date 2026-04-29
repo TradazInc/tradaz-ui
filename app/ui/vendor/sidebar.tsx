@@ -9,11 +9,11 @@ import { SidebarProps } from "@/app/lib/definitions";
 
 
 const VENDOR_NAV_ITEMS = [
-    { label: "Dashboard", icon: LuLayoutDashboard, path: "/business/vendor" },
-    { label: "Add Product", icon: LuPlus, path: "/business/vendor/add-product" },
-    { label: "Inventory", icon: LuPackage, path: "/business/vendor/inventory" },
-    { label: "Sales record", icon: LuFile, path: "/business/vendor/sales-record" },
-    // { label: "Settings", icon: LuSettings, path: "/business/vendor/settings" },
+    { label: "Dashboard", icon: LuLayoutDashboard, path: "/vendor" },
+    { label: "Add Product", icon: LuPlus, path: "/vendor/add-product" },
+    { label: "Inventory", icon: LuPackage, path: "/vendor/inventory" },
+    { label: "Sales record", icon: LuFile, path: "/vendor/sales-record" },
+    // { label: "Settings", icon: LuSettings, path: "/vendor/settings" },
 ];
 
 export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {

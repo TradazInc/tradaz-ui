@@ -94,7 +94,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                                 <Accordion.ItemContent p={0} pb={1} display={isCollapsed ? "none" : "block"}>
                                     <VStack align="start" gap={0}>
                                         {DASHBOARD_CHILDREN.map((child, cIdx) => {
-                                            const path = child.label === "Overview" ? "/business/merchant/" : `/business/merchant/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
+                                            const path = child.label === "Overview" ? "/business/" : `/business/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
                                             return (
                                                 <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
                                                     <Flex align="center" gap={3} color="#888888" cursor="pointer" _hover={subItemHoverStyle} py={2.5} pl={isCollapsed ? 0 : 12} pr={4} rounded="none" w="full" transition="all 0.2s">
@@ -129,7 +129,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
                                     <Accordion.ItemContent p={0} pb={1} display={isCollapsed ? "none" : "block"}>
                                         <VStack align="start" gap={0}>
                                             {item.children.map((child, cIdx) => {
-                                                const path = `/business/merchant/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
+                                                const path = `/business/${child.label.toLowerCase().replace(/\s+/g, '-')}`;
                                                 return (
                                                     <Link key={cIdx} href={path} style={{ width: '100%', textDecoration: 'none' }} onClick={onClose}>
                                                         <Flex align="center" gap={3} color="#888888" cursor="pointer" _hover={subItemHoverStyle} py={2.5} pl={isCollapsed ? 0 : 12} pr={4} rounded="none" w="full" transition="all 0.2s">
