@@ -199,7 +199,13 @@ export const SalesGridView = ({
         w="full"
       >
         <Flex gap={3} wrap="wrap">
-          <Flex flex={1} minW="250px" align="center" {...controlStyles}>
+          {/* Search Bar - Full width on mobile, flexible on desktop */}
+          <Flex 
+            flex={1} 
+            minW={{ base: "100%", md: "250px" }} 
+            align="center" 
+            {...controlStyles}
+          >
             <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
             <Input
               placeholder="Search by order #, customer..."
@@ -211,37 +217,42 @@ export const SalesGridView = ({
               px={0}
             />
           </Flex>
-          <Box w={{ base: "full", md: "auto" }}>
-            <select
-              value={sortBy}
-              onChange={handleSortBy}
-              style={nativeSelectStyle}
-            >
-              <option value="date" style={{ background: "#0A0A0A" }}>
-                Sort: Date Created
-              </option>
-              <option value="total" style={{ background: "#0A0A0A" }}>
-                Sort: Total Amount
-              </option>
-              <option value="discount" style={{ background: "#0A0A0A" }}>
-                Sort: Discount
-              </option>
-            </select>
-          </Box>
-          <Box w={{ base: "full", md: "auto" }}>
-            <select
-              value={sortOrder}
-              onChange={handleSortOrder}
-              style={nativeSelectStyle}
-            >
-              <option value="desc" style={{ background: "#0A0A0A" }}>
-                Newest / Highest First
-              </option>
-              <option value="asc" style={{ background: "#0A0A0A" }}>
-                Oldest / Lowest First
-              </option>
-            </select>
-          </Box>
+
+          {/* Sort Controls - Grouped to share 1 line on mobile (50/50 split) */}
+          <Flex gap={3} w={{ base: "100%", md: "auto" }}>
+            <Box flex={1}>
+              <select
+                value={sortBy}
+                onChange={handleSortBy}
+                style={{ ...nativeSelectStyle, width: "100%" }}
+              >
+                <option value="date" style={{ background: "#0A0A0A" }}>
+                  Sort: Date Created
+                </option>
+                <option value="total" style={{ background: "#0A0A0A" }}>
+                  Sort: Total Amount
+                </option>
+                <option value="discount" style={{ background: "#0A0A0A" }}>
+                  Sort: Discount
+                </option>
+              </select>
+            </Box>
+            
+            <Box flex={1}>
+              <select
+                value={sortOrder}
+                onChange={handleSortOrder}
+                style={{ ...nativeSelectStyle, width: "100%" }}
+              >
+                <option value="desc" style={{ background: "#0A0A0A" }}>
+                  Newest / Highest First
+                </option>
+                <option value="asc" style={{ background: "#0A0A0A" }}>
+                  Oldest / Lowest First
+                </option>
+              </select>
+            </Box>
+          </Flex>
         </Flex>
       </Box>
 

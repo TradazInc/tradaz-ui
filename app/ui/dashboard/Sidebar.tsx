@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Box, VStack, Text, Accordion, Icon, Flex, Button, ScrollArea } from "@chakra-ui/react";
+import { Box, VStack, Text, Accordion, Icon, Flex, Button, ScrollArea, IconButton } from "@chakra-ui/react";
 import Link from "next/link";
 import { 
     LuLayoutDashboard, LuShoppingBag, LuUsers, LuSettings, LuLogOut, 
@@ -10,7 +10,7 @@ import {
     LuTrendingDown, LuTrendingUp, LuCalculator, LuMessageSquare, 
     LuRefreshCw, LuUndo, LuCheck, LuMegaphone, LuLayoutGrid, LuImage, 
     LuHeart, LuTicket, LuTag, LuUser, LuTruck, LuPercent, LuShield, LuPalette,
-    LuStore, LuHandshake
+    LuStore, LuHandshake, LuX
 } from "react-icons/lu";
 import { SidebarProps } from "@/app/lib/definitions";
 
@@ -61,7 +61,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             h={{ base: "100%", md: "calc(100vh - 65px)" }} 
             bg="#000000" 
             borderRight="1px solid #1A1A1A" 
-            position={{ base: "absolute", md: "static" }} 
+            position={{ base: "fixed", md: "static" }} 
             top={0} left={0}
             transform={{ base: isOpen ? "translateX(0)" : "translateX(-100%)", md: "translateX(0)" }}
             zIndex={999999} display="flex" flexDirection="column" 
@@ -70,6 +70,26 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             color="white"
             flexShrink={0}
         >
+            {/* --- BRAND HEADER & MOBILE CLOSE BUTTON --- */}
+            <Flex align="center" justify={isCollapsed ? "center" : "space-between"} p={6} borderBottom="1px solid #1A1A1A" minH="80px" flexShrink={0}>
+                {!isCollapsed && (
+                    <Text fontSize="2xl" fontWeight="black" color="white" letterSpacing="tighter">
+                        Tradaz.
+                    </Text>
+                )}
+                <IconButton 
+                    aria-label="Close sidebar" 
+                    variant="ghost" 
+                    color="#888888" 
+                    size="sm"
+                    rounded="none"
+                    display={{ base: "flex", md: "none" }} 
+                    onClick={onClose}
+                    _hover={{ color: "white", bg: "#111111" }}
+                >
+                    <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                </IconButton>
+            </Flex>
           
             <ScrollArea.Root flex={1} display="flex" flexDirection="column" overflow="hidden">
                 <ScrollArea.Viewport flex={1}>
