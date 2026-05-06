@@ -199,7 +199,7 @@ export const SalesGridView = ({
         w="full"
       >
         <Flex gap={3} wrap="wrap">
-          {/* Search Bar - Full width on mobile, flexible on desktop */}
+        
           <Flex 
             flex={1} 
             minW={{ base: "100%", md: "250px" }} 
@@ -218,7 +218,7 @@ export const SalesGridView = ({
             />
           </Flex>
 
-          {/* Sort Controls - Grouped to share 1 line on mobile (50/50 split) */}
+         
           <Flex gap={3} w={{ base: "100%", md: "auto" }}>
             <Box flex={1}>
               <select
@@ -245,10 +245,10 @@ export const SalesGridView = ({
                 style={{ ...nativeSelectStyle, width: "100%" }}
               >
                 <option value="desc" style={{ background: "#0A0A0A" }}>
-                  Newest / Highest First
+                  Newest / Highest 
                 </option>
                 <option value="asc" style={{ background: "#0A0A0A" }}>
-                  Oldest / Lowest First
+                  Oldest / Lowest 
                 </option>
               </select>
             </Box>

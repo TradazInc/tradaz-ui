@@ -81,8 +81,13 @@ export const OnlineOrderDetailView = ({
         borderBottom="1px solid"
         borderColor="#1A1A1A"
       >
-        <Flex justify="space-between" align="center">
-          <Flex align="center" gap={4}>
+        <Flex 
+          justify="space-between" 
+          align={{ base: "flex-start", md: "center" }}
+          wrap="wrap"
+          gap={4}
+        >
+          <Flex align="flex-start" gap={4}>
             <Button
               variant="ghost"
               color="#888888"
@@ -95,7 +100,8 @@ export const OnlineOrderDetailView = ({
               <Icon as={LuArrowLeft} boxSize="20px" strokeWidth="2.5" />
             </Button>
             <Box>
-              <Flex align="center" gap={3}>
+              {/* Added wrap="wrap" here so long IDs and Badges don't clip */}
+              <Flex align="center" gap={3} wrap="wrap" mb={{ base: 1, md: 0 }}>
                 <Text
                   color="white"
                   fontWeight="bold"
@@ -123,6 +129,8 @@ export const OnlineOrderDetailView = ({
               </Text>
             </Box>
           </Flex>
+
+          {/* Button takes full width on mobile to prevent squeezing */}
           <Button
             size="sm"
             bg="white"
@@ -131,6 +139,8 @@ export const OnlineOrderDetailView = ({
             fontWeight="bold"
             _hover={{ bg: "#E5E5E5" }}
             border="none"
+            w={{ base: "100%", md: "auto" }}
+            h="40px"
           >
             Update Status
           </Button>
