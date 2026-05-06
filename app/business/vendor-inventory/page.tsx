@@ -64,17 +64,71 @@ export default function Page() {
         <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
             {/* Header */}
-            <Flex justify="space-between" align="center" mb={6} wrap="wrap" gap={4} pt={2}>
-                <Text color="white" fontWeight="bold" fontSize="2xl" letterSpacing="tight">Vendor Inventory Review</Text>
-                <Flex gap={3}>
-                    <Button size="sm" variant="ghost" color="#888888" border="1px solid #1A1A1A" rounded="none" _hover={{ color: "white", bg: "#111111" }}>
-                        <Icon as={LuRefreshCw} mr={2} strokeWidth="2.5" /> Refresh
-                    </Button>
-                    <Button size="sm" variant="ghost" color="#888888" border="1px solid #1A1A1A" rounded="none" _hover={{ color: "white", bg: "#111111" }}>
-                        <Icon as={LuBox} mr={2} strokeWidth="2.5" /> 5 products
-                    </Button>
+            {/* STICKY FILTER & SEARCH BAR */}
+            <Box
+                position="sticky"
+                top={{ base: "-20px", md: "-32px" }}
+                mx={{ base: "-16px", md: "-32px" }}
+                px={{ base: "16px", md: "32px" }}
+                zIndex={30}
+                bg="rgba(0, 0, 0, 0.85)"
+                backdropFilter="blur(12px)"
+                py={{ base: 3, md: 4 }}
+                mb={6}
+                borderBottom="1px solid #1A1A1A"
+            >
+                {/* Navigation Tabs */}
+                <Flex 
+                    borderBottom="1px solid #1A1A1A" 
+                    mb={3} 
+                    overflowX="auto" 
+                    css={{ '&::-webkit-scrollbar': { display: 'none' } }}
+                >
+                    {TABS.map((tab) => (
+                        <Box 
+                            key={tab.id}
+                            px={4} py={2} cursor="pointer"
+                            borderBottom="2px solid"
+                            borderColor={activeTab === tab.id ? "white" : "transparent"}
+                            onClick={() => setActiveTab(tab.id)}
+                            _hover={{ color: "white" }}
+                            transition="all 0.2s"
+                        >
+                            <Text 
+                                fontSize="sm" 
+                                fontWeight={activeTab === tab.id ? "bold" : "500"} 
+                                color={activeTab === tab.id ? "white" : "#888888"} 
+                                whiteSpace="nowrap"
+                            >
+                                {tab.label} ({tab.count})
+                            </Text>
+                        </Box>
+                    ))}
                 </Flex>
-            </Flex>
+
+                {/* Search Bar */}
+                <Flex 
+                    align="center" 
+                    {...controlStyles} 
+                    h="40px" 
+                    bg="#0A0A0A" 
+                    w="full"
+                    _focusWithin={{ borderColor: "white" }}
+                >
+                    <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
+                    <Input 
+                        placeholder="Search products, brands, or vendors..." 
+                        border="none" 
+                        _focus={{ outline: "none", boxShadow: "none" }} 
+                        color="white" 
+                        value={searchQuery} 
+                        onChange={(e) => setSearchQuery(e.target.value)} 
+                        px={0} 
+                        w="full" 
+                        h="full"
+                    />
+                </Flex>
+            </Box>
 
             {/* Inventory Summary  */}
             <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4} mb={8}>

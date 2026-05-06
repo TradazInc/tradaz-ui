@@ -142,7 +142,7 @@ export const DashboardHeader = ({
                             <Icon as={LuBell} color="white" boxSize="20px" _hover={{ color: "gray.300" }} transition="color 0.2s" mt={1} css={iconStyle} />
                            
                             {/* Alert Badge */}
-                            <Box position="absolute" top="2px" right="-2px" boxSize="8px" bg="red.500" rounded="none" border="1px solid #000000" />
+                            <Box position="absolute" top="2px" right="-2px" boxSize="8px" bg="red.500" rounded="full" border="1px solid #000000" />
                         </Box>
 
                         {activeDropdown === "notif" && (

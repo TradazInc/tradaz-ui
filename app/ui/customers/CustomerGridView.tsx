@@ -4,7 +4,6 @@ import {
   Box,
   Flex,
   Text,
-  SimpleGrid,
   Icon,
   Input,
   IconButton,
@@ -112,112 +111,96 @@ export const CustomerGridView = ({
 
       <Box
         position="sticky"
-        top={{ base: "-16px", md: "-32px" }}
+        top={{ base: "-20px", md: "-32px" }}
         mx={{ base: "-16px", md: "-32px" }}
         px={{ base: "16px", md: "32px" }}
-        zIndex={20}
+        zIndex={30}
         bg="rgba(0, 0, 0, 0.85)"
         backdropFilter="blur(12px)"
-        py={3}
+        py={{ base: 2, md: 3 }} 
         mb={6}
         borderBottom="1px solid #1A1A1A"
       >
         <Box
           bg="#0A0A0A"
-          p={4}
+          p={{ base: 2, md: 4 }} 
           border="1px solid #1A1A1A"
           rounded="none"
           shadow="lg"
         >
-          <Flex align="center" gap={2} mb={4}>
+          
+          <Flex align="center" gap={2} mb={3} display={{ base: "none", md: "flex" }}>
             <Icon as={LuFilter} color="gray.400" />
             <Text color="white" fontWeight="bold">
               Filters & Search
             </Text>
           </Flex>
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4}>
-            <Box>
-              <Text color="gray.400" fontSize="xs" mb={1} fontWeight="bold">
-                Search Customers
-              </Text>
-              <Flex
-                align="center"
-                {...controlStyles}
-                _focusWithin={{ borderColor: "white" }}
-              >
-                <Icon as={LuSearch} color="gray.400" boxSize="14px" />
-                <Input
-                  placeholder="Name, email, handle..."
-                  border="none"
-                  _focus={{ outline: "none", boxShadow: "none" }}
-                  color="white"
-                  fontSize="sm"
-                  value={searchQuery}
-                  onChange={handleSearch}
-                  rounded="none"
-                />
+
+          <Flex direction="column" gap={{ base: 2, md: 4 }}>
+            {/* Search Input */}
+            <Flex
+              align="center"
+              {...controlStyles}
+              _focusWithin={{ borderColor: "white" }}
+              w="full"
+            >
+              <Icon as={LuSearch} color="gray.400" boxSize="14px" />
+              <Input
+                placeholder="Search by name, email, handle..."
+                border="none"
+                _focus={{ outline: "none", boxShadow: "none" }}
+                color="white"
+                fontSize="sm"
+                value={searchQuery}
+                onChange={handleSearch}
+                rounded="none"
+                px={2}
+              />
+            </Flex>
+
+            <Flex gap={2} wrap="wrap">
+              {/* Account Status */}
+              <Box w={{ base: "100%", sm: "auto" }} flex={{ sm: 1 }}>
+                <select
+                  value={filterCategory}
+                  onChange={handleStatusFilter}
+                  style={nativeSelectStyle}
+                >
+                  <option value="all" style={{ background: "#111111" }}>Status: All</option>
+                  <option value="active" style={{ background: "#111111" }}>Status: Active</option>
+                  <option value="inactive" style={{ background: "#111111" }}>Status: Inactive</option>
+                </select>
+              </Box>
+
+              
+              <Flex gap={2} w={{ base: "100%", sm: "auto" }} flex={{ sm: 2 }}>
+                <Box flex={1}>
+                  <select
+                    value={sortBy}
+                    onChange={handleSortBy}
+                    style={nativeSelectStyle}
+                  >
+                    <option value="spend" style={{ background: "#111111" }}>Sort: Spend</option>
+                    <option value="orders" style={{ background: "#111111" }}>Sort: Orders</option>
+                    <option value="name" style={{ background: "#111111" }}>Sort: Name</option>
+                  </select>
+                </Box>
+                <Box flex={1}>
+                  <select
+                    value={sortOrder}
+                    onChange={handleSortOrder}
+                    style={nativeSelectStyle}
+                  >
+                    <option value="desc" style={{ background: "#111111" }}>Desc (High/Z-A)</option>
+                    <option value="asc" style={{ background: "#111111" }}>Asc (Low/A-Z)</option>
+                  </select>
+                </Box>
               </Flex>
-            </Box>
-            <Box>
-              <Text color="gray.400" fontSize="xs" mb={1} fontWeight="bold">
-                Account Status
-              </Text>
-              <select
-                value={filterCategory}
-                onChange={handleStatusFilter}
-                style={nativeSelectStyle}
-              >
-                <option value="all" style={{ background: "#111111" }}>
-                  All Statuses
-                </option>
-                <option value="active" style={{ background: "#111111" }}>
-                  Active
-                </option>
-                <option value="inactive" style={{ background: "#111111" }}>
-                  Inactive
-                </option>
-              </select>
-            </Box>
-            <Box>
-              <Text color="gray.400" fontSize="xs" mb={1} fontWeight="bold">
-                Sort By
-              </Text>
-              <select
-                value={sortBy}
-                onChange={handleSortBy}
-                style={nativeSelectStyle}
-              >
-                <option value="spend" style={{ background: "#111111" }}>
-                  Total Spend
-                </option>
-                <option value="orders" style={{ background: "#111111" }}>
-                  Total Orders
-                </option>
-                <option value="name" style={{ background: "#111111" }}>
-                  Customer Name
-                </option>
-              </select>
-            </Box>
-            <Box>
-              <Text color="gray.400" fontSize="xs" mb={1} fontWeight="bold">
-                Sort Order
-              </Text>
-              <select
-                value={sortOrder}
-                onChange={handleSortOrder}
-                style={nativeSelectStyle}
-              >
-                <option value="desc" style={{ background: "#111111" }}>
-                  Highest / Z-A First
-                </option>
-                <option value="asc" style={{ background: "#111111" }}>
-                  Lowest / A-Z First
-                </option>
-              </select>
-            </Box>
-          </SimpleGrid>
+            </Flex>
+          </Flex>
         </Box>
       </Box>
+
 
       {visibleItems.length === 0 ? (
         <Flex
@@ -346,7 +329,7 @@ export const CustomerGridView = ({
                       display="inline-flex"
                       rounded="none"
                     >
-                      {/* Even the status dot is squared */}
+                      
                       <Box
                         boxSize="6px"
                         rounded="none"

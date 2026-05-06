@@ -96,16 +96,18 @@ export const ReviewsManager = () => {
     );
   };
 
-  // Shared styles for our native selects to bypass TypeScript Box errors
+ // Shared styles for our native selects
   const selectStyles = {
+    width: "100%", 
     backgroundColor: "#0A0A0A",
     color: "white",
-    height: "44px",
-    padding: "0 16px",
+    height: "40px", 
+    padding: "0 12px",
     borderRadius: "0px",
     border: "1px solid #1A1A1A",
     cursor: "pointer",
     outline: "none",
+    fontSize: "14px",
   };
 
   return (
@@ -116,72 +118,77 @@ export const ReviewsManager = () => {
       position="relative"
       bg="#000000"
     >
+     
+      <Flex
+        justify="space-between"
+        align={{ base: "flex-start", md: "center" }}
+        wrap="wrap"
+        gap={4}
+        mb={6}
+        pt={2}
+      >
+        <Box>
+          <Text
+            color="white"
+            fontWeight="bold"
+            fontSize={{ base: "2xl", md: "3xl" }}
+            mb={1}
+            display="flex"
+            alignItems="center"
+            gap={2}
+          >
+            <Icon as={LuMessageSquare} /> Product Reviews
+          </Text>
+          <Text color="gray.500" fontSize="sm">
+            Manage customer feedback, ratings, and public visibility.
+          </Text>
+        </Box>
+
+        <HStack gap={4}>
+          <VStack align="flex-end" gap={0}>
+            <Text color="white" fontWeight="bold" fontSize="lg">
+              {avgRating} / 5.0
+            </Text>
+            <Text color="gray.500" fontSize="xs">
+              Average Store Rating
+            </Text>
+          </VStack>
+          <Box h="40px" w="1px" bg="#1A1A1A" />
+          <VStack align="flex-end" gap={0}>
+            <Text color="orange.400" fontWeight="bold" fontSize="lg">
+              {totalPending}
+            </Text>
+            <Text color="gray.500" fontSize="xs">
+              Pending Moderation
+            </Text>
+          </VStack>
+        </HStack>
+      </Flex>
+
+      {/* STICKY FILTER BAR (Minimal Height) */}
       <Box
         position="sticky"
         top={{ base: "-16px", md: "-32px" }}
         mx={{ base: "-16px", md: "-32px" }}
         px={{ base: "16px", md: "32px" }}
-        zIndex={20}
+        zIndex={30}
         bg="rgba(0, 0, 0, 0.85)"
         backdropFilter="blur(12px)"
-        py={4}
+        py={{ base: 3, md: 4 }}
         mb={6}
+        borderBottom="1px solid #1A1A1A"
       >
-        <Flex
-          justify="space-between"
-          align={{ base: "flex-start", md: "center" }}
-          wrap="wrap"
-          gap={4}
-          mb={6}
-        >
-          <Box>
-            <Text
-              color="white"
-              fontWeight="bold"
-              fontSize="2xl"
-              mb={1}
-              display="flex"
-              alignItems="center"
-              gap={2}
-            >
-              <Icon as={LuMessageSquare} /> Product Reviews
-            </Text>
-            <Text color="gray.500" fontSize="sm">
-              Manage customer feedback, ratings, and public visibility.
-            </Text>
-          </Box>
-
-          <HStack gap={4}>
-            <VStack align="flex-end" gap={0}>
-              <Text color="white" fontWeight="bold" fontSize="lg">
-                {avgRating} / 5.0
-              </Text>
-              <Text color="gray.500" fontSize="xs">
-                Average Store Rating
-              </Text>
-            </VStack>
-            <Box h="40px" w="1px" bg="#1A1A1A" />
-            <VStack align="flex-end" gap={0}>
-              <Text color="orange.400" fontWeight="bold" fontSize="lg">
-                {totalPending}
-              </Text>
-              <Text color="gray.500" fontSize="xs">
-                Pending Moderation
-              </Text>
-            </VStack>
-          </HStack>
-        </Flex>
-
-        <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
+        <Flex direction="column" gap={{ base: 2, md: 3 }} w="full">
+          
+          {/* Search Input */}
           <Flex
-            flex={1}
-            minW="250px"
             align="center"
             bg="#0A0A0A"
             border="1px solid #1A1A1A"
             rounded="none"
             px={3}
             _focusWithin={{ borderColor: "white" }}
+            w="full"
           >
             <Icon as={LuSearch} color="gray.400" />
             <Input
@@ -189,64 +196,80 @@ export const ReviewsManager = () => {
               border="none"
               _focus={{ outline: "none", boxShadow: "none" }}
               color="white"
-              h="44px"
+              h="40px"
               rounded="none"
+              px={2}
             />
           </Flex>
 
-          <select
-            style={selectStyles}
-            value={statusFilter}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              setStatusFilter(
-                e.target.value as
-                  | "All"
-                  | "Pending"
-                  | "Approved"
-                  | "Disapproved",
-              )
-            }
-          >
-            <option value="All">All Statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="Approved">Approved</option>
-            <option value="Disapproved">Disapproved</option>
-          </select>
+          {/* Dropdowns Row: Two up, one under on mobile */}
+          <Flex gap={2} wrap="wrap" w="full">
+            
+            
+            <Flex gap={2} w={{ base: "100%", md: "auto" }} flex={{ md: 2 }}>
+              <Box flex={1}>
+                <select
+                  style={selectStyles}
+                  value={statusFilter}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setStatusFilter(
+                      e.target.value as
+                        | "All"
+                        | "Pending"
+                        | "Approved"
+                        | "Disapproved",
+                    )
+                  }
+                >
+                  <option value="All">Status: All</option>
+                  <option value="Pending">Status: Pending</option>
+                  <option value="Approved">Status: Approved</option>
+                  <option value="Disapproved">Status: Disapproved</option>
+                </select>
+              </Box>
+              
+              <Box flex={1}>
+                <select
+                  style={selectStyles}
+                  value={categoryFilter}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setCategoryFilter(
+                      e.target.value as
+                        | "All"
+                        | "Fashion"
+                        | "Electronics"
+                        | "Beauty"
+                        | "Home",
+                    )
+                  }
+                >
+                  <option value="All">Category: All</option>
+                  <option value="Fashion">Category: Fashion</option>
+                  <option value="Electronics">Category: Electronics</option>
+                  <option value="Beauty">Category: Beauty</option>
+                  <option value="Home">Category: Home</option>
+                </select>
+              </Box>
+            </Flex>
 
-          <select
-            style={selectStyles}
-            value={categoryFilter}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              setCategoryFilter(
-                e.target.value as
-                  | "All"
-                  | "Fashion"
-                  | "Electronics"
-                  | "Beauty"
-                  | "Home",
-              )
-            }
-          >
-            <option value="All">All Categories</option>
-            <option value="Fashion">Fashion</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Beauty">Beauty</option>
-            <option value="Home">Home</option>
-          </select>
-
-          <select
-            style={selectStyles}
-            value={sortOrder}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-              setSortOrder(e.target.value as "Newest" | "Oldest")
-            }
-          >
-            <option value="Newest">Sort: Newest First</option>
-            <option value="Oldest">Sort: Oldest First</option>
-          </select>
+           
+            <Box w={{ base: "100%", md: "auto" }} flex={{ md: 1 }}>
+              <select
+                style={selectStyles}
+                value={sortOrder}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setSortOrder(e.target.value as "Newest" | "Oldest")
+                }
+              >
+                <option value="Newest">Sort: Newest First</option>
+                <option value="Oldest">Sort: Oldest First</option>
+              </select>
+            </Box>
+          </Flex>
         </Flex>
       </Box>
 
+      {/* REVIEWS LIST */}
       <VStack gap={4} align="stretch" mb={8}>
         {filteredAndSortedReviews.length === 0 ? (
           <Flex
