@@ -17,13 +17,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     return (
-        <Flex h="100vh" bg="#000" overflow="hidden">
+        <Flex h={{ base: "100dvh", lg: "100vh" }} bg="#000" overflow="hidden">
             
             {/* --- DESKTOP SIDEBAR --- */}
             <Box 
                 display={{ base: "none", lg: "flex" }} w={isCollapsed ? "80px" : "260px"} 
                 bg="#000" borderRight="1px solid" borderColor="whiteAlpha.100" 
-                flexDirection="column" py={6} px={isCollapsed ? 3 : 5} transition="width 0.3s cubic-bezier(0.4, 0, 0.2, 1)" zIndex={100}
+                flexDirection="column" transition="width 0.3s cubic-bezier(0.4, 0, 0.2, 1)" zIndex={100}
                 flexShrink={0}
             >
                 <AdminSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} setIsMobileOpen={setIsMobileOpen} />
@@ -37,14 +37,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     opacity={isMobileOpen ? 1 : 0} pointerEvents={isMobileOpen ? "auto" : "none"} transition="opacity 0.3s"
                     onClick={() => setIsMobileOpen(false)}
                 />
+                
                 {/* Drawer */}
-                <Box 
-                    position="fixed" top={0} left={0} h="100vh" w="260px" bg="#121212" zIndex={1000}
-                    borderRight="1px solid" borderColor="whiteAlpha.100" flexDirection="column" py={6} px={5}
+                <Flex 
+                    position="fixed" top={0} left={0} h="100dvh" w="280px" bg="#000000" zIndex={1000}
+                    borderRight="1px solid" borderColor="whiteAlpha.100" flexDirection="column"
                     transform={isMobileOpen ? "translateX(0)" : "translateX(-100%)"} transition="transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
                 >
-                    <AdminSidebar isCollapsed={false} setIsCollapsed={setIsCollapsed} setIsMobileOpen={setIsMobileOpen} />
-                </Box>
+                    <AdminSidebar isCollapsed={false} setIsCollapsed={setIsCollapsed} setIsMobileOpen={setIsMobileOpen} isMobileOpen={isMobileOpen} />
+                </Flex>
             </Box>
 
             {/* --- MAIN CONTENT AREA --- */}

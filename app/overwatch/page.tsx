@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { 
-    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar
+    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar, ScrollArea
 } from "@chakra-ui/react";
 import { 
     LuTrendingUp, LuStore, LuUsers, LuWallet, LuArrowUpRight, LuEllipsisVertical, LuCheck, LuBriefcase, LuX
@@ -85,29 +85,35 @@ export default function SuperAdminDashboard() {
                             <Button size="sm" h="36px" variant="outline" borderColor="#333333" color="white" rounded="none" _hover={{ bg: "#111111" }}>View All</Button>
                         </Flex>
                         
-                        <Box overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' } }}>
-                            <Grid templateColumns="2fr 1fr 1.5fr 50px" gap={4} pb={4} borderBottom="1px solid" borderColor="#333333" mb={2} minW="500px">
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Business Entity</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Active Shops</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Aggregated GMV</Text>
-                            </Grid>
-                            
-                            {TOP_BUSINESSES.map((biz) => (
-                                <Grid key={biz.id} templateColumns="2fr 1fr 1.5fr 50px" gap={4} py={4} alignItems="center" borderBottom="1px solid" borderColor="#1A1A1A" minW="500px" _hover={{ bg: "#111111" }} transition="background 0.2s" px={2} mx={-2}>
-                                    <Flex align="center" gap={3}>
-                                        <Avatar.Root size="sm" rounded="full">
-                                            <Avatar.Fallback name={biz.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
-                                        </Avatar.Root>
-                                        <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{biz.name}</Text>
-                                    </Flex>
-                                    <Text color="#888888" fontSize="sm" fontWeight="bold">{biz.shopCount} Shops</Text>
-                                    <Text color="white" fontWeight="black" textAlign="right" letterSpacing="tight">{biz.gmv}</Text>
-                                    <Flex justify="flex-end">
-                                        <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" _hover={{ color: "white" }} strokeWidth="2.5" />
-                                    </Flex>
+                        {/* Upgraded Table ScrollArea */}
+                        <ScrollArea.Root maxW="full">
+                            <ScrollArea.Viewport pb={4}>
+                                <Grid templateColumns="2fr 1fr 1.5fr 50px" gap={4} pb={4} borderBottom="1px solid" borderColor="#333333" mb={2} minW="500px">
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Business Entity</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Active Shops</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Aggregated GMV</Text>
                                 </Grid>
-                            ))}
-                        </Box>
+                                
+                                {TOP_BUSINESSES.map((biz) => (
+                                    <Grid key={biz.id} templateColumns="2fr 1fr 1.5fr 50px" gap={4} py={4} alignItems="center" borderBottom="1px solid" borderColor="#1A1A1A" minW="500px" _hover={{ bg: "#111111" }} transition="background 0.2s" px={2} mx={-2}>
+                                        <Flex align="center" gap={3}>
+                                            <Avatar.Root size="sm" rounded="full">
+                                                <Avatar.Fallback name={biz.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
+                                            </Avatar.Root>
+                                            <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{biz.name}</Text>
+                                        </Flex>
+                                        <Text color="#888888" fontSize="sm" fontWeight="bold">{biz.shopCount} Shops</Text>
+                                        <Text color="white" fontWeight="black" textAlign="right" letterSpacing="tight">{biz.gmv}</Text>
+                                        <Flex justify="flex-end">
+                                            <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" _hover={{ color: "white" }} strokeWidth="2.5" />
+                                        </Flex>
+                                    </Grid>
+                                ))}
+                            </ScrollArea.Viewport>
+                            <ScrollArea.Scrollbar orientation="horizontal" bg="#0A0A0A" h="6px" p={0}>
+                                <ScrollArea.Thumb bg="#1A1A1A" rounded="none" _hover={{ bg: "#333333" }} />
+                            </ScrollArea.Scrollbar>
+                        </ScrollArea.Root>
                     </Box>
 
                     {/* Top Performing Shops */}
@@ -120,29 +126,35 @@ export default function SuperAdminDashboard() {
                             <Button size="sm" h="36px" variant="outline" borderColor="#333333" color="white" rounded="none" _hover={{ bg: "#111111" }}>View All</Button>
                         </Flex>
                         
-                        <Box overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' } }}>
-                            <Grid templateColumns="2fr 1.5fr 1fr 50px" gap={4} pb={4} borderBottom="1px solid" borderColor="#333333" mb={2} minW="500px">
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Shop Name</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Owner</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">30-Day GMV</Text>
-                            </Grid>
-                            
-                            {TOP_SHOPS.map((shop) => (
-                                <Grid key={shop.id} templateColumns="2fr 1.5fr 1fr 50px" gap={4} py={4} alignItems="center" borderBottom="1px solid" borderColor="#1A1A1A" minW="500px" _hover={{ bg: "#111111" }} transition="background 0.2s" px={2} mx={-2}>
-                                    <Flex align="center" gap={3}>
-                                        <Avatar.Root size="sm" rounded="full">
-                                            <Avatar.Fallback name={shop.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
-                                        </Avatar.Root>
-                                        <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{shop.name}</Text>
-                                    </Flex>
-                                    <Text color="#888888" fontSize="sm" fontWeight="bold">{shop.owner}</Text>
-                                    <Text color="white" fontWeight="black" textAlign="right" letterSpacing="tight">{shop.gmv}</Text>
-                                    <Flex justify="flex-end">
-                                        <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" _hover={{ color: "white" }} strokeWidth="2.5" />
-                                    </Flex>
+                        {/* Upgraded Table ScrollArea */}
+                        <ScrollArea.Root maxW="full">
+                            <ScrollArea.Viewport pb={4}>
+                                <Grid templateColumns="2fr 1.5fr 1fr 50px" gap={4} pb={4} borderBottom="1px solid" borderColor="#333333" mb={2} minW="500px">
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Shop Name</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Owner</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">30-Day GMV</Text>
                                 </Grid>
-                            ))}
-                        </Box>
+                                
+                                {TOP_SHOPS.map((shop) => (
+                                    <Grid key={shop.id} templateColumns="2fr 1.5fr 1fr 50px" gap={4} py={4} alignItems="center" borderBottom="1px solid" borderColor="#1A1A1A" minW="500px" _hover={{ bg: "#111111" }} transition="background 0.2s" px={2} mx={-2}>
+                                        <Flex align="center" gap={3}>
+                                            <Avatar.Root size="sm" rounded="full">
+                                                <Avatar.Fallback name={shop.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
+                                            </Avatar.Root>
+                                            <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{shop.name}</Text>
+                                        </Flex>
+                                        <Text color="#888888" fontSize="sm" fontWeight="bold">{shop.owner}</Text>
+                                        <Text color="white" fontWeight="black" textAlign="right" letterSpacing="tight">{shop.gmv}</Text>
+                                        <Flex justify="flex-end">
+                                            <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" _hover={{ color: "white" }} strokeWidth="2.5" />
+                                        </Flex>
+                                    </Grid>
+                                ))}
+                            </ScrollArea.Viewport>
+                            <ScrollArea.Scrollbar orientation="horizontal" bg="#0A0A0A" h="6px" p={0}>
+                                <ScrollArea.Thumb bg="#1A1A1A" rounded="none" _hover={{ bg: "#333333" }} />
+                            </ScrollArea.Scrollbar>
+                        </ScrollArea.Root>
                     </Box>
 
                 </Flex>
