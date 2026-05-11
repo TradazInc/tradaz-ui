@@ -64,26 +64,24 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             position={{ base: "fixed", md: "static" }} 
             top={0} left={0}
             transform={{ base: isOpen ? "translateX(0)" : "translateX(-100%)", md: "translateX(0)" }}
-            zIndex={999999} display="flex" flexDirection="column" 
+            zIndex={999} display="flex" flexDirection="column" 
             px={0} 
             transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             color="white"
             flexShrink={0}
         >
-            {/* --- BRAND HEADER & MOBILE CLOSE BUTTON --- */}
-            <Flex align="center" justify={isCollapsed ? "center" : "space-between"} p={6} borderBottom="1px solid #1A1A1A" minH="80px" flexShrink={0}>
-                {!isCollapsed && (
-                    <Text fontSize="2xl" fontWeight="black" color="white" letterSpacing="tighter">
-                        Tradaz.
-                    </Text>
-                )}
+            {/* --- BRAND HEADER & MOBILE CLOSE BUTTON (Hidden on Desktop) --- */}
+            <Flex 
+                align="center" justify="space-between" p={6} borderBottom="1px solid #1A1A1A"
+                display={{ base: "flex", md: "none" }} flexShrink={0}
+            >
+                <Text fontSize="2xl" fontWeight="black" color="white" letterSpacing="tighter">Tradaz</Text>
                 <IconButton 
                     aria-label="Close sidebar" 
                     variant="ghost" 
                     color="#888888" 
                     size="sm"
                     rounded="none"
-                    display={{ base: "flex", md: "none" }} 
                     onClick={onClose}
                     _hover={{ color: "white", bg: "#111111" }}
                 >
@@ -93,7 +91,7 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           
             <ScrollArea.Root flex={1} display="flex" flexDirection="column" overflow="hidden">
                 <ScrollArea.Viewport flex={1}>
-                    <Box pt={2} pb={2} css={{ '& [data-part="indicator"]': { display: isCollapsed ? 'none' : 'block' } }}>
+                    <Box pt={0} pb={2} css={{ '& [data-part="indicator"]': { display: isCollapsed ? 'none' : 'block' } }}>
                         <Accordion.Root 
                             collapsible 
                             variant="plain"

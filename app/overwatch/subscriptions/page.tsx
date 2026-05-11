@@ -59,38 +59,48 @@ export default function AdminSubscriptionsPage() {
         <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
             
             {/* --- COMBINED STICKY HEADER & TOOLBAR --- */}
+            
             <Box 
                 position="sticky" zIndex={30} 
-                mt="-16px"
-                top="-16px"
+                mt={{ base: "-16px", lg: "-16px" }}
+                top={{ base: "0px", lg: "-16px" }}
                 bg="#000000" 
                 mx={{ base: "-16px", lg: "-32px" }} px={{ base: "16px", lg: "32px" }}
-                pt={{ base: 4, lg: 8 }} pb={6} mb={8} 
+                pt={{ base: 4, lg: 8 }} pb={{ base: 4, lg: 6 }} mb={{ base: 4, lg: 8 }} 
                 borderBottom="1px solid #1A1A1A"
             >
                 {/* Title & Action */}
-                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} gap={4}>
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={4} gap={4}>
                     <Box>
-                        <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">SaaS Subscriptions ({totalLimit})</Text>
-                        <Text color="#888888" fontSize="sm">Track MRR, manage tenant billing plans, and handle failed payments.</Text>
+                        
+                        <Flex align="baseline" gap={2} wrap="nowrap">
+                            <Text fontSize={{ base: "xl", sm: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight" whiteSpace="nowrap">
+                                SaaS Subscriptions
+                            </Text>
+                            <Text fontSize={{ base: "lg", sm: "xl", md: "2xl" }} fontWeight="bold" color="#888888">
+                                ({totalLimit})
+                            </Text>
+                        </Flex>
+                        <Text color="#888888" fontSize="sm" display={{ base: "none", md: "block" }}>Track MRR, manage tenant billing plans, and handle failed payments.</Text>
                     </Box>
-                    <Button onClick={() => setIsCreating(true)} bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2} fontWeight="bold">
+                    <Button w={{ base: "full", sm: "auto" }} onClick={() => setIsCreating(true)} bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2} fontWeight="bold">
                         <Icon as={LuArrowUpRight} color="#5cac7d" strokeWidth="2.5" /> Create Custom Plan
                     </Button>
                 </Flex>
 
                 {/* Filters & Search */}
-                <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
-                    <Flex flex={1} minW="300px" align="center" {...controlStyles}>
-                        <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
-                        <Input 
-                            placeholder="Search by Tenant, Owner, or Sub ID..." border="none" color="white" h="full" px={0} 
-                            _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={handleSearch}
-                        />
-                    </Flex>
-                    
-                    <Flex gap={3} w={{ base: "full", md: "auto" }} wrap="wrap">
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                <Flex direction="column" gap={3} w="full">
+                    {/* Top Row: Search + Status Filter on Mobile */}
+                    <Flex direction={{ base: "row", md: "row" }} gap={3} w="full">
+                        <Flex flex={1} minW="0" align="center" {...controlStyles}>
+                            <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
+                            <Input 
+                                placeholder="Search by Tenant, Owner, or Sub ID..." border="none" color="white" h="full" px={0} 
+                                _focus={{ boxShadow: "none", outline: "none" }} value={searchQuery} onChange={handleSearch}
+                            />
+                        </Flex>
+                        
+                        <Box flexShrink={0} w={{ base: "140px", md: "160px" }}>
                             <select value={statusFilter} onChange={handleStatusFilter} style={nativeSelectStyle}>
                                 <option value="all" style={{ background: "#000000" }}>All Statuses</option>
                                 <option value="active" style={{ background: "#000000" }}>Active</option>
@@ -99,7 +109,11 @@ export default function AdminSubscriptionsPage() {
                                 <option value="canceled" style={{ background: "#000000" }}>Canceled</option>
                             </select>
                         </Box>
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                    </Flex>
+                    
+                    {/* Bottom Row: Remaining Filters */}
+                    <Flex gap={3} w="full" wrap="nowrap" overflowX="auto" css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                        <Box flex={{ base: 1, md: "initial" }} minW="140px">
                             <select value={planFilter} onChange={handlePlanFilter} style={nativeSelectStyle}>
                                 <option value="all" style={{ background: "#000000" }}>All Plans</option>
                                 <option value="Basic" style={{ background: "#000000" }}>Basic</option>
@@ -107,13 +121,13 @@ export default function AdminSubscriptionsPage() {
                                 <option value="Enterprise" style={{ background: "#000000" }}>Enterprise</option>
                             </select>
                         </Box>
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "160px" }}>
+                        <Box flex={{ base: 1, md: "initial" }} minW="140px">
                             <select value={sortBy} onChange={handleSortBy} style={nativeSelectStyle}>
                                 <option value="amount" style={{ background: "#000000" }}>Sort: MRR</option>
                                 <option value="tenant" style={{ background: "#000000" }}>Sort: Tenant Name</option>
                             </select>
                         </Box>
-                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "160px" }}>
+                        <Box flex={{ base: 1, md: "initial" }} minW="140px">
                             <select value={sortOrder} onChange={handleSortOrder} style={nativeSelectStyle}>
                                 <option value="desc" style={{ background: "#000000" }}>Highest / Z-A</option>
                                 <option value="asc" style={{ background: "#000000" }}>Lowest / A-Z</option>

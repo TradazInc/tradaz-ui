@@ -4,8 +4,9 @@ import { Box, Flex, Text, Input, Button, Icon, SimpleGrid, VStack } from "@chakr
 import { LuArrowLeft, LuSave } from "react-icons/lu";
 import { Subscription, PlanTier } from "@/app/hooks/useAdminSubscriptions";
 
-const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "44px", rounded: "lg", px: 4, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
-const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#121214", color: "white", height: "44px", borderRadius: "8px", padding: "0 16px", border: "1px solid rgba(255, 255, 255, 0.2)", outline: "none", cursor: "pointer", fontSize: "14px" };
+const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
+const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 16px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
+const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
 
 interface CreateCustomPlanFormProps {
     onBack: () => void;
@@ -47,21 +48,21 @@ export const CreateCustomPlanForm = ({ onBack, onSubmit }: CreateCustomPlanFormP
     return (
         <Box animation="fade-in 0.3s ease">
             <Flex align="center" gap={4} mb={8}>
-                <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2}>
-                    <Icon as={LuArrowLeft} boxSize="20px" />
+                <Button variant="ghost" color="#888888" rounded="none" _hover={{ color: "white", bg: "#111111" }} onClick={onBack} px={2} h="44px">
+                    <Icon as={LuArrowLeft} boxSize="20px" strokeWidth="2.5" />
                 </Button>
                 <Box>
-                    <Text color="white" fontWeight="bold" fontSize="2xl">Create Custom Plan</Text>
-                    <Text color="gray.400" fontSize="sm">Onboard a tenant with a specialized billing tier.</Text>
+                    <Text color="white" fontWeight="black" fontSize="2xl" letterSpacing="tight">Create Custom Plan</Text>
+                    <Text color="#888888" fontSize="sm">Onboard a tenant with a specialized billing tier.</Text>
                 </Box>
             </Flex>
 
-            <Box as="form" onSubmit={handleSubmit} bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+            <Box as="form" onSubmit={handleSubmit} bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
                 <VStack gap={6} align="stretch">
                     
                     <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Tenant (Shop Name)</Text>
+                            <Text as="label" {...labelStyles}>Tenant (Shop Name)</Text>
                             <Input 
                                 placeholder="e.g. Lagos Streetwear Co." 
                                 value={tenant} onChange={(e) => setTenant(e.target.value)}
@@ -69,7 +70,7 @@ export const CreateCustomPlanForm = ({ onBack, onSubmit }: CreateCustomPlanFormP
                             />
                         </Box>
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Owner Name</Text>
+                            <Text as="label" {...labelStyles}>Owner Name</Text>
                             <Input 
                                 placeholder="e.g. Jane Doe" 
                                 value={owner} onChange={(e) => setOwner(e.target.value)}
@@ -80,24 +81,24 @@ export const CreateCustomPlanForm = ({ onBack, onSubmit }: CreateCustomPlanFormP
 
                     <SimpleGrid columns={{ base: 1, md: 3 }} gap={6}>
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Plan Tier</Text>
+                            <Text as="label" {...labelStyles}>Plan Tier</Text>
                             <select value={plan} onChange={(e) => setPlan(e.target.value as PlanTier)} style={nativeSelectStyle}>
-                                <option value="Basic" style={{ background: "#1A1C23" }}>Basic</option>
-                                <option value="Pro" style={{ background: "#1A1C23" }}>Pro</option>
-                                <option value="Enterprise" style={{ background: "#1A1C23" }}>Enterprise</option>
+                                <option value="Basic" style={{ background: "#000000" }}>Basic</option>
+                                <option value="Pro" style={{ background: "#000000" }}>Pro</option>
+                                <option value="Enterprise" style={{ background: "#000000" }}>Enterprise</option>
                             </select>
                         </Box>
 
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Billing Cycle</Text>
+                            <Text as="label" {...labelStyles}>Billing Cycle</Text>
                             <select value={cycle} onChange={(e) => setCycle(e.target.value as "Monthly" | "Annually")} style={nativeSelectStyle}>
-                                <option value="Monthly" style={{ background: "#1A1C23" }}>Monthly</option>
-                                <option value="Annually" style={{ background: "#1A1C23" }}>Annually</option>
+                                <option value="Monthly" style={{ background: "#000000" }}>Monthly</option>
+                                <option value="Annually" style={{ background: "#000000" }}>Annually</option>
                             </select>
                         </Box>
 
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Custom Amount (₦)</Text>
+                            <Text as="label" {...labelStyles}>Custom Amount (₦)</Text>
                             <Input 
                                 type="number" placeholder="e.g. 150000" 
                                 value={amount} onChange={(e) => setAmount(e.target.value)}
@@ -106,12 +107,12 @@ export const CreateCustomPlanForm = ({ onBack, onSubmit }: CreateCustomPlanFormP
                         </Box>
                     </SimpleGrid>
 
-                    <Box pt={4} borderTop="1px solid" borderColor="whiteAlpha.100" display="flex" justifyContent="flex-end" gap={3}>
-                        <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack}>
+                    <Box pt={6} mt={2} borderTop="1px solid" borderColor="#1A1A1A" display="flex" justifyContent="flex-end" gap={3}>
+                        <Button variant="outline" borderColor="#333333" color="#888888" bg="#0A0A0A" h="44px" rounded="none" _hover={{ color: "white", bg: "#111111" }} onClick={onBack}>
                             Cancel
                         </Button>
-                        <Button type="submit" bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} px={8}>
-                            <Icon as={LuSave} mr={2} /> Save & Activate Plan
+                        <Button type="submit" bg="white" color="black" border="none" rounded="none" h="44px" px={8} fontWeight="bold" _hover={{ bg: "#E5E5E5" }} display="flex" gap={2}>
+                            <Icon as={LuSave} strokeWidth="2.5" /> Save & Activate Plan
                         </Button>
                     </Box>
 

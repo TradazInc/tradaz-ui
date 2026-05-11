@@ -31,9 +31,6 @@ export default function SuperAdminFinancePage() {
     const brandColor = "#5cac7d";
     const [activeTab, setActiveTab] = useState("payouts");
     
-
-
-   
     const getStatusUI = (status: string) => {
         switch (status) {
             case "completed": return { iconColor: "#5cac7d", icon: LuCheck }; 
@@ -47,45 +44,49 @@ export default function SuperAdminFinancePage() {
         <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
             
             {/* --- COMBINED STICKY HEADER & TOOLBAR --- */}
+            
             <Box 
                 position="sticky" top="0" zIndex={30} 
                 bg="#000000" 
                 mx={{ base: "-16px", lg: "-32px" }} px={{ base: "16px", lg: "32px" }}
-                pt={{ base: 4, lg: 8 }} pb={6} mb={8} 
+                pt={{ base: 2, lg: 8 }} pb={{ base: 4, lg: 6 }} mb={{ base: 4, lg: 8 }} 
                 borderBottom="1px solid #1A1A1A"
             >
                 {/* Title & Actions */}
-                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={6} gap={4}>
+                <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} mb={4} gap={4}>
                     <Box>
-                        <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Financial Overview</Text>
-                        <Text color="#888888" fontSize="sm">Track platform revenue, GMV, and manage merchant settlements.</Text>
+                        <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Financial Overview</Text>
+                        <Text color="#888888" fontSize="sm" display={{ base: "none", md: "block" }}>Track platform revenue, GMV, and manage merchant settlements.</Text>
                     </Box>
                     <Flex gap={3} w={{ base: "full", sm: "auto" }}>
-                        <Button flex={1} bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2} fontWeight="bold">
-                            <Icon as={LuDownload} color="#888888" strokeWidth="2.5" /> Export CSV
+                        <Button flex={{ base: 1, sm: "auto" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2} fontWeight="bold">
+                            <Icon as={LuDownload} color="#888888" strokeWidth="2.5" /> <Text display={{ base: "none", sm: "inline" }}>Export CSV</Text>
                         </Button>
-                        <Button flex={1} bg="white" color="black" border="none" rounded="none" h="44px" px={6} _hover={{ bg: "#E5E5E5" }} fontWeight="bold">
+                        <Button flex={{ base: 1, sm: "auto" }} bg="white" color="black" border="none" rounded="none" h="44px" px={6} _hover={{ bg: "#E5E5E5" }} fontWeight="bold">
                             Process Payouts
                         </Button>
                     </Flex>
                 </Flex>
 
-                {/* Filters & Search */}
-                <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
-                    <Flex flex={1} minW="300px" align="center" bg="#0A0A0A" border="1px solid #333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
-                        <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
-                        <Input 
-                            placeholder="Search store, owner, or TRX ID..." border="none" color="white" h="full" px={0} 
-                            _focus={{ boxShadow: "none", outline: "none" }}
-                        />
-                    </Flex>
-                    
-                    <Flex gap={3} w={{ base: "full", md: "auto" }}>
-                        <IconButton aria-label="Filter" bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" w="44px" _hover={{ bg: "#1A1A1A" }}>
-                            <Icon as={LuFilter} strokeWidth="2.5" />
-                        </IconButton>
-                    </Flex>
-                </Flex>
+               {/* Filters & Search */}
+<Flex direction="row" gap={3} w="full">
+   
+    <Flex flex={1} minW="0" align="center" bg="#0A0A0A" border="1px solid #333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
+        <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
+        <Input 
+            placeholder="Search store, owner, or TRX ID..." border="none" color="white" h="full" px={0} 
+            _focus={{ boxShadow: "none", outline: "none" }}
+        />
+    </Flex>
+    
+    
+    <IconButton 
+        flexShrink={0} aria-label="Filter" bg="#111111" border="1px solid #333333" 
+        color="white" rounded="none" h="44px" w="44px" _hover={{ bg: "#1A1A1A" }}
+    >
+        <Icon as={LuFilter} strokeWidth="2.5" />
+    </IconButton>
+</Flex>
             </Box>
 
             {/* --- KPI CARDS --- */}
@@ -120,7 +121,7 @@ export default function SuperAdminFinancePage() {
                     
                     {/* Tabs Header */}
                     <Flex bg="#111111" borderBottom="1px solid" borderColor="#333333" px={4} py={3}>
-                        <Flex bg="#000000" border="1px solid #333333" p={1} rounded="none" gap={1}>
+                        <Flex bg="#000000" border="1px solid #333333" p={1} rounded="none" gap={1} overflowX="auto" css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
                             {["payouts", "platform_fees", "refunds"].map((tab) => (
                                 <Button 
                                     key={tab} size="sm" variant="ghost" rounded="none" px={4} h="32px"
@@ -129,6 +130,7 @@ export default function SuperAdminFinancePage() {
                                     border={activeTab === tab ? "1px solid #333333" : "1px solid transparent"}
                                     _hover={{ bg: "#111111", color: "white" }} onClick={() => setActiveTab(tab)}
                                     fontWeight="bold" textTransform="uppercase" fontSize="10px" letterSpacing="wider"
+                                    whiteSpace="nowrap"
                                 >
                                     {tab.replace("_", " ")}
                                 </Button>

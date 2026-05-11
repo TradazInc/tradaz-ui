@@ -1,20 +1,23 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Icon, IconButton, Input 
+    Box, Flex, Text, IconButton, 
 } from "@chakra-ui/react";
 import { 
-    LuMenu, LuBell, LuSearch 
+    LuMenu, LuBell,
 } from "react-icons/lu";
 
 import { AdminSidebar } from "@/app/ui/admin/AdminSidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    const brandColor = "#5cac7d";
+   
     
     // Desktop collapse state & Mobile drawer state
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
+    
+    // Notification Dropdown State
+    const [isNotifOpen, setIsNotifOpen] = useState(false);
 
     return (
         <Flex h={{ base: "100dvh", lg: "100vh" }} bg="#000" overflow="hidden">
@@ -64,22 +67,64 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <LuMenu />
                         </IconButton>
                         <Text display={{ base: "none", sm: "block" }} color="gray.400" fontSize="sm" fontWeight="medium">
-                            Welcome back, Admin
+                            Welcome back, System Ops
                         </Text>
                     </Flex>
 
                     <Flex align="center" gap={4}>
-                        {/* Global Search */}
-                        <Flex display={{ base: "none", md: "flex" }} align="center" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.100" rounded="full" px={4} h="40px" w="300px" _focusWithin={{ borderColor: brandColor }}>
-                            <Icon as={LuSearch} color="gray.500" boxSize="14px" />
-                            <Input placeholder="Search orders, users..." border="none" color="white" fontSize="sm" _focus={{ boxShadow: "none", outline: "none" }} />
-                        </Flex>
+                        {/* Notifications Wrapper */}
+                        <Box position="relative">
+                            
+                            {/* Click-away backdrop (invisible) to close dropdown */}
+                            {isNotifOpen && (
+                                <Box position="fixed" inset={0} zIndex={998} onClick={() => setIsNotifOpen(false)} />
+                            )}
 
-                        {/* Notifications */}
-                        <IconButton aria-label="Notifications" variant="ghost" color="gray.400" rounded="full" position="relative" _hover={{ bg: "whiteAlpha.100", color: "white" }}>
-                            <LuBell />
-                            <Box position="absolute" top="8px" right="8px" boxSize="8px" bg="red.500" rounded="full" border="2px solid #121212" />
-                        </IconButton>
+                            <IconButton 
+                                aria-label="Notifications" variant="ghost" color="gray.400" rounded="none" 
+                                position="relative" _hover={{ bg: "#1A1A1A", color: "white" }}
+                                onClick={() => setIsNotifOpen(!isNotifOpen)}
+                            >
+                                <LuBell strokeWidth="2.5"  />
+                                <Box position="absolute" top="8px" right="8px" boxSize="8px" bg="red.500" rounded="full" border="2px solid #121212" />
+                            </IconButton>
+
+                            {/* Notification Dropdown Box */}
+                            {isNotifOpen && (
+                                <Box 
+                                    position="absolute" top="100%" right={0} mt={2} w="320px" 
+                                    bg="#0A0A0A" border="1px solid #333333" zIndex={999}
+                                    boxShadow="0 10px 40px rgba(0,0,0,0.8)" animation="fade-in 0.2s ease"
+                                >
+                                    <Flex justify="space-between" align="center" p={4} borderBottom="1px solid #1A1A1A">
+                                        <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">Alerts</Text>
+                                        <Text color="#5cac7d" fontSize="xs" fontWeight="bold" cursor="pointer" _hover={{ textDecoration: "underline" }}>Mark read</Text>
+                                    </Flex>
+                                    
+                                    <Box maxH="300px" overflowY="auto" css={{ '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { background: '#333333' } }}>
+                                        <Box p={4} borderBottom="1px solid #1A1A1A" _hover={{ bg: "#111111" }} cursor="pointer" transition="all 0.2s">
+                                            <Text color="white" fontSize="sm" fontWeight="bold" mb={1} letterSpacing="tight">New Merchant Application</Text>
+                                            <Text color="#888888" fontSize="xs">Gadget World has submitted KYC documents for review.</Text>
+                                            <Text color="#555555" fontSize="10px" mt={2} fontFamily="monospace">2 mins ago</Text>
+                                        </Box>
+                                        <Box p={4} borderBottom="1px solid #1A1A1A" _hover={{ bg: "#111111" }} cursor="pointer" transition="all 0.2s">
+                                            <Text color="red.400" fontSize="sm" fontWeight="bold" mb={1} letterSpacing="tight">High Dispute Alert</Text>
+                                            <Text color="#888888" fontSize="xs">Urban Kicks NG has 3 new disputes escalated to Admin.</Text>
+                                            <Text color="#555555" fontSize="10px" mt={2} fontFamily="monospace">1 hour ago</Text>
+                                        </Box>
+                                        <Box p={4} _hover={{ bg: "#111111" }} cursor="pointer" transition="all 0.2s">
+                                            <Text color="white" fontSize="sm" fontWeight="bold" mb={1} letterSpacing="tight">Payout Batch Processed</Text>
+                                            <Text color="#888888" fontSize="xs">14 pending merchant settlements were successfully disbursed.</Text>
+                                            <Text color="#555555" fontSize="10px" mt={2} fontFamily="monospace">3 hours ago</Text>
+                                        </Box>
+                                    </Box>
+                                    
+                                    <Flex p={3} justify="center" borderTop="1px solid #1A1A1A" bg="#111111" _hover={{ bg: "#1A1A1A" }} cursor="pointer" transition="all 0.2s">
+                                        <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">View All Activity</Text>
+                                    </Flex>
+                                </Box>
+                            )}
+                        </Box>
                     </Flex>
                 </Flex>
 

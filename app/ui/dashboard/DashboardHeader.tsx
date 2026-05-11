@@ -4,27 +4,30 @@ import { Flex, Box, Text, Icon, Button, Avatar, AvatarGroup, Breadcrumb, Menu, P
 import { 
     LuBell, LuChevronDown, LuCheck, 
     LuImage, LuSettings, LuLogOut, LuShoppingBag,
-    LuBuilding2, LuStore 
+    LuBuilding2, LuStore, LuPlus 
 } from "react-icons/lu";
 import { OnboardingModal } from "../onboarding/OnboardingModel"; 
 import { AddStoreModal } from "../onboarding/AddStoreModal"; 
 import { DashboardHeaderProps, Store } from "@/app/lib/definitions"; 
-
 
 interface BreadcrumbMenuItemProps {
     children: React.ReactNode;
     items: Array<{ id: string; name: string }>; 
     activeId?: string;
     onSelect: (value: string) => void;
+    addActionLabel?: string;
+    onAddAction?: () => void;
 }
 
-const BreadcrumbMenuItem = ({ children, items, activeId, onSelect }: BreadcrumbMenuItemProps) => (
+const BreadcrumbMenuItem = ({ children, items, activeId, onSelect, addActionLabel, onAddAction }: BreadcrumbMenuItemProps) => (
     <Breadcrumb.Item>
         <Menu.Root>
             <Menu.Trigger asChild>{children}</Menu.Trigger>
             <Portal>
-                <Menu.Positioner zIndex={100}>
-                    <Menu.Content bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" shadow="2xl" minW="260px" p={0}>
+                
+                <Menu.Positioner zIndex={999999999}>
+                
+                    <Menu.Content bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" shadow="2xl" minW={{ base: "240px", sm: "260px" }} maxW="calc(100vw - 32px)" p={0}>
                         <Box maxH="250px" overflowY="auto" py={1} css={{ '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { background: '#1A1A1A', borderRadius: '0px' } }}>
                             {items.map((item) => (
                                 <Menu.Item 
@@ -37,8 +40,8 @@ const BreadcrumbMenuItem = ({ children, items, activeId, onSelect }: BreadcrumbM
                                     _hover={{ bg: "#111111", color: "white" }}
                                 >
                                     <Flex justify="space-between" w="full" align="center">
-                                        <Text fontSize="13px">{item.name}</Text>
-                                        {item.id === activeId && <Icon as={LuCheck} color="white" boxSize="14px" strokeWidth="2.5" />}
+                                        <Text fontSize="13px" lineClamp={1}>{item.name}</Text>
+                                        {item.id === activeId && <Icon as={LuCheck} color="white" boxSize="14px" strokeWidth="2.5" flexShrink={0} ml={2} />}
                                     </Flex>
                                 </Menu.Item>
                             ))}
@@ -46,6 +49,25 @@ const BreadcrumbMenuItem = ({ children, items, activeId, onSelect }: BreadcrumbM
                                 <Text fontSize="12px" color="#666666" px={4} py={3}>No items found.</Text>
                             )}
                         </Box>
+                        
+                        {/* Custom Add Action Button inside the Dropdown */}
+                        {addActionLabel && onAddAction && (
+                            <Box p={2} borderTop="1px solid #1A1A1A" bg="#050505">
+                                <Menu.Item 
+                                    value="add_action" 
+                                    onClick={onAddAction}
+                                    bg="#111111" color="white" border="1px solid #333333" 
+                                    rounded="none" px={3} py={2} cursor="pointer"
+                                    _hover={{ bg: "white", color: "black" }}
+                                    justifyContent="center"
+                                >
+                                    <Flex align="center" justify="center" gap={2} w="full">
+                                        <Icon as={LuPlus} strokeWidth="2.5" /> 
+                                        <Text fontSize="12px" fontWeight="bold">{addActionLabel}</Text>
+                                    </Flex>
+                                </Menu.Item>
+                            </Box>
+                        )}
                     </Menu.Content>
                 </Menu.Positioner>
             </Portal>
@@ -89,30 +111,33 @@ export const DashboardHeader = ({
         <>
             {/* --- GLOBAL OVERLAY TO CLOSE DROPDOWNS --- */}
             {activeDropdown && (
-                <Box position="fixed" inset={0} zIndex={40} onClick={closeAll} />
+                <Box position="fixed" inset={0} zIndex={99998} onClick={closeAll} />
             )}
 
             <Flex w="full" justify="space-between" align="center">
                 
                 <Breadcrumb.Root>
-                    <Breadcrumb.List gap={3}>
+                    <Breadcrumb.List gap={{ base: 1, sm: 3 }}>
                         
-                        
+                        {/* BUSINESS BREADCRUMB */}
                         <BreadcrumbMenuItem 
                             items={businesses || []} 
                             activeId={activeBusiness?.id} 
                             onSelect={(id) => onBusinessChange(id)}
+                            addActionLabel="Add New Business"
+                            onAddAction={() => setIsOnboardingOpen(true)}
                         >
-                            <Flex as="button" align="center" gap={2} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s" outline="none">
-                                <Icon as={LuBuilding2} boxSize="18px" css={iconStyle} />
-                                <Text fontSize="sm" fontWeight="300" lineClamp={1} color="white">
+                            <Flex as="button" align="center" gap={{ base: 1, sm: 2 }} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s" outline="none">
+                                <Icon as={LuBuilding2} boxSize={{ base: "14px", sm: "18px" }} css={iconStyle} flexShrink={0} />
+                                
+                                <Text fontSize={{ base: "xs", sm: "sm" }} fontWeight="300" lineClamp={1} color="white" maxW={{ base: "80px", sm: "120px", md: "none" }}>
                                     {activeBusiness?.name || "Select Business"}
                                 </Text>
-                                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} />
+                                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} flexShrink={0} />
                             </Flex>
                         </BreadcrumbMenuItem>
 
-                        <Breadcrumb.Separator color="gray.600" fontSize="xl" display={{ base: "none", md: "block" }}>
+                        <Breadcrumb.Separator color="gray.600" fontSize={{ base: "sm", sm: "xl" }} mx={{ base: 0, sm: 1 }}>
                             /
                         </Breadcrumb.Separator>
 
@@ -121,13 +146,16 @@ export const DashboardHeader = ({
                             items={availableStores} 
                             activeId={activeStoreId} 
                             onSelect={(id) => onStoreChange?.(id)}
+                            addActionLabel="Add New Store"
+                            onAddAction={() => setIsAddStoreOpen(true)}
                         >
-                            <Flex as="button" align="center" gap={2} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s" outline="none">
-                                <Icon as={LuStore} boxSize="18px" css={iconStyle} />
-                                <Text fontSize="sm" fontWeight="300" lineClamp={1} color="white">
+                            <Flex as="button" align="center" gap={{ base: 1, sm: 2 }} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s" outline="none">
+                                <Icon as={LuStore} boxSize={{ base: "14px", sm: "18px" }} css={iconStyle} flexShrink={0} />
+                                {/* Added maxW to force text truncation on small mobile screens */}
+                                <Text fontSize={{ base: "xs", sm: "sm" }} fontWeight="300" lineClamp={1} color="white" maxW={{ base: "80px", sm: "120px", md: "none" }}>
                                     {activeStoreName}
                                 </Text>
-                                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} />
+                                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} flexShrink={0} />
                             </Flex>
                         </BreadcrumbMenuItem>
 
@@ -135,7 +163,7 @@ export const DashboardHeader = ({
                 </Breadcrumb.Root>
 
               
-                <Flex gap={6} align="center" ml="auto">
+                <Flex gap={{ base: 3, sm: 6 }} align="center" ml="auto">
                     {/* --- NOTIFICATIONS DROPDOWN --- */}
                     <Box position="relative">
                         <Box position="relative" cursor="pointer" onClick={() => toggleDropdown("notif")}>
@@ -146,7 +174,12 @@ export const DashboardHeader = ({
                         </Box>
 
                         {activeDropdown === "notif" && (
-                            <Box position="absolute" top="100%" right={0} mt={6} w="320px" bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" shadow="2xl" zIndex={50} overflow="hidden">
+                            <Box 
+                                position="absolute" top="100%" right={{ base: "-40px", sm: 0 }} mt={6} 
+                                w={{ base: "calc(100vw - 32px)", sm: "320px" }} maxW="320px"
+                                bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" shadow="2xl" 
+                                zIndex={99999} overflow="hidden"
+                            >
                                 <Flex px={4} py={3} justify="space-between" align="center" borderBottom="1px solid #1A1A1A" bg="#111111">
                                     <Text fontSize="13px" fontWeight="bold" color="white">Notifications</Text>
                                     <Text fontSize="12px" color="#888888" cursor="pointer" _hover={{ color: "white" }}>Mark all read</Text>
@@ -185,10 +218,15 @@ export const DashboardHeader = ({
                         </Box>
 
                         {activeDropdown === "profile" && (
-                            <Box position="absolute" top="100%" right={0} mt={6} w="260px" bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" py={2} zIndex={50} shadow="2xl">
+                            <Box 
+                                position="absolute" top="100%" right={0} mt={6} 
+                                w={{ base: "calc(100vw - 32px)", sm: "260px" }} maxW="260px"
+                                bg="#0A0A0A" border="1px solid #1A1A1A" rounded="none" py={2} 
+                                zIndex={99999} shadow="2xl"
+                            >
                                 <Flex px={4} py={3} gap={4} align="center" borderBottom="1px solid #1A1A1A" mb={2}>
                                     <AvatarGroup>
-                                        <Avatar.Root size="md" rounded="full" border="1px solid #333333">
+                                        <Avatar.Root size="md" rounded="full" border="1px solid #333333" flexShrink={0}>
                                             <Avatar.Fallback bg="#1A1A1A" rounded="full" color="white" fontSize="13px" fontWeight="bold">GW</Avatar.Fallback>
                                             <Avatar.Image />
                                         </Avatar.Root>
@@ -198,6 +236,18 @@ export const DashboardHeader = ({
                                         <Text fontSize="12px" color="#888888" lineClamp={1}>gift.wada@yahoo.com</Text>
                                     </Box>
                                 </Flex>
+
+                                {/* Quick Add Buttons in Profile Modal */}
+                                <Flex px={4} py={3} align="center" gap={3} cursor="pointer" _hover={{ bg: "#111111", color: "white" }} color="#888888" transition="all 0.2s" onClick={() => { setIsOnboardingOpen(true); closeAll(); }}>
+                                    <Icon as={LuBuilding2} boxSize="16px" css={iconStyle} />
+                                    <Text fontSize="13px" fontWeight="bold">Add New Business</Text>
+                                </Flex>
+                                <Flex px={4} py={3} align="center" gap={3} cursor="pointer" _hover={{ bg: "#111111", color: "white" }} color="#888888" transition="all 0.2s" onClick={() => { setIsAddStoreOpen(true); closeAll(); }}>
+                                    <Icon as={LuStore} boxSize="16px" css={iconStyle} />
+                                    <Text fontSize="13px" fontWeight="bold">Add New Store</Text>
+                                </Flex>
+                                
+                                <Box my={2} borderBottom="1px solid #1A1A1A" />
 
                                 <Flex px={4} py={3} align="center" gap={3} cursor="pointer" _hover={{ bg: "#111111", color: "white" }} color="#888888" transition="all 0.2s">
                                     <Icon as={LuImage} boxSize="16px" css={iconStyle} />
