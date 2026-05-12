@@ -1,16 +1,175 @@
 "use client";
 import React, { useState } from "react";
-import { Box, Flex, Text, Icon, Button, HStack, VStack, SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, Text, Icon, Button, HStack, VStack, SimpleGrid, Input, IconButton } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuLayoutTemplate, LuPlus, LuType, LuLink, 
-    LuPower, LuPowerOff, LuSquare, LuTrash2, LuMonitorSmartphone
+    LuPower, LuPowerOff, LuSquare, LuTrash2, LuMonitorSmartphone, LuX
 } from "react-icons/lu";
 
 import { generateDummyBanners } from "@/app/lib/data";
 import { PromoBanner } from "@/app/lib/definitions";
 
+// --- REUSABLE STYLES ---
+const inputStyles = { bg: "#000000", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };
+const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#000000", color: "white", height: "44px", borderRadius: "0px", padding: "0 16px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
+const colorPickerStyle: React.CSSProperties = { width: "100%", height: "44px", padding: "2px", backgroundColor: "#000000", border: "1px solid #333333", cursor: "pointer" };
+const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
+
+// --- CREATE BANNER MODAL ---
+interface CreateBannerModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (banner: PromoBanner) => void;
+}
+
+const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        name: "",
+        position: "Top Announcement Bar",
+        message: "",
+        ctaText: "",
+        ctaLink: "/",
+        bgColor: "#5cac7d",
+        textColor: "#ffffff"
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSave = () => {
+        setIsLoading(true);
+        setTimeout(() => {
+            const newBanner: PromoBanner = {
+                id: `BNR-${Math.floor(Math.random() * 90000) + 10000}`,
+                name: formData.name,
+                position: formData.position as PromoBanner["position"],
+                message: formData.message,
+                ctaText: formData.ctaText,
+                ctaLink: formData.ctaLink,
+                bgColor: formData.bgColor,
+                textColor: formData.textColor,
+                status: "Draft" // Default to draft
+            };
+            onSave(newBanner);
+            setIsLoading(false);
+            setFormData({ name: "", position: "Top Announcement Bar", message: "", ctaText: "", ctaLink: "/", bgColor: "#5cac7d", textColor: "#ffffff" });
+            onClose();
+        }, 600);
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>
+                                            Visual Builder
+                                        </Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
+                                            Create Banner
+                                        </Text>
+                                    </Box>
+                                    <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Banner Name <Text as="span" color="red.400">*</Text></Text>
+                                            <Input name="name" value={formData.name} onChange={handleChange} placeholder="e.g. Free Shipping Top Bar" {...inputStyles} />
+                                        </Box>
+
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Placement Position</Text>
+                                            <select name="position" value={formData.position} onChange={handleChange} style={nativeSelectStyle}>
+                                                <option value="Top Announcement Bar" style={{ background: "#000000" }}>Top Announcement Bar</option>
+                                                <option value="Hero Slider" style={{ background: "#000000" }}>Hero Slider Image</option>
+                                                <option value="Checkout Warning" style={{ background: "#000000" }}>Checkout Warning</option>
+                                            </select>
+                                        </Box>
+
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Message Text <Text as="span" color="red.400">*</Text></Text>
+                                            <Input name="message" value={formData.message} onChange={handleChange} placeholder="e.g. Free shipping on orders over ₦50k!" {...inputStyles} />
+                                        </Box>
+
+                                        <SimpleGrid columns={2} gap={4}>
+                                            <Box>
+                                                <Text as="label" {...labelStyles}>Button Text</Text>
+                                                <Input name="ctaText" value={formData.ctaText} onChange={handleChange} placeholder="e.g. Shop Now" {...inputStyles} />
+                                            </Box>
+                                            <Box>
+                                                <Text as="label" {...labelStyles}>Button Link</Text>
+                                                <Input name="ctaLink" value={formData.ctaLink} onChange={handleChange} placeholder="e.g. /shop" {...inputStyles} />
+                                            </Box>
+                                        </SimpleGrid>
+
+                                        <SimpleGrid columns={2} gap={4} pt={4} borderTop="1px dashed" borderColor="#1A1A1A">
+                                            <Box>
+                                                <Text as="label" {...labelStyles}>Background Color</Text>
+                                                <input type="color" name="bgColor" value={formData.bgColor} onChange={handleChange} style={colorPickerStyle} />
+                                            </Box>
+                                            <Box>
+                                                <Text as="label" {...labelStyles}>Text Color</Text>
+                                                <input type="color" name="textColor" value={formData.textColor} onChange={handleChange} style={colorPickerStyle} />
+                                            </Box>
+                                        </SimpleGrid>
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    <Button variant="outline" borderColor="#333333" onClick={onClose} h="44px" rounded="none" color="#888888" bg="#0A0A0A" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        Cancel
+                                    </Button>
+                                    <Button 
+                                        flex="1" h="44px" bg="white" color="black" rounded="none" fontWeight="bold" onClick={handleSave} 
+                                        disabled={!formData.name || !formData.message}
+                                        _hover={{ bg: "#E5E5E5" }} 
+                                        _disabled={{ opacity: 0.5, cursor: "not-allowed", bg: "#333333", color: "#888888" }} 
+                                        transition="all 0.2s ease"
+                                    >
+                                        {isLoading ? "Saving..." : "Create Banner"}
+                                    </Button>
+                                </Flex>
+
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
+
+// --- MAIN BANNER MANAGER ---
 export const BannerManager = () => {
     const [banners, setBanners] = useState<PromoBanner[]>(generateDummyBanners());
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     // --- ACTIONS ---
     const toggleStatus = (id: string, currentStatus: string) => {
@@ -23,6 +182,10 @@ export const BannerManager = () => {
         setBanners(prev => prev.filter(b => b.id !== id));
     };
 
+    const handleCreateBanner = (newBanner: PromoBanner) => {
+        setBanners(prev => [newBanner, ...prev]);
+    };
+
     // --- STATS ---
     const activeCount = banners.filter(b => b.status === "Active").length;
     const topBarActive = banners.some(b => b.position === "Top Announcement Bar" && b.status === "Active");
@@ -30,7 +193,7 @@ export const BannerManager = () => {
     return (
         <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
             
-            {/* --- Sticky Header (Slimmed down for mobile!) --- */}
+            {/* --- Sticky Header --- */}
             <Box 
                 position="sticky" top={{ base: "-16px", md: "-32px" }} mx={{ base: "-16px", md: "-32px" }} px={{ base: "16px", md: "32px" }}
                 zIndex={20} bg="rgba(0, 0, 0, 0.85)" backdropFilter="blur(12px)"
@@ -44,7 +207,7 @@ export const BannerManager = () => {
                         <Text color="#888888" fontSize="sm">Manage announcement bars, hero sliders, and checkout warnings.</Text>
                     </Box>
                     
-                    <Button bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" fontWeight="bold" border="none">
+                    <Button onClick={() => setIsCreateModalOpen(true)} bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" fontWeight="bold" border="none">
                         <Icon as={LuPlus} mr={2} strokeWidth="2.5" /> Create Banner
                     </Button>
                 </Flex>
@@ -59,7 +222,7 @@ export const BannerManager = () => {
                 <Box bg="#0A0A0A" p={5} rounded="none" border="1px solid" borderColor="#1A1A1A">
                     <Text color={topBarActive ? "blue.400" : "#888888"} fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Top Bar Status</Text>
                     <Flex align="center" gap={2}>
-                        <Box boxSize="8px" rounded="none" bg={topBarActive ? "blue.400" : "gray.500"} />
+                        <Box boxSize="8px" rounded="full" bg={topBarActive ? "blue.400" : "gray.500"} />
                         <Text color="white" fontSize="2xl" fontWeight="black" letterSpacing="tight">{topBarActive ? "Currently Displaying" : "Empty / Hidden"}</Text>
                     </Flex>
                 </Box>
@@ -152,6 +315,12 @@ export const BannerManager = () => {
                 )}
             </VStack>
 
+            {/* --- MOUNT MODAL --- */}
+            <CreateBannerModal 
+                isOpen={isCreateModalOpen} 
+                onClose={() => setIsCreateModalOpen(false)} 
+                onSave={handleCreateBanner}
+            />
         </Box>
     );
 };

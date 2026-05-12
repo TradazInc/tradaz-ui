@@ -4,7 +4,9 @@ import { Box, Flex, Text, Input, Button, Icon, SimpleGrid, VStack } from "@chakr
 import { LuArrowLeft, LuSave, LuDices } from "react-icons/lu";
 import { GiftVoucher } from "@/app/lib/definitions";
 
-const controlStyles = { bg: "#121214", border: "1px solid", borderColor: "whiteAlpha.200", color: "white", h: "44px", rounded: "lg", px: 4, _focus: { outline: "none", borderColor: "#5cac7d" }, _hover: { bg: "whiteAlpha.50" } };
+// --- REUSABLE BRUTALIST STYLES ---
+const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };
+const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
 
 interface CreateVoucherFormProps {
     onBack: () => void;
@@ -46,35 +48,35 @@ export const CreateVoucherForm = ({ onBack, onSubmit }: CreateVoucherFormProps) 
     return (
         <Box animation="fade-in 0.3s ease">
             <Flex align="center" gap={4} mb={8}>
-                <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2}>
-                    <Icon as={LuArrowLeft} boxSize="20px" />
+                <Button variant="ghost" color="#888888" rounded="none" _hover={{ color: "white", bg: "#111111" }} onClick={onBack} px={2} h="44px">
+                    <Icon as={LuArrowLeft} boxSize="20px" strokeWidth="2.5" />
                 </Button>
                 <Box>
-                    <Text color="white" fontWeight="bold" fontSize="2xl">Issue Gift Voucher</Text>
-                    <Text color="gray.400" fontSize="sm">Generate store credit and send it directly to a customer.</Text>
+                    <Text color="white" fontWeight="black" fontSize="2xl" letterSpacing="tight">Issue Gift Voucher</Text>
+                    <Text color="#888888" fontSize="sm">Generate store credit and send it directly to a customer.</Text>
                 </Box>
             </Flex>
 
-            <Box as="form" onSubmit={handleSubmit} bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+            <Box as="form" onSubmit={handleSubmit} bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
                 <VStack gap={6} align="stretch">
                     
                     <Box>
-                        <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Voucher Code</Text>
+                        <Text as="label" {...labelStyles}>Voucher Code <Text as="span" color="red.400">*</Text></Text>
                         <Flex gap={3}>
                             <Input 
                                 placeholder="e.g. GIFT-X9Y2B" textTransform="uppercase"
                                 value={code} onChange={(e) => setCode(e.target.value.toUpperCase())}
                                 {...controlStyles} flex={1} required
                             />
-                            <Button onClick={handleGenerateCode} variant="outline" borderColor="whiteAlpha.200" color="white" h="44px" _hover={{ bg: "whiteAlpha.100" }}>
-                                <Icon as={LuDices} mr={2} /> Generate
+                            <Button onClick={handleGenerateCode} variant="outline" borderColor="#333333" bg="#111111" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A" }}>
+                                <Icon as={LuDices} mr={2} strokeWidth="2.5" /> Generate
                             </Button>
                         </Flex>
                     </Box>
 
                     <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Recipient Name</Text>
+                            <Text as="label" {...labelStyles}>Recipient Name <Text as="span" color="red.400">*</Text></Text>
                             <Input 
                                 placeholder="John Doe" 
                                 value={recipientName} onChange={(e) => setRecipientName(e.target.value)}
@@ -82,7 +84,7 @@ export const CreateVoucherForm = ({ onBack, onSubmit }: CreateVoucherFormProps) 
                             />
                         </Box>
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Recipient Email</Text>
+                            <Text as="label" {...labelStyles}>Recipient Email <Text as="span" color="red.400">*</Text></Text>
                             <Input 
                                 type="email" placeholder="john@example.com" 
                                 value={recipientEmail} onChange={(e) => setRecipientEmail(e.target.value)}
@@ -90,7 +92,7 @@ export const CreateVoucherForm = ({ onBack, onSubmit }: CreateVoucherFormProps) 
                             />
                         </Box>
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Voucher Value (₦)</Text>
+                            <Text as="label" {...labelStyles}>Voucher Value (₦) <Text as="span" color="red.400">*</Text></Text>
                             <Input 
                                 type="number" placeholder="e.g. 15000" 
                                 value={initialValue} onChange={(e) => setInitialValue(e.target.value)}
@@ -98,7 +100,7 @@ export const CreateVoucherForm = ({ onBack, onSubmit }: CreateVoucherFormProps) 
                             />
                         </Box>
                         <Box>
-                            <Text color="gray.400" fontSize="sm" fontWeight="bold" mb={2}>Expiry Date</Text>
+                            <Text as="label" {...labelStyles}>Expiry Date <Text as="span" color="red.400">*</Text></Text>
                             <Input 
                                 type="date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)}
                                 {...controlStyles} css={{ '&::-webkit-calendar-picker-indicator': { filter: 'invert(1)' } }} required
@@ -106,12 +108,12 @@ export const CreateVoucherForm = ({ onBack, onSubmit }: CreateVoucherFormProps) 
                         </Box>
                     </SimpleGrid>
 
-                    <Box pt={4} borderTop="1px solid" borderColor="whiteAlpha.100" display="flex" justifyContent="flex-end" gap={3}>
-                        <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack}>
+                    <Box pt={6} mt={2} borderTop="1px solid" borderColor="#1A1A1A" display="flex" justifyContent="flex-end" gap={3}>
+                        <Button variant="outline" borderColor="#333333" color="#888888" bg="#0A0A0A" h="44px" rounded="none" _hover={{ color: "white", bg: "#111111" }} onClick={onBack}>
                             Cancel
                         </Button>
-                        <Button type="submit" bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }} px={8}>
-                            <Icon as={LuSave} mr={2} /> Issue Voucher
+                        <Button type="submit" bg="white" color="black" border="none" rounded="none" h="44px" px={8} fontWeight="bold" _hover={{ bg: "#E5E5E5" }} display="flex" gap={2}>
+                            <Icon as={LuSave} strokeWidth="2.5" /> Issue Voucher
                         </Button>
                     </Box>
 

@@ -1,12 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, IconButton, Avatar, Grid, VStack } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
     LuSearch, LuRefreshCw, LuStore, LuCheck,
-    LuBan, LuClock, LuMail, LuSend, LuEye, LuEllipsisVertical
+    LuBan, LuClock, LuMail, LuSend, LuEye, LuEllipsisVertical, LuX
 } from "react-icons/lu";
 
+// --- REUSABLE STYLES ---
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
+const inputStyles = { bg: "#000000", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };
+const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
 
 export interface PartnerRecord {
     id: string;
@@ -35,9 +39,110 @@ const TABS = [
     { id: "Suspended", label: "Suspended", count: 1 },
 ];
 
+// --- INVITE PARTNER MODAL COMPONENT ---
+const InvitePartnerModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({ contactName: '', email: '', businessName: '' });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSendInvite = () => {
+        setIsLoading(true);
+        setTimeout(() => {
+            setIsLoading(false);
+            alert(`Invite sent to ${formData.email}!`);
+            setFormData({ contactName: '', email: '', businessName: '' });
+            onClose();
+        }, 800);
+    };
+
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>
+                                            Partner Onboarding
+                                        </Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
+                                            Invite New Partner
+                                        </Text>
+                                    </Box>
+                                    <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Contact Name <Text as="span" color="red.400">*</Text></Text>
+                                            <Input name="contactName" value={formData.contactName} onChange={handleChange} placeholder="e.g. John Doe" {...inputStyles} />
+                                        </Box>
+
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Email Address <Text as="span" color="red.400">*</Text></Text>
+                                            <Input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="e.g. john@business.com" {...inputStyles} />
+                                            <Text color="#555555" fontSize="10px" mt={1.5} fontFamily="monospace">We will send the onboarding link to this address.</Text>
+                                        </Box>
+
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Business Name (Optional)</Text>
+                                            <Input name="businessName" value={formData.businessName} onChange={handleChange} placeholder="e.g. Sharp Kicks Ltd." {...inputStyles} />
+                                        </Box>
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    <Button variant="outline" borderColor="#333333" onClick={onClose} h="44px" rounded="none" color="#888888" bg="#0A0A0A" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        Cancel
+                                    </Button>
+                                    <Button 
+                                        flex="1" h="44px" bg="white" color="black" rounded="none" fontWeight="bold" onClick={handleSendInvite} 
+                                        disabled={!formData.contactName || !formData.email}
+                                        _hover={{ bg: "#E5E5E5" }} 
+                                        _disabled={{ opacity: 0.5, cursor: "not-allowed", bg: "#333333", color: "#888888" }} 
+                                        transition="all 0.2s ease"
+                                    >
+                                        {isLoading ? "Sending..." : "Send Invite"}
+                                    </Button>
+                                </Flex>
+
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
+
 export default function PartnersListPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [activeTab, setActiveTab] = useState("All");
+    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
     // Filter Logic
     const visibleItems = MOCK_PARTNERS.filter(partner => {
@@ -58,7 +163,7 @@ export default function PartnersListPage() {
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
             
-            {/*  PAGE HEADER  */}
+            {/* PAGE HEADER  */}
             <Box pt={2} mb={8}>
                 <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} gap={4}>
                     <Box>
@@ -70,13 +175,13 @@ export default function PartnersListPage() {
                         </Flex>
                         <Text color="#888888" fontSize="sm">Manage your partner network, track performance, and onboard new vendors.</Text>
                     </Box>
-                    <Button bg="white" color="black" h="44px" rounded="none" fontWeight="bold" _hover={{ bg: "#E5E5E5" }} border="none" px={6}>
+                    <Button onClick={() => setIsInviteModalOpen(true)} bg="white" color="black" h="44px" rounded="none" fontWeight="bold" _hover={{ bg: "#E5E5E5" }} border="none" px={6}>
                         <Icon as={LuSend} mr={2} strokeWidth="2.5" /> Invite Partner
                     </Button>
                 </Flex>
             </Box>
 
-            {/*  KPI CARDS (Non-Sticky) */}
+            {/* KPI CARDS (Non-Sticky) */}
             <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4} mb={8}>
                 <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" p={5} rounded="none">
                     <Flex justify="space-between" align="flex-start" mb={2}>
@@ -108,7 +213,7 @@ export default function PartnersListPage() {
                 </Box>
             </SimpleGrid>
 
-            {/*  STICKY TABS & SEARCH BAR */}
+            {/* STICKY TABS & SEARCH BAR */}
             <Box
                 position="sticky"
                 top={{ base: "-16px", lg: "-32px" }}
@@ -121,18 +226,9 @@ export default function PartnersListPage() {
                 mb={6}
                 borderBottom="1px solid #1A1A1A"
             >
-                <Flex 
-                    justify="space-between" 
-                    align={{ base: "stretch", lg: "center" }} 
-                    direction={{ base: "column", lg: "row" }} 
-                    gap={4}
-                >
+                <Flex justify="space-between" align={{ base: "stretch", lg: "center" }} direction={{ base: "column", lg: "row" }} gap={4}>
                     {/* TABS */}
-                    <Flex 
-                        overflowX="auto" 
-                        w={{ base: "full", lg: "auto" }} 
-                        css={{ '&::-webkit-scrollbar': { display: 'none' } }}
-                    >
+                    <Flex overflowX="auto" w={{ base: "full", lg: "auto" }} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
                         {TABS.map((tab) => (
                             <Box 
                                 key={tab.id}
@@ -143,12 +239,7 @@ export default function PartnersListPage() {
                                 _hover={{ color: "white" }}
                                 transition="all 0.2s"
                             >
-                                <Text 
-                                    fontSize="sm" 
-                                    fontWeight={activeTab === tab.id ? "bold" : "500"} 
-                                    color={activeTab === tab.id ? "white" : "#888888"} 
-                                    whiteSpace="nowrap"
-                                >
+                                <Text fontSize="sm" fontWeight={activeTab === tab.id ? "bold" : "500"} color={activeTab === tab.id ? "white" : "#888888"} whiteSpace="nowrap">
                                     {tab.label} ({tab.count})
                                 </Text>
                             </Box>
@@ -156,32 +247,17 @@ export default function PartnersListPage() {
                     </Flex>
 
                     {/* SEARCH */}
-                    <Flex 
-                        align="center" 
-                        {...controlStyles} 
-                        h="40px"
-                        bg="#0A0A0A" 
-                        w={{ base: "full", lg: "350px" }}
-                        flexShrink={0}
-                    >
+                    <Flex align="center" {...controlStyles} h="40px" bg="#0A0A0A" w={{ base: "full", lg: "350px" }} flexShrink={0}>
                         <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
                         <Input 
-                            placeholder="Search partners or emails..." 
-                            border="none" 
-                            _focus={{ outline: "none", boxShadow: "none" }} 
-                            color="white" 
-                            value={searchQuery} 
-                            onChange={(e) => setSearchQuery(e.target.value)} 
-                            px={0} 
-                            w="full" 
-                            h="full" 
+                            placeholder="Search partners or emails..." border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" 
+                            value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} px={0} w="full" h="full" 
                         />
                     </Flex>
                 </Flex>
             </Box>
 
-            {/*  PARTNERS GRID TABLE */}
-         
+            {/* PARTNERS GRID TABLE */}
             <Box minH="65vh">
                 {visibleItems.length === 0 ? (
                     <Flex justify="center" align="center" py={20} direction="column" border="1px dashed #1A1A1A" bg="#0A0A0A">
@@ -283,7 +359,9 @@ export default function PartnersListPage() {
                     </Box>
                 )}
             </Box>
-</Box>
-    
+
+            {/* Mount the Invite Modal */}
+            <InvitePartnerModal isOpen={isInviteModalOpen} onClose={() => setIsInviteModalOpen(false)} />
+        </Box>
     );
 }
