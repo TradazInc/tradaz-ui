@@ -21,11 +21,23 @@ export const Header = ({
     
     const pathname = usePathname();
     const router = useRouter();
+    
+    // --- DROPDOWN STATES ---
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isNavOpen, setIsNavOpen] = useState(false); 
     const [isNotifOpen, setIsNotifOpen] = useState(false); 
+    const [isMobileSortOpen, setIsMobileSortOpen] = useState(false);
     
+    // --- DATA STATES ---
+    const [mobileSortValue, setMobileSortValue] = useState("relevant");
     const categories = ["Categories", "Foot Wears", "Sport Wears", "Accessories", "Bags"];
+
+    const sortOptions = [
+        { value: "relevant", label: "Most Relevant" },
+        { value: "newest", label: "Newest Arrivals" },
+        { value: "price_asc", label: "Price: Low to High" },
+        { value: "price_desc", label: "Price: High to Low" }
+    ];
 
     return (
         <Flex 
@@ -90,7 +102,7 @@ export const Header = ({
                 </Flex>
             </Flex>
 
-            {/* Mobile Search Bar & Filter (Visible only on mobile) */}
+            {/* Mobile Search Bar & Modern Filter Dropdown */}
             <Flex flex={1} mx={4} display={{ base: "flex", lg: "none" }} gap={2}>
                 <Flex 
                     flex={1} bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.200" 
@@ -107,15 +119,61 @@ export const Header = ({
                 </Flex>
                 
                 <Box position="relative">
-                    <IconButton aria-label="Sort and Filter" h="40px" w="40px" rounded="full" bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.200" color="gray.400" _hover={{ bg: "whiteAlpha.100", color: "white" }}>
+                    <IconButton 
+                        aria-label="Sort and Filter" h="40px" w="40px" rounded="full" 
+                        bg={isMobileSortOpen ? "whiteAlpha.100" : "#1A1C23"} 
+                        border="1px solid" borderColor={isMobileSortOpen ? "whiteAlpha.400" : "whiteAlpha.200"} 
+                        color={isMobileSortOpen ? "white" : "gray.400"} 
+                        _hover={{ bg: "whiteAlpha.100", color: "white" }}
+                        onClick={() => {
+                            setIsMobileSortOpen(!isMobileSortOpen);
+                            setIsNotifOpen(false);
+                            setIsProfileOpen(false);
+                            setIsNavOpen(false);
+                        }}
+                    >
                         <Icon as={LuFilter} boxSize="16px" />
                     </IconButton>
-                    <Box as="select" position="absolute" top={0} left={0} w="full" h="full" opacity={0} cursor="pointer">
-                        <option value="relevant">Most Relevant</option>
-                        <option value="newest">Newest Arrivals</option>
-                        <option value="price_asc">Price: Low to High</option>
-                        <option value="price_desc">Price: High to Low</option>
-                    </Box>
+
+                    {/* Modern Mobile Sort Dropdown Overlay */}
+                    {isMobileSortOpen && (
+                        <>
+                            <Box position="fixed" inset={0} zIndex={99} onClick={() => setIsMobileSortOpen(false)} />
+                            <Box 
+                                position="absolute" right={0} top="100%" mt={2} 
+                                bg="#1A1C23" shadow="2xl" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" 
+                                minW="220px" py={2} zIndex={100} animation="fade-in 0.2s ease"
+                            >
+                                <Box px={4} py={2} mb={1} borderBottom="1px solid" borderColor="whiteAlpha.100">
+                                    <Text fontSize="xs" fontWeight="bold" color="gray.400" textTransform="uppercase" letterSpacing="wider">
+                                        Sort Products By
+                                    </Text>
+                                </Box>
+                                <Flex direction="column" gap={0.5}>
+                                    {sortOptions.map((option) => (
+                                        <Flex 
+                                            key={option.value} align="center" justify="space-between" 
+                                            px={4} py={2.5} cursor="pointer" transition="all 0.2s"
+                                            bg={mobileSortValue === option.value ? "whiteAlpha.50" : "transparent"}
+                                            _hover={{ bg: "whiteAlpha.100" }}
+                                            onClick={() => {
+                                                setMobileSortValue(option.value);
+                                                setIsMobileSortOpen(false);
+                                                // Trigger actual sorting logic here later
+                                            }}
+                                        >
+                                            <Text fontSize="sm" color={mobileSortValue === option.value ? brandColor : "white"} fontWeight={mobileSortValue === option.value ? "bold" : "medium"}>
+                                                {option.label}
+                                            </Text>
+                                            {mobileSortValue === option.value && (
+                                                <Icon as={LuCircleCheck} color={brandColor} boxSize="16px" />
+                                            )}
+                                        </Flex>
+                                    ))}
+                                </Flex>
+                            </Box>
+                        </>
+                    )}
                 </Box>
             </Flex>
 
@@ -155,7 +213,8 @@ export const Header = ({
                         onClick={() => {
                             setIsNotifOpen(!isNotifOpen);
                             setIsProfileOpen(false); 
-                            setIsNavOpen(false); 
+                            setIsNavOpen(false);
+                            setIsMobileSortOpen(false);
                         }}
                         align="center" justify="center" 
                         boxSize="40px" rounded="full" 
@@ -229,6 +288,7 @@ export const Header = ({
                             setIsProfileOpen(!isProfileOpen);
                             setIsNavOpen(false); 
                             setIsNotifOpen(false); 
+                            setIsMobileSortOpen(false);
                         }}
                     >
                         <Flex justify="center" align="center" boxSize="32px" bg={brandColor} color="white" rounded="full" fontWeight="bold" fontSize="sm">
@@ -278,6 +338,7 @@ export const Header = ({
                             setIsNavOpen(!isNavOpen);
                             setIsProfileOpen(false); 
                             setIsNotifOpen(false); 
+                            setIsMobileSortOpen(false);
                         }}
                     >
                         <Icon as={LuMenu} boxSize="22px" />
