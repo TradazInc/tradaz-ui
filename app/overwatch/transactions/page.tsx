@@ -15,7 +15,6 @@ const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor:
 
 export default function AdminTransactionsPage() {
     
-    
     const {
         searchQuery, typeFilter, sortBy, sortOrder,
         handleSearch, handleTypeFilter, handleSortBy, handleSortOrder,
@@ -36,16 +35,38 @@ export default function AdminTransactionsPage() {
         }
     };
 
+    // --- CLIENT-SIDE SORTING LOGIC ---
+   
+    const sortedItems = [...visibleItems].sort((a, b) => {
+        let valA: number | string = 0;
+        let valB: number | string = 0;
+
+        if (sortBy === "amount") {
+            valA = a.amount;
+            valB = b.amount;
+        } else if (sortBy === "fee") {
+            valA = Math.abs(a.platformFee);
+            valB = Math.abs(b.platformFee);
+        } else {
+            // Default to Date sorting
+            valA = new Date(a.date).getTime();
+            valB = new Date(b.date).getTime();
+        }
+
+        if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+        if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+    });
+
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
             
             {/* --- COMBINED STICKY HEADER & TOOLBAR --- */}
             <Box 
                 position="sticky" top={{ base: "-16px", md: "-32px" }}
-        mx={{ base: "-16px", md: "-32px" }}
-        px={{ base: "16px", md: "32px" }} zIndex={30} 
+                mx={{ base: "-16px", md: "-32px" }}
+                px={{ base: "16px", md: "32px" }} zIndex={30} 
                 bg="#000000" 
-                
                 pt={{ base: 4, lg: 8 }} pb={6} mb={8} 
                 borderBottom="1px solid #1A1A1A"
             >
@@ -111,7 +132,7 @@ export default function AdminTransactionsPage() {
             </SimpleGrid>
 
             {/* --- TRANSACTIONS GRID --- */}
-            {visibleItems.length === 0 ? (
+            {sortedItems.length === 0 ? (
                 <Flex justify="center" align="center" py={20} direction="column" bg="#0A0A0A" border="1px dashed #1A1A1A">
                     <Text color="#888888" fontSize="lg" fontWeight="bold">No transactions found.</Text>
                 </Flex>
@@ -126,7 +147,8 @@ export default function AdminTransactionsPage() {
                         <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="center">Status</Text>
                     </Grid>
 
-                    {visibleItems.map((tx: Transaction) => {
+                    {/*  sortedItems  */}
+                    {sortedItems.map((tx: Transaction) => {
                         const ui = getTypeUI(tx.type);
                         const isCompleted = tx.status === 'completed';
                         const isPending = tx.status === 'pending';

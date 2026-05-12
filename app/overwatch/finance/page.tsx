@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 import { 
     Box, Flex, Text, Button, Icon, Grid, Badge, VStack, SimpleGrid, 
-    Input, IconButton, Avatar
+    Input, Avatar
 } from "@chakra-ui/react";
 import { 
     LuWallet, LuTrendingUp, LuArrowDownRight, LuArrowUpRight, 
-    LuDownload, LuSearch, LuFilter, LuClock, LuCheck, LuX 
+    LuDownload, LuSearch, LuClock, LuCheck, LuX 
 } from "react-icons/lu";
 
 // --- MOCK FINANCE DATA ---
@@ -27,10 +27,18 @@ const MOCK_PAYOUTS = [
 // Mock Data for the CSS Bar Chart
 const CHART_DATA = [40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 100];
 
+const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
+
 export default function SuperAdminFinancePage() {
     const brandColor = "#5cac7d";
     const [activeTab, setActiveTab] = useState("payouts");
     
+    // --- SORTING & FILTERING STATE ---
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filterStatus, setFilterStatus] = useState("all");
+    const [sortBy, setSortBy] = useState("amount");
+    const [sortOrder, setSortOrder] = useState("desc");
+
     const getStatusUI = (status: string) => {
         switch (status) {
             case "completed": return { iconColor: "#5cac7d", icon: LuCheck }; 
@@ -39,6 +47,39 @@ export default function SuperAdminFinancePage() {
             default: return { iconColor: "gray.500", icon: LuClock };
         }
     };
+
+    // --- HELPER: Parse amount string to number for accurate sorting ---
+    const parseAmount = (amountStr: string) => {
+        return Number(amountStr.replace(/[^0-9.-]+/g, ""));
+    };
+
+    // --- CLIENT-SIDE SORTING & FILTERING LOGIC ---
+    const processedPayouts = [...MOCK_PAYOUTS].filter(payout => {
+        const matchesSearch = payout.store.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              payout.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                              payout.id.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = filterStatus === "all" || payout.status === filterStatus;
+        
+        return matchesSearch && matchesStatus;
+    }).sort((a, b) => {
+        let valA: string | number;
+        let valB: string | number;
+
+        if (sortBy === "amount") {
+            valA = parseAmount(a.amount);
+            valB = parseAmount(b.amount);
+        } else if (sortBy === "store") {
+            valA = a.store.toLowerCase();
+            valB = b.store.toLowerCase();
+        } else {
+            valA = a.id;
+            valB = b.id;
+        }
+
+        if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+        if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+        return 0;
+    });
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
@@ -68,25 +109,42 @@ export default function SuperAdminFinancePage() {
                     </Flex>
                 </Flex>
 
-               {/* Filters & Search */}
-<Flex direction="row" gap={3} w="full">
-   
-    <Flex flex={1} minW="0" align="center" bg="#0A0A0A" border="1px solid #333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
-        <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
-        <Input 
-            placeholder="Search store, owner, or TRX ID..." border="none" color="white" h="full" px={0} 
-            _focus={{ boxShadow: "none", outline: "none" }}
-        />
-    </Flex>
-    
-    
-    <IconButton 
-        flexShrink={0} aria-label="Filter" bg="#111111" border="1px solid #333333" 
-        color="white" rounded="none" h="44px" w="44px" _hover={{ bg: "#1A1A1A" }}
-    >
-        <Icon as={LuFilter} strokeWidth="2.5" />
-    </IconButton>
-</Flex>
+                {/* Filters & Search */}
+                <Flex direction={{ base: "column", xl: "row" }} gap={3} w="full">
+                    <Flex flex={1} minW="0" align="center" bg="#0A0A0A" border="1px solid #333333" rounded="none" px={4} h="44px" _focusWithin={{ borderColor: "white" }}>
+                        <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
+                        <Input 
+                            placeholder="Search store, owner, or TRX ID..." border="none" color="white" h="full" px={0} 
+                            _focus={{ boxShadow: "none", outline: "none" }}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </Flex>
+                    
+                    <Flex gap={3} w={{ base: "full", xl: "auto" }} wrap="wrap">
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={nativeSelectStyle}>
+                                <option value="all" style={{ background: "#0A0A0A" }}>All Statuses</option>
+                                <option value="completed" style={{ background: "#0A0A0A" }}>Completed</option>
+                                <option value="pending" style={{ background: "#0A0A0A" }}>Pending</option>
+                                <option value="failed" style={{ background: "#0A0A0A" }}>Failed</option>
+                            </select>
+                        </Box>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={nativeSelectStyle}>
+                                <option value="amount" style={{ background: "#0A0A0A" }}>Sort by Amount</option>
+                                <option value="store" style={{ background: "#0A0A0A" }}>Sort by Store</option>
+                                <option value="id" style={{ background: "#0A0A0A" }}>Sort by TRX ID</option>
+                            </select>
+                        </Box>
+                        <Box flex={{ base: 1, md: "initial" }} w={{ md: "140px" }}>
+                            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} style={nativeSelectStyle}>
+                                <option value="desc" style={{ background: "#0A0A0A" }}>Descending</option>
+                                <option value="asc" style={{ background: "#0A0A0A" }}>Ascending</option>
+                            </select>
+                        </Box>
+                    </Flex>
+                </Flex>
             </Box>
 
             {/* --- KPI CARDS --- */}
@@ -140,59 +198,65 @@ export default function SuperAdminFinancePage() {
 
                     {/* Table Data */}
                     <Box overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' } }}>
-                        <Box minW="800px">
-                            <Grid templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 50px" gap={4} px={6} py={4} bg="#0A0A0A" borderBottom="1px solid" borderColor="#1A1A1A">
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Transaction ID</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Store Details</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Gross Amount</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Platform Fee</Text>
-                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="center">Status</Text>
-                            </Grid>
+                        {processedPayouts.length === 0 ? (
+                            <Flex justify="center" align="center" py={20} direction="column" bg="#0A0A0A" border="1px dashed #1A1A1A" m={6}>
+                                <Text color="#888888" fontSize="lg" fontWeight="bold">No transactions found.</Text>
+                            </Flex>
+                        ) : (
+                            <Box minW="800px">
+                                <Grid templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 50px" gap={4} px={6} py={4} bg="#0A0A0A" borderBottom="1px solid" borderColor="#1A1A1A">
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Transaction ID</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Store Details</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Gross Amount</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Platform Fee</Text>
+                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="center">Status</Text>
+                                </Grid>
 
-                            <VStack align="stretch" gap={0}>
-                                {MOCK_PAYOUTS.map((trx, idx) => {
-                                    const statusUI = getStatusUI(trx.status);
-                                    return (
-                                        <Grid 
-                                            key={idx} templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 50px" gap={4} px={6} py={4} 
-                                            borderBottom="1px solid" borderColor="#1A1A1A" alignItems="center"
-                                            _hover={{ bg: "#111111" }} transition="all 0.2s" cursor="pointer"
-                                        >
-                                            <Box>
-                                                <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{trx.id}</Text>
-                                                <Text color="#888888" fontSize="xs" fontFamily="monospace" mt={0.5}>{trx.date}</Text>
-                                            </Box>
-                                            
-                                            <Flex align="center" gap={3}>
-                                                <Avatar.Root size="sm" rounded="full">
-                                                    <Avatar.Fallback name={trx.store} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
-                                                </Avatar.Root>
+                                <VStack align="stretch" gap={0}>
+                                    {processedPayouts.map((trx, idx) => {
+                                        const statusUI = getStatusUI(trx.status);
+                                        return (
+                                            <Grid 
+                                                key={idx} templateColumns="1.5fr 1.5fr 1fr 1fr 1fr 50px" gap={4} px={6} py={4} 
+                                                borderBottom="1px solid" borderColor="#1A1A1A" alignItems="center"
+                                                _hover={{ bg: "#111111" }} transition="all 0.2s" cursor="pointer"
+                                            >
                                                 <Box>
-                                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{trx.store}</Text>
-                                                    <Text color="#888888" fontSize="xs" lineClamp={1}>{trx.owner}</Text>
+                                                    <Text color="white" fontWeight="bold" fontSize="sm" letterSpacing="tight">{trx.id}</Text>
+                                                    <Text color="#888888" fontSize="xs" fontFamily="monospace" mt={0.5}>{trx.date}</Text>
                                                 </Box>
-                                            </Flex>
-
-                                            <Text color="white" fontWeight="black" fontSize="sm" textAlign="right" letterSpacing="tight">{trx.amount}</Text>
-                                            <Text color="white" fontWeight="bold" fontSize="sm" textAlign="right" letterSpacing="tight">-{trx.fee}</Text>
-
-                                            <Flex justify="center">
-                                                <Flex align="center" gap={1.5} px={2} py={1} bg="#111111" border="1px solid #333333" rounded="none" display="inline-flex">
-                                                    <Icon as={statusUI.icon} color={statusUI.iconColor} strokeWidth="3" boxSize="12px" />
-                                                    <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
-                                                        {trx.status}
-                                                    </Text>
+                                                
+                                                <Flex align="center" gap={3}>
+                                                    <Avatar.Root size="sm" rounded="full">
+                                                        <Avatar.Fallback name={trx.store} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
+                                                    </Avatar.Root>
+                                                    <Box>
+                                                        <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{trx.store}</Text>
+                                                        <Text color="#888888" fontSize="xs" lineClamp={1}>{trx.owner}</Text>
+                                                    </Box>
                                                 </Flex>
-                                            </Flex>
 
-                                            <Flex justify="flex-end">
-                                                <Button size="xs" variant="ghost" rounded="none" color="#888888" _hover={{ color: "white", bg: "#1A1A1A" }} fontWeight="bold" textTransform="uppercase" letterSpacing="wider">View</Button>
-                                            </Flex>
-                                        </Grid>
-                                    );
-                                })}
-                            </VStack>
-                        </Box>
+                                                <Text color="white" fontWeight="black" fontSize="sm" textAlign="right" letterSpacing="tight">{trx.amount}</Text>
+                                                <Text color="white" fontWeight="bold" fontSize="sm" textAlign="right" letterSpacing="tight">-{trx.fee}</Text>
+
+                                                <Flex justify="center">
+                                                    <Flex align="center" gap={1.5} px={2} py={1} bg="#111111" border="1px solid #333333" rounded="none" display="inline-flex">
+                                                        <Icon as={statusUI.icon} color={statusUI.iconColor} strokeWidth="3" boxSize="12px" />
+                                                        <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                                            {trx.status}
+                                                        </Text>
+                                                    </Flex>
+                                                </Flex>
+
+                                                <Flex justify="flex-end">
+                                                    <Button size="xs" variant="ghost" rounded="none" color="#888888" _hover={{ color: "white", bg: "#1A1A1A" }} fontWeight="bold" textTransform="uppercase" letterSpacing="wider">View</Button>
+                                                </Flex>
+                                            </Grid>
+                                        );
+                                    })}
+                                </VStack>
+                            </Box>
+                        )}
                     </Box>
                 </Box>
 

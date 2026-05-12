@@ -320,10 +320,15 @@ export interface VatRemittance {
 
 
 export interface ChatMessage {
+    
     id: string;
-    sender: "Customer" | "Admin";
+    sender: 'user' | 'admin';
     text: string;
     timestamp: string;
+    attachment?: {
+        type: 'image' | 'video' | 'voice';
+        url: string;
+    }
 }
 
 export interface CustomerChat {

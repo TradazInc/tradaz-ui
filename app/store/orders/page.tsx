@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // <-- Added import
 import { 
     Box, Flex, Text, Image, Button, Icon, Badge, VStack, HStack, IconButton, Input
 } from "@chakra-ui/react";
@@ -42,26 +43,25 @@ const MOCK_ORDERS = [
         images: [
             "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?q=80&w=200&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=200&auto=format&fit=crop",
-            "https://via.placeholder.com/200/121212/FFFFFF?text=+1" // Represents additional items
+            "https://via.placeholder.com/200/121212/FFFFFF?text=+1" 
         ]
     }
 ];
 
 export default function MyOrdersPage() {
     const brandColor = "#5cac7d";
-    // const router = useRouter(); // For navigating to chat
-    
+    const router = useRouter(); // <-- Initialized router
+  
     const [orders] = useState(MOCK_ORDERS);
     const [searchQuery, setSearchQuery] = useState("");
 
     // --- LOGIC HANDLERS ---
     const handleChatSupport = (orderId: string) => {
-        // API-READY ROUTING:
-        // router.push(`/account/inbox?orderId=${orderId}`);
-        alert(`Opening chat for Order: ${orderId}\n\nThis will redirect to the inbox with the order context pre-loaded!`);
+        // --- REAL ROUTING ---
+     
+        router.push(`/store/inbox?orderId=${orderId}`);
     };
 
-    // Semantic status styling
     const getStatusUI = (status: string) => {
         switch (status) {
             case "Delivered": return { bg: "rgba(92, 172, 125, 0.15)", color: brandColor, icon: LuCheck };
@@ -105,7 +105,7 @@ export default function MyOrdersPage() {
                 <Flex direction="column" align="center" justify="center" py={20} bg="#1A1C23" rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
                     <Icon as={LuPackage} boxSize="60px" color="gray.600" mb={4} />
                     <Text color="white" fontSize="xl" fontWeight="bold">No orders found</Text>
-                    <Text color="gray.500" fontSize="sm" mt={2}>You haven&apos;t placed any orders yet.</Text>
+                    <Text color="gray.500" fontSize="sm" mt={2}>You havent placed any orders yet.</Text>
                     <Link href="/store" style={{ textDecoration: 'none' }}>
                         <Button mt={6} bg={brandColor} color="white" rounded="full" _hover={{ filter: "brightness(1.1)" }}>Start Shopping</Button>
                     </Link>
@@ -149,7 +149,7 @@ export default function MyOrdersPage() {
                                         </Box>
 
                                         <Flex gap={3} w={{ base: "full", md: "auto" }}>
-                                            {/* ✅ THE CHAT BUTTON */}
+                                            
                                             <Button 
                                                 flex={1} size="sm" variant="outline" borderColor="whiteAlpha.200" color="white" 
                                                 _hover={{ bg: "whiteAlpha.100", borderColor: "whiteAlpha.300" }}

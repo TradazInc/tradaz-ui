@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; 
 import { Box, Flex, Text, Icon, Input, Button, HStack, VStack, SimpleGrid, Image, Badge } from "@chakra-ui/react";
 import { 
     LuRefreshCcw, LuSearch, LuCheck, LuBan, 
@@ -10,6 +11,7 @@ import { generateDummyExchanges } from "@/app/lib/data";
 import { ExchangeRequest } from "@/app/lib/definitions";
 
 export const ExchangeManager = () => {
+    const router = useRouter(); 
     const [exchanges, setExchanges] = useState<ExchangeRequest[]>(generateDummyExchanges());
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState<"All" | "Pending" | "Approved" | "Rejected" | "Completed">("All");
@@ -22,8 +24,9 @@ export const ExchangeManager = () => {
     };
 
     const openChatHistory = (customerName: string) => {
-        // open a modal or route to /dashboard/chats?user=123 much more later
-        alert(`Opening chat history for ${customerName}...`);
+        // --- REAL ROUTING ---
+        // Navigates to the inbox and passes the customer name into the URL context
+        router.push(`/dashboard/inbox?customer=${encodeURIComponent(customerName)}`);
     };
 
     // --- FILTERING ---
@@ -38,7 +41,7 @@ export const ExchangeManager = () => {
     const pendingCount = exchanges.filter(e => e.status === "Pending").length;
     const approvedCount = exchanges.filter(e => e.status === "Approved").length;
 
-    // Strict Monochrome Styles
+    //styles
     const selectStyles = {
         backgroundColor: "#0A0A0A", color: "white", height: "44px", padding: "0 16px",
         borderRadius: "0px", border: "1px solid #333333", cursor: "pointer", outline: "none"
@@ -160,7 +163,7 @@ export const ExchangeManager = () => {
                                         </Flex>
                                     </Flex>
 
-                                    {/* Column 3: Actions & Reason */}
+                                    {/*  Actions & Reason */}
                                     <VStack align="end" flex={1} minW={{ xl: "320px" }} w="full" gap={3}>
                                         <Flex align="flex-start" gap={2} bg="#111111" p={3} rounded="none" w="full" border="1px solid" borderColor="#1A1A1A">
                                             <Icon as={LuMessageSquare} color="#888888" mt={0.5} strokeWidth="2.5" />
