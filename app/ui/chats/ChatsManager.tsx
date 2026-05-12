@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Box, Flex, Text, Icon, Input, Button, HStack, VStack, Textarea, Badge } from "@chakra-ui/react";
 import { 
     LuSearch, LuSend, LuMessageSquare, LuArrowLeft, 
@@ -9,24 +10,45 @@ import {
 import { generateDummyChats } from "@/app/lib/data";
 import { CustomerChat } from "@/app/lib/definitions";
 
-export const ChatManager = () => {
+// --- INNER COMPONENT ---
+const ChatManagerInner = () => {
+    const searchParams = useSearchParams();
+    const customerQuery = searchParams.get("customer");
+    const orderQuery = searchParams.get("orderId");
+
     const [chats, setChats] = useState<CustomerChat[]>(generateDummyChats());
     const [activeChatId, setActiveChatId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState<"All" | "Unread" | "Pending" | "Replied">("All");
     const [replyText, setReplyText] = useState("");
 
-    // --- FILTERING ---
-    const filteredChats = chats.filter(c => {
-        const matchesSearch = c.customerName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                              c.customerEmail.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = statusFilter === "All" || c.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
+    // Track previous query state to prevent infinite loops during render phase
+    const [prevQuery, setPrevQuery] = useState({ customer: customerQuery, order: orderQuery });
 
-    const activeChat = chats.find(c => c.id === activeChatId);
+    // --- RENDER PHASE STATE SYNC ---
+    // Instantly sync URL parameters to state without triggering a double-render
+    if (customerQuery !== prevQuery.customer || orderQuery !== prevQuery.order) {
+        setPrevQuery({ customer: customerQuery, order: orderQuery });
+        
+        let foundChatId: string | null = null;
+        if (customerQuery) {
+            const foundChat = chats.find(c => c.customerName.toLowerCase() === customerQuery.toLowerCase());
+            if (foundChat) foundChatId = foundChat.id;
+        } else if (orderQuery) {
+            const foundChat = chats.find(c => c.id === orderQuery || (c as CustomerChat & { orderId?: string }).orderId === orderQuery);
+            if (foundChat) foundChatId = foundChat.id;
+        }
+
+        if (foundChatId && activeChatId !== foundChatId) {
+            setActiveChatId(foundChatId);
+            setChats(prev => prev.map(c => 
+                c.id === foundChatId && c.status === "Unread" ? { ...c, status: "Pending" } : c
+            ));
+        }
+    }
 
     // --- ACTIONS ---
+    // Removed useCallback to satisfy the React Compiler since it's no longer needed
     const handleChatSelect = (id: string) => {
         setActiveChatId(id);
         // If it was completely unread, mark it as pending (seen but not replied)
@@ -40,7 +62,7 @@ export const ChatManager = () => {
 
         const newMessage = {
             id: `M-${Date.now()}`,
-            sender: "Admin" as const,
+            sender: "admin" as const,
             text: replyText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
@@ -59,7 +81,16 @@ export const ChatManager = () => {
         setReplyText("");
     };
 
-    
+    // --- FILTERING ---
+    const filteredChats = chats.filter(c => {
+        const matchesSearch = c.customerName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                              c.customerEmail.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesStatus = statusFilter === "All" || c.status === statusFilter;
+        return matchesSearch && matchesStatus;
+    });
+
+    const activeChat = chats.find(c => c.id === activeChatId);
+
     const selectStyles = {
         backgroundColor: "#0A0A0A", color: "white", height: "44px", padding: "0 12px",
         borderRadius: "0px", border: "1px solid #333333", cursor: "pointer", outline: "none", fontSize: "14px"
@@ -192,7 +223,7 @@ export const ChatManager = () => {
                         <Box flex={1} overflowY="auto" p={6} css={{ '&::-webkit-scrollbar': { width: '6px' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' } }}>
                             <VStack gap={4} align="stretch">
                                 {activeChat.messages.map((msg) => {
-                                    const isAdmin = msg.sender === "Admin";
+                                    const isAdmin = msg.sender === "admin";
                                     return (
                                         <Flex key={msg.id} justify={isAdmin ? "flex-end" : "flex-start"} w="full">
                                             <Box maxW="70%">
@@ -235,5 +266,18 @@ export const ChatManager = () => {
                 )}
             </Box>
         </Box>
+    );
+};
+
+// --- WRAPPER WITH SUSPENSE ---
+export const ChatManager = () => {
+    return (
+        <Suspense fallback={
+            <Box w="full" h="600px" display="flex" bg="#000000" rounded="none" border="1px solid" borderColor="#1A1A1A" alignItems="center" justifyContent="center">
+                <Text color="#888888" fontWeight="bold">Loading Chat Interface...</Text>
+            </Box>
+        }>
+            <ChatManagerInner />
+        </Suspense>
     );
 };

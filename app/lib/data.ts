@@ -395,8 +395,8 @@ export const generateDummyChats = (): CustomerChat[] => {
             customerEmail: "amina.y@example.com",
             status: "Unread",
             lastMessageTime: "10:42 AM",
-            messages: [
-                { id: "M1", sender: "Customer", text: "Hello! I ordered the vintage denim jacket yesterday. Can I change the size from M to L before it ships?", timestamp: "10:42 AM" }
+            messages: [             
+                        { id: "M1", sender: "user", text: "Hello! I ordered the vintage denim jacket yesterday. Can I change the size from M to L before it ships?", timestamp: "10:42 AM" }
             ]
         },
         {
@@ -406,9 +406,9 @@ export const generateDummyChats = (): CustomerChat[] => {
             status: "Pending",
             lastMessageTime: "Yesterday",
             messages: [
-                { id: "M1", sender: "Customer", text: "My tracking number says delivered, but I haven't received anything.", timestamp: "Yesterday, 4:15 PM" },
-                { id: "M2", sender: "Admin", text: "Hi Chuka, I'm so sorry about that. Let me check with GIG Logistics immediately.", timestamp: "Yesterday, 4:20 PM" },
-                { id: "M3", sender: "Customer", text: "Please do. I really need those items by Friday.", timestamp: "Yesterday, 4:22 PM" }
+                { id: "M1", sender: "user", text: "My tracking number says delivered, but I haven't received anything.", timestamp: "Yesterday, 4:15 PM" },
+                { id: "M2", sender: "admin", text: "Hi Chuka, I'm so sorry about that. Let me check with GIG Logistics immediately.", timestamp: "Yesterday, 4:20 PM" },
+                { id: "M3", sender: "user", text: "Please do. I really need those items by Friday.", timestamp: "Yesterday, 4:22 PM" }
             ]
         },
         {
@@ -418,8 +418,8 @@ export const generateDummyChats = (): CustomerChat[] => {
             status: "Replied",
             lastMessageTime: "Mon",
             messages: [
-                { id: "M1", sender: "Customer", text: "Do you guys do wholesale discounts? I want to buy 50 pieces for my boutique.", timestamp: "Mon, 9:00 AM" },
-                { id: "M2", sender: "Admin", text: "Hello Sarah! Yes we do. For 50 pieces, we can offer a 20% bulk discount. Would you like me to send a custom invoice?", timestamp: "Mon, 10:15 AM" }
+                { id: "M1", sender: "user", text: "Do you guys do wholesale discounts? I want to buy 50 pieces for my boutique.", timestamp: "Mon, 9:00 AM" },
+                { id: "M2", sender: "admin", text: "Hello Sarah! Yes we do. For 50 pieces, we can offer a 20% bulk discount. Would you like me to send a custom invoice?", timestamp: "Mon, 10:15 AM" }
             ]
         }
     ];
