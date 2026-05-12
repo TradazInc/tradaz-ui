@@ -21,7 +21,7 @@ export default function StorefrontLayout({ children }: { children: React.ReactNo
             {/* Main Content Area */}
             <Box 
                 flex={1} 
-                pb={{ base: "80px", lg: 0 }} // Prevents content from hiding behind the bottom nav on mobile
+                pb={{ base: "80px", lg: 0 }} 
                 transition="all 0.3s ease"
             >
                 {children}

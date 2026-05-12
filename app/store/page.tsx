@@ -8,12 +8,9 @@ import { LuHeart, LuShoppingCart, LuArrowRight, LuStar } from "react-icons/lu";
 import { STORE_BANNERS, STORE_PRODUCTS } from "@/app/lib/data";
 import { ProductDetailView } from "../ui/store/productDetail/productDetail";
 
-
-
 export default function StorefrontHomePage() {
     const brandColor = "#5cac7d"; 
 
-    
     const [currentSlide, setCurrentSlide] = useState(0);
     const [feedProducts, setFeedProducts] = useState(STORE_PRODUCTS);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -51,9 +48,7 @@ export default function StorefrontHomePage() {
 
     const featuredProducts = STORE_PRODUCTS.slice(0, 4);
 
-    
     if (selectedProduct) {
-        
         return (
             <ProductDetailView 
                 product={selectedProduct} 
@@ -66,7 +61,7 @@ export default function StorefrontHomePage() {
     return (
         <Box p={{ base: 4, lg: 8 }} w="full" mx="auto">
             
-            {/*  CAROUSEL */}
+            {/* CAROUSEL */}
             <Box position="relative" w="full" h={{ base: "350px", md: "450px", lg: "550px" }} rounded="3xl" overflow="hidden" mb={12} shadow="2xl">
                 {STORE_BANNERS.map((banner, index) => (
                     <Box key={banner.id} position="absolute" top={0} left={0} w="full" h="full" opacity={currentSlide === index ? 1 : 0} transition="opacity 0.8s ease-in-out" role="group">
@@ -90,31 +85,41 @@ export default function StorefrontHomePage() {
                 </Flex>
             </Box>
 
-            {/*  FEATURED GRID */}
+            {/* FEATURED GRID */}
             <Flex justify="space-between" align="flex-end" mb={6}>
                 <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Featured Drops</Text>
             </Flex>
             <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" }} gap={4} mb={16} w="full">
                 {featuredProducts.map((product) => (
-                    <Box key={`feat-${product.id}`} onClick={() => setSelectedProduct(product)} role="group" position="relative" rounded="3xl" overflow="hidden" cursor="pointer" h={{ base: "400px", md: "500px", lg: "65vh" }}>
-                        <Image src={product.image} alt={product.name} w="full" h="full" objectFit="cover" transition="transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)" _groupHover={{ transform: "scale(1.05)" }} />
-                        <Box position="absolute" inset={0} bgGradient="linear(to-t, blackAlpha.900 0%, transparent 60%)" transition="all 0.3s" _groupHover={{ opacity: 0.8 }} />
-                        <Flex position="absolute" bottom={0} left={0} right={0} p={6} direction="column" justify="flex-end">
+                    <Flex 
+                        key={`feat-${product.id}`} onClick={() => setSelectedProduct(product)} 
+                        role="group" direction="column" rounded="none" overflow="hidden" cursor="pointer" 
+                        h={{ base: "400px", md: "450px", lg: "55vh" }} 
+                        border="1px solid" borderColor="#1A1A1A" bg="#111111"
+                        transition="all 0.3s" _hover={{ borderColor: brandColor, transform: "translateY(-4px)" }}
+                    >
+                        
+                        <Box flex={1} position="relative" overflow="hidden">
+                            <Image src={product.image} alt={product.name} w="full" h="full" objectFit="cover" transition="transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)" _groupHover={{ transform: "scale(1.05)" }} />
+                        </Box>
+                        
+                      
+                        <Flex p={5} direction="column" justify="flex-end" bg="#111111" zIndex={2}>
                             <Text fontSize="xs" color={brandColor} textTransform="uppercase" fontWeight="bold" letterSpacing="widest" mb={1}>{product.category}</Text>
-                            <Text fontSize="2xl" fontWeight="black" color="white" lineHeight="1.1" mb={2} lineClamp={2}>{product.name}</Text>
-                            <Flex justify="space-between" align="center" mt={2}>
-                                <Text fontSize="xl" fontWeight="bold" color="white">₦{product.price.toLocaleString()}</Text>
+                            <Text fontSize="xl" fontWeight="black" color="white" lineHeight="1.1" mb={3} lineClamp={1}>{product.name}</Text>
+                            <Flex justify="space-between" align="center" mt="auto">
+                                <Text fontSize="lg" fontWeight="bold" color="white">₦{product.price.toLocaleString()}</Text>
                                 <Button size="sm" rounded="full" bg={brandColor} color="white" _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2} onClick={(e) => e.stopPropagation()}>
                                     <Icon as={LuShoppingCart} />
                                     <Text>Add</Text>
                                 </Button>
                             </Flex>
                         </Flex>
-                    </Box>
+                    </Flex>
                 ))}
             </Grid>
 
-            {/*  INFINITE CATALOG */}
+            {/* INFINITE CATALOG */}
             <Box borderTop="1px solid" borderColor="whiteAlpha.100" pt={10}>
                 <Flex justify="space-between" align="flex-end" mb={8}>
                     <Box>
@@ -124,29 +129,36 @@ export default function StorefrontHomePage() {
                 </Flex>
                 <Grid templateColumns={{ base: "repeat(2, 1fr)", md: "repeat(3, 1fr)", lg: "repeat(4, 1fr)", xl: "repeat(5, 1fr)" }} gap={{ base: 4, lg: 6 }}>
                     {feedProducts.map((product, index) => (
-                        <Box key={`feed-${product.id}-${index}`} onClick={() => setSelectedProduct(product)} role="group" bg="#1A1C23" p={3} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100" transition="all 0.2s" _hover={{ borderColor: brandColor, transform: "translateY(-4px)", shadow: "xl" }} cursor="pointer">
-                            <Box position="relative" rounded="xl" overflow="hidden" bg="whiteAlpha.50" mb={4} aspectRatio={1}>
-                                <Badge position="absolute" top={2} left={2} bg={brandColor} color="white" rounded="sm" px={2} py={0.5} fontSize="9px" fontWeight="bold" zIndex={10}>{product.isNew ? "NEW" : "TRENDING"}</Badge>
+                        <Flex 
+                            key={`feed-${product.id}-${index}`} onClick={() => setSelectedProduct(product)} 
+                            role="group" direction="column" bg="#111111" rounded="none" border="1px solid" borderColor="whiteAlpha.100" 
+                            overflow="hidden" transition="all 0.2s" _hover={{ borderColor: brandColor, transform: "translateY(-4px)", shadow: "xl" }} 
+                            cursor="pointer"
+                        >
+                            {/* Image Box */}
+                            <Box position="relative" bg="whiteAlpha.50" aspectRatio={1} overflow="hidden">
+                                <Badge position="absolute" top={2} left={2} bg={brandColor} color="white" rounded="none" px={2} py={0.5} fontSize="9px" fontWeight="bold" zIndex={10}>{product.isNew ? "NEW" : "TRENDING"}</Badge>
                                 <IconButton position="absolute" top={2} right={2} zIndex={10} aria-label="Wishlist" size="sm" rounded="full" bg="blackAlpha.500" color="white" backdropFilter="blur(4px)" _hover={{ bg: "red.500", color: "white" }} onClick={(e) => e.stopPropagation()}>
                                     <Icon as={LuHeart} boxSize="14px" />
                                 </IconButton>
                                 <Image src={product.image} alt={product.name} w="full" h="full" objectFit="cover" transition="transform 0.6s ease" _groupHover={{ transform: "scale(1.08)" }} />
                             </Box>
-                            <Box px={1}>
+                            
+                            {/* Text Box */}
+                            <Flex p={4} bg="#111111" flex={1} direction="column">
                                 <Text fontSize="10px" color={brandColor} fontWeight="bold" textTransform="uppercase" mb={1}>{product.category}</Text>
                                 <Text fontSize="sm" fontWeight="bold" color="white" lineClamp={1} mb={1}>{product.name}</Text>
                                 <Flex align="center" gap={1} mb={3}>
-                                    
                                     <Flex gap={0.5}>{[...Array(5)].map((_, i) => (<Icon key={i} as={LuStar} boxSize="10px" fill="yellow.400" color="yellow.400" />))}</Flex>
-                                    <Text fontSize="10px" color="gray.500">({product.reviews || 120} reviews)</Text>
+                                    <Text fontSize="10px" color="gray.500">({product.reviews || 120})</Text>
                                 </Flex>
-                                <Text fontSize="lg" fontWeight="black" color={brandColor} mb={4}>₦{product.price.toLocaleString()}</Text>
+                                <Text fontSize="lg" fontWeight="black" color="white" mb={4} mt="auto">₦{product.price.toLocaleString()}</Text>
                                 <Button w="full" size="sm" bg="whiteAlpha.100" color="white" rounded="lg" _hover={{ bg: brandColor, color: "white" }} display="flex" gap={2} onClick={(e) => e.stopPropagation()}>
                                     <Icon as={LuShoppingCart} boxSize="14px" />
                                     <Text fontSize="xs" fontWeight="bold">Add to Cart</Text>
                                 </Button>
-                            </Box>
-                        </Box>
+                            </Flex>
+                        </Flex>
                     ))}
                 </Grid>
                 {isLoadingMore && (

@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar, Input, VStack
+    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Avatar, Input, VStack
 } from "@chakra-ui/react";
 import { 
     LuActivity, LuTrendingUp, LuCircle, 
-    LuSearch, LuFilter, LuArrowUpRight, LuArrowDownRight, LuShoppingBag, LuPercent, LuSquareActivity
+    LuSearch, LuArrowUpRight, LuArrowDownRight, LuShoppingBag, LuPercent, LuSquareActivity
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---
@@ -55,11 +55,40 @@ const ALL_SHOPS_DATA = [
 export default function ShopPerformancePage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [timeFilter, setTimeFilter] = useState("30d");
+    
+    // --- SORTING STATE ---
+    const [sortBy, setSortBy] = useState("gmv");
+    const [sortOrder, setSortOrder] = useState("desc");
 
-    const filteredShops = ALL_SHOPS_DATA.filter(shop => 
-        shop.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        shop.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // --- FILTER & SORT LOGIC ---
+    const processedShops = [...ALL_SHOPS_DATA]
+        .filter(shop => 
+            shop.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            shop.category.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        .sort((a, b) => {
+            let valA: number | string;
+            let valB: number | string;
+
+            if (sortBy === "orders") {
+                valA = a.orders;
+                valB = b.orders;
+            } else if (sortBy === "refunds") {
+                valA = a.refundRate;
+                valB = b.refundRate;
+            } else if (sortBy === "name") {
+                valA = a.name.toLowerCase();
+                valB = b.name.toLowerCase();
+            } else {
+                // Default GMV
+                valA = a.gmv;
+                valB = b.gmv;
+            }
+
+            if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+            if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
@@ -145,7 +174,7 @@ export default function ShopPerformancePage() {
                 </Flex>
             </Box>
 
-            {/* --- SPLIT DASHBOARD (TOP PERFORMERS VS AT RISK) --- */}
+           
             <Grid templateColumns={{ base: "1fr", xl: "1fr 1fr" }} gap={6} mb={8}>
                 
                 {/* Top Performers */}
@@ -227,10 +256,17 @@ export default function ShopPerformancePage() {
                             value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
                         />
                     </Flex>
-                    <Flex gap={3}>
-                        <Button size="sm" h="44px" px={6} variant="outline" borderColor="#333333" bg="#111111" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} display="flex" gap={2}>
-                            <Icon as={LuFilter} strokeWidth="2.5" /> Filter
-                        </Button>
+                    <Flex gap={3} w={{ base: "full", md: "auto" }}>
+                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ ...nativeSelectStyle, width: "160px" }}>
+                            <option value="gmv" style={{ background: "#0A0A0A" }}>Sort by GMV</option>
+                            <option value="orders" style={{ background: "#0A0A0A" }}>Sort by Orders</option>
+                            <option value="refunds" style={{ background: "#0A0A0A" }}>Sort by Refunds</option>
+                            <option value="name" style={{ background: "#0A0A0A" }}>Sort by Name</option>
+                        </select>
+                        <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} style={{ ...nativeSelectStyle, width: "160px" }}>
+                            <option value="desc" style={{ background: "#0A0A0A" }}>Highest / Z-A</option>
+                            <option value="asc" style={{ background: "#0A0A0A" }}>Lowest / A-Z</option>
+                        </select>
                     </Flex>
                 </Flex>
 
@@ -245,13 +281,13 @@ export default function ShopPerformancePage() {
                             <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="right">Health Status</Text>
                         </Grid>
 
-                        {filteredShops.length === 0 ? (
+                        {processedShops.length === 0 ? (
                             <Flex justify="center" align="center" py={16} direction="column">
                                 <Text color="#888888" fontSize="lg" fontWeight="bold">No shops found matching your search.</Text>
                             </Flex>
                         ) : (
                             <VStack align="stretch" gap={0}>
-                                {filteredShops.map((shop) => (
+                                {processedShops.map((shop) => (
                                     <Grid 
                                         key={shop.id} 
                                         templateColumns="2fr 1.5fr 1fr 1fr 1fr" gap={4} px={6} py={5} 

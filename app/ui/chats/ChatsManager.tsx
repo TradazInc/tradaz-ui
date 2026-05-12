@@ -22,11 +22,10 @@ const ChatManagerInner = () => {
     const [statusFilter, setStatusFilter] = useState<"All" | "Unread" | "Pending" | "Replied">("All");
     const [replyText, setReplyText] = useState("");
 
-    // Track previous query state to prevent infinite loops during render phase
     const [prevQuery, setPrevQuery] = useState({ customer: customerQuery, order: orderQuery });
 
     // --- RENDER PHASE STATE SYNC ---
-    // Instantly sync URL parameters to state without triggering a double-render
+ 
     if (customerQuery !== prevQuery.customer || orderQuery !== prevQuery.order) {
         setPrevQuery({ customer: customerQuery, order: orderQuery });
         
@@ -48,7 +47,7 @@ const ChatManagerInner = () => {
     }
 
     // --- ACTIONS ---
-    // Removed useCallback to satisfy the React Compiler since it's no longer needed
+   
     const handleChatSelect = (id: string) => {
         setActiveChatId(id);
         // If it was completely unread, mark it as pending (seen but not replied)

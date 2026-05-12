@@ -158,7 +158,7 @@ export default function AdminShopsPage() {
                             >
                                 {/* Shop Info */}
                                 <Flex align="center" gap={4}>
-                                    <Avatar.Root size="md" rounded="none">
+                                    <Avatar.Root size="md" rounded="full">
                                         <Avatar.Fallback name={shop.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
                                     </Avatar.Root>
                                     <Box overflow="hidden">

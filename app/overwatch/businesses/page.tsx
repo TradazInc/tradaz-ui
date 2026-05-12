@@ -158,8 +158,8 @@ export default function AdminBusinessesPage() {
                             >
                                 {/* Business Info */}
                                 <Flex align="center" gap={4}>
-                                    <Avatar.Root size="md" rounded="none">
-                                        <Avatar.Fallback name={biz.name} bg="#111111" border="1px solid #333333" color="white" rounded="none" fontWeight="bold" />
+                                    <Avatar.Root size="md" rounded="full">
+                                        <Avatar.Fallback name={biz.name} bg="#111111" border="1px solid #333333" color="white" rounded="full" fontWeight="bold" />
                                     </Avatar.Root>
                                     <Box overflow="hidden">
                                         <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{biz.name}</Text>
