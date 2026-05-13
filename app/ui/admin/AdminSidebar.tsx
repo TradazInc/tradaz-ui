@@ -9,7 +9,7 @@ import {
     LuLayoutDashboard, LuStore, LuBriefcase, LuCheck, LuTrendingUp,
     LuUsers, LuUser, LuMessageSquare, LuWallet, LuCreditCard, LuLandmark, 
     LuRefreshCw, LuShield, LuScale, LuUndo, LuFileText,  
-    LuSettings, LuMenu, LuX, 
+    LuSettings, LuMenu, LuX, LuZap, LuServer, LuShieldCheck,
     LuChevronDown, LuChevronRight, LuLogOut
 } from "react-icons/lu";
 
@@ -56,8 +56,15 @@ const SUPER_ADMIN_NAV_ITEMS = [
             { label: "Flagged Accounts", icon: LuFileText, path: "/overwatch/flagged" },
         ]
     }, 
-   
-
+    {
+        label: "System Ops",
+        icon: LuServer,
+        children: [
+            { label: "Automation Engine", icon: LuZap, path: "/overwatch/automation" },
+            { label: "API & Health", icon: LuServer, path: "/overwatch/health" },
+            { label: "Staff Roles (RBAC)", icon: LuShieldCheck, path: "/overwatch/staff" }
+        ]
+    },
     { 
         label: "Settings", 
         icon: LuSettings, 
