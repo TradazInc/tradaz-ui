@@ -10,7 +10,7 @@ import {
     LuTrendingDown, LuTrendingUp, LuCalculator, LuMessageSquare, 
     LuRefreshCw, LuUndo, LuCheck, LuMegaphone, LuLayoutGrid, LuImage, 
     LuHeart, LuTicket, LuTag, LuUser, LuTruck, LuPercent, LuShield, LuPalette,
-    LuStore, LuHandshake, LuX, LuList, LuBox, LuRuler, LuBook
+    LuStore, LuHandshake, LuX, LuList, LuBox, LuRuler
 } from "react-icons/lu";
 import { SidebarProps } from "@/app/lib/definitions";
 
@@ -21,8 +21,8 @@ const OTHER_NAV_ITEMS = [
         { label: "Inventory", icon: LuPackage },
         { label: "Categories", icon: LuList },
         { label: "Product Type", icon: LuBox },
-        { label: "Sizes", icon: LuRuler },
-        { label: "Size Guides", icon: LuBook }
+        { label: "Sizes", icon: LuRuler }
+       
     ] },
     { label: "Customers", icon: LuUsers, children: [{ label: "Customer List", icon: LuUsers }, { label: "Reviews", icon: LuStar }] },
     

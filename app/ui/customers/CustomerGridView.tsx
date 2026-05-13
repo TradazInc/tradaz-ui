@@ -327,12 +327,12 @@ export const CustomerGridView = ({
                       fontSize="xs"
                       fontWeight="bold"
                       display="inline-flex"
-                      rounded="none"
+                      rounded="full"
                     >
                       
                       <Box
                         boxSize="6px"
-                        rounded="none"
+                        rounded="full"
                         bg={
                           customer.status === "Active" ? "#5cac7d" : "gray.500"
                         }
