@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Box, VStack, Text, Icon, Flex, Button, ScrollArea, IconButton } from "@chakra-ui/react";
+import { Box, Flex, Text, Icon, Button, ScrollArea, IconButton, VStack } from "@chakra-ui/react";
 import Link from "next/link";
 import { 
     LuLayoutDashboard, LuFile, LuLogOut, LuPackage, LuPlus, LuX,
@@ -39,20 +39,22 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
             color="white"
             flexShrink={0}
         >
-            {/* --- MOBILE CLOSE BUTTON & HEADER --- */}
-            <Flex align="center" justify={isCollapsed ? "center" : "space-between"} pt={6} pb={6} px={isCollapsed ? 0 : 6} h="80px" borderBottom="1px solid #1A1A1A" mb={4}>
-                {!isCollapsed && (
-                    <Flex align="center" gap={3} overflow="hidden">
-                      
-                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight" whiteSpace="nowrap">
-                            Tradaz <Text as="span" color="#888888">.</Text>
-                        </Text>
-                    </Flex>
-                )}
-                {/* Mobile specific close button */}
+            {/* --- MOBILE HEADER & CLOSE BUTTON --- */}
+            <Flex 
+                align="center" justify="space-between" 
+                pt={6} pb={6} px={6} h="80px" 
+                borderBottom="1px solid #1A1A1A" mb={4}
+                display={{ base: "flex", md: "none" }}
+            >
+                <Flex align="center" gap={3} overflow="hidden">
+                    <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight" whiteSpace="nowrap">
+                        Tradaz <Text as="span" color="#888888">.</Text>
+                    </Text>
+                </Flex>
+                
                 <IconButton 
                     aria-label="Close Sidebar" variant="ghost" color="#888888" size="sm" rounded="none"
-                    display={{ base: "flex", md: "none" }} onClick={onClose}
+                    onClick={onClose}
                     _hover={{ bg: "#111111", color: "white" }}
                 >
                     <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
@@ -61,7 +63,8 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
 
             <ScrollArea.Root flex={1} display="flex" flexDirection="column" overflow="hidden">
                 <ScrollArea.Viewport flex={1}>
-                    <Box pt={0} pb={4} css={{ '& [data-part="indicator"]': { display: isCollapsed ? 'none' : 'block' } }}>
+                   
+                    <Box pt={{ base: 0, md: 6 }} pb={4} css={{ '& [data-part="indicator"]': { display: isCollapsed ? 'none' : 'block' } }}>
                         <VStack align="start" gap={0}>
                             {VENDOR_NAV_ITEMS.map((item, idx) => {
                                 const isActive = activeItem === item.label;

@@ -202,7 +202,7 @@ export const CheckoutDrawer = ({ isOpen, onClose, cartTotal, brandColor }: Check
                                 <Text color="white" fontWeight="bold" fontSize="lg">Payment Method</Text>
                             </Flex>
                             <VStack gap={3}>
-                                {[{ id: "paystack", name: "Paystack" }, { id: "transfer", name: "Bank Transfer" }].map((method) => (
+                                {[{ id: "Moniepoint", name: "Monie point" }, { id: "Opay", name: "Opay" }].map((method) => (
                                     <Box 
                                         key={method.id} w="full" p={4} rounded="xl" cursor="pointer" transition="all 0.2s"
                                         bg={selectedPayment === method.id ? "rgba(92, 172, 125, 0.1)" : "#1A1C23"}

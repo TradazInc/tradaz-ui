@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import { Box, VStack, Text, Icon, Flex, Badge, Avatar } from "@chakra-ui/react";
+import { Box, VStack, Text, Icon, Flex, Badge } from "@chakra-ui/react";
 import Link from "next/link";
 
 import { 
     LuHouse, LuHeart, LuShoppingCart, LuPackage, 
-    LuMessageSquare, LuUser, LuStar, LuGift, LuTicket 
+    LuMessageSquare, LuUser, LuStar, LuGift, LuTicket, LuLogOut 
 } from "react-icons/lu";
 import { CustomerSidebarProps } from "@/app/lib/definitions";
 
@@ -27,7 +27,6 @@ const CUSTOMER_ACCOUNT_ITEMS = [
 export const CustomerSidebar = ({ 
     activePath = "/", 
     brandColor = "#5cac7d", 
-    // storeName is intentionally ignored here since we removed the header block
 }: CustomerSidebarProps) => {
 
     return (
@@ -38,9 +37,10 @@ export const CustomerSidebar = ({
             borderRight="1px solid" borderColor="whiteAlpha.100" 
             flexDirection="column" py={4} px={4} zIndex={100}
             flexShrink={0}
+            display="flex"
             animation="slide-in-top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
         >
-            {/* Main Navigation (Store Header removed) */}
+            {/* Main Navigation */}
             <VStack align="stretch" gap={1} mb={8}>
                 {CUSTOMER_NAV_ITEMS.map((item) => {
                     const isActive = activePath === item.path;
@@ -88,35 +88,19 @@ export const CustomerSidebar = ({
                 })}
             </VStack>
 
-            {/*User Profile Footer with Avatar */}
-            <Box 
-                mt="auto" 
-                p={3} 
-                bg="whiteAlpha.50" 
-                rounded="xl" 
-                border="1px solid" 
-                borderColor="whiteAlpha.100" 
-                cursor="pointer" 
-                _hover={{ bg: "whiteAlpha.100" }} 
-                transition="all 0.2s"
-            >
-                <Flex align="center" justify="flex-start" gap={3}>
-                    <Avatar.Root size="sm">
-                        <Avatar.Fallback name="Wada Gift" bg={brandColor} color="white" />
-                        <Avatar.Image src="https://bit.ly/sage-adebayo" /> 
-                    </Avatar.Root>
-                    
-                    <Box overflow="hidden">
-                        <Text fontSize="sm" fontWeight="bold" color="white" whiteSpace="nowrap">
-                            Wada Gift
-                        </Text>
-                        <Text fontSize="10px" color="gray.500" whiteSpace="nowrap" textTransform="uppercase" letterSpacing="wider">
-                            Customer
-                        </Text>
-                    </Box>
+            {/* Bottom Log Out Section */}
+            <Box mt="auto" pt={4} borderTop="1px solid" borderColor="whiteAlpha.100">
+                <Flex 
+                    align="center" justify="flex-start" 
+                    px={3} py={2.5} gap={3}
+                    rounded="lg" cursor="pointer" transition="all 0.2s"
+                    color="red.400" 
+                    _hover={{ bg: "rgba(245, 101, 101, 0.1)" }}
+                >
+                    <Icon as={LuLogOut} fontSize="lg" />
+                    <Text fontSize="sm" fontWeight="bold" whiteSpace="nowrap">Log Out</Text>
                 </Flex>
             </Box>
-
             
         </Box>
     );

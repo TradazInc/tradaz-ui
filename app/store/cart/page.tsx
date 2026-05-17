@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
     Box, Flex, Text, Image, Button, Icon, IconButton, VStack, Separator, SimpleGrid 
 } from "@chakra-ui/react";
@@ -8,29 +8,85 @@ import {
 } from "react-icons/lu";
 import Link from "next/link";
 
-import { CartItems } from "@/app/lib/definitions";
-import { MOCK_CART_ITEMS } from "@/app/lib/data";
 import { CheckoutDrawer } from "@/app/ui/store/CheckoutDrawer/CheckoutDrawer";
+
+// Define the CartItem type to match what we saved in localStorage
+type CartItem = {
+    id: string;
+    name: string;
+    price: number;
+    image: string;
+    quantity: number;
+    variation?: string;
+    size?: string;
+    color?: string;
+};
 
 export default function CartPage() {
     const brandColor = "#5cac7d";
     
-    const [cartItems, setCartItems] = useState<CartItems[]>(MOCK_CART_ITEMS);
-    const [isCheckoutDrawerOpen, setIsCheckoutDrawerOpen] = useState(false);
-
-    const updateQuantity = (id: string, delta: number) => {
-        setCartItems(prev => prev.map(item => {
-            if (item.id === id) {
-                const newQuantity = Math.max(1, item.quantity + delta);
-                return { ...item, quantity: newQuantity };
+    // --- LAZY INITIALIZATION ---
+    // This safely reads from localStorage directly during the initial client-side render
+    // completely avoiding the need to call setState inside a useEffect.
+    const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+        if (typeof window !== "undefined") {
+            try {
+                return JSON.parse(localStorage.getItem("tradaz_cart") || "[]");
+            } catch (error) {
+                console.error("Failed to load cart", error);
+                return [];
             }
-            return item;
-        }));
+        }
+        return [];
+    });
+
+    const [isCheckoutDrawerOpen, setIsCheckoutDrawerOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    // --- HYDRATION SYNC ---
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsMounted(true);
+    }, []);
+
+    // --- UPDATE CART QUANTITY ---
+    const updateQuantity = (id: string, variation: string | undefined, delta: number) => {
+        setCartItems(prev => {
+            const updatedCart = prev.map(item => {
+                // Match by both ID and Variation to ensure we update the right specific item
+                if (item.id === id && item.variation === variation) {
+                    const newQuantity = Math.max(1, item.quantity + delta);
+                    return { ...item, quantity: newQuantity };
+                }
+                return item;
+            });
+
+            // Save to local storage and trigger badge update
+            localStorage.setItem('tradaz_cart', JSON.stringify(updatedCart));
+            window.dispatchEvent(new Event('cartUpdated'));
+
+            return updatedCart;
+        });
     };
 
-    const removeItem = (id: string) => setCartItems(prev => prev.filter(item => item.id !== id));
+    // --- REMOVE ITEM FROM CART ---
+    const removeItem = (id: string, variation: string | undefined) => {
+        setCartItems(prev => {
+            // Filter out the exact item + variation combo
+            const updatedCart = prev.filter(item => !(item.id === id && item.variation === variation));
+            
+            // Save to local storage and trigger badge update
+            localStorage.setItem('tradaz_cart', JSON.stringify(updatedCart));
+            window.dispatchEvent(new Event('cartUpdated'));
+
+            return updatedCart;
+        });
+    };
 
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+    // Prevent rendering until local storage is loaded to avoid hydration UI jumps
+    if (!isMounted) return null;
 
     // Empty State
     if (cartItems.length === 0) {
@@ -52,7 +108,6 @@ export default function CartPage() {
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1200px" mx="auto">
-            
             
             <CheckoutDrawer 
                 isOpen={isCheckoutDrawerOpen} 
@@ -77,8 +132,8 @@ export default function CartPage() {
                 {/* Left Side: Items */}
                 <Box gridColumn={{ lg: "span 8" }}>
                     <VStack gap={4} align="stretch">
-                        {cartItems.map((item) => (
-                            <Box key={item.id} bg="#1A1C23" p={4} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
+                        {cartItems.map((item, index) => (
+                            <Box key={`${item.id}-${index}`} bg="#1A1C23" p={4} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
                                 <Flex gap={4} direction={{ base: "column", sm: "row" }}>
                                     <Box boxSize={{ base: "full", sm: "120px" }} h={{ base: "200px", sm: "120px" }} rounded="xl" overflow="hidden" bg="#121212" flexShrink={0}>
                                         <Image src={item.image} alt={item.name} w="full" h="full" objectFit="cover" />
@@ -87,23 +142,41 @@ export default function CartPage() {
                                         <Box mb={{ base: 4, sm: 0 }}>
                                             <Flex justify="space-between" align="start">
                                                 <Text color="white" fontWeight="bold" fontSize="lg" lineClamp={2} pr={4}>{item.name}</Text>
-                                                <IconButton aria-label="Remove item" size="sm" variant="ghost" color="gray.500" _hover={{ color: "red.400", bg: "rgba(245, 101, 101, 0.15)" }} onClick={() => removeItem(item.id)} mt={-1} mr={-2}>
+                                                <IconButton 
+                                                    aria-label="Remove item" size="sm" variant="ghost" color="gray.500" 
+                                                    _hover={{ color: "red.400", bg: "rgba(245, 101, 101, 0.15)" }} 
+                                                    onClick={() => removeItem(item.id, item.variation)} mt={-1} mr={-2}
+                                                >
                                                     <Icon as={LuTrash2} boxSize="18px" />
                                                 </IconButton>
                                             </Flex>
                                             <Flex gap={3} mt={2}>
-                                                <Text color="gray.500" fontSize="sm" bg="whiteAlpha.50" px={2} py={0.5} rounded="md">Size: <Text as="span" color="white">{item.size}</Text></Text>
-                                                <Text color="gray.500" fontSize="sm" bg="whiteAlpha.50" px={2} py={0.5} rounded="md">Color: <Text as="span" color="white">{item.color}</Text></Text>
+                                                <Text color="gray.500" fontSize="sm" bg="whiteAlpha.50" px={2} py={0.5} rounded="md">
+                                                    Size/Var: <Text as="span" color="white">{item.variation || item.size || "N/A"}</Text>
+                                                </Text>
+                                                {item.color && (
+                                                    <Text color="gray.500" fontSize="sm" bg="whiteAlpha.50" px={2} py={0.5} rounded="md">
+                                                        Color: <Text as="span" color="white">{item.color}</Text>
+                                                    </Text>
+                                                )}
                                             </Flex>
                                         </Box>
                                         <Flex justify="space-between" align="end">
                                             <Text color={brandColor} fontWeight="black" fontSize="xl">₦{(item.price * item.quantity).toLocaleString()}</Text>
                                             <Flex align="center" bg="#121212" rounded="lg" border="1px solid" borderColor="whiteAlpha.200" p={0.5}>
-                                                <IconButton aria-label="Decrease" size="sm" variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={() => updateQuantity(item.id, -1)}>
+                                                <IconButton 
+                                                    aria-label="Decrease" size="sm" variant="ghost" color="gray.400" 
+                                                    _hover={{ color: "white", bg: "whiteAlpha.100" }} 
+                                                    onClick={() => updateQuantity(item.id, item.variation, -1)}
+                                                >
                                                     <Icon as={LuMinus} boxSize="14px" />
                                                 </IconButton>
                                                 <Text color="white" fontWeight="bold" fontSize="md" w="32px" textAlign="center">{item.quantity}</Text>
-                                                <IconButton aria-label="Increase" size="sm" variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={() => updateQuantity(item.id, 1)}>
+                                                <IconButton 
+                                                    aria-label="Increase" size="sm" variant="ghost" color="gray.400" 
+                                                    _hover={{ color: "white", bg: "whiteAlpha.100" }} 
+                                                    onClick={() => updateQuantity(item.id, item.variation, 1)}
+                                                >
                                                     <Icon as={LuPlus} boxSize="14px" />
                                                 </IconButton>
                                             </Flex>

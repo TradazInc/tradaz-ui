@@ -3,10 +3,14 @@ import React, { useState, useEffect } from "react";
 import { 
     Box, Flex, Text, Image, Grid, Button, Icon, Badge, IconButton, Spinner 
 } from "@chakra-ui/react";
-import { LuHeart, LuShoppingCart, LuArrowRight, LuStar } from "react-icons/lu";
+import { LuHeart, LuShoppingCart, LuArrowRight, LuStar, LuCheck, LuX, LuMinus, LuPlus } from "react-icons/lu";
 
 import { STORE_BANNERS, STORE_PRODUCTS } from "@/app/lib/data";
 import { ProductDetailView } from "../ui/store/productDetail/productDetail";
+
+// --- TYPES ---
+type ProductType = typeof STORE_PRODUCTS[0];
+type CartItem = ProductType & { quantity: number; variation?: string };
 
 export default function StorefrontHomePage() {
     const brandColor = "#5cac7d"; 
@@ -15,8 +19,20 @@ export default function StorefrontHomePage() {
     const [feedProducts, setFeedProducts] = useState(STORE_PRODUCTS);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     
+    // Custom Toast State
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const [toastType, setToastType] = useState<"success" | "error">("success");
+    
     // Detailed View State
-    const [selectedProduct, setSelectedProduct] = useState<typeof STORE_PRODUCTS[0] | null>(null);
+    const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
+
+    // --- QUICK ADD TO CART STATE ---
+    const [quickAddProduct, setQuickAddProduct] = useState<ProductType | null>(null);
+    const [selectedVariation, setSelectedVariation] = useState<string>("");
+    const [quantity, setQuantity] = useState<number>(1);
+
+  
+    const MOCK_VARIATIONS = ["S", "M", "L", "XL"];
 
     // --- CAROUSEL LOGIC ---
     useEffect(() => {
@@ -29,7 +45,7 @@ export default function StorefrontHomePage() {
     // --- INFINITE SCROLL LOGIC ---
     useEffect(() => {
         const handleScroll = () => {
-            if (selectedProduct) return; 
+            if (selectedProduct || quickAddProduct) return; 
 
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
                 if (!isLoadingMore) {
@@ -44,7 +60,57 @@ export default function StorefrontHomePage() {
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [isLoadingMore, selectedProduct]);
+    }, [isLoadingMore, selectedProduct, quickAddProduct]);
+
+    // --- TRIGGER QUICK ADD MODAL ---
+    const handleOpenQuickAdd = (e: React.MouseEvent, product: ProductType) => {
+        e.stopPropagation(); // Prevent opening full product details
+        setQuickAddProduct(product);
+        setSelectedVariation(""); // Reset
+        setQuantity(1); // Reset
+    };
+
+    // --- CONFIRM ADD TO CART LOGIC ---
+    const confirmAddToCart = () => {
+        if (!quickAddProduct) return;
+
+        // Validation: Ensure variation is selected
+        if (!selectedVariation) {
+            setToastType("error");
+            setToastMessage("Please select a variation before adding to cart.");
+            setTimeout(() => setToastMessage(null), 3000);
+            return;
+        }
+
+        try {
+            const existingCart: CartItem[] = JSON.parse(localStorage.getItem('tradaz_cart') || '[]');
+            
+            // Check if the exact product + variation combo already exists in the cart
+            const existingItemIndex = existingCart.findIndex(
+                (item: CartItem) => item.id === quickAddProduct.id && item.variation === selectedVariation
+            );
+
+            if (existingItemIndex >= 0) {
+                existingCart[existingItemIndex].quantity += quantity;
+            } else {
+                existingCart.push({ ...quickAddProduct, quantity, variation: selectedVariation });
+            }
+
+            localStorage.setItem('tradaz_cart', JSON.stringify(existingCart));
+            window.dispatchEvent(new Event('cartUpdated'));
+
+            // Show success message
+            setToastType("success");
+            setToastMessage(`${quantity}x ${quickAddProduct.name} (${selectedVariation}) added to cart!`);
+            setTimeout(() => setToastMessage(null), 3000);
+
+            // Close modal
+            setQuickAddProduct(null);
+
+        } catch (error) {
+            console.error("Failed to add to cart:", error);
+        }
+    };
 
     const featuredProducts = STORE_PRODUCTS.slice(0, 4);
 
@@ -59,9 +125,101 @@ export default function StorefrontHomePage() {
     }
 
     return (
-        <Box p={{ base: 4, lg: 8 }} w="full" mx="auto">
+        <Box p={{ base: 4, lg: 8 }} w="full" mx="auto" position="relative">
             
-            {/* CAROUSEL */}
+            {/* --- CUSTOM TOAST NOTIFICATION --- */}
+            {toastMessage && (
+                <Box 
+                    position="fixed" bottom={8} right={8} zIndex={99999} 
+                    bg="#1A1C23" border="1px solid" borderColor={toastType === "success" ? brandColor : "red.400"} shadow="2xl" 
+                    px={6} py={4} rounded="xl" transition="all 0.3s ease" animation="slide-in-bottom 0.3s ease"
+                >
+                    <Flex align="center" gap={3}>
+                        <Flex boxSize="24px" rounded="full" bg={toastType === "success" ? "rgba(92, 172, 125, 0.2)" : "rgba(245, 101, 101, 0.2)"} align="center" justify="center">
+                            <Icon as={toastType === "success" ? LuCheck : LuX} color={toastType === "success" ? brandColor : "red.400"} boxSize="14px" strokeWidth="3" />
+                        </Flex>
+                        <Text color="white" fontWeight="bold" fontSize="sm">{toastMessage}</Text>
+                    </Flex>
+                </Box>
+            )}
+
+            {/* --- QUICK ADD TO CART MODAL --- */}
+            {quickAddProduct && (
+                <Box 
+                    position="fixed" inset={0} zIndex={9999} bg="blackAlpha.800" backdropFilter="blur(4px)" 
+                    display="flex" alignItems="center" justifyContent="center" p={4} 
+                    onClick={() => setQuickAddProduct(null)}
+                >
+                    <Box 
+                        bg="#0A0A0A" border="1px solid #333333" rounded="none" w="full" maxW="400px" p={6} shadow="2xl" 
+                        onClick={e => e.stopPropagation()} animation="fade-in 0.2s ease"
+                    >
+                        {/* Header */}
+                        <Flex justify="space-between" align="start" mb={6}>
+                            <Flex gap={4}>
+                                <Image src={quickAddProduct.image} alt={quickAddProduct.name} boxSize="64px" objectFit="cover" border="1px solid #333333" />
+                                <Box>
+                                    <Text color="white" fontWeight="bold" fontSize="md" lineClamp={1}>{quickAddProduct.name}</Text>
+                                    <Text color={brandColor} fontWeight="black" fontSize="lg">₦{quickAddProduct.price.toLocaleString()}</Text>
+                                </Box>
+                            </Flex>
+                            <IconButton aria-label="Close" variant="ghost" color="gray.500" size="sm" onClick={() => setQuickAddProduct(null)} _hover={{ color: "white", bg: "#111111" }} rounded="none">
+                                <Icon as={LuX} boxSize="18px" />
+                            </IconButton>
+                        </Flex>
+
+                        {/* Variation Selector */}
+                        <Box mb={6}>
+                            <Flex justify="space-between" align="center" mb={2}>
+                                <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Select Size *</Text>
+                            </Flex>
+                            <Flex wrap="wrap" gap={2}>
+                                {MOCK_VARIATIONS.map((size) => (
+                                    <Button 
+                                        key={size} size="sm" rounded="none" px={4}
+                                        bg={selectedVariation === size ? "white" : "#111111"} 
+                                        color={selectedVariation === size ? "black" : "white"} 
+                                        border="1px solid" borderColor={selectedVariation === size ? "white" : "#333333"}
+                                        onClick={() => setSelectedVariation(size)}
+                                        _hover={{ bg: selectedVariation === size ? "white" : "#1A1A1A" }}
+                                    >
+                                        {size}
+                                    </Button>
+                                ))}
+                            </Flex>
+                        </Box>
+
+                        {/* Quantity Selector */}
+                        <Box mb={8}>
+                            <Text color="#888888" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Quantity</Text>
+                            <Flex align="center" gap={4} bg="#111111" border="1px solid #333333" w="fit-content">
+                                <IconButton 
+                                    aria-label="Decrease" variant="ghost" rounded="none" color="white" h="40px" w="40px"
+                                    onClick={() => setQuantity(Math.max(1, quantity - 1))} _hover={{ bg: "#1A1A1A" }}
+                                >
+                                    <Icon as={LuMinus}/>
+                                </IconButton>
+                                <Text color="white" fontWeight="bold" w="20px" textAlign="center">{quantity}</Text>
+                                <IconButton 
+                                    aria-label="Increase" variant="ghost" rounded="none" color="white" h="40px" w="40px"
+                                    onClick={() => setQuantity(quantity + 1)} _hover={{ bg: "#1A1A1A" }}
+                                >
+                                    <Icon as={LuPlus}/>
+                                </IconButton>
+                            </Flex>
+                        </Box>
+
+                        {/* Action Buttons */}
+                        <Flex gap={3}>
+                            <Button flex={1} bg={brandColor} color="white" rounded="none" h="48px" _hover={{ filter: "brightness(1.1)" }} onClick={confirmAddToCart}>
+                                Add to Cart
+                            </Button>
+                        </Flex>
+                    </Box>
+                </Box>
+            )}
+
+            {/* --- CAROUSEL --- */}
             <Box position="relative" w="full" h={{ base: "350px", md: "450px", lg: "550px" }} rounded="3xl" overflow="hidden" mb={12} shadow="2xl">
                 {STORE_BANNERS.map((banner, index) => (
                     <Box key={banner.id} position="absolute" top={0} left={0} w="full" h="full" opacity={currentSlide === index ? 1 : 0} transition="opacity 0.8s ease-in-out" role="group">
@@ -85,7 +243,7 @@ export default function StorefrontHomePage() {
                 </Flex>
             </Box>
 
-            {/* FEATURED GRID */}
+            {/* --- FEATURED GRID --- */}
             <Flex justify="space-between" align="flex-end" mb={6}>
                 <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Featured Drops</Text>
             </Flex>
@@ -103,13 +261,17 @@ export default function StorefrontHomePage() {
                             <Image src={product.image} alt={product.name} w="full" h="full" objectFit="cover" transition="transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)" _groupHover={{ transform: "scale(1.05)" }} />
                         </Box>
                         
-                      
                         <Flex p={5} direction="column" justify="flex-end" bg="#111111" zIndex={2}>
                             <Text fontSize="xs" color={brandColor} textTransform="uppercase" fontWeight="bold" letterSpacing="widest" mb={1}>{product.category}</Text>
                             <Text fontSize="xl" fontWeight="black" color="white" lineHeight="1.1" mb={3} lineClamp={1}>{product.name}</Text>
                             <Flex justify="space-between" align="center" mt="auto">
                                 <Text fontSize="lg" fontWeight="bold" color="white">₦{product.price.toLocaleString()}</Text>
-                                <Button size="sm" rounded="full" bg={brandColor} color="white" _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2} onClick={(e) => e.stopPropagation()}>
+                                {/* OPEN QUICK ADD MODAL */}
+                                <Button 
+                                    size="sm" rounded="full" bg={brandColor} color="white" 
+                                    _hover={{ filter: "brightness(1.1)" }} display="flex" gap={2} 
+                                    onClick={(e) => handleOpenQuickAdd(e, product)}
+                                >
                                     <Icon as={LuShoppingCart} />
                                     <Text>Add</Text>
                                 </Button>
@@ -119,7 +281,7 @@ export default function StorefrontHomePage() {
                 ))}
             </Grid>
 
-            {/* INFINITE CATALOG */}
+            {/* --- INFINITE CATALOG --- */}
             <Box borderTop="1px solid" borderColor="whiteAlpha.100" pt={10}>
                 <Flex justify="space-between" align="flex-end" mb={8}>
                     <Box>
@@ -153,7 +315,12 @@ export default function StorefrontHomePage() {
                                     <Text fontSize="10px" color="gray.500">({product.reviews || 120})</Text>
                                 </Flex>
                                 <Text fontSize="lg" fontWeight="black" color="white" mb={4} mt="auto">₦{product.price.toLocaleString()}</Text>
-                                <Button w="full" size="sm" bg="whiteAlpha.100" color="white" rounded="lg" _hover={{ bg: brandColor, color: "white" }} display="flex" gap={2} onClick={(e) => e.stopPropagation()}>
+                                {/* OPEN QUICK ADD MODAL */}
+                                <Button 
+                                    w="full" size="sm" bg="whiteAlpha.100" color="white" rounded="lg" 
+                                    _hover={{ bg: brandColor, color: "white" }} display="flex" gap={2} 
+                                    onClick={(e) => handleOpenQuickAdd(e, product)}
+                                >
                                     <Icon as={LuShoppingCart} boxSize="14px" />
                                     <Text fontSize="xs" fontWeight="bold">Add to Cart</Text>
                                 </Button>

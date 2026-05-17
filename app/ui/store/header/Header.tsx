@@ -1,13 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { 
     Flex, Box, Input, IconButton, Icon, Text, Badge, Avatar  
 } from "@chakra-ui/react";
 import { 
-    LuSearch, LuBell, LuChevronDown, LuMenu,
-    LuLogOut, LuPackage, LuSettings, LuShoppingCart,
-    LuCircleCheck, LuFilter
+    LuSearch, LuBell, LuMenu, LuShoppingCart,
+    LuCircleCheck, LuFilter, LuPackage
 } from "react-icons/lu"; 
 import Link from "next/link";
 import { HeaderProps } from "@/app/lib/definitions";
@@ -23,11 +22,13 @@ export const Header = ({
     const router = useRouter();
     
     // --- DROPDOWN STATES ---
-    const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [isNavOpen, setIsNavOpen] = useState(false); 
     const [isNotifOpen, setIsNotifOpen] = useState(false); 
     const [isMobileSortOpen, setIsMobileSortOpen] = useState(false);
     
+    // --- CART STATE ---
+    const [cartCount, setCartCount] = useState(0);
+
     // --- DATA STATES ---
     const [mobileSortValue, setMobileSortValue] = useState("relevant");
     const categories = ["Categories", "Foot Wears", "Sport Wears", "Accessories", "Bags"];
@@ -38,6 +39,31 @@ export const Header = ({
         { value: "price_asc", label: "Price: Low to High" },
         { value: "price_desc", label: "Price: High to Low" }
     ];
+
+    // --- DYNAMIC CART LISTENER ---
+    useEffect(() => {
+        // Function to calculate total items from local storage
+        const updateCartCount = () => {
+            try {
+                const cart = JSON.parse(localStorage.getItem('tradaz_cart') || '[]');
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const totalItems = cart.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
+                setCartCount(totalItems);
+            } catch (error) {
+                console.error("Failed to parse cart data", error);
+            }
+        };
+
+        // Run on mount to get initial cart count
+        updateCartCount();
+
+        // Listen for the custom event dispatched when "Add to Cart" is clicked
+        window.addEventListener('cartUpdated', updateCartCount);
+
+        return () => {
+            window.removeEventListener('cartUpdated', updateCartCount);
+        };
+    }, []);
 
     return (
         <Flex 
@@ -128,7 +154,6 @@ export const Header = ({
                         onClick={() => {
                             setIsMobileSortOpen(!isMobileSortOpen);
                             setIsNotifOpen(false);
-                            setIsProfileOpen(false);
                             setIsNavOpen(false);
                         }}
                     >
@@ -159,7 +184,6 @@ export const Header = ({
                                             onClick={() => {
                                                 setMobileSortValue(option.value);
                                                 setIsMobileSortOpen(false);
-                                                // Trigger actual sorting logic here later
                                             }}
                                         >
                                             <Text fontSize="sm" color={mobileSortValue === option.value ? brandColor : "white"} fontWeight={mobileSortValue === option.value ? "bold" : "medium"}>
@@ -194,16 +218,18 @@ export const Header = ({
                     >
                         <Icon as={LuShoppingCart} boxSize="20px" pointerEvents="none" />
                     </Flex>
-                    <Badge 
-                        position="absolute" top="0px" right="0px" zIndex={11}
-                        bg={brandColor} color="white" rounded="full" 
-                        minW="18px" h="18px" 
-                        display="flex" alignItems="center" justifyContent="center"
-                        fontSize="10px" fontWeight="bold" border="2px solid #121212"
-                        pointerEvents="none" 
-                    >
-                        2
-                    </Badge>
+                    {cartCount > 0 && (
+                        <Badge 
+                            position="absolute" top="0px" right="0px" zIndex={11}
+                            bg={brandColor} color="white" rounded="full" 
+                            minW="18px" h="18px" 
+                            display="flex" alignItems="center" justifyContent="center"
+                            fontSize="10px" fontWeight="bold" border="2px solid #121212"
+                            pointerEvents="none" 
+                        >
+                            {cartCount}
+                        </Badge>
+                    )}
                 </Box>
 
                 {/* Notifications */}
@@ -212,7 +238,6 @@ export const Header = ({
                         as="button" 
                         onClick={() => {
                             setIsNotifOpen(!isNotifOpen);
-                            setIsProfileOpen(false); 
                             setIsNavOpen(false);
                             setIsMobileSortOpen(false);
                         }}
@@ -279,13 +304,12 @@ export const Header = ({
                     )}
                 </Box>
 
-                {/* Profile Dropdown */}
+                {/* Profile Avatar */}
                 <Box position="relative">
                     <Flex 
                         align="center" gap={2} p={1} rounded="full" 
                         _hover={{ bg: "whiteAlpha.50" }} transition="all 0.2s" cursor="pointer"
                         onClick={() => {
-                            setIsProfileOpen(!isProfileOpen);
                             setIsNavOpen(false); 
                             setIsNotifOpen(false); 
                             setIsMobileSortOpen(false);
@@ -297,37 +321,7 @@ export const Header = ({
                                 <Avatar.Image src="https://bit.ly/sage-adebayo" /> 
                             </Avatar.Root>
                         </Flex>
-                        <Icon as={LuChevronDown} color="gray.400" display={{ base: "none", md: "block" }} />
                     </Flex>
-
-                    {isProfileOpen && (
-                        <>
-                            <Box position="fixed" inset={0} zIndex={99} onClick={() => setIsProfileOpen(false)} />
-                            <Box position="absolute" right={0} top="100%" mt={2} bg="white" shadow="xl" rounded="xl" border="1px solid" borderColor="gray.100" minW="220px" py={2} zIndex={100}>
-                                <Box px={4} py={3} mb={1} bg="gray.50" borderBottom="1px solid" borderColor="gray.100">
-                                    <Text fontSize="sm" fontWeight="bold" color="gray.900">Wada Gift</Text>
-                                    <Text fontSize="xs" color="gray.500">wada.gift@example.com</Text>
-                                </Box>
-                                <Link href="/account/orders" style={{ textDecoration: "none" }} onClick={() => setIsProfileOpen(false)}>
-                                    <Flex align="center" gap={3} px={4} py={2} _hover={{ bg: "gray.50", color: brandColor }} color="gray.700" cursor="pointer" transition="all 0.2s">
-                                        <Icon as={LuPackage} fontSize="lg" />
-                                        <Text fontSize="sm" fontWeight="medium">My Orders</Text>
-                                    </Flex>
-                                </Link>
-                                <Link href="/account/settings" style={{ textDecoration: "none" }} onClick={() => setIsProfileOpen(false)}>
-                                    <Flex align="center" gap={3} px={4} py={2} _hover={{ bg: "gray.50", color: brandColor }} color="gray.700" cursor="pointer" transition="all 0.2s">
-                                        <Icon as={LuSettings} fontSize="lg" />
-                                        <Text fontSize="sm" fontWeight="medium">Account Settings</Text>
-                                    </Flex>
-                                </Link>
-                                <Box my={2} borderTop="1px solid" borderColor="gray.100" />
-                                <Flex align="center" gap={3} px={4} py={2} _hover={{ bg: "red.50" }} color="red.500" cursor="pointer" transition="all 0.2s" onClick={() => setIsProfileOpen(false)}>
-                                    <Icon as={LuLogOut} fontSize="lg" />
-                                    <Text fontSize="sm" fontWeight="medium">Log Out</Text>
-                                </Flex>
-                            </Box>
-                        </>
-                    )}
                 </Box>
 
                 {/* Desktop Navigation Dropdown */}
@@ -336,7 +330,6 @@ export const Header = ({
                         aria-label="Store Menu" variant="ghost" color="gray.400" rounded="full" _hover={{ bg: "whiteAlpha.100", color: "white" }}
                         onClick={() => {
                             setIsNavOpen(!isNavOpen);
-                            setIsProfileOpen(false); 
                             setIsNotifOpen(false); 
                             setIsMobileSortOpen(false);
                         }}

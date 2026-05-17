@@ -4,14 +4,29 @@ import {
     Box, Flex, Text, Image, Button, Icon, Badge, IconButton, SimpleGrid, HStack, VStack 
 } from "@chakra-ui/react";
 import { 
-    LuHeart, LuShoppingCart, LuStar, LuArrowLeft, LuTruck, LuShieldCheck, LuUndo2 
+    LuHeart, LuShoppingCart, LuStar, LuArrowLeft, LuTruck, LuShieldCheck, LuUndo2, LuCheck, LuX
 } from "react-icons/lu";
 
 import { ProductDetailViewProps } from "@/app/lib/definitions";
 
+// Properly type the cart item to prevent ESLint 'any' errors
+type CartItem = {
+    id: string;
+    name: string;
+    price: number;
+    image: string;
+    quantity: number;
+    variation?: string;
+    [key: string]: unknown;
+};
+
 export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: ProductDetailViewProps) => {
     const [activeImageIdx, setActiveImageIdx] = useState(0);
     const [selectedSize, setSelectedSize] = useState("");
+
+    // Custom Toast State
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
+    const [toastType, setToastType] = useState<"success" | "error">("success");
 
     // Mock detailed data (In a real app, you'd fetch this based on the ID)
     const mockImages = [
@@ -20,9 +35,62 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
         "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?q=80&w=600&auto=format&fit=crop"
     ];
 
-    return (
-        <Box p={{ base: 4, lg: 8 }} w="full" maxW="1200px" mx="auto" animation="fade-in 0.3s ease">
+    // --- ADD TO CART LOGIC ---
+    const handleAddToCart = () => {
+       
+        if (!selectedSize) {
+            setToastType("error");
+            setToastMessage("Please select a size before adding to cart.");
+            setTimeout(() => setToastMessage(null), 3000);
+            return;
+        }
+
+        try {
+            const existingCart: CartItem[] = JSON.parse(localStorage.getItem('tradaz_cart') || '[]');
             
+            
+            const existingItemIndex = existingCart.findIndex(
+                (item: CartItem) => item.id === product.id && item.variation === selectedSize
+            );
+
+            if (existingItemIndex >= 0) {
+                existingCart[existingItemIndex].quantity += 1;
+            } else {
+                existingCart.push({ ...product, quantity: 1, variation: selectedSize });
+            }
+
+            localStorage.setItem('tradaz_cart', JSON.stringify(existingCart));
+            window.dispatchEvent(new Event('cartUpdated'));
+
+            // Show success message
+            setToastType("success");
+            setToastMessage(`${product.name} (${selectedSize}) added to cart!`);
+            setTimeout(() => setToastMessage(null), 3000);
+
+        } catch (error) {
+            console.error("Failed to add to cart:", error);
+        }
+    };
+
+    return (
+        <Box p={{ base: 4, lg: 8 }} w="full" maxW="1200px" mx="auto" animation="fade-in 0.3s ease" position="relative">
+            
+            {/* --- CUSTOM TOAST NOTIFICATION --- */}
+            {toastMessage && (
+                <Box 
+                    position="fixed" bottom={8} right={8} zIndex={99999} 
+                    bg="#1A1C23" border="1px solid" borderColor={toastType === "success" ? brandColor : "red.400"} shadow="2xl" 
+                    px={6} py={4} rounded="xl" transition="all 0.3s ease" animation="slide-in-bottom 0.3s ease"
+                >
+                    <Flex align="center" gap={3}>
+                        <Flex boxSize="24px" rounded="full" bg={toastType === "success" ? "rgba(92, 172, 125, 0.2)" : "rgba(245, 101, 101, 0.2)"} align="center" justify="center">
+                            <Icon as={toastType === "success" ? LuCheck : LuX} color={toastType === "success" ? brandColor : "red.400"} boxSize="14px" strokeWidth="3" />
+                        </Flex>
+                        <Text color="white" fontWeight="bold" fontSize="sm">{toastMessage}</Text>
+                    </Flex>
+                </Box>
+            )}
+
             {/* Header / Back Button */}
             <Flex align="center" gap={3} mb={8}>
                 <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2}>
@@ -83,7 +151,7 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                     {/* Variants Selection */}
                     <Box mb={8}>
                         <Flex justify="space-between" mb={2}>
-                            <Text color="white" fontWeight="bold">Select Size</Text>
+                            <Text color="white" fontWeight="bold">Select Size *</Text>
                             <Text color="gray.500" fontSize="sm" textDecoration="underline" cursor="pointer">Size Guide</Text>
                         </Flex>
                         <SimpleGrid columns={4} gap={3}>
@@ -108,6 +176,7 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                             flex={1} h="60px" bg={brandColor} color="white" rounded="full" fontSize="lg" fontWeight="bold"
                             _hover={{ filter: "brightness(1.1)", transform: "translateY(-2px)" }} transition="all 0.2s" shadow="xl"
                             display="flex" gap={3}
+                            onClick={handleAddToCart}
                         >
                             <Icon as={LuShoppingCart} boxSize="24px" /> Add to Cart
                         </Button>
