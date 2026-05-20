@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { 
     LuHouse, LuHeart, LuShoppingCart, LuPackage, 
-    LuMessageSquare, LuUser, LuStar, LuGift, LuTicket, LuLogOut 
+    LuMessageSquare, LuUser, LuStar, LuTicket, LuLogOut 
 } from "react-icons/lu";
 import { CustomerSidebarProps } from "@/app/lib/definitions";
 
@@ -14,7 +14,7 @@ const CUSTOMER_NAV_ITEMS = [
     { label: "Review", icon: LuStar, path: "/store/review" },
     { label: "Saved Items", icon: LuHeart, path: "/store/saved" },
     { label: "My Cart", icon: LuShoppingCart, path: "/store/cart", badge: 2 },
-    { label: "Gift Cards", icon: LuGift, path: "/store/gift-cards" }, 
+   
     { label: "Coupons", icon: LuTicket, path: "/store/coupons" },     
 ];
 
@@ -34,8 +34,9 @@ export const CustomerSidebar = ({
             w="220px" 
             h="full" 
             bg="#121212" 
+    
             borderRight="1px solid" borderColor="whiteAlpha.100" 
-            flexDirection="column" py={4} px={4} zIndex={100}
+            flexDirection="column" py={4} px={4} zIndex={100000000}
             flexShrink={0}
             display="flex"
             animation="slide-in-top 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)"

@@ -1,5 +1,5 @@
-import { HeroManager } from "@/app/ui/banners/HeroManager";
+import { BannerManager } from "@/app/ui/banners/BannerManager";
 
 export default function PromoBannersPage() {
-    return <HeroManager />;
+    return <BannerManager />;
 }

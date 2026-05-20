@@ -276,7 +276,7 @@ export default function StorefrontHomePage() {
 
             {/* --- anouncement banner --- */}
             {topBarBanners.length > 0 && (
-                <Box w="full" position="sticky" top="70px" zIndex={800000000000}>
+                <Box w="full" position="sticky" top="70px" zIndex={1}>
                     {topBarBanners.map(bar => (
                         <Flex 
                             key={bar.id} w="full" minH="36px" py={1.5} px={4} justify="center" align="center" gap={{ base: 2, sm: 4 }} 
