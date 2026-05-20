@@ -38,7 +38,7 @@ const OTHER_NAV_ITEMS = [
 
     { label: "Finance", icon: LuLandmark, children: [{ label: "Sales Record", icon: LuFileText }, { label: "Staff Salary", icon: LuWallet }, { label: "Expenses", icon: LuTrendingDown }, { label: "Revenue", icon: LuTrendingUp }, { label: "Tax Calculation", icon: LuCalculator }] },
     { label: "Dispute Resolution", icon: LuScale, children: [{ label: "Customers Chats", icon: LuMessageSquare }, { label: "Products exchange", icon: LuRefreshCw }, { label: "Customers Refund", icon: LuUndo }, { label: "Sales Reconciliation", icon: LuCheck }] },
-    { label: "Marketing & Promos", icon: LuTicketPercent, children: [{ label: "Promotions", icon: LuMegaphone }, { label: "Pop up", icon: LuLayoutGrid }, { label: "Promo Banners", icon: LuImage }] },
+    { label: "Marketing & Promos", icon: LuTicketPercent, children: [{ label: "Promotions", icon: LuMegaphone }, { label: "Pop up", icon: LuLayoutGrid }, { label: "Promo Banners", icon: LuImage }, { label: "Hero Banner", icon: LuImage }] },
     { label: "Loyalty & Rewards", icon: LuGift, children: [{ label: "Loyalty", icon: LuHeart }, { label: "Vouchers", icon: LuTicket }, { label: "Set Coupon", icon: LuTag }] }, 
     { label: "Staff", icon: LuUserPlus, children: [{ label: "Staff List", icon: LuUser }] }, 
     { label: "Settings", icon: LuSettings, children: [{ label: "Logistics", icon: LuTruck }, { label: "VAT", icon: LuPercent }, { label: "Terms", icon: LuFileText }, { label: "Conditions & Policies", icon: LuShield }, { label: "UI config", icon: LuPalette }] },

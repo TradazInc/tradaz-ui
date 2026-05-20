@@ -25,6 +25,7 @@ interface PromoBanner {
     ctaText: string;
     ctaLink: string;
     bgColor: string;
+    image?: string;
     textColor: string;
     status: "Active" | "Draft";
 }
@@ -79,7 +80,8 @@ export default function StorefrontHomePage() {
             subtitle: b.message,
             cta: b.ctaText,
             bgColor: b.bgColor,
-            textColor: b.textColor
+            textColor: b.textColor,
+            image: b.image
         })),
         ...STORE_BANNERS.map(b => ({
             id: b.id,
@@ -310,61 +312,64 @@ export default function StorefrontHomePage() {
            
             <Box p={{ base: 4, lg: 8 }} w="full" mx="auto">
 
-                {/* --- DEFAULT CAROUSEL HERO SECTION --- */}
-                <Box position="relative" w="full" h="550px" rounded="3xl" overflow="hidden" mb={12} shadow="2xl">
-                    
-                    {/* Slides */}
-                    {carouselItems.map((banner, index) => (
-                        <Box key={banner.id} position="absolute" top={0} left={0} w="full" h="full" opacity={currentSlide === index ? 1 : 0} transition="opacity 0.8s ease-in-out" role="group">
+              
+                {/* --- CAROUSEL HERO SECTION --- */}
+            <Box position="relative" w="full" h="550px" rounded="none" overflow="hidden" mb={12} shadow="2xl">
+                
+                {/* Slides */}
+                {carouselItems.map((banner, index) => (
+                    <Box key={banner.id} position="absolute" top={0} left={0} w="full" h="full" opacity={currentSlide === index ? 1 : 0} transition="opacity 0.8s ease-in-out" role="group">
+                        
+                        {/* Render either the Image OR the Admin Background Color */}
+                        {banner.image ? (
+                            <>
+                                <Box position="absolute" inset={0} bgGradient="linear(to-t, #0A0A0B 0%, transparent 70%)" zIndex={1} />
+                                <Image src={banner.image} alt={banner.title} w="full" h="full" objectFit="cover" transition="transform 6s ease" _groupHover={{ transform: "scale(1.05)" }} />
+                            </>
+                        ) : (
+                            <Box position="absolute" inset={0} bg={banner.bgColor || "#0A0A0A"} zIndex={0} />
+                        )}
+                        
+                        {/* Overlay Text */}
+                        <Flex position="absolute" bottom={0} left={0} zIndex={2} p={{ base: 6, lg: 12 }} direction="column" align="flex-start" w={{ base: "90%", lg: "60%" }}>
+                            <Badge bg={banner.isCustom ? "white" : brandColor} color={banner.isCustom ? "black" : "white"} px={3} py={1} rounded="full" mb={4} fontSize="xs" fontWeight="bold" letterSpacing="widest" textTransform="uppercase">
+                                {banner.isCustom ? "Announcement" : "Limited Time!"}
+                            </Badge>
                             
-                            {/* Render either the Admin Color Box or Default Image */}
-                            {banner.isCustom ? (
-                                <Box position="absolute" inset={0} bg={banner.bgColor} zIndex={0} />
-                            ) : (
-                                <>
-                                    <Box position="absolute" inset={0} bgGradient="linear(to-t, #0A0A0B 0%, transparent 70%)" zIndex={1} />
-                                    <Image src={banner.image} alt={banner.title} w="full" h="full" objectFit="cover" transition="transform 6s ease" _groupHover={{ transform: "scale(1.05)" }} />
-                                </>
+                            <Text fontSize={{ base: "4xl", lg: "6xl" }} fontWeight="black" color={banner.isCustom ? banner.textColor : "white"} lineHeight="1.1" mb={4}>
+                                {banner.title}
+                            </Text>
+                            
+                            <Text fontSize={{ base: "lg", lg: "xl" }} color={banner.isCustom ? banner.textColor : "gray.300"} opacity={banner.isCustom ? 0.9 : 1} mb={8} maxW="md">
+                                {banner.subtitle}
+                            </Text>
+                            
+                            {banner.cta && (
+                                <Button 
+                                    display="flex" alignItems="center" gap={3} 
+                                    bg={banner.isCustom ? banner.textColor : brandColor} 
+                                    color={banner.isCustom ? banner.bgColor : "white"} 
+                                    px={8} py={6} rounded="full" fontWeight="bold" transition="all 0.2s" 
+                                    _hover={{ filter: "brightness(1.1)", transform: "translateX(4px)" }}
+                                    onClick={() => {
+                                        if (banner.ctaLink) router.push(banner.ctaLink);
+                                    }}
+                                >
+                                    <Text>{banner.cta}</Text>
+                                    <Icon as={LuArrowRight} />
+                                </Button>
                             )}
-                            
-                            {/* Overlay Text */}
-                            <Flex position="absolute" bottom={0} left={0} zIndex={2} p={{ base: 6, lg: 12 }} direction="column" align="flex-start" w={{ base: "90%", lg: "60%" }}>
-                                <Badge bg={banner.isCustom ? "white" : brandColor} color={banner.isCustom ? "black" : "white"} px={3} py={1} rounded="full" mb={4} fontSize="xs" fontWeight="bold" letterSpacing="widest" textTransform="uppercase">
-                                    {banner.isCustom ? "Announcement" : "Limited Time!"}
-                                </Badge>
-                                
-                                <Text fontSize={{ base: "4xl", lg: "6xl" }} fontWeight="black" color={banner.isCustom ? banner.textColor : "white"} lineHeight="1.1" mb={4}>
-                                    {banner.title}
-                                </Text>
-                                
-                                <Text fontSize={{ base: "lg", lg: "xl" }} color={banner.isCustom ? banner.textColor : "gray.300"} opacity={banner.isCustom ? 0.9 : 1} mb={8} maxW="md">
-                                    {banner.subtitle}
-                                </Text>
-                                
-                                {banner.cta && (
-                                    <Button 
-                                        display="flex" alignItems="center" gap={3} 
-                                        bg={banner.isCustom ? banner.textColor : brandColor} 
-                                        color={banner.isCustom ? banner.bgColor : "white"} 
-                                        px={8} py={6} rounded="full" fontWeight="bold" transition="all 0.2s" 
-                                        _hover={{ filter: "brightness(1.1)", transform: "translateX(4px)" }}
-                                    >
-                                        <Text>{banner.cta}</Text>
-                                        <Icon as={LuArrowRight} />
-                                    </Button>
-                                )}
-                            </Flex>
-                        </Box>
+                        </Flex>
+                    </Box>
+                ))}
+                
+                {/* Dots indicator */}
+                <Flex position="absolute" bottom={6} left="50%" transform="translateX(-50%)" gap={3} zIndex={10}>
+                    {carouselItems.map((_, idx) => (
+                        <Box key={idx} boxSize={currentSlide === idx ? "10px" : "8px"} bg={currentSlide === idx ? "white" : "whiteAlpha.400"} rounded="full" cursor="pointer" transition="all 0.3s" onClick={() => setCurrentSlide(idx)} />
                     ))}
-                    
-                    {/* Dots indicator */}
-                    <Flex position="absolute" bottom={6} left="50%" transform="translateX(-50%)" gap={3} zIndex={10}>
-                        {carouselItems.map((_, idx) => (
-                            <Box key={idx} boxSize={currentSlide === idx ? "10px" : "8px"} bg={currentSlide === idx ? "white" : "whiteAlpha.400"} rounded="full" cursor="pointer" transition="all 0.3s" onClick={() => setCurrentSlide(idx)} />
-                        ))}
-                    </Flex>
-                </Box>
-
+                </Flex>
+            </Box>
                 {/* --- FEATURED GRID --- */}
                 <Flex justify="space-between" align="flex-end" mb={6}>
                     <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Featured Drops</Text>
