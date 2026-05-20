@@ -107,7 +107,7 @@ const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) 
                                             <Text as="label" {...labelStyles}>Placement Position</Text>
                                             <select name="position" value={formData.position} onChange={handleChange} style={nativeSelectStyle}>
                                                 <option value="Top Announcement Bar" style={{ background: "#000000" }}>Top Announcement Bar</option>
-                                                <option value="Hero Slider" style={{ background: "#000000" }}>Hero Slider Image</option>
+                                            
                                                 <option value="Checkout Warning" style={{ background: "#000000" }}>Checkout Warning</option>
                                             </select>
                                         </Box>
@@ -168,22 +168,39 @@ const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) 
 
 // --- MAIN BANNER MANAGER ---
 export const BannerManager = () => {
-    const [banners, setBanners] = useState<PromoBanner[]>(generateDummyBanners());
+  const [banners, setBanners] = useState<PromoBanner[]>(() => {
+        if (typeof window !== "undefined") {
+            try {
+                const savedBanners = localStorage.getItem('tradaz_banners');
+                if (savedBanners) return JSON.parse(savedBanners);
+            } catch (error) {
+                console.error("Failed to load banners:", error);
+            }
+        }
+        
+        return generateDummyBanners() as PromoBanner[]; 
+    });
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    // --- ACTIONS ---
+  // --- ACTIONS WITH LOCAL STORAGE SYNC ---
     const toggleStatus = (id: string, currentStatus: string) => {
-        setBanners(prev => prev.map(banner => 
-            banner.id === id ? { ...banner, status: currentStatus === "Active" ? "Draft" : "Active" } : banner
-        ));
+        const updated = banners.map((banner): PromoBanner => 
+            banner.id === id ? { ...banner, status: currentStatus === "Active" ? "Draft" : "Active" } as PromoBanner : banner
+        );
+        setBanners(updated);
+        localStorage.setItem('tradaz_banners', JSON.stringify(updated));
     };
 
     const deleteBanner = (id: string) => {
-        setBanners(prev => prev.filter(b => b.id !== id));
+        const updated = banners.filter(b => b.id !== id);
+        setBanners(updated);
+        localStorage.setItem('tradaz_banners', JSON.stringify(updated));
     };
 
     const handleCreateBanner = (newBanner: PromoBanner) => {
-        setBanners(prev => [newBanner, ...prev]);
+        const updated = [newBanner, ...banners];
+        setBanners(updated);
+        localStorage.setItem('tradaz_banners', JSON.stringify(updated));
     };
 
     // --- STATS ---
@@ -204,7 +221,7 @@ export const BannerManager = () => {
                         <Text color="white" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2} letterSpacing="tight">
                             <Icon as={LuLayoutTemplate} color="#5cac7d" strokeWidth="2.5" /> Promo Banners
                         </Text>
-                        <Text color="#888888" fontSize="sm">Manage announcement bars, hero sliders, and checkout warnings.</Text>
+                        <Text color="#888888" fontSize="sm">Manage announcement bars and checkout warnings.</Text>
                     </Box>
                     
                     <Button onClick={() => setIsCreateModalOpen(true)} bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" fontWeight="bold" border="none">
