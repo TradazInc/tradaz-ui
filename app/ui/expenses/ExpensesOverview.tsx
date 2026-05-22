@@ -8,7 +8,7 @@ import {
   Icon,
   Input,
   Button,
-  IconButton,
+  
   Spinner,
 } from "@chakra-ui/react";
 import {
@@ -22,7 +22,6 @@ import {
   LuSettings,
   LuZap,
   LuUsers,
-  LuEllipsisVertical,
   LuReceipt,
 } from "react-icons/lu";
 
@@ -522,16 +521,7 @@ export const ExpensesOverview = () => {
                         >
                           View
                         </Button>
-                        <IconButton
-                          aria-label="Options"
-                          size="sm"
-                          variant="ghost"
-                          rounded="md"
-                          color="gray.400"
-                          _hover={{ color: "white", bg: "#1A1A1A" }}
-                        >
-                          <Icon as={LuEllipsisVertical} strokeWidth="2.5" />
-                        </IconButton>
+                       
                       </Flex>
                     </Box>
                   </Box>

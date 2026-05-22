@@ -8,7 +8,7 @@ import {
   Icon,
   Input,
   Button,
-  IconButton,
+ 
 } from "@chakra-ui/react";
 import {
   LuSearch,
@@ -22,7 +22,7 @@ import {
   LuTrendingUp,
   LuWallet,
   LuReceipt,
-  LuChevronDown,
+
 } from "react-icons/lu";
 
 const controlStyles = {
@@ -558,17 +558,7 @@ export default function VendorSalesOverview() {
                           <Icon as={LuEye} mr={1.5} /> Receipt
                         </Button>
 
-                        <IconButton
-                          aria-label="More options"
-                          size="sm"
-                          h="32px"
-                          variant="ghost"
-                          rounded="none"
-                          color="gray.400"
-                          _hover={{ color: "white", bg: "#1A1A1A" }}
-                        >
-                          <Icon as={LuChevronDown} strokeWidth="2.5" />
-                        </IconButton>
+                       
                       </Flex>
                     </Box>
                   </Box>

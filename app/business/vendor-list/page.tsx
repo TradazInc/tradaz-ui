@@ -4,7 +4,7 @@ import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, IconButton, Avatar, A
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LuSearch, LuRefreshCw, LuStore, LuCheck,
-    LuBan, LuClock, LuMail, LuSend, LuEye, LuEllipsisVertical, LuX
+    LuBan, LuClock, LuMail, LuSend, LuEye, LuX
 } from "react-icons/lu";
 
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
@@ -316,9 +316,7 @@ export default function Page() {
                                                         </Button>
                                                     )}
                                                     
-                                                    <IconButton aria-label="More options" size="sm" h="32px" variant="ghost" rounded="none" color="gray.400" _hover={{ color: "white", bg: "#1A1A1A" }}>
-                                                        <Icon as={LuEllipsisVertical} strokeWidth="2.5" />
-                                                    </IconButton>
+                                                   
                                                 </Flex>
                                             </Box>
 

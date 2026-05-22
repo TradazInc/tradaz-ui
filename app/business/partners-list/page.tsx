@@ -466,7 +466,7 @@ export default function PartnersListPage() {
                                                 )}
                                                 
                                                 <IconButton aria-label="More options" size="sm" h="32px" variant="ghost" rounded="none" color="#888888" _hover={{ color: "white", bg: "#1A1A1A" }}>
-                                                    <Icon as={LuEllipsisVertical} strokeWidth="2.5" />
+                                                 
                                                 </IconButton>
                                             </Flex>
 
