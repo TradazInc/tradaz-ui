@@ -26,24 +26,44 @@ const colorPickerStyle: React.CSSProperties = { width: "100%", height: "44px", p
 const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
 const brandColor = "#5cac7d";
 
-// --- CREATE HERO SLIDE MODAL ---
+// --- CREATE / EDIT HERO SLIDE MODAL ---
 interface CreateHeroModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (banner: PromoBanner) => void;
+    editData?: PromoBanner | null; 
 }
 
-const CreateHeroModal = ({ isOpen, onClose, onSave }: CreateHeroModalProps) => {
+const CreateHeroModal = ({ isOpen, onClose, onSave, editData }: CreateHeroModalProps) => {
+    const defaultData = {
+        name: "", message: "", ctaText: "", ctaLink: "/", bgColor: "#111111", textColor: "#ffffff", image: "" 
+    };
+
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        message: "",
-        ctaText: "",
-        ctaLink: "/",
-        bgColor: "#111111",
-        textColor: "#ffffff",
-        image: "" 
-    });
+    const [formData, setFormData] = useState(editData ? { ...editData, image: editData.image || "" } : defaultData);
+    
+    // Track previous props to update state safely during render
+    const [prevEditData, setPrevEditData] = useState(editData);
+    const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+    if (editData !== prevEditData || isOpen !== prevIsOpen) {
+        setPrevEditData(editData);
+        setPrevIsOpen(isOpen);
+        
+        if (editData) {
+            setFormData({
+                name: editData.name,
+                message: editData.message,
+                ctaText: editData.ctaText,
+                ctaLink: editData.ctaLink,
+                bgColor: editData.bgColor,
+                textColor: editData.textColor,
+                image: editData.image || ""
+            });
+        } else {
+            setFormData(defaultData);
+        }
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,20 +73,20 @@ const CreateHeroModal = ({ isOpen, onClose, onSave }: CreateHeroModalProps) => {
         setIsLoading(true);
         setTimeout(() => {
             const newBanner: PromoBanner = {
-                id: `HERO-${Math.floor(Math.random() * 90000) + 10000}`,
+               
+                id: editData ? editData.id : `HERO-${Math.floor(Math.random() * 90000) + 10000}`,
                 name: formData.name,
-                position: "Hero Slider",
+                position: "Hero Slider", 
                 message: formData.message,
                 ctaText: formData.ctaText,
                 ctaLink: formData.ctaLink,
                 bgColor: formData.bgColor,
                 textColor: formData.textColor,
                 image: formData.image,
-                status: "Draft"
+                status: editData ? editData.status : "Draft" 
             };
             onSave(newBanner);
             setIsLoading(false);
-            setFormData({ name: "", message: "", ctaText: "", ctaLink: "/", bgColor: "#111111", textColor: "#ffffff", image: "" });
             onClose();
         }, 600);
     };
@@ -99,7 +119,7 @@ const CreateHeroModal = ({ isOpen, onClose, onSave }: CreateHeroModalProps) => {
                                             Visual Builder
                                         </Text>
                                         <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
-                                            Create Hero Slide
+                                            {editData ? "Edit Hero Slide" : "Create Hero Slide"}
                                         </Text>
                                     </Box>
                                     <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
@@ -192,7 +212,7 @@ const CreateHeroModal = ({ isOpen, onClose, onSave }: CreateHeroModalProps) => {
                                         _disabled={{ opacity: 0.5, cursor: "not-allowed", bg: "#333333", color: "#888888" }} 
                                         transition="all 0.2s ease"
                                     >
-                                        {isLoading ? "Saving..." : "Publish Slide"}
+                                        {isLoading ? "Saving..." : (editData ? "Update Slide" : "Publish Slide")}
                                     </Button>
                                 </Flex>
 
@@ -222,8 +242,8 @@ export const HeroManager = () => {
     });
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [editingBanner, setEditingBanner] = useState<PromoBanner | null>(null); 
 
- 
     const heroSlides = allBanners.filter(b => b.position === "Hero Slider");
 
     // --- ACTIONS (Update the master list and save) ---
@@ -241,10 +261,28 @@ export const HeroManager = () => {
         localStorage.setItem('tradaz_banners', JSON.stringify(updated));
     };
 
-    const handleCreateBanner = (newBanner: PromoBanner) => {
-        const updated = [newBanner, ...allBanners];
+    const handleSaveBanner = (savedBanner: PromoBanner) => {
+        let updated;
+        if (editingBanner) {
+            // Update existing banner
+            updated = allBanners.map(b => b.id === savedBanner.id ? savedBanner : b);
+        } else {
+            // Add new banner
+            updated = [savedBanner, ...allBanners];
+        }
         setAllBanners(updated);
         localStorage.setItem('tradaz_banners', JSON.stringify(updated));
+        setEditingBanner(null);
+    };
+
+    const openEditModal = (banner: PromoBanner) => {
+        setEditingBanner(banner);
+        setIsCreateModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsCreateModalOpen(false);
+        setEditingBanner(null);
     };
 
     // --- STATS ---
@@ -264,10 +302,10 @@ export const HeroManager = () => {
                         <Text color="white" fontWeight="bold" fontSize="2xl" mb={1} display="flex" alignItems="center" gap={2} letterSpacing="tight">
                             <Icon as={LuImagePlus} color={brandColor} strokeWidth="2.5" /> Hero Slider Manager
                         </Text>
-                        <Text color="#888888" fontSize="sm">Manage your storefront main carousel images and messaging.</Text>
+                        <Text color="#888888" fontSize="sm">Manage your storefronts main carousel images and messaging.</Text>
                     </Box>
                     
-                    <Button onClick={() => setIsCreateModalOpen(true)} bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" fontWeight="bold" border="none">
+                    <Button onClick={() => { setEditingBanner(null); setIsCreateModalOpen(true); }} bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" fontWeight="bold" border="none">
                         <Icon as={LuPlus} mr={2} strokeWidth="2.5" /> Add Slide
                     </Button>        
                 </Flex>
@@ -340,7 +378,7 @@ export const HeroManager = () => {
 
                                     {/* Actions */}
                                     <Flex direction="column" gap={2} minW="140px" justify="center">
-                                        <Button size="sm" h="36px" variant="outline" borderColor="#333333" color="white" _hover={{ bg: "#111111" }} rounded="none" justifyContent="flex-start">
+                                        <Button size="sm" h="36px" onClick={() => openEditModal(slide)} variant="outline" borderColor="#333333" color="white" _hover={{ bg: "#111111" }} rounded="none" justifyContent="flex-start">
                                             <Icon as={LuSquare} mr={2} strokeWidth="2.5" /> Edit Slide
                                         </Button>
                                         <Button size="sm" h="36px" onClick={() => toggleStatus(slide.id, slide.status)} variant="outline" borderColor="#333333" color={isActive ? "orange.400" : brandColor} _hover={{ bg: "#111111" }} rounded="none" justifyContent="flex-start">
@@ -361,9 +399,11 @@ export const HeroManager = () => {
             {/* --- MOUNT MODAL --- */}
             <CreateHeroModal 
                 isOpen={isCreateModalOpen} 
-                onClose={() => setIsCreateModalOpen(false)} 
-                onSave={handleCreateBanner}
+                onClose={handleCloseModal} 
+                onSave={handleSaveBanner}
+                editData={editingBanner}
             />
         </Box>
     );
 };
+

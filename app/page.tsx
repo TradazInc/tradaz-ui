@@ -10,6 +10,7 @@ import { containerVariants } from "./ui/landingPage/hero/config";
 import HowItWorks from "./ui/how-it-works/HowItWorks";
 import WhatWeOffer from "./ui/landingPage/what-we-offer/WhatWeOffer";
 import Navbar from "./ui/landingPage/navbar/Navbar";
+import { Footer } from "./ui/landingPage/footer/page";
 
 
 
@@ -50,6 +51,7 @@ const Hero = () => {
      
       <HowItWorks/>
       <WhatWeOffer/>
+      <Footer/>
       
     </>
   );

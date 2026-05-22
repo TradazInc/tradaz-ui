@@ -52,19 +52,20 @@ export const OnlineOrdersGridView = ({
 
             
             {/* Sticky Toolbar */}
-            <Box 
-                position="sticky" 
-                top="0" 
-                zIndex={30} 
-                bg="rgba(0, 0, 0, 0.85)" 
-                backdropFilter="blur(12px)" 
-                py={3} 
-                mb={6} 
-                mx={-4} 
-                px={4} 
-                borderBottom="1px solid" 
-                borderColor="#1A1A1A"
-            >
+          <Box
+                  position="sticky"
+                  top={{ base: "-16px", md: "-32px" }}
+                  mx={{ base: "-16px", md: "-32px" }}
+                  px={{ base: "16px", md: "32px" }}
+                  zIndex={20}
+                  bg="rgba(0, 0, 0, 0.85)"
+                  backdropFilter="blur(12px)"
+                  py={3}
+                  mb={6}
+                  borderBottom="1px solid"
+                  borderColor="#1A1A1A"
+                  w="full"
+                >
                 <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
                     
                     {/* Search Input - Full width on mobile */}

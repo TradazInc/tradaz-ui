@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { Box, Flex, Text, Icon, Button, HStack, VStack, SimpleGrid, Input, IconButton } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -16,34 +16,58 @@ const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor:
 const colorPickerStyle: React.CSSProperties = { width: "100%", height: "44px", padding: "2px", backgroundColor: "#000000", border: "1px solid #333333", cursor: "pointer" };
 const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
 
-// --- CREATE BANNER MODAL ---
+// --- CREATE / EDIT BANNER MODAL ---
 interface CreateBannerModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (banner: PromoBanner) => void;
+    editData?: PromoBanner | null; 
 }
 
-const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) => {
+const CreateBannerModal = ({ isOpen, onClose, onSave, editData }: CreateBannerModalProps) => {
+    const defaultData = { 
+        name: "", position: "Top Announcement Bar", message: "", 
+        ctaText: "", ctaLink: "/", bgColor: "#5cac7d", textColor: "#ffffff" 
+    };
+
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        name: "",
-        position: "Top Announcement Bar",
-        message: "",
-        ctaText: "",
-        ctaLink: "/",
-        bgColor: "#5cac7d",
-        textColor: "#ffffff"
-    });
+    const [formData, setFormData] = useState(editData ? { ...editData } : defaultData);
+    
+ 
+    const [prevEditData, setPrevEditData] = useState(editData);
+    const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+
+    // Modern React Pattern: Adjust state during render when props change
+    if (editData !== prevEditData || isOpen !== prevIsOpen) {
+        setPrevEditData(editData);
+        setPrevIsOpen(isOpen);
+        
+        if (editData) {
+            setFormData({
+                name: editData.name,
+                position: editData.position || "Top Announcement Bar",
+                message: editData.message,
+                ctaText: editData.ctaText,
+                ctaLink: editData.ctaLink,
+                bgColor: editData.bgColor,
+                textColor: editData.textColor,
+            });
+        } else {
+            setFormData(defaultData);
+        }
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    
     const handleSave = () => {
         setIsLoading(true);
         setTimeout(() => {
-            const newBanner: PromoBanner = {
-                id: `BNR-${Math.floor(Math.random() * 90000) + 10000}`,
+            const banner: PromoBanner = {
+                // If editing, keep the same ID and Status. If new, generate ID and set to Draft.
+                id: editData ? editData.id : `BNR-${Math.floor(Math.random() * 90000) + 10000}`,
                 name: formData.name,
                 position: formData.position as PromoBanner["position"],
                 message: formData.message,
@@ -51,11 +75,10 @@ const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) 
                 ctaLink: formData.ctaLink,
                 bgColor: formData.bgColor,
                 textColor: formData.textColor,
-                status: "Draft" // Default to draft
+                status: editData ? editData.status : "Draft" 
             };
-            onSave(newBanner);
+            onSave(banner);
             setIsLoading(false);
-            setFormData({ name: "", position: "Top Announcement Bar", message: "", ctaText: "", ctaLink: "/", bgColor: "#5cac7d", textColor: "#ffffff" });
             onClose();
         }, 600);
     };
@@ -88,7 +111,7 @@ const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) 
                                             Visual Builder
                                         </Text>
                                         <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
-                                            Create Banner
+                                            {editData ? "Edit Banner" : "Create Banner"}
                                         </Text>
                                     </Box>
                                     <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
@@ -107,7 +130,6 @@ const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) 
                                             <Text as="label" {...labelStyles}>Placement Position</Text>
                                             <select name="position" value={formData.position} onChange={handleChange} style={nativeSelectStyle}>
                                                 <option value="Top Announcement Bar" style={{ background: "#000000" }}>Top Announcement Bar</option>
-                                            
                                                 <option value="Checkout Warning" style={{ background: "#000000" }}>Checkout Warning</option>
                                             </select>
                                         </Box>
@@ -152,7 +174,7 @@ const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) 
                                         _disabled={{ opacity: 0.5, cursor: "not-allowed", bg: "#333333", color: "#888888" }} 
                                         transition="all 0.2s ease"
                                     >
-                                        {isLoading ? "Saving..." : "Create Banner"}
+                                        {isLoading ? "Saving..." : (editData ? "Update Banner" : "Create Banner")}
                                     </Button>
                                 </Flex>
 
@@ -168,7 +190,7 @@ const CreateBannerModal = ({ isOpen, onClose, onSave }: CreateBannerModalProps) 
 
 // --- MAIN BANNER MANAGER ---
 export const BannerManager = () => {
-  const [banners, setBanners] = useState<PromoBanner[]>(() => {
+    const [banners, setBanners] = useState<PromoBanner[]>(() => {
         if (typeof window !== "undefined") {
             try {
                 const savedBanners = localStorage.getItem('tradaz_banners');
@@ -177,12 +199,13 @@ export const BannerManager = () => {
                 console.error("Failed to load banners:", error);
             }
         }
-        
         return generateDummyBanners() as PromoBanner[]; 
     });
+    
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [editingBanner, setEditingBanner] = useState<PromoBanner | null>(null); // State for editing
 
-  // --- ACTIONS WITH LOCAL STORAGE SYNC ---
+    // --- ACTIONS WITH LOCAL STORAGE SYNC ---
     const toggleStatus = (id: string, currentStatus: string) => {
         const updated = banners.map((banner): PromoBanner => 
             banner.id === id ? { ...banner, status: currentStatus === "Active" ? "Draft" : "Active" } as PromoBanner : banner
@@ -197,10 +220,28 @@ export const BannerManager = () => {
         localStorage.setItem('tradaz_banners', JSON.stringify(updated));
     };
 
-    const handleCreateBanner = (newBanner: PromoBanner) => {
-        const updated = [newBanner, ...banners];
+    const handleSaveBanner = (savedBanner: PromoBanner) => {
+        let updated;
+        if (editingBanner) {
+            // Update existing banner
+            updated = banners.map(b => b.id === savedBanner.id ? savedBanner : b);
+        } else {
+            // Add new banner
+            updated = [savedBanner, ...banners];
+        }
         setBanners(updated);
         localStorage.setItem('tradaz_banners', JSON.stringify(updated));
+        setEditingBanner(null);
+    };
+
+    const openEditModal = (banner: PromoBanner) => {
+        setEditingBanner(banner);
+        setIsCreateModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsCreateModalOpen(false);
+        setEditingBanner(null);
     };
 
     // --- STATS ---
@@ -224,7 +265,7 @@ export const BannerManager = () => {
                         <Text color="#888888" fontSize="sm">Manage announcement bars and checkout warnings.</Text>
                     </Box>
                     
-                    <Button onClick={() => setIsCreateModalOpen(true)} bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" fontWeight="bold" border="none">
+                    <Button onClick={() => { setEditingBanner(null); setIsCreateModalOpen(true); }} bg="white" color="black" _hover={{ bg: "#E5E5E5" }} h="44px" px={6} rounded="none" fontWeight="bold" border="none">
                         <Icon as={LuPlus} mr={2} strokeWidth="2.5" /> Create Banner
                     </Button>
                 </Flex>
@@ -313,7 +354,7 @@ export const BannerManager = () => {
 
                                     {/* Right: Actions */}
                                     <Flex direction="column" gap={2} minW="140px" justify="flex-end" w={{ base: "full", xl: "auto" }}>
-                                        <Button size="sm" h="36px" variant="outline" borderColor="#333333" color="white" _hover={{ bg: "#111111" }} rounded="none" justifyContent="flex-start">
+                                        <Button size="sm" h="36px" onClick={() => openEditModal(banner)} variant="outline" borderColor="#333333" color="white" _hover={{ bg: "#111111" }} rounded="none" justifyContent="flex-start">
                                             <Icon as={LuSquare} mr={2} strokeWidth="2.5" /> Edit Banner
                                         </Button>
                                         <Button size="sm" h="36px" onClick={() => toggleStatus(banner.id, banner.status)} variant="outline" borderColor="#333333" color={isActive ? "orange.400" : "#5cac7d"} _hover={{ bg: "#111111" }} rounded="none" justifyContent="flex-start">
@@ -335,8 +376,9 @@ export const BannerManager = () => {
             {/* --- MOUNT MODAL --- */}
             <CreateBannerModal 
                 isOpen={isCreateModalOpen} 
-                onClose={() => setIsCreateModalOpen(false)} 
-                onSave={handleCreateBanner}
+                onClose={handleCloseModal} 
+                onSave={handleSaveBanner}
+                editData={editingBanner}
             />
         </Box>
     );

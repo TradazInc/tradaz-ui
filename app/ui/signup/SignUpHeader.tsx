@@ -8,6 +8,7 @@ const SignUpHeader = () => {
         fontSize={"40px"}
         lineHeight="47.42px"
         letterSpacing="-2%"
+        color="#FFFFFF"
       >
         Sign Up
       </Text>

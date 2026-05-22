@@ -1,16 +1,18 @@
+
 "use client";
 import React, { useState } from "react";
-import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, IconButton, Avatar, Grid, VStack } from "@chakra-ui/react";
+import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, IconButton, Avatar, Grid, VStack, Badge } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LuSearch, LuRefreshCw, LuStore, LuCheck,
-    LuBan, LuClock, LuMail, LuSend, LuEye, LuEllipsisVertical, LuX
+    LuBan, LuClock, LuMail, LuSend, LuEye, LuEllipsisVertical, LuX, LuBox, LuBanknote
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
 const inputStyles = { bg: "#000000", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };
 const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
+const brandColor = "#5cac7d";
 
 export interface PartnerRecord {
     id: string;
@@ -38,6 +40,113 @@ const TABS = [
     { id: "Pending Invite", label: "Pending Invites", count: 2 },
     { id: "Suspended", label: "Suspended", count: 1 },
 ];
+
+// --- VIEW PARTNER MODAL COMPONENT ---
+const ViewPartnerModal = ({ partner, onClose }: { partner: PartnerRecord | null; onClose: () => void }) => {
+    return (
+        <AnimatePresence>
+            {partner && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>
+                                            Partner Details
+                                        </Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
+                                            {partner.businessName}
+                                        </Text>
+                                    </Box>
+                                    <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Status & ID */}
+                                        <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Partner ID</Text>
+                                                <Text color="white" fontSize="sm" fontFamily="monospace">{partner.id}</Text>
+                                            </Box>
+                                            <Badge colorScheme={partner.status === "Active" ? "green" : partner.status === "Suspended" ? "red" : "orange"} px={3} py={1} rounded="none">
+                                                {partner.status}
+                                            </Badge>
+                                        </Flex>
+
+                                        {/* Contact Information */}
+                                        <Box>
+                                            <Text {...labelStyles}>Contact Information</Text>
+                                            <VStack align="stretch" gap={4} bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs" mb={1}>Full Name</Text>
+                                                    <Text color="white" fontWeight="bold">{partner.contactName}</Text>
+                                                </Box>
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs" mb={1}>Email Address</Text>
+                                                    <Flex align="center" gap={2}>
+                                                        <Icon as={LuMail} color="#888888" />
+                                                        <Text color="white" fontWeight="bold">{partner.email}</Text>
+                                                    </Flex>
+                                                </Box>
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs" mb={1}>Joined Date</Text>
+                                                    <Text color="white" fontWeight="bold">{partner.joinedDate}</Text>
+                                                </Box>
+                                            </VStack>
+                                        </Box>
+
+                                        {/* Performance Stats */}
+                                        <Box>
+                                            <Text {...labelStyles}>Performance Overview</Text>
+                                            <SimpleGrid columns={2} gap={4}>
+                                                <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                    <Icon as={LuBox} color={brandColor} boxSize="20px" mb={2} />
+                                                    <Text color="#888888" fontSize="xs" mb={1}>Products Listed</Text>
+                                                    <Text color="white" fontSize="2xl" fontWeight="black">{partner.productsCount}</Text>
+                                                </Box>
+                                                <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                    <Icon as={LuBanknote} color="blue.400" boxSize="20px" mb={2} />
+                                                    <Text color="#888888" fontSize="xs" mb={1}>Total Sales</Text>
+                                                    <Text color="white" fontSize="2xl" fontWeight="black">₦{partner.totalSales.toLocaleString()}</Text>
+                                                </Box>
+                                            </SimpleGrid>
+                                        </Box>
+
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                  
+                                </Flex>
+
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
 
 // --- INVITE PARTNER MODAL COMPONENT ---
 const InvitePartnerModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
@@ -142,7 +251,10 @@ const InvitePartnerModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
 export default function PartnersListPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [activeTab, setActiveTab] = useState("All");
+    
+    // Modals State
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+    const [viewingPartner, setViewingPartner] = useState<PartnerRecord | null>(null); // State for View Modal
 
     // Filter Logic
     const visibleItems = MOCK_PARTNERS.filter(partner => {
@@ -268,7 +380,8 @@ export default function PartnersListPage() {
                         <Box minW="1000px">
                             
                             {/* Table Header */}
-                            <Grid templateColumns="2fr 1.5fr 1fr 1fr 1fr 100px" gap={4} px={6} py={4} bg="#111111" borderBottom="1px solid" borderColor="#333333">
+                          
+                            <Grid templateColumns="2fr 1.5fr 1fr 1fr 1fr 200px" gap={4} px={6} py={4} bg="#111111" borderBottom="1px solid" borderColor="#333333">
                                 <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Partner Details</Text>
                                 <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Contact Info</Text>
                                 <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Performance</Text>
@@ -285,7 +398,7 @@ export default function PartnersListPage() {
                                     return (
                                         <Grid 
                                             key={partner.id} 
-                                            templateColumns="2fr 1.5fr 1fr 1fr 1fr 100px" gap={4} px={6} py={4} 
+                                            templateColumns="2fr 1.5fr 1fr 1fr 1fr 200px" gap={4} px={6} py={4} 
                                             borderBottom="1px solid #1A1A1A" 
                                             alignItems="center" 
                                             _hover={{ bg: "#111111" }} transition="background 0.2s" 
@@ -334,14 +447,20 @@ export default function PartnersListPage() {
                                                 </Flex>
                                             </Box>
                                             
-                                            {/* Actions */}
+                                          {/* Actions */}
+                                            
                                             <Flex gap={2} align="center" justify="flex-end">
-                                                {partner.status === "Pending Invite" ? (
-                                                    <Button size="sm" h="32px" bg="#111111" border="1px solid #333333" color="white" rounded="none" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" _hover={{ bg: "#1A1A1A" }}>
-                                                        <Icon as={LuSend} mr={1.5} strokeWidth="2.5" /> Resend
-                                                    </Button>
-                                                ) : (
-                                                    <Button size="sm" h="32px" bg="#111111" border="1px solid #333333" color="white" rounded="none" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" _hover={{ bg: "#1A1A1A" }}>
+                                                {partner.status === "Pending Invite" && (
+                                                    <>
+                                                        
+                                                        <Button size="sm" h="32px" bg="#111111" border="1px solid #333333" color="white" rounded="none" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" _hover={{ bg: "#1A1A1A" }}>
+                                                            <Icon as={LuSend} mr={1.5} strokeWidth="2.5" /> Resend
+                                                        </Button>
+                                                    </>
+                                                )}
+                                                
+                                                {partner.status !== "Pending Invite" && (
+                                                    <Button onClick={() => setViewingPartner(partner)} size="sm" h="32px" bg="#111111" border="1px solid #333333" color="white" rounded="none" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" _hover={{ bg: "#1A1A1A" }}>
                                                         <Icon as={LuEye} mr={1.5} strokeWidth="2.5" /> View
                                                     </Button>
                                                 )}
@@ -360,8 +479,10 @@ export default function PartnersListPage() {
                 )}
             </Box>
 
-            {/* Mount the Invite Modal */}
+            {/* Mount the Modals */}
             <InvitePartnerModal isOpen={isInviteModalOpen} onClose={() => setIsInviteModalOpen(false)} />
+            <ViewPartnerModal partner={viewingPartner} onClose={() => setViewingPartner(null)} />
         </Box>
     );
 }
+

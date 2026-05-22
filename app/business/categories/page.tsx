@@ -92,7 +92,19 @@ export default function CategoriesPage() {
             
             {/* --- ADD CATEGORY MODAL --- */}
             {isAddModalOpen && (
-                <Box position="fixed" inset={0} zIndex={9999} bg="blackAlpha.800" backdropFilter="blur(4px)" display="flex" alignItems="center" justifyContent="center" p={4}>
+              <Box 
+                position="sticky" 
+                top={0} 
+                zIndex={20} 
+                bg="rgba(0, 0, 0, 0.85)" 
+                backdropFilter="blur(12px)"
+                mx={{ base: -4, lg: -8 }} 
+                px={{ base: 4, lg: 8 }}
+                pt={4}
+                pb={4}
+                mb={8}
+                borderBottom="1px solid #1A1A1A"
+            >
                     <Box bg="#0A0A0A" border="1px solid #333333" rounded="none" w="full" maxW="500px" p={6} shadow="2xl">
                         <Text fontSize="xl" fontWeight="black" color="white" mb={6} letterSpacing="tight">Add New Category</Text>
                         
