@@ -1,3 +1,4 @@
+
 "use client";
 import React, { useState } from "react";
 import {
@@ -8,8 +9,11 @@ import {
   Icon,
   Input,
   Button,
- 
+  IconButton,
+  VStack,
+  Badge,
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   LuSearch,
   LuRefreshCw,
@@ -22,7 +26,8 @@ import {
   LuTrendingUp,
   LuWallet,
   LuReceipt,
-
+  LuX,
+  LuUser,
 } from "react-icons/lu";
 
 const controlStyles = {
@@ -36,6 +41,7 @@ const controlStyles = {
   _focus: { outline: "none", borderColor: "white" },
   _hover: { bg: "#111111" },
 };
+
 const nativeSelectStyle: React.CSSProperties = {
   backgroundColor: "#0A0A0A",
   color: "white",
@@ -59,7 +65,7 @@ export interface VendorSale {
 }
 
 // Simulated Database
-const MOCK_VENDOR_SALES: VendorSale[] = [
+const INITIAL_VENDOR_SALES: VendorSale[] = [
   {
     id: "ORD-99281",
     vendorName: "OG dior",
@@ -107,12 +113,118 @@ const MOCK_VENDOR_SALES: VendorSale[] = [
   },
 ];
 
+// --- RECEIPT MODAL COMPONENT ---
+const ReceiptModal = ({ sale, onClose }: { sale: VendorSale | null; onClose: () => void }) => {
+  return (
+    <AnimatePresence>
+      {sale && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+            onClick={onClose}
+          />
+          <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+            <motion.div
+              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+            >
+              <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                
+                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                  <Box>
+                    <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Transaction Receipt</Text>
+                    <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{sale.id}</Text>
+                  </Box>
+                  <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                    <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                  </IconButton>
+                </Flex>
+
+                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                  <VStack w="full" gap={6} align="stretch">
+                    
+                    {/* Status & Date */}
+                    <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                      <Box>
+                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Date & Time</Text>
+                        <Text color="white" fontSize="sm">{sale.date}</Text>
+                      </Box>
+                      <Badge 
+                        colorScheme={sale.status === "Completed" ? "green" : sale.status === "Refunded" ? "red" : "orange"} 
+                        px={3} py={1} rounded="none" textTransform="uppercase" fontWeight="bold" letterSpacing="wider"
+                      >
+                        {sale.status}
+                      </Badge>
+                    </Flex>
+
+                    {/* Parties Involved */}
+                    <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                      <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4}>Parties</Text>
+                      <Flex align="center" gap={3} mb={4}>
+                        <Icon as={LuStore} color="#888888" boxSize="18px" />
+                        <Box>
+                          <Text color="#888888" fontSize="xs">Vendor</Text>
+                          <Text color="white" fontWeight="bold">{sale.vendorName}</Text>
+                        </Box>
+                      </Flex>
+                      <Flex align="center" gap={3}>
+                        <Icon as={LuUser} color="#888888" boxSize="18px" />
+                        <Box>
+                          <Text color="#888888" fontSize="xs">Customer</Text>
+                          <Text color="white" fontWeight="bold">{sale.customerName}</Text>
+                        </Box>
+                      </Flex>
+                    </Box>
+
+                    {/* Financial Breakdown */}
+                    <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                      <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4}>Financial Breakdown</Text>
+                      <Flex justify="space-between" mb={2}>
+                        <Text color="#888888" fontSize="sm">Gross Amount</Text>
+                        <Text color="white" fontSize="sm" fontFamily="monospace">₦{sale.totalAmount.toLocaleString()}</Text>
+                      </Flex>
+                      <Flex justify="space-between" mb={4}>
+                        <Text color="#5cac7d" fontSize="sm">Platform Commission (5%)</Text>
+                        <Text color="#5cac7d" fontSize="sm" fontFamily="monospace">-₦{sale.commission.toLocaleString()}</Text>
+                      </Flex>
+                      <Box borderTop="1px dashed #333333" pt={4}>
+                        <Flex justify="space-between" align="center">
+                          <Text color="white" fontWeight="bold">Net to Vendor</Text>
+                          <Text color="white" fontSize="xl" fontWeight="black" fontFamily="monospace">₦{(sale.totalAmount - sale.commission).toLocaleString()}</Text>
+                        </Flex>
+                      </Box>
+                    </Box>
+
+                  </VStack>
+                </Box>
+
+                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" bg="#111111">
+                  <Button w="full" bg="white" color="black" rounded="none" fontWeight="bold" onClick={onClose} _hover={{ bg: "#E5E5E5" }}>
+                    Close Receipt
+                  </Button>
+                </Flex>
+
+              </Box>
+            </motion.div>
+          </Box>
+        </>
+      )}
+    </AnimatePresence>
+  );
+};
+
 export default function VendorSalesOverview() {
+  const [sales] = useState<VendorSale[]>(INITIAL_VENDOR_SALES);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  
+  // States for interactive buttons
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [viewingReceipt, setViewingReceipt] = useState<VendorSale | null>(null);
 
   // Filter Logic
-  const visibleItems = MOCK_VENDOR_SALES.filter((sale) => {
+  const visibleItems = sales.filter((sale) => {
     const matchesSearch =
       sale.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       sale.vendorName.toLowerCase().includes(searchQuery.toLowerCase());
@@ -121,48 +233,61 @@ export default function VendorSalesOverview() {
     return matchesSearch && matchesStatus;
   });
 
-  // Helper for strict monochrome badges with colored icons
+  // Action: Refresh
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setSearchQuery("");
+      setStatusFilter("All");
+      setIsRefreshing(false);
+    }, 600);
+  };
+
+  // Action: Export CSV
+  const handleExport = () => {
+    // Generate CSV Content
+    const headers = ["Order ID", "Vendor", "Customer", "Date", "Total Amount (NGN)", "Commission (NGN)", "Status"];
+    const csvRows = visibleItems.map(s => 
+      [s.id, `"${s.vendorName}"`, `"${s.customerName}"`, `"${s.date}"`, s.totalAmount, s.commission, s.status].join(",")
+    );
+    const csvString = [headers.join(","), ...csvRows].join("\n");
+    
+    // Create Blob and trigger download
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'vendor_sales_report.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  };
+
   const getStatusIconProps = (status: string) => {
     switch (status) {
-      case "Completed":
-        return { icon: LuCheck, color: "#5cac7d" };
-      case "Pending":
-        return { icon: LuClock, color: "orange.400" };
-      case "Refunded":
-        return { icon: LuUndo, color: "red.400" };
-      default:
-        return { icon: LuReceipt, color: "#888888" };
+      case "Completed": return { icon: LuCheck, color: "#5cac7d" };
+      case "Pending": return { icon: LuClock, color: "orange.400" };
+      case "Refunded": return { icon: LuUndo, color: "red.400" };
+      default: return { icon: LuReceipt, color: "#888888" };
     }
   };
 
   return (
-    <Box
-      w="full"
-      display="flex"
-      flexDirection="column"
-      position="relative"
-      bg="#000000"
-    >
+    <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000" minH="100vh">
+      
       {/* Header */}
-      <Flex
-        justify="space-between"
-        align="flex-start"
-        mb={6}
-        wrap="wrap"
-        gap={4}
-        pt={2}
-      >
+      <Flex justify="space-between" align="flex-start" mb={6} wrap="wrap" gap={4} pt={2}>
         <Box>
           <Flex align="center" gap={3} mb={1}>
-            <Text
-              color="white"
-              fontWeight="bold"
-              fontSize="2xl"
-              letterSpacing="tight"
-            >
+            <Text color="white" fontWeight="bold" fontSize="2xl" letterSpacing="tight">
               Vendor Sales Record
             </Text>
-            <Button
+           <Button
+              onClick={handleRefresh}
+              loading={isRefreshing}         
+              loadingText="Refreshing..."
               size="sm"
               variant="ghost"
               color="#888888"
@@ -174,13 +299,13 @@ export default function VendorSalesOverview() {
             </Button>
           </Flex>
           <Text color="#888888" fontSize="sm">
-            Track multi-vendor transaction volumes and calculate your platform
-            commissions.
+            Track multi-vendor transaction volumes and calculate your platform commissions.
           </Text>
         </Box>
 
         {/* Export Action */}
         <Button
+          onClick={handleExport}
           bg="white"
           color="black"
           h="44px"
@@ -194,139 +319,35 @@ export default function VendorSalesOverview() {
         </Button>
       </Flex>
 
-      {/* KPI Summary Cards - STRICTLY MONOCHROME WITH COLORED ICONS */}
+      {/* KPI Summary Cards */}
       <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={4} mb={8}>
-        <Box
-          bg="#0A0A0A"
-          border="1px solid"
-          borderColor="#1A1A1A"
-          p={5}
-          rounded="none"
-        >
+        <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" p={5} rounded="none">
           <Flex justify="space-between" align="flex-start" mb={2}>
-            <Text
-              fontSize="xs"
-              color="#888888"
-              fontWeight="bold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-            >
-              Gross Vendor Volume
-            </Text>
-            <Icon
-              as={LuTrendingUp}
-              color="blue.400"
-              boxSize="18px"
-              strokeWidth="2.5"
-            />
+            <Text fontSize="xs" color="#888888" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Gross Vendor Volume</Text>
+            <Icon as={LuTrendingUp} color="blue.400" boxSize="18px" strokeWidth="2.5" />
           </Flex>
-          <Text
-            fontSize="3xl"
-            fontWeight="black"
-            color="white"
-            letterSpacing="tight"
-          >
-            ₦237,000
-          </Text>
+          <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">₦237,000</Text>
         </Box>
-        <Box
-          bg="#0A0A0A"
-          border="1px solid"
-          borderColor="#1A1A1A"
-          p={5}
-          rounded="none"
-        >
+        <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" p={5} rounded="none">
           <Flex justify="space-between" align="flex-start" mb={2}>
-            <Text
-              fontSize="xs"
-              color="#888888"
-              fontWeight="bold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-            >
-              Platform Commission
-            </Text>
-            <Icon
-              as={LuWallet}
-              color="#5cac7d"
-              boxSize="18px"
-              strokeWidth="2.5"
-            />
+            <Text fontSize="xs" color="#888888" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Platform Commission</Text>
+            <Icon as={LuWallet} color="#5cac7d" boxSize="18px" strokeWidth="2.5" />
           </Flex>
-          <Text
-            fontSize="3xl"
-            fontWeight="black"
-            color="white"
-            letterSpacing="tight"
-          >
-            ₦11,850
-          </Text>
+          <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">₦11,850</Text>
         </Box>
-        <Box
-          bg="#0A0A0A"
-          border="1px solid"
-          borderColor="#1A1A1A"
-          p={5}
-          rounded="none"
-        >
+        <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" p={5} rounded="none">
           <Flex justify="space-between" align="flex-start" mb={2}>
-            <Text
-              fontSize="xs"
-              color="#888888"
-              fontWeight="bold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-            >
-              Total Orders
-            </Text>
-            <Icon
-              as={LuReceipt}
-              color="gray.400"
-              boxSize="18px"
-              strokeWidth="2.5"
-            />
+            <Text fontSize="xs" color="#888888" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Total Orders</Text>
+            <Icon as={LuReceipt} color="gray.400" boxSize="18px" strokeWidth="2.5" />
           </Flex>
-          <Text
-            fontSize="3xl"
-            fontWeight="black"
-            color="white"
-            letterSpacing="tight"
-          >
-            5
-          </Text>
+          <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">5</Text>
         </Box>
-        <Box
-          bg="#0A0A0A"
-          border="1px solid"
-          borderColor="#1A1A1A"
-          p={5}
-          rounded="none"
-        >
+        <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" p={5} rounded="none">
           <Flex justify="space-between" align="flex-start" mb={2}>
-            <Text
-              fontSize="xs"
-              color="#888888"
-              fontWeight="bold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-            >
-              Pending Settlements
-            </Text>
-            <Icon
-              as={LuClock}
-              color="orange.400"
-              boxSize="18px"
-              strokeWidth="2.5"
-            />
+            <Text fontSize="xs" color="#888888" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Pending Settlements</Text>
+            <Icon as={LuClock} color="orange.400" boxSize="18px" strokeWidth="2.5" />
           </Flex>
-          <Text
-            fontSize="3xl"
-            fontWeight="black"
-            color="white"
-            letterSpacing="tight"
-          >
-            ₦32,000
-          </Text>
+          <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">₦32,000</Text>
         </Box>
       </SimpleGrid>
 
@@ -365,18 +386,10 @@ export default function VendorSalesOverview() {
               onChange={(e) => setStatusFilter(e.target.value)}
               style={nativeSelectStyle}
             >
-              <option value="All" style={{ background: "#0A0A0A" }}>
-                All Statuses
-              </option>
-              <option value="Completed" style={{ background: "#0A0A0A" }}>
-                Completed
-              </option>
-              <option value="Pending" style={{ background: "#0A0A0A" }}>
-                Pending
-              </option>
-              <option value="Refunded" style={{ background: "#0A0A0A" }}>
-                Refunded
-              </option>
+              <option value="All" style={{ background: "#0A0A0A" }}>All Statuses</option>
+              <option value="Completed" style={{ background: "#0A0A0A" }}>Completed</option>
+              <option value="Pending" style={{ background: "#0A0A0A" }}>Pending</option>
+              <option value="Refunded" style={{ background: "#0A0A0A" }}>Refunded</option>
             </select>
           </Box>
         </Flex>
@@ -384,17 +397,8 @@ export default function VendorSalesOverview() {
 
       {/* Sales Data Table */}
       {visibleItems.length === 0 ? (
-        <Flex
-          justify="center"
-          align="center"
-          py={20}
-          direction="column"
-          border="1px dashed #1A1A1A"
-          bg="#0A0A0A"
-        >
-          <Text color="#888888" fontSize="lg" fontWeight="bold">
-            No vendor sales found.
-          </Text>
+        <Flex justify="center" align="center" py={20} direction="column" border="1px dashed #1A1A1A" bg="#0A0A0A">
+          <Text color="#888888" fontSize="lg" fontWeight="bold">No vendor sales found.</Text>
         </Flex>
       ) : (
         <Box
@@ -405,40 +409,14 @@ export default function VendorSalesOverview() {
           overflowX="auto"
           css={{
             "&::-webkit-scrollbar": { height: "6px" },
-            "&::-webkit-scrollbar-thumb": {
-              background: "#1A1A1A",
-              borderRadius: "0px",
-            },
+            "&::-webkit-scrollbar-thumb": { background: "#1A1A1A", borderRadius: "0px" },
           }}
         >
-          <Box
-            as="table"
-            w="full"
-            minW="1000px"
-            textAlign="left"
-            style={{ borderCollapse: "collapse" }}
-          >
+          <Box as="table" w="full" minW="1000px" textAlign="left" style={{ borderCollapse: "collapse" }}>
             <Box as="thead" bg="#111111" borderBottom="1px solid #1A1A1A">
               <Box as="tr">
-                {[
-                  "Order ID & Date",
-                  "Vendor",
-                  "Total Amount",
-                  "Commission (5%)",
-                  "Status",
-                  "Actions",
-                ].map((head) => (
-                  <Box
-                    as="th"
-                    key={head}
-                    py={4}
-                    px={6}
-                    color="gray.500"
-                    fontSize="xs"
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    letterSpacing="wider"
-                  >
+                {["Order ID & Date", "Vendor", "Total Amount", "Commission (5%)", "Status", "Actions"].map((head) => (
+                  <Box as="th" key={head} py={4} px={6} color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
                     {head}
                   </Box>
                 ))}
@@ -450,115 +428,49 @@ export default function VendorSalesOverview() {
                 const isRefunded = sale.status === "Refunded";
 
                 return (
-                  <Box
-                    as="tr"
-                    key={sale.id}
-                    borderBottom="1px solid #1A1A1A"
-                    _hover={{ bg: "#111111" }}
-                    transition="background 0.2s"
-                    opacity={isRefunded ? 0.6 : 1}
-                  >
-                    {/* Order ID & Date */}
+                  <Box as="tr" key={sale.id} borderBottom="1px solid #1A1A1A" _hover={{ bg: "#111111" }} transition="background 0.2s" opacity={isRefunded ? 0.6 : 1}>
                     <Box as="td" py={4} px={6}>
-                      <Text
-                        color="white"
-                        fontSize="sm"
-                        fontWeight="bold"
-                        textDecoration={isRefunded ? "line-through" : "none"}
-                      >
-                        {sale.id}
-                      </Text>
-                      <Text color="gray.500" fontSize="xs" mt={0.5}>
-                        {sale.date}
-                      </Text>
+                      <Text color="white" fontSize="sm" fontWeight="bold" textDecoration={isRefunded ? "line-through" : "none"}>{sale.id}</Text>
+                      <Text color="gray.500" fontSize="xs" mt={0.5}>{sale.date}</Text>
                     </Box>
 
-                    {/* Vendor Details */}
                     <Box as="td" py={4} px={6}>
                       <Flex align="center" gap={2}>
                         <Icon as={LuStore} color="gray.500" boxSize="14px" />
                         <Box>
-                          <Text color="white" fontSize="sm" fontWeight="500">
-                            {sale.vendorName}
-                          </Text>
-                          <Text color="gray.500" fontSize="xs" mt={0.5}>
-                            Customer: {sale.customerName}
-                          </Text>
+                          <Text color="white" fontSize="sm" fontWeight="500">{sale.vendorName}</Text>
+                          <Text color="gray.500" fontSize="xs" mt={0.5}>Customer: {sale.customerName}</Text>
                         </Box>
                       </Flex>
                     </Box>
 
-                    {/* Total Amount */}
                     <Box as="td" py={4} px={6}>
-                      <Text
-                        color="white"
-                        fontSize="md"
-                        fontWeight="bold"
-                        fontFamily="monospace"
-                        letterSpacing="tight"
-                      >
-                        {isRefunded ? "-" : ""}₦
-                        {sale.totalAmount.toLocaleString()}
+                      <Text color="white" fontSize="md" fontWeight="bold" fontFamily="monospace" letterSpacing="tight">
+                        {isRefunded ? "-" : ""}₦{sale.totalAmount.toLocaleString()}
                       </Text>
                     </Box>
 
-                    {/* Commission */}
                     <Box as="td" py={4} px={6}>
-                      <Text
-                        color="white"
-                        fontSize="sm"
-                        fontWeight="bold"
-                        fontFamily="monospace"
-                      >
-                        {isRefunded
-                          ? "₦0"
-                          : `₦${sale.commission.toLocaleString()}`}
+                      <Text color="white" fontSize="sm" fontWeight="bold" fontFamily="monospace">
+                        {isRefunded ? "₦0" : `₦${sale.commission.toLocaleString()}`}
                       </Text>
                     </Box>
 
-                    {/* Status */}
                     <Box as="td" py={4} px={6}>
-                      <Flex
-                        align="center"
-                        gap={1.5}
-                        bg="#111111"
-                        color="white"
-                        px={2}
-                        py={0.5}
-                        border="1px solid #333333"
-                        fontSize="10px"
-                        fontWeight="bold"
-                        textTransform="uppercase"
-                        letterSpacing="wider"
-                        display="inline-flex"
-                      >
-                        <Icon
-                          as={statusProps.icon}
-                          color={statusProps.color}
-                          boxSize="12px"
-                          strokeWidth="3"
-                        />
+                      <Flex align="center" gap={1.5} bg="#111111" color="white" px={2} py={0.5} border="1px solid #333333" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" display="inline-flex">
+                        <Icon as={statusProps.icon} color={statusProps.color} boxSize="12px" strokeWidth="3" />
                         {sale.status}
                       </Flex>
                     </Box>
 
-                    {/* Actions */}
                     <Box as="td" py={4} px={6}>
                       <Flex gap={2} align="center">
                         <Button
-                          size="sm"
-                          h="32px"
-                          bg="#111111"
-                          border="1px solid #333333"
-                          color="white"
-                          rounded="none"
-                          fontSize="12px"
-                          _hover={{ bg: "#1A1A1A" }}
+                          onClick={() => setViewingReceipt(sale)}
+                          size="sm" h="32px" bg="#111111" border="1px solid #333333" color="white" rounded="none" fontSize="12px" _hover={{ bg: "#1A1A1A" }}
                         >
                           <Icon as={LuEye} mr={1.5} /> Receipt
                         </Button>
-
-                       
                       </Flex>
                     </Box>
                   </Box>
@@ -568,6 +480,10 @@ export default function VendorSalesOverview() {
           </Box>
         </Box>
       )}
+
+      {/* Mount Modal */}
+      <ReceiptModal sale={viewingReceipt} onClose={() => setViewingReceipt(null)} />
     </Box>
   );
 }
+
