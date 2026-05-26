@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import { 
     Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar, Input, IconButton, VStack, ScrollArea
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuSearch, LuFilter, LuStar, LuMessageSquare, LuShieldAlert, 
-    LuTrash, LuCheck, LuEye, LuStore, LuUser, LuDownload
+    LuTrash, LuCheck, LuEye, LuStore, LuUser, LuDownload, LuX, LuCalendar
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---
@@ -20,7 +21,7 @@ const REVIEW_KPIs = [
     { label: "Positive Sentiment", value: "92%", trend: "4 & 5 star ratio", icon: LuCheck, iconColor: "#5cac7d" },
 ];
 
-interface ReviewRecord {
+export interface ReviewRecord {
     id: string;
     reviewerName: string;
     shopName: string;
@@ -30,7 +31,7 @@ interface ReviewRecord {
     date: string;
 }
 
-const MOCK_REVIEWS: ReviewRecord[] = [
+const INITIAL_REVIEWS: ReviewRecord[] = [
     { id: "REV-1042", reviewerName: "Sarah Connor", shopName: "Urban Kicks NG", rating: 5, comment: "Amazing quality! Delivery was super fast. Highly recommend this store.", status: "Published", date: "2 hours ago" },
     { id: "REV-1043", reviewerName: "Chuka Obi", shopName: "Tech Haven Hub", rating: 1, comment: "The product arrived damaged and the seller is not responding. I want a refund.", status: "Flagged", date: "5 hours ago" },
     { id: "REV-1044", reviewerName: "Grace Okafor", shopName: "Mama's Kitchen Spices", rating: 4, comment: "Good spices, but the packaging could be better.", status: "Published", date: "1 day ago" },
@@ -39,13 +40,187 @@ const MOCK_REVIEWS: ReviewRecord[] = [
     { id: "REV-1047", reviewerName: "Wada Gift", shopName: "Minimalist Hub", rating: 2, comment: "Item doesn't look exactly like the pictures. Disappointed.", status: "Flagged", date: "1 week ago" },
 ];
 
+const getStatusStyle = (status: string) => {
+    switch (status) {
+        case "Published": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d" };
+        case "Flagged": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)" };
+        case "Removed": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)" };
+        default: return { bg: "#111111", color: "#888888", border: "1px solid #333333" };
+    }
+};
+
+const renderStars = (rating: number) => {
+    return (
+        <Flex gap={1}>
+            {[1, 2, 3, 4, 5].map((star) => (
+                <Icon 
+                    key={star} 
+                    as={LuStar} 
+                    boxSize="14px" 
+                    fill={star <= rating ? "var(--chakra-colors-yellow-400)" : "transparent"} 
+                    color={star <= rating ? "yellow.400" : "#333333"} 
+                    strokeWidth={star <= rating ? "0" : "2"}
+                />
+            ))}
+        </Flex>
+    );
+};
+
+
+// --- REVIEW DETAILS MODAL ---
+const ReviewDetailsModal = ({ 
+    review, onClose, onUpdateStatus 
+}: { 
+    review: ReviewRecord | null; onClose: () => void; onUpdateStatus: (id: string, status: ReviewRecord["status"]) => void 
+}) => {
+    if (!review) return null;
+    const statusStyle = getStatusStyle(review.status);
+
+    return (
+        <AnimatePresence>
+            {review && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Review Inspection</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{review.id}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Status & Rating */}
+                                        <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Given Rating</Text>
+                                                {renderStars(review.rating)}
+                                            </Box>
+                                            <Badge {...statusStyle} px={3} py={1} rounded="none" textTransform="uppercase" letterSpacing="wider" fontWeight="bold">
+                                                {review.status}
+                                            </Badge>
+                                        </Flex>
+
+                                        {/* Review Content */}
+                                        <Box bg="#111111" p={5} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={3}>Full Comment</Text>
+                                            <Text color={review.status === "Removed" ? "#888888" : "white"} fontStyle={review.status === "Removed" ? "italic" : "normal"} lineHeight="tall">
+                                                {review.comment}
+                                            </Text>
+                                        </Box>
+
+                                        {/* Participants */}
+                                        <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4}>Context</Text>
+                                            <Flex align="center" gap={3} mb={4}>
+                                                <Icon as={LuUser} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Reviewer (Buyer)</Text>
+                                                    <Text color="white" fontWeight="bold">{review.reviewerName}</Text>
+                                                </Box>
+                                            </Flex>
+                                            <Flex align="center" gap={3} mb={4}>
+                                                <Icon as={LuStore} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Target Shop</Text>
+                                                    <Text color="white" fontWeight="bold">{review.shopName}</Text>
+                                                </Box>
+                                            </Flex>
+                                            <Flex align="center" gap={3}>
+                                                <Icon as={LuCalendar} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Timestamp</Text>
+                                                    <Text color="white" fontWeight="bold">{review.date}</Text>
+                                                </Box>
+                                            </Flex>
+                                        </Box>
+
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    {review.status !== "Removed" ? (
+                                        <Button 
+                                            flex={1} variant="outline" borderColor="red.400" color="red.400" rounded="none" fontWeight="bold" 
+                                            onClick={() => { onUpdateStatus(review.id, "Removed"); onClose(); }} 
+                                            _hover={{ bg: "rgba(229, 62, 62, 0.1)" }}
+                                        >
+                                            <Icon as={LuTrash} mr={2} strokeWidth="3" /> Remove Review
+                                        </Button>
+                                    ) : (
+                                        <Button 
+                                            flex={1} bg="white" color="black" rounded="none" fontWeight="bold" 
+                                            onClick={() => { onUpdateStatus(review.id, "Published"); onClose(); }} 
+                                            _hover={{ bg: "#E5E5E5" }} 
+                                        >
+                                            <Icon as={LuCheck} mr={2} strokeWidth="3" /> Restore to Published
+                                        </Button>
+                                    )}
+                                </Flex>
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
+
 export default function ReviewsPage() {
+    // --- STATE ---
+    const [reviews, setReviews] = useState<ReviewRecord[]>(INITIAL_REVIEWS);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
     const [ratingFilter, setRatingFilter] = useState("All");
+    
+    const [viewingReview, setViewingReview] = useState<ReviewRecord | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
 
-    // Filter Logic
-    const filteredReviews = MOCK_REVIEWS.filter(review => {
+    // --- ACTIONS ---
+    const handleUpdateStatus = (id: string, newStatus: ReviewRecord["status"]) => {
+        setReviews(prev => prev.map(rev => rev.id === id ? { ...rev, status: newStatus } : rev));
+    };
+
+    const handleExport = () => {
+        setIsExporting(true);
+        setTimeout(() => {
+            const headers = ["Review ID", "Reviewer", "Shop", "Rating", "Status", "Date", "Comment"];
+            const csvRows = filteredReviews.map(r => 
+                [r.id, `"${r.reviewerName}"`, `"${r.shopName}"`, r.rating, r.status, `"${r.date}"`, `"${r.comment.replace(/"/g, '""')}"`].join(",")
+            );
+            const csvString = [headers.join(","), ...csvRows].join("\n");
+            
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'reviews_moderation_export.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            setIsExporting(false);
+        }, 800);
+    };
+
+    // --- FILTER LOGIC ---
+    const filteredReviews = reviews.filter(review => {
         const matchesSearch = review.reviewerName.toLowerCase().includes(searchQuery.toLowerCase()) || 
                               review.shopName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                               review.comment.toLowerCase().includes(searchQuery.toLowerCase());
@@ -53,33 +228,6 @@ export default function ReviewsPage() {
         const matchesRating = ratingFilter === "All" || review.rating.toString() === ratingFilter;
         return matchesSearch && matchesStatus && matchesRating;
     });
-
-    const getStatusStyle = (status: string) => {
-        switch (status) {
-            case "Published": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d" };
-            case "Flagged": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)" };
-            case "Removed": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)" };
-            default: return { bg: "#111111", color: "#888888", border: "1px solid #333333" };
-        }
-    };
-
-    // Helper to render star rating
-    const renderStars = (rating: number) => {
-        return (
-            <Flex gap={1}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <Icon 
-                        key={star} 
-                        as={LuStar} 
-                        boxSize="14px" 
-                        fill={star <= rating ? "var(--chakra-colors-yellow-400)" : "transparent"} 
-                        color={star <= rating ? "yellow.400" : "#333333"} 
-                        strokeWidth={star <= rating ? "0" : "2"}
-                    />
-                ))}
-            </Flex>
-        );
-    };
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
@@ -93,7 +241,10 @@ export default function ReviewsPage() {
                     <Text color="#888888" fontSize="sm">Monitor platform sentiment and moderate flagged customer reviews.</Text>
                 </Box>
                 
-                <Button display={{ base: "none", sm: "flex" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} gap={2} h="44px" px={6} fontWeight="bold">
+                <Button 
+                    onClick={handleExport} loading={isExporting} loadingText="Exporting..."
+                    display={{ base: "none", sm: "flex" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} gap={2} h="44px" px={6} fontWeight="bold"
+                >
                     <Icon as={LuDownload} color="#888888" strokeWidth="2.5" /> Export Data
                 </Button>
             </Flex>
@@ -231,16 +382,25 @@ export default function ReviewsPage() {
                                                 
                                                 {/* Actions */}
                                                 <Flex justify="flex-end" gap={2} pt={1}>
-                                                    <IconButton aria-label="View Full Review" title="View Full Review" size="sm" h="32px" w="32px" bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                                    <IconButton 
+                                                        onClick={() => setViewingReview(review)}
+                                                        aria-label="View Full Review" title="View Full Review" size="sm" h="32px" w="32px" bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A", color: "white" }}
+                                                    >
                                                         <Icon as={LuEye} strokeWidth="2.5" boxSize="14px" />
                                                     </IconButton>
                                                     
                                                     {review.status !== "Removed" ? (
-                                                        <IconButton aria-label="Remove Review" title="Remove / Delete" size="sm" h="32px" w="32px" variant="outline" borderColor="#333333" color="red.400" rounded="none" _hover={{ bg: "rgba(229, 62, 62, 0.1)", borderColor: "red.400" }}>
+                                                        <IconButton 
+                                                            onClick={() => handleUpdateStatus(review.id, "Removed")}
+                                                            aria-label="Remove Review" title="Remove / Delete" size="sm" h="32px" w="32px" variant="outline" borderColor="#333333" color="red.400" rounded="none" _hover={{ bg: "rgba(229, 62, 62, 0.1)", borderColor: "red.400" }}
+                                                        >
                                                             <Icon as={LuTrash} strokeWidth="2.5" boxSize="14px" />
                                                         </IconButton>
                                                     ) : (
-                                                        <IconButton aria-label="Restore Review" title="Restore" size="sm" h="32px" w="32px" variant="outline" borderColor="#333333" color="#5cac7d" rounded="none" _hover={{ bg: "rgba(92, 172, 125, 0.1)", borderColor: "#5cac7d" }}>
+                                                        <IconButton 
+                                                            onClick={() => handleUpdateStatus(review.id, "Published")}
+                                                            aria-label="Restore Review" title="Restore" size="sm" h="32px" w="32px" variant="outline" borderColor="#333333" color="#5cac7d" rounded="none" _hover={{ bg: "rgba(92, 172, 125, 0.1)", borderColor: "#5cac7d" }}
+                                                        >
                                                             <Icon as={LuCheck} strokeWidth="2.5" boxSize="14px" />
                                                         </IconButton>
                                                     )}
@@ -260,6 +420,13 @@ export default function ReviewsPage() {
                     </ScrollArea.Scrollbar>
                 </ScrollArea.Root>
             </Box>
+
+            {/* Mount Modal */}
+            <ReviewDetailsModal 
+                review={viewingReview} 
+                onClose={() => setViewingReview(null)} 
+                onUpdateStatus={handleUpdateStatus} 
+            />
 
         </Box>
     );

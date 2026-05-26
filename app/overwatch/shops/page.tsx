@@ -1,15 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { 
-    Box, Flex, Text, Input, Icon, Grid, VStack, Avatar 
+    Box, Flex, Text, Input, Icon, Grid, VStack, Avatar, IconButton, Button, SimpleGrid 
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-    LuSearch, LuEllipsisVertical, LuUsers
+    LuSearch, LuEllipsisVertical, LuUsers, LuX, LuCheck, LuClock, LuBan, LuActivity
 } from "react-icons/lu";
 
-// --- MOCK TENANT DATA ---
-const MOCK_SHOPS = [
+// --- INITIAL SHOP DATA ---
+const INITIAL_SHOPS = [
     { id: "SHP-001", name: "Urban Kicks NG", owner: "Wada Gift", plan: "Pro Tier", status: "active", gmv: "₦12,500,000", users: 104 },
     { id: "SHP-002", name: "Lagos Streetwear", owner: "Tobi O.", plan: "Basic Tier", status: "pending", gmv: "₦0", users: 100 },
     { id: "SHP-003", name: "Tech Gadgets Pro", owner: "John Doe", plan: "Enterprise", status: "active", gmv: "₦5,100,000", users: 120 },
@@ -17,51 +18,179 @@ const MOCK_SHOPS = [
 ];
 
 const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
+const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
+
+// --- MANAGE SHOP DRAWER COMPONENT ---
+const ManageShopDrawer = ({ 
+    shop, onClose, onUpdate 
+}: { 
+    shop: typeof INITIAL_SHOPS[0] | null; onClose: () => void; onUpdate: (id: string, updates: Partial<typeof INITIAL_SHOPS[0]>) => void 
+}) => {
+    const [isSaving, setIsSaving] = useState(false);
+    const [status, setStatus] = useState(shop?.status || "active");
+    const [plan, setPlan] = useState(shop?.plan || "Basic Tier");
+
+    React.useEffect(() => {
+        if (shop) {
+            setStatus(shop.status);
+            setPlan(shop.plan);
+        }
+    }, [shop]);
+
+    if (!shop) return null;
+
+    const handleSaveChanges = () => {
+        setIsSaving(true);
+        setTimeout(() => {
+            onUpdate(shop.id, { status, plan });
+            setIsSaving(false);
+            onClose();
+        }, 600); // Simulate API delay
+    };
+
+    return (
+        <AnimatePresence>
+            {shop && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Manage Shop</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{shop.name}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Financial Summary Info */}
+                                        <SimpleGrid columns={2} gap={4}>
+                                            <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>30-Day GMV</Text>
+                                                <Text color="white" fontSize="md" fontWeight="black" fontFamily="monospace">{shop.gmv}</Text>
+                                            </Box>
+                                            <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Total Users</Text>
+                                                <Text color="white" fontSize="md" fontWeight="black">{shop.users} Users</Text>
+                                            </Box>
+                                        </SimpleGrid>
+
+                                        {/* Account Status Configuration */}
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Operational Status</Text>
+                                            <select value={status} onChange={(e) => setStatus(e.target.value)} style={nativeSelectStyle}>
+                                                <option value="active">Active</option>
+                                                <option value="pending">Pending Review</option>
+                                                <option value="suspended">Suspended</option>
+                                            </select>
+                                        </Box>
+
+                                        {/* Subscription Plan Tier Assignment */}
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>SaaS Plan Tier</Text>
+                                            <select value={plan} onChange={(e) => setPlan(e.target.value)} style={nativeSelectStyle}>
+                                                <option value="Basic Tier">Basic Tier</option>
+                                                <option value="Pro Tier">Pro Tier</option>
+                                                <option value="Enterprise">Enterprise</option>
+                                            </select>
+                                        </Box>
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    <Button variant="outline" borderColor="#333333" onClick={onClose} h="44px" rounded="none" color="#888888" bg="#0A0A0A" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        Cancel
+                                    </Button>
+                                    <Button flex="1" h="44px" bg="white" color="black" rounded="none" fontWeight="bold" onClick={handleSaveChanges} loading={isSaving} loadingText="Saving..." _hover={{ bg: "#E5E5E5" }}>
+                                        Save Account Changes
+                                    </Button>
+                                </Flex>
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
 
 export default function AdminShopsPage() {
     const router = useRouter();
     
     // --- STATE ---
+    const [shops, setShops] = useState(INITIAL_SHOPS);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const [filterPlan, setFilterPlan] = useState("all");
     const [sortBy, setSortBy] = useState("name");
     const [sortOrder, setSortOrder] = useState("asc");
 
+    // Drawer State
+    const [selectedShop, setSelectedShop] = useState<typeof INITIAL_SHOPS[0] | null>(null);
+
     // --- HELPER: Parse GMV string to number for accurate sorting ---
     const parseGMV = (gmvString: string) => {
         return Number(gmvString.replace(/[^0-9.-]+/g, ""));
     };
 
+    // --- MUTATION LOGIC ---
+    const handleUpdateShop = (id: string, updates: Partial<typeof INITIAL_SHOPS[0]>) => {
+        setShops(prev => prev.map(shop => shop.id === id ? { ...shop, ...updates } : shop));
+    };
+
     // --- FILTERING & SORTING LOGIC ---
-    const processedShops = [...MOCK_SHOPS].filter(shop => {
-        const matchesSearch = shop.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                              shop.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                              shop.id.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus = filterStatus === "all" || shop.status === filterStatus;
-        const matchesPlan = filterPlan === "all" || shop.plan === filterPlan;
+    const processedShops = useMemo(() => {
+        return [...shops].filter(shop => {
+            const matchesSearch = shop.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                  shop.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                  shop.id.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesStatus = filterStatus === "all" || shop.status === filterStatus;
+            const matchesPlan = filterPlan === "all" || shop.plan === filterPlan;
 
-        return matchesSearch && matchesStatus && matchesPlan;
-    }).sort((a, b) => {
-        let valA: string | number;
-        let valB: string | number;
+            return matchesSearch && matchesStatus && matchesPlan;
+        }).sort((a, b) => {
+            let valA: string | number;
+            let valB: string | number;
 
-        if (sortBy === "gmv") {
-            valA = parseGMV(a.gmv);
-            valB = parseGMV(b.gmv);
-        } else if (sortBy === "users") {
-            valA = a.users;
-            valB = b.users;
-        } else {
-            // default to name
-            valA = a.name.toLowerCase();
-            valB = b.name.toLowerCase();
+            if (sortBy === "gmv") {
+                valA = parseGMV(a.gmv);
+                valB = parseGMV(b.gmv);
+            } else if (sortBy === "users") {
+                valA = a.users;
+                valB = b.users;
+            } else {
+                // default to name
+                valA = a.name.toLowerCase();
+                valB = b.name.toLowerCase();
+            }
+
+            if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+            if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
+    }, [shops, searchQuery, filterStatus, filterPlan, sortBy, sortOrder]);
+
+    const getStatusIconProps = (status: string) => {
+        switch(status) {
+            case "active": return { icon: LuCheck, color: "#5cac7d" };
+            case "pending": return { icon: LuClock, color: "orange.400" };
+            case "suspended": return { icon: LuBan, color: "red.400" };
+            default: return { icon: LuActivity, color: "#888888" };
         }
-
-        if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-        if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-        return 0;
-    });
+    };
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
@@ -146,6 +275,7 @@ export default function AdminShopsPage() {
                     {processedShops.map((shop) => {
                         const isActive = shop.status === 'active';
                         const isPending = shop.status === 'pending';
+                        const statusProps = getStatusIconProps(shop.status);
 
                         return (
                             <Grid 
@@ -182,7 +312,7 @@ export default function AdminShopsPage() {
                                     </Flex>
                                 </Box>
 
-                                
+                                {/* Master SaaS Plan */}
                                 <Text color="#888888" fontWeight="bold" fontSize="10px" textTransform="uppercase" letterSpacing="wider" display={{ base: "none", xl: "block" }}>
                                     {shop.plan}
                                 </Text>
@@ -198,15 +328,35 @@ export default function AdminShopsPage() {
                                     {shop.gmv}
                                 </Text>
 
-                                {/* Action Menu */}
+                                {/* Action Menu Trigger */}
                                 <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                                    <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" strokeWidth="2.5" _hover={{ color: "white" }} />
+                                    <IconButton
+                                        aria-label="Manage Account"
+                                        variant="ghost"
+                                        size="sm"
+                                        color="#888888"
+                                        _hover={{ color: "white", bg: "#1A1A1A" }}
+                                        rounded="none"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevents layout navigation routing
+                                            setSelectedShop(shop);
+                                        }}
+                                    >
+                                        <Icon as={LuEllipsisVertical} strokeWidth="2.5" />
+                                    </IconButton>
                                 </Flex>
                             </Grid>
                         );
                     })}
                 </VStack>
             )}
+
+            {/* Mount Drawer Component */}
+            <ManageShopDrawer 
+                shop={selectedShop} 
+                onClose={() => setSelectedShop(null)} 
+                onUpdate={handleUpdateShop} 
+            />
         </Box>
     );
 }

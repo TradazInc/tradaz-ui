@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Grid, Icon, Input, Avatar, IconButton, VStack
+    Box, Flex, Text, Grid, Icon, Input, Avatar, IconButton, VStack, Button,  Spinner
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-    LuSearch, LuCheck, LuX, LuEye, LuBriefcase, LuFileText, LuFilter, LuShieldAlert, LuClock
+    LuSearch, LuCheck, LuX, LuEye, LuBriefcase, LuFileText, LuFilter, LuShieldAlert, LuClock, LuMail, LuUser
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---
@@ -13,7 +14,7 @@ const nativeSelectStyle: React.CSSProperties = { backgroundColor: "#0A0A0A", col
 const scrollbarStyles = { '&::-webkit-scrollbar': { height: '6px', width: '6px' }, '&::-webkit-scrollbar-track': { background: 'transparent' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' }, '&::-webkit-scrollbar-thumb:hover': { background: '#555555' } };
 
 // --- MOCK DATA ---
-interface PendingBusiness {
+export interface PendingBusiness {
     id: string;
     businessName: string;
     ownerName: string;
@@ -23,7 +24,7 @@ interface PendingBusiness {
     kycStatus: "Verified" | "Pending Review" | "Missing Docs";
 }
 
-const MOCK_APPLICATIONS: PendingBusiness[] = [
+const INITIAL_APPLICATIONS: PendingBusiness[] = [
     { id: "REQ-1042", businessName: "Lagos Streetwear Co.", ownerName: "Chuka Obi", email: "chuka@lagosstreetwear.ng", businessType: "Fashion & Apparel", appliedAt: "2 hours ago", kycStatus: "Verified" },
     { id: "REQ-1043", businessName: "Tech Haven Hub", ownerName: "Sarah Connor", email: "sarah.c@techhaven.io", businessType: "Electronics", appliedAt: "5 hours ago", kycStatus: "Pending Review" },
     { id: "REQ-1044", businessName: "Mama's Kitchen Spices", ownerName: "Grace Okafor", email: "grace@mamasspices.com", businessType: "Groceries", appliedAt: "1 day ago", kycStatus: "Missing Docs" },
@@ -31,27 +32,161 @@ const MOCK_APPLICATIONS: PendingBusiness[] = [
     { id: "REQ-1046", businessName: "Glow Beauty Cosmetics", ownerName: "Aisha Bello", email: "aisha@glowbeauty.com", businessType: "Health & Beauty", appliedAt: "3 days ago", kycStatus: "Pending Review" },
 ];
 
+const getKycBadgeStyle = (status: string) => {
+    switch (status) {
+        case "Verified": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d" };
+        case "Pending Review": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)" };
+        case "Missing Docs": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)" };
+        default: return { bg: "#111111", color: "#888888", border: "1px solid #333333" };
+    }
+};
+
+// --- APPLICATION DETAILS MODAL ---
+const ApplicationDetailsModal = ({ 
+    app, onClose, onAction, processingId 
+}: { 
+    app: PendingBusiness | null; onClose: () => void; onAction: (id: string, action: 'approve' | 'reject') => void; processingId: string | null;
+}) => {
+    if (!app) return null;
+    const badgeStyle = getKycBadgeStyle(app.kycStatus);
+    const isProcessing = processingId === app.id;
+
+    return (
+        <AnimatePresence>
+            {app && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Application Review</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{app.businessName}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Status & ID */}
+                                        <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Request ID</Text>
+                                                <Text color="white" fontSize="sm" fontFamily="monospace">{app.id}</Text>
+                                            </Box>
+                                            <Flex align="center" gap={2} {...badgeStyle} px={2.5} py={1} rounded="none" display="inline-flex">
+                                                <Icon as={app.kycStatus === "Verified" ? LuCheck : LuFileText} boxSize="12px" strokeWidth="3" />
+                                                <Text fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">{app.kycStatus}</Text>
+                                            </Flex>
+                                        </Flex>
+
+                                        {/* Owner Information */}
+                                        <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4}>Applicant Information</Text>
+                                            <Flex align="center" gap={3} mb={4}>
+                                                <Icon as={LuUser} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Primary Owner</Text>
+                                                    <Text color="white" fontWeight="bold">{app.ownerName}</Text>
+                                                </Box>
+                                            </Flex>
+                                            <Flex align="center" gap={3}>
+                                                <Icon as={LuMail} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Email Address</Text>
+                                                    <Text color="white" fontWeight="bold">{app.email}</Text>
+                                                </Box>
+                                            </Flex>
+                                        </Box>
+
+                                        {/* Business Details */}
+                                        <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4}>Business Profile</Text>
+                                            <Flex align="center" gap={3} mb={4}>
+                                                <Icon as={LuBriefcase} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Category</Text>
+                                                    <Text color="white" fontWeight="bold">{app.businessType}</Text>
+                                                </Box>
+                                            </Flex>
+                                            <Flex align="center" gap={3}>
+                                                <Icon as={LuClock} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Applied</Text>
+                                                    <Text color="white" fontWeight="bold">{app.appliedAt}</Text>
+                                                </Box>
+                                            </Flex>
+                                        </Box>
+
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    <Button 
+                                        flex={1} variant="outline" borderColor="red.400" color="red.400" rounded="none" fontWeight="bold" 
+                                        onClick={() => onAction(app.id, 'reject')} _hover={{ bg: "rgba(229, 62, 62, 0.1)" }} disabled={isProcessing}
+                                    >
+                                        <Icon as={LuX} mr={2} strokeWidth="3" /> Reject
+                                    </Button>
+                                    <Button 
+                                        flex={1} bg="white" color="black" rounded="none" fontWeight="bold" 
+                                        onClick={() => onAction(app.id, 'approve')} _hover={{ bg: "#E5E5E5" }} 
+                                        disabled={app.kycStatus !== "Verified" || isProcessing}
+                                        loading={isProcessing} loadingText="Processing..."
+                                    >
+                                        <Icon as={LuCheck} mr={2} strokeWidth="3" /> Approve
+                                    </Button>
+                                </Flex>
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
 export default function PendingApprovalsPage() {
+    // --- STATE ---
+    const [applications, setApplications] = useState<PendingBusiness[]>(INITIAL_APPLICATIONS);
     const [searchQuery, setSearchQuery] = useState("");
     const [kycFilter, setKycFilter] = useState("All");
+    
+    const [selectedApp, setSelectedApp] = useState<PendingBusiness | null>(null);
+    const [processingId, setProcessingId] = useState<string | null>(null);
 
-    // Filter Logic
-    const visibleApplications = MOCK_APPLICATIONS.filter(app => {
+    // --- ACTIONS ---
+    const handleAction = (id: string, action: 'approve' | 'reject') => {
+        setProcessingId(id);
+        // Simulate network request
+        setTimeout(() => {
+            setApplications(prev => prev.filter(app => app.id !== id));
+            setProcessingId(null);
+            if (selectedApp?.id === id) {
+                setSelectedApp(null);
+            }
+        }, 800);
+    };
+
+    // --- FILTER LOGIC ---
+    const visibleApplications = applications.filter(app => {
         const matchesSearch = app.businessName.toLowerCase().includes(searchQuery.toLowerCase()) || 
                               app.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
                               app.ownerName.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesKyc = kycFilter === "All" || app.kycStatus === kycFilter;
         return matchesSearch && matchesKyc;
     });
-
-    const getKycBadgeStyle = (status: string) => {
-        switch (status) {
-            case "Verified": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d" };
-            case "Pending Review": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)" };
-            case "Missing Docs": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)" };
-            default: return { bg: "#111111", color: "#888888", border: "1px solid #333333" };
-        }
-    };
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
@@ -69,7 +204,7 @@ export default function PendingApprovalsPage() {
                     <Icon as={LuClock} color="yellow.400" strokeWidth="2.5" />
                     <Box>
                         <Text fontSize="10px" color="#888888" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Awaiting Review</Text>
-                        <Text fontSize="lg" fontWeight="black" color="white" letterSpacing="tight" lineHeight="1">{MOCK_APPLICATIONS.length} Applications</Text>
+                        <Text fontSize="lg" fontWeight="black" color="white" letterSpacing="tight" lineHeight="1">{applications.length} Applications</Text>
                     </Box>
                 </Flex>
             </Flex>
@@ -132,6 +267,8 @@ export default function PendingApprovalsPage() {
                         <VStack align="stretch" gap={0}>
                             {visibleApplications.map((app) => {
                                 const badgeStyle = getKycBadgeStyle(app.kycStatus);
+                                const isProcessing = processingId === app.id;
+                                
                                 return (
                                     <Grid 
                                         key={app.id} 
@@ -139,6 +276,7 @@ export default function PendingApprovalsPage() {
                                         borderBottom="1px solid #1A1A1A" 
                                         alignItems="center" 
                                         _hover={{ bg: "#111111" }} transition="background 0.2s"
+                                        opacity={isProcessing ? 0.5 : 1}
                                     >
                                         {/* Business & Owner Info */}
                                         <Flex align="center" gap={4}>
@@ -176,14 +314,26 @@ export default function PendingApprovalsPage() {
                                         
                                         {/* Actions */}
                                         <Flex justify="flex-end" gap={2}>
-                                            <IconButton aria-label="View Details" size="sm" h="36px" w="36px" bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                            <IconButton 
+                                                aria-label="View Details" size="sm" h="36px" w="36px" bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A", color: "white" }}
+                                                onClick={() => setSelectedApp(app)} disabled={processingId !== null}
+                                            >
                                                 <Icon as={LuEye} strokeWidth="2.5" />
                                             </IconButton>
-                                            <IconButton aria-label="Reject" size="sm" h="36px" w="36px" variant="outline" borderColor="#333333" color="red.400" rounded="none" _hover={{ bg: "rgba(229, 62, 62, 0.1)" }}>
-                                                <Icon as={LuX} strokeWidth="2.5" />
+                                            
+                                            <IconButton 
+                                                aria-label="Reject" size="sm" h="36px" w="36px" variant="outline" borderColor="#333333" color="red.400" rounded="none" _hover={{ bg: "rgba(229, 62, 62, 0.1)" }}
+                                                onClick={() => handleAction(app.id, 'reject')} disabled={processingId !== null}
+                                            >
+                                                {isProcessing ? <Spinner size="xs" /> : <Icon as={LuX} strokeWidth="2.5" />}
                                             </IconButton>
-                                            <IconButton aria-label="Approve" size="sm" h="36px" w="36px" bg="white" color="black" border="none" rounded="none" _hover={{ bg: "#E5E5E5" }} disabled={app.kycStatus !== "Verified"}>
-                                                <Icon as={LuCheck} strokeWidth="3" />
+                                            
+                                            <IconButton 
+                                                aria-label="Approve" size="sm" h="36px" w="36px" bg="white" color="black" border="none" rounded="none" _hover={{ bg: "#E5E5E5" }} 
+                                                disabled={app.kycStatus !== "Verified" || processingId !== null}
+                                                onClick={() => handleAction(app.id, 'approve')}
+                                            >
+                                                {isProcessing ? <Spinner size="xs" color="black" /> : <Icon as={LuCheck} strokeWidth="3" />}
                                             </IconButton>
                                         </Flex>
 
@@ -195,6 +345,13 @@ export default function PendingApprovalsPage() {
                 </Box>
             </Box>
 
+            {/* --- Mount Modal --- */}
+            <ApplicationDetailsModal 
+                app={selectedApp} 
+                onClose={() => setSelectedApp(null)} 
+                onAction={handleAction}
+                processingId={processingId}
+            />
         </Box>
     );
 }
