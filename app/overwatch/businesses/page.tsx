@@ -1,15 +1,17 @@
+
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { 
-    Box, Flex, Text, Input, Icon, Grid, VStack, Avatar 
+    Box, Flex, Text, Input, Icon, Grid, VStack, Avatar, IconButton, Button, SimpleGrid 
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-    LuSearch, LuEllipsisVertical, LuBuilding2
+    LuSearch, LuEllipsisVertical, LuBuilding2, LuX, LuCheck, LuClock, LuBan, LuActivity
 } from "react-icons/lu";
 
 // --- MOCK PARENT BUSINESS DATA ---
-const MOCK_BUSINESSES = [
+const INITIAL_BUSINESSES = [
     { id: "BIZ-901", name: "Wada Group Ltd.", owner: "Wada Gift", plan: "Enterprise", status: "active", totalGmv: "₦45,500,000", shopCount: 3 },
     { id: "BIZ-902", name: "Connor Retail Holdings", owner: "Sarah Connor", plan: "Pro Tier", status: "active", totalGmv: "₦8,200,000", shopCount: 1 },
     { id: "BIZ-903", name: "TechNova Inc.", owner: "John Doe", plan: "Basic Tier", status: "pending", totalGmv: "₦0", shopCount: 1 },
@@ -17,51 +19,178 @@ const MOCK_BUSINESSES = [
 ];
 
 const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
+const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
+
+// --- MANAGE BUSINESS DRAWER COMPONENT ---
+const ManageBusinessDrawer = ({ 
+    business, onClose, onUpdate 
+}: { 
+    business: typeof INITIAL_BUSINESSES[0] | null; onClose: () => void; onUpdate: (id: string, updates: Partial<typeof INITIAL_BUSINESSES[0]>) => void 
+}) => {
+    const [isSaving, setIsSaving] = useState(false);
+    const [status, setStatus] = useState(business?.status || "active");
+    const [plan, setPlan] = useState(business?.plan || "Basic Tier");
+
+    React.useEffect(() => {
+        if (business) {
+            setStatus(business.status);
+            setPlan(business.plan);
+        }
+    }, [business]);
+
+    if (!business) return null;
+
+    const handleSaveChanges = () => {
+        setIsSaving(true);
+        setTimeout(() => {
+            onUpdate(business.id, { status, plan });
+            setIsSaving(false);
+            onClose();
+        }, 600); // Simulate API delay
+    };
+
+    return (
+        <AnimatePresence>
+            {business && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Manage Tenant</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{business.name}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Financial Summary Info */}
+                                        <SimpleGrid columns={2} gap={4}>
+                                            <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Aggregated GMV</Text>
+                                                <Text color="white" fontSize="md" fontWeight="black" fontFamily="monospace">{business.totalGmv}</Text>
+                                            </Box>
+                                            <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Active Outlets</Text>
+                                                <Text color="white" fontSize="md" fontWeight="black">{business.shopCount} Shops</Text>
+                                            </Box>
+                                        </SimpleGrid>
+
+                                        {/* Account Status Configuration */}
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Operational Status</Text>
+                                            <select value={status} onChange={(e) => setStatus(e.target.value)} style={nativeSelectStyle}>
+                                                <option value="active">Active</option>
+                                                <option value="pending">Pending Review</option>
+                                                <option value="suspended">Suspended</option>
+                                            </select>
+                                        </Box>
+
+                                        {/* Subscription Plan Tier Assignment */}
+                                        <Box>
+                                            <Text as="label" {...labelStyles}>Master Plan Tier</Text>
+                                            <select value={plan} onChange={(e) => setPlan(e.target.value)} style={nativeSelectStyle}>
+                                                <option value="Basic Tier">Basic Tier</option>
+                                                <option value="Pro Tier">Pro Tier</option>
+                                                <option value="Enterprise">Enterprise</option>
+                                            </select>
+                                        </Box>
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    <Button variant="outline" borderColor="#333333" onClick={onClose} h="44px" rounded="none" color="#888888" bg="#0A0A0A" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        Cancel
+                                    </Button>
+                                    <Button flex="1" h="44px" bg="white" color="black" rounded="none" fontWeight="bold" onClick={handleSaveChanges} loading={isSaving} loadingText="Saving..." _hover={{ bg: "#E5E5E5" }}>
+                                        Save Changes
+                                    </Button>
+                                </Flex>
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
 
 export default function AdminBusinessesPage() {
     const router = useRouter();
     
     // --- STATE ---
+    const [businesses, setBusinesses] = useState(INITIAL_BUSINESSES);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const [filterPlan, setFilterPlan] = useState("all");
     const [sortBy, setSortBy] = useState("name");
     const [sortOrder, setSortOrder] = useState("asc");
 
+    // Drawer State
+    const [selectedBusiness, setSelectedBusiness] = useState<typeof INITIAL_BUSINESSES[0] | null>(null);
+
     // --- HELPER: Parse GMV string to number for accurate sorting ---
     const parseGMV = (gmvString: string) => {
         return Number(gmvString.replace(/[^0-9.-]+/g, ""));
     };
 
+    // --- MUTATION LOGIC ---
+    const handleUpdateBusiness = (id: string, updates: Partial<typeof INITIAL_BUSINESSES[0]>) => {
+        setBusinesses(prev => prev.map(biz => biz.id === id ? { ...biz, ...updates } : biz));
+    };
+
     // --- FILTERING & SORTING LOGIC ---
-    const processedBusinesses = [...MOCK_BUSINESSES].filter(biz => {
-        const matchesSearch = biz.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                              biz.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                              biz.id.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus = filterStatus === "all" || biz.status === filterStatus;
-        const matchesPlan = filterPlan === "all" || biz.plan === filterPlan;
+    const processedBusinesses = useMemo(() => {
+        return [...businesses].filter(biz => {
+            const matchesSearch = biz.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                  biz.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                  biz.id.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesStatus = filterStatus === "all" || biz.status === filterStatus;
+            const matchesPlan = filterPlan === "all" || biz.plan === filterPlan;
 
-        return matchesSearch && matchesStatus && matchesPlan;
-    }).sort((a, b) => {
-        let valA: string | number;
-        let valB: string | number;
+            return matchesSearch && matchesStatus && matchesPlan;
+        }).sort((a, b) => {
+            let valA: string | number;
+            let valB: string | number;
 
-        if (sortBy === "gmv") {
-            valA = parseGMV(a.totalGmv);
-            valB = parseGMV(b.totalGmv);
-        } else if (sortBy === "shops") {
-            valA = a.shopCount;
-            valB = b.shopCount;
-        } else {
-            // default to name
-            valA = a.name.toLowerCase();
-            valB = b.name.toLowerCase();
+            if (sortBy === "gmv") {
+                valA = parseGMV(a.totalGmv);
+                valB = parseGMV(b.totalGmv);
+            } else if (sortBy === "shops") {
+                valA = a.shopCount;
+                valB = b.shopCount;
+            } else {
+                valA = a.name.toLowerCase();
+                valB = b.name.toLowerCase();
+            }
+
+            if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+            if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
+    }, [businesses, searchQuery, filterStatus, filterPlan, sortBy, sortOrder]);
+
+    const getStatusIconProps = (status: string) => {
+        switch(status) {
+            case "active": return { icon: LuCheck, color: "#5cac7d" };
+            case "pending": return { icon: LuClock, color: "orange.400" };
+            case "suspended": return { icon: LuBan, color: "red.400" };
+            default: return { icon: LuActivity, color: "#888888" };
         }
-
-        if (valA < valB) return sortOrder === "asc" ? -1 : 1;
-        if (valA > valB) return sortOrder === "asc" ? 1 : -1;
-        return 0;
-    });
+    };
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" animation="fade-in 0.3s ease" position="relative" bg="#000000" minH="100vh">
@@ -144,8 +273,7 @@ export default function AdminBusinessesPage() {
 
                     {/* Table Rows */}
                     {processedBusinesses.map((biz) => {
-                        const isActive = biz.status === 'active';
-                        const isPending = biz.status === 'pending';
+                        const statusProps = getStatusIconProps(biz.status);
 
                         return (
                             <Grid 
@@ -174,11 +302,9 @@ export default function AdminBusinessesPage() {
 
                                 {/* Status */}
                                 <Box display={{ base: "none", md: "block" }}>
-                                    <Flex align="center" gap={2}>
-                                        <Box boxSize="6px" rounded="none" bg={isActive ? "#5cac7d" : isPending ? "orange.400" : "red.400"} />
-                                        <Text color={isActive ? "white" : "#888888"} fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
-                                            {biz.status}
-                                        </Text>
+                                    <Flex align="center" gap={1.5} bg="#111111" color="white" px={2.5} py={1} border="1px solid #333333" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" display="inline-flex">
+                                        <Icon as={statusProps.icon} color={statusProps.color} boxSize="12px" strokeWidth="3" />
+                                        {biz.status}
                                     </Flex>
                                 </Box>
 
@@ -198,15 +324,36 @@ export default function AdminBusinessesPage() {
                                     {biz.totalGmv}
                                 </Text>
 
-                                {/* Action Menu */}
+                                {/* Action Menu Trigger */}
                                 <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                                    <Icon as={LuEllipsisVertical} color="#888888" cursor="pointer" strokeWidth="2.5" _hover={{ color: "white" }} />
+                                    <IconButton
+                                        aria-label="Manage Account"
+                                        variant="ghost"
+                                        size="sm"
+                                        color="#888888"
+                                        _hover={{ color: "white", bg: "#1A1A1A" }}
+                                        rounded="none"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevents layout navigation routing
+                                            setSelectedBusiness(biz);
+                                        }}
+                                    >
+                                        <Icon as={LuEllipsisVertical} strokeWidth="2.5" />
+                                    </IconButton>
                                 </Flex>
                             </Grid>
                         );
                     })}
                 </VStack>
             )}
+
+            {/* --- Mount Modal --- */}
+            <ManageBusinessDrawer 
+                business={selectedBusiness} 
+                onClose={() => setSelectedBusiness(null)} 
+                onUpdate={handleUpdateBusiness} 
+            />
         </Box>
     );
 }
+

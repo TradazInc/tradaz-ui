@@ -1,9 +1,12 @@
 "use client";
 import React, { useState, useMemo } from "react";
-import { Box, Flex, Text, SimpleGrid, Icon, Button, IconButton } from "@chakra-ui/react";
 import { 
-    LuCalculator, LuDownload, 
-    LuReceipt, LuLandmark, LuWallet, LuEllipsisVertical 
+    Box, Flex, Text, SimpleGrid, Icon, Button, IconButton, VStack, Badge
+} from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+    LuCalculator, LuDownload, LuReceipt, LuLandmark, 
+    LuWallet, LuEye, LuX, LuCheck 
 } from "react-icons/lu";
 
 import { generateDummyTaxableSales } from "@/app/lib/data";
@@ -11,10 +14,115 @@ import { TaxableSale } from "@/app/lib/definitions";
 
 type TimeFilter = "1M" | "3M" | "6M" | "1Y" | "ALL";
 
+// --- TAX DETAILS MODAL ---
+const TaxDetailsModal = ({ 
+    sale, onClose, onMarkRemitted, vatRate 
+}: { 
+    sale: TaxableSale | null; onClose: () => void; onMarkRemitted: (id: string) => void; vatRate: number;
+}) => {
+    if (!sale) return null;
+    
+    const vatAmount = sale.grossAmount * vatRate;
+    const netAmount = sale.grossAmount - vatAmount;
+    const isRemitted = sale.status === "Remitted";
+
+    return (
+        <AnimatePresence>
+            {sale && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Tax & Liability Record</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{sale.reference}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Status & Date */}
+                                        <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Date of Sale</Text>
+                                                <Text color="white" fontSize="sm">{sale.date}</Text>
+                                            </Box>
+                                            <Badge 
+                                                colorScheme={isRemitted ? "green" : "orange"} 
+                                                px={3} py={1} rounded="none" textTransform="uppercase" fontWeight="bold" letterSpacing="wider"
+                                            >
+                                                {sale.status}
+                                            </Badge>
+                                        </Flex>
+
+                                        {/* Customer Details */}
+                                        <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Customer</Text>
+                                            <Text color="white" fontWeight="bold">{sale.customer}</Text>
+                                        </Box>
+
+                                        {/* Financial Breakdown */}
+                                        <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4}>Tax Calculation Breakdown</Text>
+                                            <Flex justify="space-between" mb={2}>
+                                                <Text color="#888888" fontSize="sm">Gross Amount</Text>
+                                                <Text color="white" fontSize="sm" fontFamily="monospace">₦{sale.grossAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>
+                                            </Flex>
+                                            <Flex justify="space-between" mb={4}>
+                                                <Text color="orange.400" fontSize="sm">VAT Liability (7.5%)</Text>
+                                                <Text color="orange.400" fontSize="sm" fontFamily="monospace">₦{vatAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>
+                                            </Flex>
+                                            <Box borderTop="1px dashed #333333" mt={4} pt={4}>
+                                                <Flex justify="space-between" align="center">
+                                                    <Text color="white" fontWeight="bold">Net Revenue</Text>
+                                                    <Text color="#5cac7d" fontSize="xl" fontWeight="black" fontFamily="monospace">₦{netAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</Text>
+                                                </Flex>
+                                            </Box>
+                                        </Box>
+
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" bg="#111111" gap={3}>
+                                    <Button flex={1} variant="outline" borderColor="#333333" color="white" rounded="none" fontWeight="bold" onClick={onClose} _hover={{ bg: "#1A1A1A" }}>
+                                        Close
+                                    </Button>
+                                    {!isRemitted && (
+                                        <Button flex={1} bg="#5cac7d" color="white" rounded="none" fontWeight="bold" onClick={() => onMarkRemitted(sale.id)} _hover={{ bg: "#4a9c6d" }}>
+                                            <Icon as={LuCheck} mr={2} strokeWidth="3" /> Mark Remitted
+                                        </Button>
+                                    )}
+                                </Flex>
+
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
+
 export const TaxCalculator = () => {
-    // Generate 50 random sales over the last year
-    const [allSales] = useState<TaxableSale[]>(generateDummyTaxableSales(50));
+    const [allSales, setAllSales] = useState<TaxableSale[]>(generateDummyTaxableSales(50));
     const [timeFilter, setTimeFilter] = useState<TimeFilter>("3M");
+    const [viewingSale, setViewingSale] = useState<TaxableSale | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
 
     const VAT_RATE = 0.075; 
 
@@ -33,15 +141,48 @@ export const TaxCalculator = () => {
         });
     }, [allSales, timeFilter]);
 
-    // Calculate Totals based on the filtered list
     const totalGross = filteredSales.reduce((acc, sale) => acc + sale.grossAmount, 0);
     const totalVAT = totalGross * VAT_RATE;
     const totalNet = totalGross - totalVAT;
 
-    return (
-        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000">
+    // --- ACTIONS ---
+    const handleExport = () => {
+        setIsExporting(true);
+        setTimeout(() => {
+            const headers = ["Date", "Reference", "Customer", "Gross Amount (NGN)", "VAT (7.5%)", "Net Amount (NGN)", "Status"];
+            const csvRows = filteredSales.map(sale => {
+                const vat = sale.grossAmount * VAT_RATE;
+                const net = sale.grossAmount - vat;
+                return `"${sale.date}","${sale.reference}","${sale.customer}",${sale.grossAmount},${vat},${net},"${sale.status}"`;
+            });
+            const csvString = [headers.join(","), ...csvRows].join("\n");
             
-            {/*  PAGE HEADER (Non-Sticky) */}
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `tax_liability_report_${timeFilter}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            setIsExporting(false);
+        }, 500);
+    };
+
+    const handleMarkRemitted = (id: string) => {
+        setAllSales(prev => prev.map(sale => 
+            sale.id === id ? { ...sale, status: "Remitted" } : sale
+        ));
+        setViewingSale(null);
+    };
+
+    return (
+        <Box w="full" display="flex" flexDirection="column" position="relative" bg="#000000" minH="100vh">
+            
+            {/* PAGE HEADER (Non-Sticky) */}
             <Flex justify="space-between" align={{ base: "flex-start", md: "center" }} direction={{ base: "column", md: "row" }} wrap="wrap" gap={4} mb={6} pt={2}>
                 <Box>
                     <Flex align="center" gap={3} mb={1}>
@@ -53,12 +194,17 @@ export const TaxCalculator = () => {
                     <Text color="#888888" fontSize="sm">Automated 7.5% VAT calculation based on the Nigerian Finance Act.</Text>
                 </Box>
                 
-                <Button variant="outline" rounded="none" borderColor="#333333" color="white" _hover={{ bg: "#111111" }} h="44px" px={6}>
+                <Button 
+                    onClick={handleExport}
+                    loading={isExporting}
+                    loadingText="Exporting..."
+                    variant="outline" rounded="none" borderColor="#333333" color="white" _hover={{ bg: "#111111" }} h="44px" px={6}
+                >
                     <Icon as={LuDownload} mr={2} strokeWidth="2.5" /> Export Report
                 </Button>
             </Flex>
 
-            {/*  TAX SUMMARY CARDS (Non-Sticky) */}
+            {/* TAX SUMMARY CARDS (Non-Sticky) */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={6} mb={8}>
                 <Box bg="#0A0A0A" rounded="none" p={6} border="1px solid" borderColor="#1A1A1A">
                     <Flex align="center" justify="space-between" mb={3}>
@@ -119,7 +265,6 @@ export const TaxCalculator = () => {
             </Box>
 
             {/* TABLE SECTION */}
-            
             <Box minH="65vh">
                 <Box bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A" mb={4} overflowX="auto" css={{ '&::-webkit-scrollbar': { height: '6px' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' } }}>
                     <Box as="table" w="full" minW="900px" textAlign="left" style={{ borderCollapse: "collapse" }}>
@@ -173,9 +318,12 @@ export const TaxCalculator = () => {
                                             </Box>
                                             
                                             <Box as="td" py={4} px={6} textAlign="right">
-                                                <IconButton aria-label="Options" size="sm" variant="ghost" rounded="none" color="#888888" _hover={{ color: "white", bg: "#1A1A1A" }}>
-                                                    <Icon as={LuEllipsisVertical} strokeWidth="2.5" />
-                                                </IconButton>
+                                                <Button 
+                                                    onClick={() => setViewingSale(sale)}
+                                                    size="sm" variant="ghost" rounded="none" color="#888888" _hover={{ color: "white", bg: "#1A1A1A" }} fontWeight="bold"
+                                                >
+                                                    <Icon as={LuEye} mr={1.5} /> View
+                                                </Button>
                                             </Box>
 
                                         </Box>
@@ -186,6 +334,14 @@ export const TaxCalculator = () => {
                     </Box>
                 </Box>
             </Box>
+
+            {/* Mount Modal */}
+            <TaxDetailsModal 
+                sale={viewingSale} 
+                onClose={() => setViewingSale(null)} 
+                onMarkRemitted={handleMarkRemitted} 
+                vatRate={VAT_RATE}
+            />
         </Box>
     );
 };

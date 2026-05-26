@@ -14,7 +14,7 @@ const SignupSidePanel = () => {
       color="white"
       textAlign="center"
       p={{ base: 8, md: 12 }}
-      display={{ base: "none", lg: "flex" }} // Hides on mobile, shows on desktop
+      display={{ base: "none", lg: "flex" }} 
       position="relative"
       overflow="hidden"
     >
@@ -43,6 +43,7 @@ const SignupSidePanel = () => {
           py={3}
           fontWeight="bold"
           letterSpacing="wider"
+          color="white"
           cursor="pointer"
           _hover={{ bg: "white", color: "#5cac7d", transform: "scale(1.02)" }}
           _active={{ transform: "scale(0.98)" }}

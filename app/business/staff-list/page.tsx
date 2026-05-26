@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
-import { Box, Flex, Text, Input, Button, Icon, Grid, VStack, IconButton, SimpleGrid, Spinner } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Flex, Text, Input, Button, Icon, Grid, VStack, IconButton, SimpleGrid, Spinner, Badge } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuSearch, LuUserPlus, LuShieldCheck, LuHeadset, 
-    LuPackage, LuBadgeDollarSign, LuEllipsisVertical, LuMail, LuTrendingUp
+    LuPackage, LuBadgeDollarSign, LuEllipsisVertical, LuMail, LuTrendingUp, LuX, LuClock, LuUser,
 } from "react-icons/lu";
 
 import { AddStaffForm } from "@/app/ui/dashboard/AddStaffForm";
@@ -11,6 +12,106 @@ import { useStaff, StaffRole, StaffMember } from "@/app/hooks/useStaff";
 
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
 const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
+
+// --- VIEW STAFF MODAL COMPONENT ---
+const ViewStaffModal = ({ staff, onClose }: { staff: StaffMember | null; onClose: () => void }) => {
+    return (
+        <AnimatePresence>
+            {staff && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "400px", md: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Staff Profile</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{staff.name}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close modal" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Status & Role */}
+                                        <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Assigned Role</Text>
+                                                <Text color="white" fontSize="sm" fontWeight="bold" textTransform="capitalize">{staff.role.replace('_', ' ')}</Text>
+                                            </Box>
+                                            <Badge colorScheme={staff.status === "active" ? "green" : staff.status === "suspended" ? "red" : "orange"} px={3} py={1} rounded="none" textTransform="uppercase">
+                                                {staff.status}
+                                            </Badge>
+                                        </Flex>
+
+                                        {/* Contact Information */}
+                                        <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={4}>Account Information</Text>
+                                            <Flex align="center" gap={3} mb={4}>
+                                                <Icon as={LuUser} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Staff ID</Text>
+                                                    <Text color="white" fontWeight="bold" fontFamily="monospace">{staff.id}</Text>
+                                                </Box>
+                                            </Flex>
+                                            <Flex align="center" gap={3}>
+                                                <Icon as={LuMail} color="#888888" boxSize="18px" />
+                                                <Box>
+                                                    <Text color="#888888" fontSize="xs">Email Address</Text>
+                                                    <Text color="white" fontWeight="bold">{staff.email}</Text>
+                                                </Box>
+                                            </Flex>
+                                        </Box>
+
+                                        {/* Activity Stats */}
+                                        <Box>
+                                            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Performance & Activity</Text>
+                                            <SimpleGrid columns={staff.role === 'sales_rep' ? 2 : 1} gap={4}>
+                                                <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                    <Icon as={LuClock} color="blue.400" boxSize="20px" mb={2} />
+                                                    <Text color="#888888" fontSize="xs" mb={1}>Last Active</Text>
+                                                    <Text color="white" fontSize="md" fontWeight="bold">{staff.lastActive}</Text>
+                                                </Box>
+                                                {staff.role === 'sales_rep' && (
+                                                    <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                        <Icon as={LuTrendingUp} color="#5cac7d" boxSize="20px" mb={2} />
+                                                        <Text color="#888888" fontSize="xs" mb={1}>30-Day Sales</Text>
+                                                        <Text color="white" fontSize="xl" fontWeight="black" fontFamily="monospace">₦{(staff.salesGenerated || 0).toLocaleString()}</Text>
+                                                    </Box>
+                                                )}
+                                            </SimpleGrid>
+                                        </Box>
+
+                                    </VStack>
+                                </Box>
+
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    <Button flex={1} variant="outline" borderColor="#333333" color="white" rounded="none" fontWeight="bold" onClick={onClose} _hover={{ bg: "#1A1A1A" }}>
+                                        Close
+                                    </Button>
+                                    <Button flex={1} bg={staff.status === "active" ? "orange.500" : "#5cac7d"} color="white" rounded="none" fontWeight="bold" _hover={{ filter: "brightness(0.9)" }}>
+                                        {staff.status === "active" ? "Suspend Account" : "Activate Account"}
+                                    </Button>
+                                </Flex>
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
 
 export default function StaffManagementPage() {
     const {
@@ -22,6 +123,9 @@ export default function StaffManagementPage() {
         activeSalesRepsCount, pendingInvitesCount
     } = useStaff();
 
+    // Local State for viewing profiles
+    const [viewingStaff, setViewingStaff] = useState<StaffMember | null>(null);
+
     if (isAddingStaff) {
         return (
             <Box p={{ base: 4, lg: 8 }} maxW="1200px" mx="auto" bg="#000000" minH="100vh">
@@ -30,7 +134,6 @@ export default function StaffManagementPage() {
         );
     }
 
-   
     const getRoleUI = (role: StaffRole) => {
         switch (role) {
             case "store_manager": return { iconColor: "purple.400", icon: LuShieldCheck, label: "Manager" };
@@ -155,6 +258,7 @@ export default function StaffManagementPage() {
                         return (
                             <Grid 
                                 key={member.id} 
+                                onClick={() => setViewingStaff(member)}
                                 templateColumns={{ base: "1fr", md: "2fr 1.5fr 1fr", xl: "2fr 1.5fr 1fr 1fr 1.5fr 50px" }} 
                                 gap={4} p={4} bg="#0A0A0A" rounded="none" border="1px solid" borderColor="#1A1A1A"
                                 alignItems="center" cursor="pointer" transition="all 0.2s"
@@ -194,14 +298,19 @@ export default function StaffManagementPage() {
 
                                 <Box textAlign="right" display={{ base: "none", xl: "block" }}>
                                     {member.role === 'sales_rep' ? (
-                                        <Text color="white" fontWeight="black" fontSize="sm">₦{member.salesGenerated?.toLocaleString() || "0"}</Text>
+                                        <Text color="white" fontWeight="black" fontSize="sm" fontFamily="monospace">₦{member.salesGenerated?.toLocaleString() || "0"}</Text>
                                     ) : (
                                         <Text color="#555555" fontSize="sm" fontWeight="bold">—</Text>
                                     )}
                                 </Box>
 
                                 <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                                    <IconButton aria-label="Manage Staff" variant="ghost" color="#888888" rounded="none" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                    <IconButton 
+                                        aria-label="Manage Staff" 
+                                        variant="ghost" color="#888888" rounded="none" 
+                                        _hover={{ bg: "#1A1A1A", color: "white" }}
+                                        onClick={(e) => { e.stopPropagation(); setViewingStaff(member); }}
+                                    >
                                         <LuEllipsisVertical strokeWidth="2.5" />
                                     </IconButton>
                                 </Flex>
@@ -217,6 +326,9 @@ export default function StaffManagementPage() {
                     )}
                 </VStack>
             )}
+
+            {/* Mount Modal */}
+            <ViewStaffModal staff={viewingStaff} onClose={() => setViewingStaff(null)} />
         </Box>
     );
 }
