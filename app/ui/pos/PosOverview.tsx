@@ -368,7 +368,7 @@ export const PosOverview = () => {
                                         <GatewayCard 
                                             brand="Moniepoint"
                                             bgGradient="linear-gradient(135deg, #0533eb 0%, #01166b 100%)"
-                                            logoSrc="/moniepoint.png"
+                                            logoSrc="/Moniepoint.png"
                                             isSelected={paymentMethod === 'moniepoint'}
                                             onClick={() => setPaymentMethod('moniepoint')}
                                         />

@@ -63,7 +63,7 @@ const SUPER_ADMIN_NAV_ITEMS = [
         children: [
             { label: "Automation Engine", icon: LuZap, path: "/overwatch/automation" },
             { label: "API & Health", icon: LuServer, path: "/overwatch/health" },
-            { label: "Staff Roles (RBAC)", icon: LuShieldCheck, path: "/overwatch/staff" }
+            { label: "Staff Roles", icon: LuShieldCheck, path: "/overwatch/staff" }
         ]
     },
     { 
