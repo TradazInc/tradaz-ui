@@ -1,16 +1,18 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar, Input, IconButton, VStack, ScrollArea
+    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar, Input, IconButton, VStack, ScrollArea, Spinner, Textarea
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuSearch, LuFilter, LuShieldAlert, LuBan, LuEye, 
-    LuUserX, LuClock, LuDownload, LuInfo, LuCheck, LuLock
+    LuUserX, LuClock, LuDownload, LuInfo, LuCheck, LuLock, LuX
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
 const nativeSelectStyle: React.CSSProperties = { backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px", minWidth: "160px" };
+const scrollbarStyles = { '&::-webkit-scrollbar': { height: '6px', width: '6px' }, '&::-webkit-scrollbar-track': { background: 'transparent' }, '&::-webkit-scrollbar-thumb': { background: '#333333', borderRadius: '0px' }, '&::-webkit-scrollbar-thumb:hover': { background: '#555555' } };
 
 // --- MOCK DATA ---
 const FLAGGED_KPIs = [
@@ -20,7 +22,7 @@ const FLAGGED_KPIs = [
     { label: "Permanent Bans", value: "12", trend: "This month", icon: LuBan, iconColor: "#888888" },
 ];
 
-interface FlaggedAccount {
+export interface FlaggedAccount {
     id: string;
     accountName: string;
     email: string;
@@ -31,7 +33,7 @@ interface FlaggedAccount {
     flaggedAt: string;
 }
 
-const MOCK_FLAGGED_ACCOUNTS: FlaggedAccount[] = [
+const INITIAL_ACCOUNTS: FlaggedAccount[] = [
     { id: "FLG-2041", accountName: "Gadget World", email: "support@gadgetworld.io", role: "Merchant", violation: "Unusually high refund rate (14.2%)", severity: "High", status: "Suspended", flaggedAt: "2 hours ago" },
     { id: "FLG-2042", accountName: "Unknown User", email: "fraud.test@tempmail.com", role: "Buyer", violation: "Multiple failed payment attempts", severity: "High", status: "Banned", flaggedAt: "5 hours ago" },
     { id: "FLG-2043", accountName: "Chuka Obi", email: "chuka@example.com", role: "Buyer", violation: "Abusive language in disputes", severity: "Medium", status: "Under Review", flaggedAt: "1 day ago" },
@@ -40,13 +42,226 @@ const MOCK_FLAGGED_ACCOUNTS: FlaggedAccount[] = [
     { id: "FLG-2046", accountName: "Bad Actor", email: "scammer99@fakemail.io", role: "Merchant", violation: "Suspected counterfeit products", severity: "High", status: "Banned", flaggedAt: "1 week ago" },
 ];
 
+const getSeverityStyle = (severity: string) => {
+    switch (severity) {
+        case "High": return { color: "red.400" };
+        case "Medium": return { color: "yellow.400" };
+        case "Low": return { color: "blue.400" };
+        default: return { color: "#888888" };
+    }
+};
+
+const getStatusStyle = (status: string) => {
+    switch (status) {
+        case "Under Review": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)", icon: LuClock };
+        case "Suspended": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)", icon: LuUserX };
+        case "Banned": return { bg: "#111111", color: "#888888", border: "1px solid #333333", icon: LuBan };
+        case "Resolved": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d", icon: LuCheck };
+        default: return { bg: "#111111", color: "#888888", border: "1px solid #333333", icon: LuInfo };
+    }
+};
+
+// --- ACCOUNT DETAILS DRAWER ---
+const AccountDetailsDrawer = ({ 
+    account, onClose, onUpdateStatus 
+}: { 
+    account: FlaggedAccount | null; onClose: () => void; onUpdateStatus: (id: string, status: FlaggedAccount["status"]) => void 
+}) => {
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [note, setNote] = useState("");
+
+    if (!account) return null;
+    const statusStyle = getStatusStyle(account.status);
+    const severityStyle = getSeverityStyle(account.severity);
+
+    const handleAction = (status: FlaggedAccount["status"]) => {
+        setIsUpdating(true);
+        setTimeout(() => {
+            onUpdateStatus(account.id, status);
+            setIsUpdating(false);
+            setNote("");
+            onClose();
+        }, 1000); // Simulate API call
+    };
+
+    return (
+        <AnimatePresence>
+            {account && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                
+                                {/* Header */}
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Account Audit</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{account.id}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                {/* Content */}
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={scrollbarStyles}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Status & Severity */}
+                                        <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Risk Severity</Text>
+                                                <Flex align="center" gap={2}>
+                                                    <Icon as={LuShieldAlert} color={severityStyle.color} boxSize="18px" />
+                                                    <Text color={severityStyle.color} fontSize="lg" fontWeight="black" letterSpacing="tight">{account.severity}</Text>
+                                                </Flex>
+                                            </Box>
+                                            <Flex align="center" gap={2} {...statusStyle} px={2.5} py={1.5} rounded="none">
+                                                <Icon as={statusStyle.icon} boxSize="14px" strokeWidth="3" />
+                                                <Text fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">{account.status}</Text>
+                                            </Flex>
+                                        </Flex>
+
+                                        {/* Profile */}
+                                        <Box bg="#111111" p={5} border="1px solid #1A1A1A">
+                                            <Flex justify="space-between" mb={4} pb={4} borderBottom="1px dashed #333333">
+                                                <Text color="#888888" fontSize="sm">Account Role</Text>
+                                                <Text color="white" fontWeight="bold" fontFamily="monospace">{account.role}</Text>
+                                            </Flex>
+                                            <Flex align="center" justify="space-between" mb={4}>
+                                                <Text color="#888888" fontSize="sm">Account Name</Text>
+                                                <Text color="white" fontWeight="bold">{account.accountName}</Text>
+                                            </Flex>
+                                            <Flex align="center" justify="space-between">
+                                                <Text color="#888888" fontSize="sm">Email Address</Text>
+                                                <Text color="white" fontWeight="bold">{account.email}</Text>
+                                            </Flex>
+                                        </Box>
+
+                                        {/* Reason */}
+                                        <Box bg="#111111" p={5} border="1px solid #1A1A1A">
+                                            <Text color="#888888" fontSize="sm" mb={1}>Violation Description</Text>
+                                            <Text color="white" fontWeight="bold" fontStyle="italic">&quot;{account.violation}&quot;</Text>
+                                            <Text color="#555555" fontSize="xs" mt={4} textAlign="right">Flagged: {account.flaggedAt}</Text>
+                                        </Box>
+
+                                        {/* Admin Note Box */}
+                                        {account.status !== "Resolved" && (
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Enforcement Notes</Text>
+                                                <Textarea 
+                                                    placeholder="Add an internal note before enforcing an action..." 
+                                                    bg="#111111" border="1px solid #333333" color="white" rounded="none" p={3} minH="100px"
+                                                    _focus={{ borderColor: "white", outline: "none", boxShadow: "none" }}
+                                                    value={note} onChange={(e) => setNote(e.target.value)}
+                                                />
+                                            </Box>
+                                        )}
+                                    </VStack>
+                                </Box>
+
+                                {/* Footer Actions */}
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    {(account.status === "Banned" || account.status === "Suspended") ? (
+                                        <>
+                                            <Button 
+                                                flex="1" bg="white" color="black" rounded="none" fontWeight="bold" _hover={{ bg: "#E5E5E5" }}
+                                                onClick={() => handleAction("Resolved")} loading={isUpdating}
+                                            >
+                                                <Icon as={LuCheck} mr={2} strokeWidth="3" /> Restore Account
+                                            </Button>
+                                        </>
+                                    ) : account.status === "Under Review" ? (
+                                        <>
+                                            <Button 
+                                                flex="1" variant="outline" borderColor="yellow.400" color="yellow.400" rounded="none" fontWeight="bold" _hover={{ bg: "rgba(236, 201, 75, 0.1)" }}
+                                                onClick={() => handleAction("Suspended")} loading={isUpdating}
+                                            >
+                                                <Icon as={LuUserX} mr={2} strokeWidth="3" /> Suspend
+                                            </Button>
+                                            <Button 
+                                                flex="1" bg="red.500" color="white" rounded="none" fontWeight="bold" _hover={{ bg: "red.600" }}
+                                                onClick={() => handleAction("Banned")} loading={isUpdating}
+                                            >
+                                                <Icon as={LuBan} mr={2} strokeWidth="3" /> Ban
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <Button w="full" variant="outline" borderColor="#333333" color="white" rounded="none" onClick={onClose} _hover={{ bg: "#1A1A1A" }}>
+                                            Close Details
+                                        </Button>
+                                    )}
+                                </Flex>
+
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
 export default function FlaggedAccountsPage() {
+    // --- STATE ---
+    const [accounts, setAccounts] = useState<FlaggedAccount[]>(INITIAL_ACCOUNTS);
     const [searchQuery, setSearchQuery] = useState("");
     const [severityFilter, setSeverityFilter] = useState("All");
     const [statusFilter, setStatusFilter] = useState("All");
 
-    // Filter Logic
-    const filteredAccounts = MOCK_FLAGGED_ACCOUNTS.filter(account => {
+    // Modal & Action States
+    const [selectedAccount, setSelectedAccount] = useState<FlaggedAccount | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
+    const [inlineProcessingId, setInlineProcessingId] = useState<string | null>(null);
+
+    // --- ACTIONS ---
+    const handleUpdateStatus = (id: string, newStatus: FlaggedAccount["status"]) => {
+        setAccounts(prev => prev.map(acc => acc.id === id ? { ...acc, status: newStatus } : acc));
+    };
+
+    const handleInlineAction = (e: React.MouseEvent, id: string, newStatus: FlaggedAccount["status"]) => {
+        e.stopPropagation();
+        setInlineProcessingId(id);
+        setTimeout(() => {
+            handleUpdateStatus(id, newStatus);
+            setInlineProcessingId(null);
+        }, 800);
+    };
+
+    const handleExportAuditLog = () => {
+        setIsExporting(true);
+        setTimeout(() => {
+            const headers = ["ID", "Account Name", "Email", "Role", "Violation", "Severity", "Status", "Flagged At"];
+            const csvRows = filteredAccounts.map(a => 
+                [a.id, `"${a.accountName}"`, `"${a.email}"`, a.role, `"${a.violation}"`, a.severity, a.status, `"${a.flaggedAt}"`].join(",")
+            );
+            const csvString = [headers.join(","), ...csvRows].join("\n");
+            
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'flagged_accounts_audit.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            setIsExporting(false);
+        }, 800);
+    };
+
+    // --- FILTER LOGIC ---
+    const filteredAccounts = accounts.filter(account => {
         const matchesSearch = account.accountName.toLowerCase().includes(searchQuery.toLowerCase()) || 
                               account.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
                               account.id.toLowerCase().includes(searchQuery.toLowerCase());
@@ -54,25 +269,6 @@ export default function FlaggedAccountsPage() {
         const matchesStatus = statusFilter === "All" || account.status === statusFilter;
         return matchesSearch && matchesSeverity && matchesStatus;
     });
-
-    const getSeverityStyle = (severity: string) => {
-        switch (severity) {
-            case "High": return { color: "red.400" };
-            case "Medium": return { color: "yellow.400" };
-            case "Low": return { color: "blue.400" };
-            default: return { color: "#888888" };
-        }
-    };
-
-    const getStatusStyle = (status: string) => {
-        switch (status) {
-            case "Under Review": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)", icon: LuClock };
-            case "Suspended": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)", icon: LuUserX };
-            case "Banned": return { bg: "#111111", color: "#888888", border: "1px solid #333333", icon: LuBan };
-            case "Resolved": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d", icon: LuCheck };
-            default: return { bg: "#111111", color: "#888888", border: "1px solid #333333", icon: LuInfo };
-        }
-    };
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
@@ -86,7 +282,10 @@ export default function FlaggedAccountsPage() {
                     <Text color="#888888" fontSize="sm">Investigate policy violations, suspend risky accounts, and enforce platform bans.</Text>
                 </Box>
                 
-                <Button display={{ base: "none", sm: "flex" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} gap={2} h="44px" px={6} fontWeight="bold">
+                <Button 
+                    onClick={handleExportAuditLog} loading={isExporting} loadingText="Exporting..."
+                    display={{ base: "none", sm: "flex" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} gap={2} h="44px" px={6} fontWeight="bold"
+                >
                     <Icon as={LuDownload} color="#888888" strokeWidth="2.5" /> Export Audit Log
                 </Button>
             </Flex>
@@ -171,13 +370,15 @@ export default function FlaggedAccountsPage() {
                                     {filteredAccounts.map((account) => {
                                         const severityStyle = getSeverityStyle(account.severity);
                                         const statusStyle = getStatusStyle(account.status);
+                                        const isProcessingInline = inlineProcessingId === account.id;
                                         
                                         return (
                                             <Grid 
+                                                onClick={() => setSelectedAccount(account)}
                                                 key={account.id} 
                                                 templateColumns="1.5fr 2.5fr 1fr 1.2fr 120px" gap={4} px={6} py={5} 
                                                 borderBottom="1px solid #1A1A1A" 
-                                                alignItems="start" 
+                                                alignItems="start" cursor="pointer"
                                                 _hover={{ bg: "#111111" }} transition="background 0.2s"
                                             >
                                                 {/* Account Identity */}
@@ -222,12 +423,18 @@ export default function FlaggedAccountsPage() {
                                                     </IconButton>
 
                                                     {account.status === "Banned" || account.status === "Suspended" ? (
-                                                        <IconButton aria-label="Restore Account" title="Restore Access" size="sm" h="32px" w="32px" bg="rgba(92, 172, 125, 0.1)" border="1px solid #5cac7d" color="#5cac7d" rounded="none" _hover={{ bg: "#5cac7d", color: "black" }}>
-                                                            <Icon as={LuLock} strokeWidth="2.5" boxSize="14px" />
+                                                        <IconButton 
+                                                            onClick={(e) => handleInlineAction(e, account.id, "Resolved")} disabled={isProcessingInline}
+                                                            aria-label="Restore Account" title="Restore Access" size="sm" h="32px" w="32px" bg="rgba(92, 172, 125, 0.1)" border="1px solid #5cac7d" color="#5cac7d" rounded="none" _hover={{ bg: "#5cac7d", color: "black" }}
+                                                        >
+                                                            {isProcessingInline ? <Spinner size="xs" color="currentColor" /> : <Icon as={LuLock} strokeWidth="2.5" boxSize="14px" />}
                                                         </IconButton>
                                                     ) : account.status === "Under Review" ? (
-                                                        <IconButton aria-label="Suspend Account" title="Suspend / Ban" size="sm" h="32px" w="32px" bg="rgba(229, 62, 62, 0.1)" border="1px solid var(--chakra-colors-red-400)" color="red.400" rounded="none" _hover={{ bg: "red.400", color: "black" }}>
-                                                            <Icon as={LuBan} strokeWidth="2.5" boxSize="14px" />
+                                                        <IconButton 
+                                                            onClick={(e) => handleInlineAction(e, account.id, "Suspended")} disabled={isProcessingInline}
+                                                            aria-label="Suspend Account" title="Suspend / Ban" size="sm" h="32px" w="32px" bg="rgba(229, 62, 62, 0.1)" border="1px solid var(--chakra-colors-red-400)" color="red.400" rounded="none" _hover={{ bg: "red.400", color: "black" }}
+                                                        >
+                                                            {isProcessingInline ? <Spinner size="xs" color="currentColor" /> : <Icon as={LuBan} strokeWidth="2.5" boxSize="14px" />}
                                                         </IconButton>
                                                     ) : (
                                                         <IconButton aria-label="Resolved" title="Resolved" size="sm" h="32px" w="32px" variant="ghost" color="#555555" rounded="none" cursor="not-allowed">
@@ -250,6 +457,13 @@ export default function FlaggedAccountsPage() {
                     </ScrollArea.Scrollbar>
                 </ScrollArea.Root>
             </Box>
+
+            {/* --- Modals --- */}
+            <AccountDetailsDrawer 
+                account={selectedAccount} 
+                onClose={() => setSelectedAccount(null)} 
+                onUpdateStatus={handleUpdateStatus} 
+            />
 
         </Box>
     );

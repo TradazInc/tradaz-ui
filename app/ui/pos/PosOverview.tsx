@@ -1,12 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Icon, Input, Button, IconButton, VStack, SimpleGrid, Spinner, Badge, Separator
+    Box, Flex, Text, Icon, Input, Button, IconButton, VStack, SimpleGrid, Spinner, Badge, Separator, Image
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuSearch, LuScanLine, LuTrash2, LuMinus, LuPlus, 
     LuUser, LuArrowRight, LuTag, LuArrowLeft, LuCheck, 
-    LuCreditCard, LuBanknote, LuPrinter, LuTrophy, LuX
+    LuPrinter, LuTrophy, LuX, LuWifi
 } from "react-icons/lu";
 
 import { initialPosCart } from "@/app/lib/data";
@@ -21,9 +22,65 @@ const inputStyles = {
     _hover: { borderColor: "#333333" }
 };
 
+// --- REALISTIC MINI DEBIT CARD COMPONENT ---
+const GatewayCard = ({ 
+    brand, bgGradient, logoSrc, isSelected, onClick 
+}: { 
+    brand: string, bgGradient: string, logoSrc: string, isSelected: boolean, onClick: () => void 
+}) => (
+    <Box 
+        position="relative" w="full" h="120px" rounded="none" p={3} cursor="pointer"
+        bgImage={bgGradient} shadow={isSelected ? "0 8px 20px rgba(0,0,0,0.4)" : "none"}
+        transform={isSelected ? "scale(1.02)" : "scale(1)"} transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+        border={isSelected ? "2px solid white" : "2px solid transparent"}
+        onClick={onClick}
+        overflow="hidden"
+        display="flex" flexDirection="column" justifyContent="space-between"
+    >
+        {/* Background glow simulation */}
+        <Box position="absolute" top="-30px" right="-30px" boxSize="100px" rounded="full" bg="whiteAlpha.200" filter="blur(20px)" />
+
+        {/* Top: Logo & NFC */}
+        <Flex justify="space-between" align="flex-start" position="relative" zIndex={2}>
+            <Image src={logoSrc} alt={brand} h="16px" objectFit="contain" filter="drop-shadow(0px 1px 2px rgba(0,0,0,0.4))" />
+            <Icon as={LuWifi} transform="rotate(90deg)" boxSize="16px" color="white" opacity={0.8} />
+        </Flex>
+        
+        {/* Middle: Chip & Digits */}
+        <Box position="relative" zIndex={2}>
+            <Box w="28px" h="20px" rounded="sm" mb={1.5} bgImage="linear-gradient(135deg, #e6c875 0%, #b38b22 100%)" border="1px solid rgba(255,255,255,0.3)" shadow="inner" />
+            <Text fontFamily="monospace" fontSize="sm" letterSpacing="0.1em" color="white" textShadow="0px 1px 2px rgba(0,0,0,0.6)">
+                •••• {brand === 'Moniepoint' ? '8821' : '4092'}
+            </Text>
+        </Box>
+
+        {/* Bottom: Name & Brand */}
+        <Flex justify="space-between" align="flex-end" position="relative" zIndex={2}>
+            <Text fontWeight="bold" fontSize="10px" color="white" letterSpacing="wider" textTransform="uppercase" textShadow="0px 1px 2px rgba(0,0,0,0.6)">{brand}</Text>
+            <Text fontSize="xs" fontWeight="black" fontStyle="italic" color="whiteAlpha.900" letterSpacing="tighter">POS</Text>
+        </Flex>
+
+        {/* Selected Overlay Checkmark */}
+        <AnimatePresence>
+            {isSelected && (
+                <motion.div
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10, borderRadius: "inherit" }}
+                >
+                    <Flex boxSize="40px" bg="white" rounded="full" align="center" justify="center" shadow="xl">
+                        <Icon as={LuCheck} color="black" boxSize="20px" strokeWidth="3" />
+                    </Flex>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    </Box>
+);
+
+
 export const PosOverview = () => {
-    // --- STATE: CART ---
+    // --- STATE: CART & SEARCH ---
     const [cart, setCart] = useState(initialPosCart);
+    const [searchQuery, setSearchQuery] = useState("");
 
     // --- STATE: CHECKOUT FLOW ---
     const [checkoutStep, setCheckoutStep] = useState(0); 
@@ -31,19 +88,25 @@ export const PosOverview = () => {
     
     // Form State
     const [customerInfo, setCustomerInfo] = useState("");
-    const [coupon, setCoupon] = useState("");
+    const [couponInput, setCouponInput] = useState("");
+    const [activeCoupon, setActiveCoupon] = useState("");
     const [pointsBalance, setPointsBalance] = useState<number | null>(null);
-    const [paymentMethod, setPaymentMethod] = useState("card");
-    const [amountTendered, setAmountTendered] = useState("");
+    const [paymentMethod, setPaymentMethod] = useState("moniepoint");
 
     // --- CALCULATIONS ---
     const subtotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
     const vat = subtotal * 0.075; 
-    const couponDiscount = coupon === "TRADAZ10" ? (subtotal * 0.1) : 0;
+    const couponDiscount = activeCoupon === "TRADAZ10" ? (subtotal * 0.1) : 0;
     const loyaltyDiscount = pointsBalance ? 5000 : 0; 
-    const total = subtotal + vat - couponDiscount - loyaltyDiscount;
+    const total = Math.max(0, subtotal + vat - couponDiscount - loyaltyDiscount);
 
-    // --- CART ACTIONS ---
+    // --- ACTIONS ---
+    const handleScan = () => {
+        if (!searchQuery.trim()) return;
+        alert(`Simulating scan for: ${searchQuery}`);
+        setSearchQuery("");
+    };
+
     const updateQty = (id: string, delta: number) => {
         setCart(cart.map(item => {
             if (item.id === id) {
@@ -55,13 +118,25 @@ export const PosOverview = () => {
     };
 
     const removeItem = (id: string) => setCart(cart.filter(item => item.id !== id));
+    
     const clearCart = () => {
         setCart([]);
         resetCheckout();
     };
 
+    const pauseSale = () => {
+        alert("Sale paused and saved to drafts.");
+        clearCart();
+    };
+
     // --- CHECKOUT ACTIONS ---
-    const handleCheckCustomer = () => setPointsBalance(15000); 
+    const handleCheckCustomer = () => {
+        if (customerInfo.trim()) setPointsBalance(15000);
+    };
+    
+    const applyCoupon = () => {
+        setActiveCoupon(couponInput);
+    };
     
     const handlePayment = () => {
         setIsProcessing(true);
@@ -74,15 +149,19 @@ export const PosOverview = () => {
     const resetCheckout = () => {
         setCheckoutStep(0);
         setCustomerInfo("");
-        setCoupon("");
+        setCouponInput("");
+        setActiveCoupon("");
         setPointsBalance(null);
-        setPaymentMethod("card");
-        setAmountTendered("");
+        setPaymentMethod("moniepoint");
     };
 
     const startNewSale = () => {
         setCart([]);
         resetCheckout();
+    };
+
+    const handlePrintReceipt = () => {
+        window.print();
     };
 
     return (
@@ -95,15 +174,21 @@ export const PosOverview = () => {
                 <Flex gap={4} wrap="wrap">
                     <Flex flex={1} minW="300px" align="center" bg="#0A0A0A" border="1px solid #1A1A1A" rounded="lg" px={4} h="56px">
                         <Icon as={LuScanLine} color="white" boxSize="20px" mr={3} />
-                        <Input placeholder="Scan barcode or type product name/SKU..." bg="transparent" border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" fontSize="md" fontWeight="medium" rounded="none" />
-                        <Icon as={LuSearch} color="gray.500" cursor="pointer" _hover={{ color: "white" }} />
+                        <Input 
+                            placeholder="Scan barcode or type product name/SKU..." 
+                            bg="transparent" border="none" _focus={{ outline: "none", boxShadow: "none" }} 
+                            color="white" fontSize="md" fontWeight="medium" rounded="none" 
+                            value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleScan()}
+                        />
+                        <Icon as={LuSearch} color="gray.500" cursor="pointer" _hover={{ color: "white" }} onClick={handleScan} />
                     </Flex>
                     
                     <Flex gap={2}>
                         <Button variant="outline" rounded="lg" border="1px solid #1A1A1A" color="white" _hover={{ bg: "#111111" }} h="56px" px={6} bg="#0A0A0A" onClick={clearCart}>
                             Clear Cart
                         </Button>
-                        <Button variant="outline" rounded="lg" border="1px solid #1A1A1A" color="white" _hover={{ bg: "#111111" }} h="56px" px={6} bg="#0A0A0A">
+                        <Button variant="outline" rounded="lg" border="1px solid #1A1A1A" color="white" _hover={{ bg: "#111111" }} h="56px" px={6} bg="#0A0A0A" onClick={pauseSale}>
                             Pause Sale
                         </Button>
                     </Flex>
@@ -260,8 +345,8 @@ export const PosOverview = () => {
                                 <Box>
                                     <Text fontSize="sm" fontWeight="bold" color="gray.300" mb={2}>Apply Coupon</Text>
                                     <Flex gap={2}>
-                                        <Input placeholder="e.g. TRADAZ10" {...inputStyles} h="48px" value={coupon} onChange={(e) => setCoupon(e.target.value.toUpperCase())} />
-                                        <Button h="48px" px={6} bg="#111111" border="1px solid #1A1A1A" color="white" rounded="md" _hover={{ bg: "#1A1A1A" }}>Apply</Button>
+                                        <Input placeholder="e.g. TRADAZ10" {...inputStyles} h="48px" value={couponInput} onChange={(e) => setCouponInput(e.target.value.toUpperCase())} />
+                                        <Button h="48px" px={6} bg="#111111" border="1px solid #1A1A1A" color="white" rounded="md" _hover={{ bg: "#1A1A1A" }} onClick={applyCoupon}>Apply</Button>
                                     </Flex>
                                     {couponDiscount > 0 && <Text color="white" fontSize="sm" mt={2} fontWeight="bold">Valid! - ₦{couponDiscount.toLocaleString()} applied.</Text>}
                                 </Box>
@@ -278,44 +363,24 @@ export const PosOverview = () => {
                                 </Box>
 
                                 <Box>
-                                    <Text fontSize="sm" fontWeight="bold" color="gray.300" mb={3}>Select Payment Method</Text>
+                                    <Text fontSize="sm" fontWeight="bold" color="gray.300" mb={3}>Select Terminal</Text>
                                     <SimpleGrid columns={2} gap={3}>
-                                        <Box 
-                                            p={4} border="1px solid" rounded="md" cursor="pointer" textAlign="center" transition="all 0.2s"
-                                            borderColor={paymentMethod === 'card' ? "white" : "#1A1A1A"}
-                                            bg={paymentMethod === 'card' ? "#111111" : "#0A0A0A"}
-                                            onClick={() => setPaymentMethod('card')}
-                                            _hover={{ borderColor: paymentMethod !== 'card' ? "#333333" : "white" }}
-                                        >
-                                            <Icon as={LuCreditCard} boxSize="28px" color={paymentMethod === 'card' ? "white" : "gray.400"} mb={2} />
-                                            <Text fontWeight="bold" fontSize="sm" color="white">Card Terminal</Text>
-                                        </Box>
-                                        <Box 
-                                            p={4} border="1px solid" rounded="md" cursor="pointer" textAlign="center" transition="all 0.2s"
-                                            borderColor={paymentMethod === 'cash' ? "white" : "#1A1A1A"}
-                                            bg={paymentMethod === 'cash' ? "#111111" : "#0A0A0A"}
-                                            onClick={() => setPaymentMethod('cash')}
-                                            _hover={{ borderColor: paymentMethod !== 'cash' ? "#333333" : "white" }}
-                                        >
-                                            <Icon as={LuBanknote} boxSize="28px" color={paymentMethod === 'cash' ? "white" : "gray.400"} mb={2} />
-                                            <Text fontWeight="bold" fontSize="sm" color="white">Cash</Text>
-                                        </Box>
+                                        <GatewayCard 
+                                            brand="Moniepoint"
+                                            bgGradient="linear-gradient(135deg, #0533eb 0%, #01166b 100%)"
+                                            logoSrc="/moniepoint.png"
+                                            isSelected={paymentMethod === 'moniepoint'}
+                                            onClick={() => setPaymentMethod('moniepoint')}
+                                        />
+                                        <GatewayCard 
+                                            brand="OPay"
+                                            bgGradient="linear-gradient(135deg, #10c282 0%, #08704a 100%)"
+                                            logoSrc="/opay.jpg"
+                                            isSelected={paymentMethod === 'opay'}
+                                            onClick={() => setPaymentMethod('opay')}
+                                        />
                                     </SimpleGrid>
                                 </Box>
-
-                                {paymentMethod === 'cash' && (
-                                    <Box animation="fade-in 0.2s ease">
-                                        <Text fontSize="sm" fontWeight="bold" color="gray.300" mb={2}>Amount Tendered (₦)</Text>
-                                        <Input type="number" placeholder="Enter cash received" {...inputStyles} h="50px" fontSize="lg" fontWeight="bold" value={amountTendered} onChange={(e) => setAmountTendered(e.target.value)} />
-                                        
-                                        {Number(amountTendered) >= total && (
-                                            <Flex justify="space-between" align="center" mt={3} p={3} bg="#111111" border="1px solid #1A1A1A" rounded="md">
-                                                <Text color="gray.300" fontWeight="bold">Change Due:</Text>
-                                                <Text color="white" fontWeight="black" fontSize="lg">₦{(Number(amountTendered) - total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
-                                            </Flex>
-                                        )}
-                                    </Box>
-                                )}
                             </VStack>
                         )}
 
@@ -324,10 +389,10 @@ export const PosOverview = () => {
                             <Flex direction="column" align="center" justify="center" h="full" animation="fade-in 0.3s ease" textAlign="center">
                                 <Icon as={LuCheck} color="white" boxSize="80px" mb={6} />
                                 <Text fontSize="3xl" fontWeight="black" color="white" mb={2}>Payment Received</Text>
-                                <Text color="gray.400" mb={8}>Order <Text as="span" color="white" fontWeight="bold">#POS-8829</Text> has been recorded successfully.</Text>
+                                <Text color="gray.400" mb={8}>Order <Text as="span" color="white" fontWeight="bold">#POS-8829</Text> has been recorded successfully via {paymentMethod === 'moniepoint' ? "Moniepoint" : "OPay"}.</Text>
                                 
                                 <VStack w="full" gap={3}>
-                                    <Button w="full" h="56px" bg="#111111" rounded="md" border="1px solid #1A1A1A" color="white" _hover={{ bg: "#1A1A1A" }} display="flex" gap={2}>
+                                    <Button w="full" h="56px" bg="#111111" rounded="md" border="1px solid #1A1A1A" color="white" _hover={{ bg: "#1A1A1A" }} display="flex" gap={2} onClick={handlePrintReceipt}>
                                         <Icon as={LuPrinter} /> Print Physical Receipt
                                     </Button>
                                     <Button w="full" h="56px" rounded="md" bg="white" color="black" _hover={{ bg: "gray.200" }} onClick={startNewSale}>
@@ -362,7 +427,7 @@ export const PosOverview = () => {
                         {checkoutStep === 2 && (
                             <Button 
                                 w="full" h="60px" bg="white" color="black" rounded="md" fontSize="lg" fontWeight="bold"
-                                _hover={{ bg: "gray.200" }} onClick={handlePayment} disabled={isProcessing || (paymentMethod === 'cash' && Number(amountTendered) < total)}
+                                _hover={{ bg: "gray.200" }} onClick={handlePayment} disabled={isProcessing}
                             >
                                 {isProcessing ? <Spinner color="black" /> : `Record Payment of ₦${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                             </Button>

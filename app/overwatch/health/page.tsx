@@ -1,5 +1,6 @@
 "use client";
-import React, { useState} from "react";
+
+import React, { useState } from "react";
 import { 
     Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Input, VStack, Progress
 } from "@chakra-ui/react";
@@ -9,29 +10,42 @@ import {
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---
-const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
+const controlStyles = { 
+    bg: "#0A0A0A", 
+    border: "1px solid", 
+    borderColor: "#333333", 
+    color: "white", 
+    h: "44px", 
+    rounded: "none", 
+    px: 3, 
+    _focus: { outline: "none", borderColor: "white" }, 
+    _hover: { bg: "#111111" } 
+};
 
-// --- MOCK DATA ---
+// --- KPI STATS ---
 const KPI_STATS = [
-    { label: "Global Uptime", value: "99.98%", trend: "Stable", isPositive: true, icon: LuServer, iconColor: "#5cac7d" },
-    { label: "Avg API Latency", value: "124ms", trend: "-12ms", isPositive: true, icon: LuClock, iconColor: "blue.400" },
-    { label: "Error Rate (5xx)", value: "0.12%", trend: "+0.02%", isPositive: false, icon: LuActivity, iconColor: "orange.400" },
-    { label: "Failed Webhooks", value: "3", trend: "-5", isPositive: true, icon: LuCircleAlert, iconColor: "red.400" },
+    { label: "Global Uptime", value: "99.94%", trend: "Stable", isPositive: true, icon: LuServer, iconColor: "#5cac7d" },
+    { label: "Avg API Latency", value: "185ms", trend: "+14ms", isPositive: false, icon: LuClock, iconColor: "orange.400" },
+    { label: "Error Rate (5xx)", value: "0.24%", trend: "+0.08%", isPositive: false, icon: LuActivity, iconColor: "orange.400" },
+    { label: "Failed Webhooks", value: "5", trend: "-2", isPositive: true, icon: LuCircleAlert, iconColor: "red.400" },
 ];
 
+// --- INTEGRATED SERVICES ---
 const SERVICES = [
     { name: "Core Database (PostgreSQL)", type: "Infrastructure", status: "Operational", latency: "12ms", uptime: "99.99%", icon: LuDatabase, statusColor: "#5cac7d" },
-    { name: "Payment Gateway API", type: "Integration", status: "Degraded", latency: "840ms", uptime: "98.50%", icon: LuCreditCard, statusColor: "orange.400" },
+    { name: "Moniepoint API Gateway", type: "Integration", status: "Operational", latency: "142ms", uptime: "99.91%", icon: LuCreditCard, statusColor: "#5cac7d" },
+    { name: "OPay Merchant API", type: "Integration", status: "Degraded", latency: "920ms", uptime: "98.14%", icon: LuCreditCard, statusColor: "orange.400" },
     { name: "Global Search Index", type: "Infrastructure", status: "Operational", latency: "45ms", uptime: "100%", icon: LuSearch, statusColor: "#5cac7d" },
     { name: "Email Delivery Service", type: "Integration", status: "Operational", latency: "110ms", uptime: "99.95%", icon: LuMail, statusColor: "#5cac7d" },
     { name: "Content Delivery Network", type: "Infrastructure", status: "Operational", latency: "18ms", uptime: "100%", icon: LuGlobe, statusColor: "#5cac7d" },
 ];
 
+// --- REALISTIC INCIDENT LOGS ---
 const ERROR_LOGS = [
-    { id: "ERR-8091", time: "10:45:12 AM", service: "Payment Gateway API", endpoint: "POST /v1/charge", code: "502 Bad Gateway", message: "Upstream timeout connecting to provider.", status: "Investigating" },
-    { id: "ERR-8090", time: "10:42:05 AM", service: "Webhook Delivery", endpoint: "POST /webhooks/logistics", code: "408 Request Timeout", message: "Logistics partner failed to acknowledge receipt in 5000ms.", status: "Retrying" },
-    { id: "ERR-8089", time: "09:15:33 AM", service: "Core Database", endpoint: "Query Execution", code: "Slow Query", message: "Transaction blocked for 12s on table 'orders'.", status: "Resolved" },
-    { id: "ERR-8088", time: "08:01:20 AM", service: "Email Delivery Service", endpoint: "POST /v3/mail/send", code: "429 Too Many Requests", message: "Rate limit exceeded for promotional bulk send.", status: "Resolved" },
+    { id: "ERR-8095", time: "11:51:02 AM", service: "OPay Merchant API", endpoint: "POST /v2/payment/transfer", code: "504 Gateway Timeout", message: "Upstream timeout from OPay interbank clearing system.", status: "Investigating" },
+    { id: "ERR-8092", time: "11:34:18 AM", service: "Moniepoint API Gateway", endpoint: "POST /v1/transactions/web-checkout", code: "422 Unprocessable", message: "Invalid checksum verification hash mismatch on webhook payload.", status: "Resolved" },
+    { id: "ERR-8090", time: "10:42:05 AM", service: "Webhook Delivery", endpoint: "POST /webhooks/logistics", code: "408 Request Timeout", message: "Logistics partner failed to acknowledge receipt within 5000ms.", status: "Retrying" },
+    { id: "ERR-8089", time: "09:15:33 AM", service: "Core Database", endpoint: "Query Execution", code: "Slow Query", message: "Transaction blocked for 12s on exclusive row lock in table 'orders'.", status: "Resolved" },
 ];
 
 export default function SystemHealthPage() {
@@ -45,8 +59,20 @@ export default function SystemHealthPage() {
         setTimeout(() => setIsRefreshing(false), 800);
     };
 
+    // Simple reactive filter logic for search
+    const filteredServices = SERVICES.filter(service => 
+        service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        service.type.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const filteredLogs = ERROR_LOGS.filter(log => 
+        log.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.service.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.message.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
-        <Box p={{ base: 4, lg: 8 }} maxW="1600px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
+        <Box p={{ base: 4, lg: 8 }} maxW="1600px" mx="auto" bg="#000000" minH="100vh">
             
             {/* --- HEADER --- */}
             <Flex justify="space-between" align={{ base: "flex-start", md: "flex-end" }} direction={{ base: "column", md: "row" }} gap={4} mb={8}>
@@ -57,7 +83,7 @@ export default function SystemHealthPage() {
                             API & System Health
                         </Text>
                     </Flex>
-                    <Text color="#888888" fontSize="sm">Monitor infrastructure uptime, API latencies, and service degradation.</Text>
+                    <Text color="#888888" fontSize="sm">Monitor infrastructure uptime, local fin-tech integrations, and service degradation.</Text>
                 </Box>
                 
                 <Flex align="center" gap={3}>
@@ -66,9 +92,8 @@ export default function SystemHealthPage() {
                         onClick={handleRefresh} 
                         bg="#111111" border="1px solid #333333" color="white" h="44px" px={6} rounded="none" 
                         _hover={{ bg: "#1A1A1A" }} display="flex" gap={2}
-                        
                     >
-                        <Icon as={LuRefreshCw} color={brandColor} strokeWidth="2.5" animation={isRefreshing ? "spin 1s linear infinite" : "none"} /> 
+                        <Icon as={LuRefreshCw} color={brandColor} strokeWidth="2.5" className={isRefreshing ? "spin-animation" : ""} /> 
                         Run Diagnostics
                     </Button>
                 </Flex>
@@ -80,9 +105,11 @@ export default function SystemHealthPage() {
                     <Box key={idx} bg="#0A0A0A" p={6} rounded="none" border="1px solid" borderColor="#1A1A1A">
                         <Flex justify="space-between" align="start" mb={4}>
                             <Flex boxSize="40px" bg="#111111" border="1px solid #333333" rounded="none" align="center" justify="center">
-                                {/* Colored Icon */}
                                 <Icon as={kpi.icon} color={kpi.iconColor} boxSize="20px" strokeWidth="2.5" />
                             </Flex>
+                            <Badge bg="#111111" color={kpi.isPositive ? "#5cac7d" : "orange.400"} border="1px solid #222" fontSize="10px">
+                                {kpi.trend}
+                            </Badge>
                         </Flex>
                         <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>{kpi.label}</Text>
                         <Flex align="baseline" gap={3}>
@@ -92,29 +119,30 @@ export default function SystemHealthPage() {
                 ))}
             </SimpleGrid>
 
-            {/* --- TABS & CONTROLS --- */}
+            {/* --- TABS --- */}
             <Flex borderBottom="1px solid #1A1A1A" mb={6} gap={6}>
                 <Text 
                     color={activeTab === "Services" ? "white" : "#888888"} fontWeight="bold" pb={3} cursor="pointer"
                     borderBottom="2px solid" borderColor={activeTab === "Services" ? "white" : "transparent"}
-                    onClick={() => setActiveTab("Services")} transition="all 0.2s"
+                    onClick={() => { setActiveTab("Services"); setSearchQuery(""); }} transition="all 0.2s"
                 >
                     Service Status
                 </Text>
                 <Text 
                     color={activeTab === "Logs" ? "white" : "#888888"} fontWeight="bold" pb={3} cursor="pointer"
                     borderBottom="2px solid" borderColor={activeTab === "Logs" ? "white" : "transparent"}
-                    onClick={() => setActiveTab("Logs")} transition="all 0.2s"
+                    onClick={() => { setActiveTab("Logs"); setSearchQuery(""); }} transition="all 0.2s"
                 >
                     Incident Logs
                 </Text>
             </Flex>
 
+            {/* --- FILTER BAR --- */}
             <Flex direction={{ base: "column", md: "row" }} gap={4} mb={6} justify="space-between">
-                <Flex flex={1} maxW="500px" align="center" {...controlStyles} bg="#0A0A0A">
-                    <Icon as={LuSearch} color={brandColor} mr={2} strokeWidth="2.5" />
+                <Flex flex={1} maxW="500px" align="center" {...controlStyles}>
+                    <Icon as={LuSearch} color="#666666" mr={2} strokeWidth="2.5" />
                     <Input 
-                        placeholder={activeTab === "Services" ? "Search services or endpoints..." : "Search logs by trace ID or message..."} 
+                        placeholder={activeTab === "Services" ? "Search services..." : "Search logs by trace ID, service, or message..."} 
                         border="none" color="white" h="full" px={0} 
                         _focus={{ boxShadow: "none", outline: "none" }} 
                         value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
@@ -140,7 +168,7 @@ export default function SystemHealthPage() {
                         </Grid>
 
                         <VStack align="stretch" gap={0}>
-                            {SERVICES.map((service, idx) => (
+                            {filteredServices.map((service, idx) => (
                                 <Grid 
                                     key={idx} templateColumns="2.5fr 1fr 1fr 1fr 1fr" gap={4} px={6} py={5} 
                                     borderBottom="1px solid #1A1A1A" alignItems="center" 
@@ -148,7 +176,6 @@ export default function SystemHealthPage() {
                                 >
                                     <Flex align="center" gap={4}>
                                         <Flex boxSize="36px" bg="#111111" border="1px solid #333333" align="center" justify="center" rounded="none">
-                                            
                                             <Icon as={service.icon} color={brandColor} boxSize="18px" />
                                         </Flex>
                                         <Text color="white" fontSize="sm" fontWeight="bold">{service.name}</Text>
@@ -166,10 +193,9 @@ export default function SystemHealthPage() {
 
                                     <Box>
                                         <Text color="white" fontSize="sm" fontWeight="bold" fontFamily="monospace" mb={1}>{service.latency}</Text>
-                                        <Progress.Root value={parseInt(service.latency) / 10} h="2px" w="60%">
+                                        <Progress.Root value={Math.min(parseInt(service.latency) / 10, 100)} h="2px" w="60%">
                                             <Progress.Track bg="#333333">
-                                                
-                                                <Progress.Range bg={parseInt(service.latency) > 500 ? "orange.400" : brandColor} />
+                                                <Progress.Range bg={parseInt(service.latency) > 500 ? "orange.400" : "#5cac7d"} />
                                             </Progress.Track>
                                         </Progress.Root>
                                     </Box>
@@ -184,7 +210,7 @@ export default function SystemHealthPage() {
                 /* --- TERMINAL LOGS TABLE --- */
                 <Box bg="#0A0A0A" border="1px solid #1A1A1A" overflowX="auto">
                     <Box minW="1000px">
-                        <Grid templateColumns="1fr 2fr 1.5fr 3fr 1fr" gap={4} px={6} py={4} bg="#111111" borderBottom="1px solid #333333">
+                        <Grid templateColumns="1.2fr 2fr 1.5fr 3fr 1fr" gap={4} px={6} py={4} bg="#111111" borderBottom="1px solid #333333">
                             <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Trace ID / Time</Text>
                             <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Service</Text>
                             <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Error Code</Text>
@@ -193,9 +219,9 @@ export default function SystemHealthPage() {
                         </Grid>
 
                         <VStack align="stretch" gap={0}>
-                            {ERROR_LOGS.map((log) => (
+                            {filteredLogs.map((log) => (
                                 <Grid 
-                                    key={log.id} templateColumns="1fr 2fr 1.5fr 3fr 1fr" gap={4} px={6} py={4} 
+                                    key={log.id} templateColumns="1.2fr 2fr 1.5fr 3fr 1fr" gap={4} px={6} py={4} 
                                     borderBottom="1px solid #1A1A1A" alignItems="start" 
                                     _hover={{ bg: "#111111" }} transition="background 0.2s"
                                 >
@@ -213,7 +239,7 @@ export default function SystemHealthPage() {
                                     </Box>
 
                                     <Box>
-                                        <Badge bg="#111111" color={log.code.includes("5") || log.code.includes("4") ? "orange.400" : brandColor} border="1px solid #333333" rounded="none" px={2} py={0.5} fontSize="10px" fontWeight="bold" textTransform="uppercase">
+                                        <Badge bg="#111111" color={log.code.includes("5") || log.code.includes("Timeout") ? "orange.400" : "red.400"} border="1px solid #333333" rounded="none" px={2} py={0.5} fontSize="10px" fontWeight="bold" textTransform="uppercase">
                                             {log.code}
                                         </Badge>
                                     </Box>
@@ -223,7 +249,7 @@ export default function SystemHealthPage() {
                                     <Flex justify="flex-end">
                                         <Badge 
                                             bg="#111111" 
-                                            color={log.status === "Resolved" ? "white" : "orange.400"} 
+                                            color={log.status === "Resolved" ? "#5cac7d" : "orange.400"} 
                                             border="1px solid #333333" 
                                             rounded="none" px={2} py={1} fontSize="10px" fontWeight="bold" textTransform="uppercase"
                                         >
@@ -237,6 +263,16 @@ export default function SystemHealthPage() {
                 </Box>
             )}
 
+            {/* Inline spinning logic for Tailwind-style animation hooks if needed */}
+            <style jsx global>{`
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                .spin-animation {
+                    animation: spin 1s linear infinite;
+                }
+            `}</style>
         </Box>
     );
 }
