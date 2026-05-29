@@ -24,8 +24,52 @@ export default function AdminTransactionsPage() {
     } = useAdminTransactions();
 
     const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+    
+    // --- LOCAL ACTION STATES ---
+    const [isExporting, setIsExporting] = useState(false);
+    const [isReversing, setIsReversing] = useState(false);
+    const [locallyReversed, setLocallyReversed] = useState<Set<string>>(new Set());
 
-    const getTypeUI = (type: TxType) => {
+    // --- ACTIONS ---
+    const handleExport = () => {
+        setIsExporting(true);
+        setTimeout(() => {
+            const headers = ["Transaction ID", "Date", "Tenant", "Customer", "Type", "Gross Amount", "Platform Fee", "Net Settlement", "Method", "Status"];
+            const csvRows = sortedItems.map(tx => {
+                const currentStatus = locallyReversed.has(tx.id) ? "refunded" : tx.status;
+                const currentType = locallyReversed.has(tx.id) ? "refund" : tx.type;
+                return [
+                    tx.id, `"${tx.date}"`, `"${tx.tenant}"`, `"${tx.customer}"`, 
+                    currentType, tx.amount, tx.platformFee, tx.netAmount, tx.method, currentStatus
+                ].join(",");
+            });
+            const csvString = [headers.join(","), ...csvRows].join("\n");
+            
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'global_ledger_export.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            setIsExporting(false);
+        }, 800);
+    };
+
+    const handleReverseTransaction = (id: string) => {
+        setIsReversing(true);
+        setTimeout(() => {
+            setLocallyReversed(prev => new Set(prev).add(id));
+            setIsReversing(false);
+            setSelectedTx(null); // Close the drawer upon success
+        }, 1200);
+    };
+
+    const getTypeUI = (type: TxType | string) => {
         switch (type) {
             case "order_payment": return { iconColor: "green.400", icon: LuArrowDownLeft, label: "Payment In" };
             case "payout": return { iconColor: "blue.400", icon: LuArrowUpRight, label: "Seller Payout" };
@@ -36,7 +80,6 @@ export default function AdminTransactionsPage() {
     };
 
     // --- CLIENT-SIDE SORTING LOGIC ---
-   
     const sortedItems = [...visibleItems].sort((a, b) => {
         let valA: number | string = 0;
         let valB: number | string = 0;
@@ -76,7 +119,12 @@ export default function AdminTransactionsPage() {
                         <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">Global Ledger ({totalLimit})</Text>
                         <Text color="#888888" fontSize="sm">Track all payments, payouts, fees, and refunds across the platform.</Text>
                     </Box>
-                    <Button bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2}>
+                    <Button 
+                        onClick={handleExport}
+                        loading={isExporting}
+                        loadingText="Exporting..."
+                        bg="#111111" border="1px solid #333333" color="white" rounded="none" h="44px" px={6} _hover={{ bg: "#1A1A1A", borderColor: "white" }} display="flex" gap={2}
+                    >
                         <Icon as={LuDownload} color="#888888" strokeWidth="2.5" /> Export CSV
                     </Button>
                 </Flex>
@@ -147,11 +195,15 @@ export default function AdminTransactionsPage() {
                         <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" textAlign="center">Status</Text>
                     </Grid>
 
-                    {/*  sortedItems  */}
+                    {/* sortedItems  */}
                     {sortedItems.map((tx: Transaction) => {
-                        const ui = getTypeUI(tx.type);
-                        const isCompleted = tx.status === 'completed';
-                        const isPending = tx.status === 'pending';
+                        const isReversed = locallyReversed.has(tx.id);
+                        const displayStatus = isReversed ? "refunded" : tx.status;
+                        const displayType = isReversed ? "refund" : tx.type;
+
+                        const ui = getTypeUI(displayType);
+                        const isCompleted = displayStatus === 'completed';
+                        const isPending = displayStatus === 'pending';
 
                         return (
                             <Grid 
@@ -161,9 +213,10 @@ export default function AdminTransactionsPage() {
                                 alignItems="center" cursor="pointer" transition="all 0.2s"
                                 _hover={{ bg: "#111111", borderColor: "#333333" }}
                                 onClick={() => setSelectedTx(tx)}
+                                opacity={isReversed ? 0.6 : 1}
                             >
                                 <Box overflow="hidden">
-                                    <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{tx.id}</Text>
+                                    <Text color={isReversed ? "gray.500" : "white"} textDecoration={isReversed ? "line-through" : "none"} fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">{tx.id}</Text>
                                     <Text color="#888888" fontSize="xs" fontFamily="monospace" mt={0.5}>{tx.date}</Text>
                                 </Box>
 
@@ -179,25 +232,38 @@ export default function AdminTransactionsPage() {
                                     </Flex>
                                 </Flex>
 
-                                <Text color="white" fontWeight="black" fontSize="sm" textAlign={{ base: "left", xl: "right" }} letterSpacing="tight">
-                                    ₦{tx.amount.toLocaleString()}
+                                <Text color={isReversed ? "gray.500" : "white"} fontWeight="black" fontSize="sm" textAlign={{ base: "left", xl: "right" }} letterSpacing="tight">
+                                    {isReversed ? "-" : ""}₦{tx.amount.toLocaleString()}
                                 </Text>
 
-                                <Text color="white" fontWeight="bold" fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right" letterSpacing="tight">
-                                    {tx.platformFee === 0 ? "—" : `₦${Math.abs(tx.platformFee).toLocaleString()}`}
+                                <Text color={isReversed ? "gray.500" : "white"} fontWeight="bold" fontSize="sm" display={{ base: "none", xl: "block" }} textAlign="right" letterSpacing="tight">
+                                    {tx.platformFee === 0 ? "—" : `${isReversed ? "-" : ""}₦${Math.abs(tx.platformFee).toLocaleString()}`}
                                 </Text>
 
                                 <Flex justify={{ base: "flex-start", xl: "center" }}>
                                     <Flex align="center" gap={2}>
                                         <Box boxSize="6px" rounded="none" bg={isCompleted ? "#5cac7d" : isPending ? "orange.400" : "red.400"} />
                                         <Text color={isCompleted ? "white" : "#888888"} fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
-                                            {tx.status}
+                                            {displayStatus}
                                         </Text>
                                     </Flex>
                                 </Flex>
 
                                 <Flex justify="flex-end" display={{ base: "none", xl: "flex" }}>
-                                    <Icon as={LuEllipsisVertical} color="#888888" strokeWidth="2.5" _hover={{ color: "white" }} />
+                                    <IconButton 
+                                        aria-label="View Details"
+                                        variant="ghost"
+                                        size="sm"
+                                        color="#888888"
+                                        _hover={{ color: "white", bg: "#1A1A1A" }}
+                                        rounded="none"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setSelectedTx(tx);
+                                        }}
+                                    >
+                                        <Icon as={LuEllipsisVertical} strokeWidth="2.5" />
+                                    </IconButton>
                                 </Flex>
                             </Grid>
                         );
@@ -220,91 +286,103 @@ export default function AdminTransactionsPage() {
                     bg="#000000" borderLeft="1px solid" borderColor="#1A1A1A" direction="column" shadow="2xl"
                     transform={selectedTx ? "translateX(0)" : "translateX(100%)"} transition="transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
                 >
-                    {selectedTx && (
-                        <>
-                            <Flex align="center" justify="space-between" p={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#0A0A0A">
-                                <Text fontSize="lg" fontWeight="bold" color="white" letterSpacing="tight">Transaction Details</Text>
-                                <IconButton aria-label="Close" variant="ghost" color="#888888" rounded="none" onClick={() => setSelectedTx(null)} _hover={{ bg: "#111111", color: "white" }}>
-                                    <LuX strokeWidth="2.5" />
-                                </IconButton>
-                            </Flex>
+                    {selectedTx && (() => {
+                        const isReversed = locallyReversed.has(selectedTx.id);
+                        const displayStatus = isReversed ? "refunded" : selectedTx.status;
+                        const displayType = isReversed ? "refund" : selectedTx.type;
+                        const ui = getTypeUI(displayType);
 
-                            <Box flex={1} overflowY="auto" p={6} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
-                                
-                                {/* Amount & Type Header */}
-                                <Flex direction="column" align="center" textAlign="center" mb={8}>
-                                    <Flex boxSize="60px" bg="#111111" border="1px solid #333333" rounded="none" align="center" justify="center" mb={4}>
-                                        <Icon as={getTypeUI(selectedTx.type).icon} color={getTypeUI(selectedTx.type).iconColor} boxSize="28px" strokeWidth="2.5" />
-                                    </Flex>
-                                    <Text color="white" fontSize="4xl" fontWeight="black" letterSpacing="tighter" mb={1}>
-                                        ₦{selectedTx.amount.toLocaleString()}
-                                    </Text>
-                                    <Text color="#888888" fontSize="sm" fontFamily="monospace" mb={4}>{selectedTx.id} • {selectedTx.date}</Text>
-                                    
-                                    <Flex align="center" gap={2} px={3} py={1.5} bg="#111111" border="1px solid #333333" rounded="none">
-                                        <Box boxSize="6px" rounded="none" bg={selectedTx.status === 'completed' ? "#5cac7d" : selectedTx.status === 'pending' ? "orange.400" : "red.400"} />
-                                        <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
-                                            {selectedTx.status}
-                                        </Text>
-                                    </Flex>
+                        return (
+                            <>
+                                <Flex align="center" justify="space-between" p={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#0A0A0A">
+                                    <Text fontSize="lg" fontWeight="bold" color="white" letterSpacing="tight">Transaction Details</Text>
+                                    <IconButton aria-label="Close" variant="ghost" color="#888888" rounded="none" onClick={() => setSelectedTx(null)} _hover={{ bg: "#111111", color: "white" }}>
+                                        <LuX strokeWidth="2.5" />
+                                    </IconButton>
                                 </Flex>
 
-                                {/* Parties Involved */}
-                                <Text color="#888888" fontWeight="bold" mb={3} fontSize="10px" textTransform="uppercase" letterSpacing="wider">Entities Involved</Text>
-                                <VStack gap={0} align="stretch" mb={8} border="1px solid #1A1A1A">
-                                    <Flex align="center" justify="space-between" p={4} bg="#0A0A0A" borderBottom="1px solid #1A1A1A">
-                                        <Flex align="center" gap={3}>
-                                            <Icon as={LuStore} color="#5cac7d" strokeWidth="2.5" />
-                                            <Text color="#888888" fontSize="sm" fontWeight="bold">Tenant Shop</Text>
+                                <Box flex={1} overflowY="auto" p={6} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    
+                                    {/* Amount & Type Header */}
+                                    <Flex direction="column" align="center" textAlign="center" mb={8}>
+                                        <Flex boxSize="60px" bg="#111111" border="1px solid #333333" rounded="none" align="center" justify="center" mb={4}>
+                                            <Icon as={ui.icon} color={ui.iconColor} boxSize="28px" strokeWidth="2.5" />
                                         </Flex>
-                                        <Text color="white" fontWeight="bold" fontSize="sm">{selectedTx.tenant}</Text>
-                                    </Flex>
-                                    <Flex align="center" justify="space-between" p={4} bg="#0A0A0A">
-                                        <Flex align="center" gap={3}>
-                                            <Icon as={LuUser} color="blue.400" strokeWidth="2.5" />
-                                            <Text color="#888888" fontSize="sm" fontWeight="bold">Customer</Text>
-                                        </Flex>
-                                        <Text color="white" fontWeight="bold" fontSize="sm">{selectedTx.customer}</Text>
-                                    </Flex>
-                                </VStack>
-
-                                {/* Financial Split Breakdown */}
-                                <Text color="#888888" fontWeight="bold" mb={3} fontSize="10px" textTransform="uppercase" letterSpacing="wider">Financial Split</Text>
-                                <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" rounded="none" p={5}>
-                                    <Flex justify="space-between" align="center" mb={3}>
-                                        <Text color="#888888" fontSize="sm" fontWeight="bold">Gross Amount</Text>
-                                        <Text color="white" fontWeight="bold">₦{selectedTx.amount.toLocaleString()}</Text>
-                                    </Flex>
-                                    <Flex justify="space-between" align="center" mb={4} pb={4} borderBottom="1px dashed" borderColor="#333333">
-                                        <Text color="#888888" fontSize="sm" fontWeight="bold">Platform Fee (HQ Cut)</Text>
-                                        <Text color="white" fontWeight="bold">
-                                            {selectedTx.platformFee > 0 ? "-" : ""}₦{Math.abs(selectedTx.platformFee).toLocaleString()}
+                                        <Text color="white" fontSize="4xl" fontWeight="black" letterSpacing="tighter" mb={1}>
+                                            {isReversed ? "-" : ""}₦{selectedTx.amount.toLocaleString()}
                                         </Text>
+                                        <Text color="#888888" fontSize="sm" fontFamily="monospace" mb={4}>{selectedTx.id} • {selectedTx.date}</Text>
+                                        
+                                        <Flex align="center" gap={2} px={3} py={1.5} bg="#111111" border="1px solid #333333" rounded="none">
+                                            <Box boxSize="6px" rounded="none" bg={displayStatus === 'completed' ? "#5cac7d" : displayStatus === 'pending' ? "orange.400" : "red.400"} />
+                                            <Text color="white" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+                                                {displayStatus}
+                                            </Text>
+                                        </Flex>
                                     </Flex>
-                                    <Flex justify="space-between" align="center">
-                                        <Text color="white" fontSize="sm" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Net Settlement</Text>
-                                        <Text color="white" fontSize="xl" fontWeight="black" letterSpacing="tight">₦{selectedTx.netAmount.toLocaleString()}</Text>
-                                    </Flex>
+
+                                    {/* Parties Involved */}
+                                    <Text color="#888888" fontWeight="bold" mb={3} fontSize="10px" textTransform="uppercase" letterSpacing="wider">Entities Involved</Text>
+                                    <VStack gap={0} align="stretch" mb={8} border="1px solid #1A1A1A">
+                                        <Flex align="center" justify="space-between" p={4} bg="#0A0A0A" borderBottom="1px solid #1A1A1A">
+                                            <Flex align="center" gap={3}>
+                                                <Icon as={LuStore} color="#5cac7d" strokeWidth="2.5" />
+                                                <Text color="#888888" fontSize="sm" fontWeight="bold">Tenant Shop</Text>
+                                            </Flex>
+                                            <Text color="white" fontWeight="bold" fontSize="sm">{selectedTx.tenant}</Text>
+                                        </Flex>
+                                        <Flex align="center" justify="space-between" p={4} bg="#0A0A0A">
+                                            <Flex align="center" gap={3}>
+                                                <Icon as={LuUser} color="blue.400" strokeWidth="2.5" />
+                                                <Text color="#888888" fontSize="sm" fontWeight="bold">Customer</Text>
+                                            </Flex>
+                                            <Text color="white" fontWeight="bold" fontSize="sm">{selectedTx.customer}</Text>
+                                        </Flex>
+                                    </VStack>
+
+                                    {/* Financial Split Breakdown */}
+                                    <Text color="#888888" fontWeight="bold" mb={3} fontSize="10px" textTransform="uppercase" letterSpacing="wider">Financial Split</Text>
+                                    <Box bg="#0A0A0A" border="1px solid" borderColor="#1A1A1A" rounded="none" p={5}>
+                                        <Flex justify="space-between" align="center" mb={3}>
+                                            <Text color="#888888" fontSize="sm" fontWeight="bold">Gross Amount</Text>
+                                            <Text color="white" fontWeight="bold">{isReversed ? "-" : ""}₦{selectedTx.amount.toLocaleString()}</Text>
+                                        </Flex>
+                                        <Flex justify="space-between" align="center" mb={4} pb={4} borderBottom="1px dashed" borderColor="#333333">
+                                            <Text color="#888888" fontSize="sm" fontWeight="bold">Platform Fee (HQ Cut)</Text>
+                                            <Text color="white" fontWeight="bold">
+                                                {selectedTx.platformFee > 0 ? "-" : ""}₦{Math.abs(selectedTx.platformFee).toLocaleString()}
+                                            </Text>
+                                        </Flex>
+                                        <Flex justify="space-between" align="center">
+                                            <Text color="white" fontSize="sm" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">Net Settlement</Text>
+                                            <Text color="white" fontSize="xl" fontWeight="black" letterSpacing="tight">{isReversed ? "-" : ""}₦{selectedTx.netAmount.toLocaleString()}</Text>
+                                        </Flex>
+                                    </Box>
+
+                                    {/* Payment Metadata */}
+                                    <Box mt={8}>
+                                        <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Payment Method</Text>
+                                        <Text color="white" fontSize="sm" fontWeight="bold">{selectedTx.method}</Text>
+                                    </Box>
+
                                 </Box>
 
-                                {/* Payment Metadata */}
-                                <Box mt={8}>
-                                    <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Payment Method</Text>
-                                    <Text color="white" fontSize="sm" fontWeight="bold">{selectedTx.method}</Text>
-                                </Box>
-
-                            </Box>
-
-                            {/* Sticky Footer Actions */}
-                            {selectedTx.status === 'completed' && selectedTx.type === 'order_payment' && (
-                                <Box p={6} borderTop="1px solid" borderColor="#1A1A1A" bg="#0A0A0A">
-                                    <Button w="full" h="44px" bg="#111111" border="1px solid #333333" color="red.400" rounded="none" fontWeight="bold" _hover={{ bg: "#1A1A1A", borderColor: "red.400" }}>
-                                        Force Reverse / Refund
-                                    </Button>
-                                </Box>
-                            )}
-                        </>
-                    )}
+                                {/* Sticky Footer Actions */}
+                                {displayStatus === 'completed' && displayType === 'order_payment' && !isReversed && (
+                                    <Box p={6} borderTop="1px solid" borderColor="#1A1A1A" bg="#0A0A0A">
+                                        <Button 
+                                            onClick={() => handleReverseTransaction(selectedTx.id)}
+                                            loading={isReversing}
+                                            loadingText="Processing Refund..."
+                                            w="full" h="44px" bg="#111111" border="1px solid #333333" color="red.400" rounded="none" fontWeight="bold" _hover={{ bg: "#1A1A1A", borderColor: "red.400" }}
+                                        >
+                                            Force Reverse / Refund
+                                        </Button>
+                                    </Box>
+                                )}
+                            </>
+                        );
+                    })()}
                 </Flex>
             </Box>
 

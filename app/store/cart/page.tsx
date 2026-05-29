@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { 
     Box, Flex, Text, Image, Button, Icon, IconButton, VStack, Separator, SimpleGrid 
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuTrash2, LuMinus, LuPlus, LuShoppingBag, LuArrowRight, LuArrowLeft, LuCheck
 } from "react-icons/lu";
@@ -22,12 +23,52 @@ type CartItem = {
     color?: string;
 };
 
+// --- REMOVE CONFIRMATION MODAL ---
+const RemoveConfirmationModal = ({ 
+    isOpen, onClose, onConfirm, onSaveForLater 
+}: { 
+    isOpen: boolean; onClose: () => void; onConfirm: () => void; onSaveForLater: () => void;
+}) => {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <Box position="fixed" inset={0} zIndex={9999} bg="blackAlpha.800" backdropFilter="blur(4px)" display="flex" alignItems="center" justifyContent="center" p={4}>
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} style={{ width: "100%", maxWidth: "380px" }}>
+                        <Box bg="#1A1C23" border="1px solid" borderColor="whiteAlpha.200" p={6} rounded="2xl" w="full" shadow="2xl">
+                            <Flex align="center" gap={3} mb={3}>
+                                <Flex align="center" justify="center" boxSize="40px" rounded="full" bg="rgba(245, 101, 101, 0.1)">
+                                    <Icon as={LuTrash2} color="red.400" boxSize="20px" />
+                                </Flex>
+                                <Text color="white" fontWeight="black" fontSize="xl" letterSpacing="tight">Remove from cart</Text>
+                            </Flex>
+                            
+                            <Text color="gray.400" mb={6} fontSize="sm">
+                                Do you really want to remove this item from your cart?
+                            </Text>
+
+                            <VStack gap={3}>
+                                <Button w="full" h="48px" bg="red.500" color="white" rounded="xl" fontWeight="bold" _hover={{ bg: "red.600" }} onClick={onConfirm}>
+                                    Remove Item
+                                </Button>
+                                <Button w="full" h="48px" variant="outline" borderColor="whiteAlpha.200" color="white" rounded="xl" fontWeight="bold" _hover={{ bg: "whiteAlpha.100" }} onClick={onSaveForLater}>
+                                    Save for later
+                                </Button>
+                                <Button w="full" h="48px" variant="ghost" color="gray.500" rounded="xl" fontWeight="bold" _hover={{ bg: "whiteAlpha.50", color: "white" }} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                            </VStack>
+                        </Box>
+                    </motion.div>
+                </Box>
+            )}
+        </AnimatePresence>
+    );
+};
+
 export default function CartPage() {
     const brandColor = "#5cac7d";
     
     // --- LAZY INITIALIZATION ---
-    // This safely reads from localStorage directly during the initial client-side render
-    // completely avoiding the need to call setState inside a useEffect.
     const [cartItems, setCartItems] = useState<CartItem[]>(() => {
         if (typeof window !== "undefined") {
             try {
@@ -42,18 +83,25 @@ export default function CartPage() {
 
     const [isCheckoutDrawerOpen, setIsCheckoutDrawerOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    
+    // --- CONFIRMATION MODAL STATE ---
+    const [itemToRemove, setItemToRemove] = useState<{id: string, variation?: string} | null>(null);
 
     // --- HYDRATION SYNC ---
+
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setIsMounted(true);
+    
+        const timer = setTimeout(() => {
+            setIsMounted(true);
+        }, 0);
+        
+        return () => clearTimeout(timer);
     }, []);
 
     // --- UPDATE CART QUANTITY ---
     const updateQuantity = (id: string, variation: string | undefined, delta: number) => {
         setCartItems(prev => {
             const updatedCart = prev.map(item => {
-                // Match by both ID and Variation to ensure we update the right specific item
                 if (item.id === id && item.variation === variation) {
                     const newQuantity = Math.max(1, item.quantity + delta);
                     return { ...item, quantity: newQuantity };
@@ -61,7 +109,6 @@ export default function CartPage() {
                 return item;
             });
 
-            // Save to local storage and trigger badge update
             localStorage.setItem('tradaz_cart', JSON.stringify(updatedCart));
             window.dispatchEvent(new Event('cartUpdated'));
 
@@ -72,10 +119,8 @@ export default function CartPage() {
     // --- REMOVE ITEM FROM CART ---
     const removeItem = (id: string, variation: string | undefined) => {
         setCartItems(prev => {
-            // Filter out the exact item + variation combo
             const updatedCart = prev.filter(item => !(item.id === id && item.variation === variation));
             
-            // Save to local storage and trigger badge update
             localStorage.setItem('tradaz_cart', JSON.stringify(updatedCart));
             window.dispatchEvent(new Event('cartUpdated'));
 
@@ -83,9 +128,26 @@ export default function CartPage() {
         });
     };
 
+    // Modal Handlers
+    const handleConfirmRemove = () => {
+        if (itemToRemove) {
+            removeItem(itemToRemove.id, itemToRemove.variation);
+            setItemToRemove(null);
+        }
+    };
+
+    const handleSaveForLater = () => {
+        // Here you would typically dispatch an action to move the item to a wishlist array in local storage
+        // For now, it will dismiss the item from the cart identically, but you can hook your wishlist logic here
+        if (itemToRemove) {
+            removeItem(itemToRemove.id, itemToRemove.variation);
+            setItemToRemove(null);
+            // alert("Item saved for later!"); 
+        }
+    };
+
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
-    // Prevent rendering until local storage is loaded to avoid hydration UI jumps
     if (!isMounted) return null;
 
     // Empty State
@@ -145,7 +207,7 @@ export default function CartPage() {
                                                 <IconButton 
                                                     aria-label="Remove item" size="sm" variant="ghost" color="gray.500" 
                                                     _hover={{ color: "red.400", bg: "rgba(245, 101, 101, 0.15)" }} 
-                                                    onClick={() => removeItem(item.id, item.variation)} mt={-1} mr={-2}
+                                                    onClick={() => setItemToRemove({ id: item.id, variation: item.variation })} mt={-1} mr={-2}
                                                 >
                                                     <Icon as={LuTrash2} boxSize="18px" />
                                                 </IconButton>
@@ -221,6 +283,14 @@ export default function CartPage() {
                     </Box>
                 </Box>
             </SimpleGrid>
+
+            {/* Mount the Confirmation Modal */}
+            <RemoveConfirmationModal 
+                isOpen={itemToRemove !== null}
+                onClose={() => setItemToRemove(null)}
+                onConfirm={handleConfirmRemove}
+                onSaveForLater={handleSaveForLater}
+            />
         </Box>
     );
 }

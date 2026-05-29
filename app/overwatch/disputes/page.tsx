@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar, Input, IconButton, VStack, ScrollArea
+    Box, Flex, Text, Grid, SimpleGrid, Icon, Badge, Button, Avatar, Input, IconButton, VStack, ScrollArea, Textarea
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuSearch, LuFilter, LuScale, LuShieldAlert, LuMessageSquare, 
-    LuClock, LuCheck, LuEye, LuDownload, LuArrowUpRight, LuInfo
+    LuClock, LuCheck, LuEye, LuDownload, LuArrowUpRight, LuInfo, LuX
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---
@@ -31,7 +32,7 @@ interface DisputeRecord {
     filedAt: string;
 }
 
-const MOCK_DISPUTES: DisputeRecord[] = [
+const INITIAL_DISPUTES: DisputeRecord[] = [
     { id: "DSP-8801", buyerName: "Sarah Connor", shopName: "Tech Haven Hub", orderId: "ORD-9912", amount: 245000, reason: "Item profoundly damaged on arrival", status: "Escalated", filedAt: "Today, 09:12 AM" },
     { id: "DSP-8802", buyerName: "Chuka Obi", shopName: "Urban Kicks NG", orderId: "ORD-9984", amount: 85000, reason: "Wrong shoe size delivered", status: "Awaiting Merchant", filedAt: "Yesterday, 14:30 PM" },
     { id: "DSP-8803", buyerName: "Grace Okafor", shopName: "Minimalist Hub", orderId: "ORD-9921", amount: 120000, reason: "Never received the package", status: "Escalated", filedAt: "Oct 22, 11:00 AM" },
@@ -40,12 +41,202 @@ const MOCK_DISPUTES: DisputeRecord[] = [
     { id: "DSP-8806", buyerName: "John Doe", shopName: "Mama's Kitchen Spices", orderId: "ORD-9811", amount: 8500, reason: "Expired items delivered", status: "Resolved", filedAt: "Oct 15, 12:10 PM" },
 ];
 
+const getStatusStyle = (status: string) => {
+    switch (status) {
+        case "Escalated": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)", icon: LuShieldAlert };
+        case "Awaiting Merchant": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)", icon: LuClock };
+        case "Awaiting Buyer": return { bg: "rgba(66, 153, 225, 0.1)", color: "blue.400", border: "1px solid var(--chakra-colors-blue-400)", icon: LuMessageSquare };
+        case "Resolved": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d", icon: LuCheck };
+        default: return { bg: "#111111", color: "#888888", border: "1px solid #333333", icon: LuInfo };
+    }
+};
+
+// --- DISPUTE DETAILS DRAWER ---
+const DisputeDetailsDrawer = ({ 
+    dispute, onClose, onResolve 
+}: { 
+    dispute: DisputeRecord | null; onClose: () => void; onResolve: (id: string) => void 
+}) => {
+    const [isResolving, setIsResolving] = useState(false);
+    const [message, setMessage] = useState("");
+    const [isMessaging, setIsMessaging] = useState(false);
+
+    if (!dispute) return null;
+    const statusStyle = getStatusStyle(dispute.status);
+
+    const handleResolve = () => {
+        setIsResolving(true);
+        setTimeout(() => {
+            onResolve(dispute.id);
+            setIsResolving(false);
+            onClose();
+        }, 1000);
+    };
+
+    const handleSendMessage = () => {
+        if (!message.trim()) return;
+        setIsMessaging(true);
+        setTimeout(() => {
+            setIsMessaging(false);
+            setMessage("");
+            // In a real app, this would append to a chat log
+        }, 800);
+    };
+
+    return (
+        <AnimatePresence>
+            {dispute && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 10000, backgroundColor: "rgba(0,0,0,0.8)", backdropFilter: "blur(4px)" }}
+                        onClick={onClose}
+                    />
+                    <Box position="fixed" top={0} right={0} bottom={0} zIndex={10001} w={{ base: "100%", sm: "450px" }} pointerEvents="none">
+                        <motion.div
+                            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            style={{ width: "100%", height: "100%", pointerEvents: "auto" }}
+                        >
+                            <Box w="100%" h="100%" bg="#0A0A0A" borderLeft="1px solid" borderColor="#1A1A1A" shadow="-20px 0 50px rgba(0,0,0,0.9)" display="flex" flexDirection="column">
+                                
+                                {/* Header */}
+                                <Flex justify="space-between" align="center" px={6} pt={8} pb={6} borderBottom="1px solid" borderColor="#1A1A1A" bg="#111111">
+                                    <Box>
+                                        <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>Dispute Arbitration</Text>
+                                        <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">{dispute.id}</Text>
+                                    </Box>
+                                    <IconButton aria-label="Close" variant="ghost" size="sm" rounded="none" onClick={onClose} color="#888888" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+                                    </IconButton>
+                                </Flex>
+
+                                {/* Content */}
+                                <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
+                                    <VStack w="full" gap={6} align="stretch">
+                                        
+                                        {/* Status & Escrow Amount */}
+                                        <Flex justify="space-between" align="center" bg="#111111" p={4} border="1px solid #1A1A1A">
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={1}>Escrow Amount</Text>
+                                                <Text color="white" fontSize="2xl" fontWeight="black" fontFamily="monospace" letterSpacing="tight">₦{dispute.amount.toLocaleString()}</Text>
+                                            </Box>
+                                            <Flex align="center" gap={2} {...statusStyle} px={2.5} py={1.5} rounded="none">
+                                                <Icon as={statusStyle.icon} boxSize="14px" strokeWidth="3" />
+                                                <Text fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">{dispute.status}</Text>
+                                            </Flex>
+                                        </Flex>
+
+                                        {/* Parties */}
+                                        <Grid templateColumns="1fr 1fr" gap={4}>
+                                            <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Complainant</Text>
+                                                <Text color="white" fontWeight="bold" fontSize="sm">{dispute.buyerName}</Text>
+                                                <Text color="#555555" fontSize="xs" mt={1}>Buyer</Text>
+                                            </Box>
+                                            <Box bg="#111111" p={4} border="1px solid #1A1A1A">
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Defendant</Text>
+                                                <Text color="white" fontWeight="bold" fontSize="sm">{dispute.shopName}</Text>
+                                                <Text color="#555555" fontSize="xs" mt={1}>Merchant</Text>
+                                            </Box>
+                                        </Grid>
+
+                                        {/* Issue Details */}
+                                        <Box bg="#111111" p={5} border="1px solid #1A1A1A">
+                                            <Flex justify="space-between" mb={4} pb={4} borderBottom="1px dashed #333333">
+                                                <Text color="#888888" fontSize="sm">Order ID</Text>
+                                                <Text color="white" fontWeight="bold" fontFamily="monospace">{dispute.orderId}</Text>
+                                            </Flex>
+                                            <Text color="#888888" fontSize="sm" mb={1}>Stated Reason</Text>
+                                           <Text color="white" fontWeight="bold" fontStyle="italic">&quot;{dispute.reason}&quot;</Text>
+                                            <Text color="#555555" fontSize="xs" mt={4} textAlign="right">Filed: {dispute.filedAt}</Text>
+                                        </Box>
+
+                                        {/* Admin Action Box (If not resolved) */}
+                                        {dispute.status !== "Resolved" && (
+                                            <Box>
+                                                <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>Message Parties</Text>
+                                                <Textarea 
+                                                    placeholder="Add an admin note or message to both parties..." 
+                                                    bg="#111111" border="1px solid #333333" color="white" rounded="none" p={3} minH="100px"
+                                                    _focus={{ borderColor: "white", outline: "none" }}
+                                                    value={message} onChange={(e) => setMessage(e.target.value)}
+                                                />
+                                                <Button 
+                                                    mt={2} w="full" size="sm" variant="outline" borderColor="#333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }}
+                                                    onClick={handleSendMessage} loading={isMessaging} disabled={!message.trim()}
+                                                >
+                                                    <Icon as={LuMessageSquare} mr={2} /> Send Admin Message
+                                                </Button>
+                                            </Box>
+                                        )}
+                                    </VStack>
+                                </Box>
+
+                                {/* Footer Actions */}
+                                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                                    <Button variant="outline" borderColor="#333333" onClick={onClose} h="44px" rounded="none" color="#888888" bg="#0A0A0A" _hover={{ bg: "#1A1A1A", color: "white" }}>
+                                        Close
+                                    </Button>
+                                    <Button 
+                                        flex="1" h="44px" bg={dispute.status === "Resolved" ? "#333333" : "white"} color={dispute.status === "Resolved" ? "#888888" : "black"} 
+                                        rounded="none" fontWeight="bold" _hover={{ bg: dispute.status === "Resolved" ? "#333333" : "#E5E5E5" }}
+                                        onClick={handleResolve} loading={isResolving} loadingText="Resolving..."
+                                        disabled={dispute.status === "Resolved"}
+                                    >
+                                        {dispute.status === "Resolved" ? "Case Closed" : "Force Resolve Case"}
+                                    </Button>
+                                </Flex>
+
+                            </Box>
+                        </motion.div>
+                    </Box>
+                </>
+            )}
+        </AnimatePresence>
+    );
+};
+
 export default function DisputesPage() {
+    // --- STATE ---
+    const [disputes, setDisputes] = useState<DisputeRecord[]>(INITIAL_DISPUTES);
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
 
-    // Filter Logic
-    const filteredDisputes = MOCK_DISPUTES.filter(dispute => {
+    // Modal & Loading States
+    const [selectedDispute, setSelectedDispute] = useState<DisputeRecord | null>(null);
+    const [isExporting, setIsExporting] = useState(false);
+
+    // --- ACTIONS ---
+    const handleExportLedger = () => {
+        setIsExporting(true);
+        setTimeout(() => {
+            const headers = ["Dispute ID", "Buyer", "Shop", "Order ID", "Amount", "Reason", "Status", "Date Filed"];
+            const csvRows = filteredDisputes.map(d => 
+                [d.id, `"${d.buyerName}"`, `"${d.shopName}"`, d.orderId, d.amount, `"${d.reason}"`, d.status, `"${d.filedAt}"`].join(",")
+            );
+            const csvString = [headers.join(","), ...csvRows].join("\n");
+            
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'dispute_ledger.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            setIsExporting(false);
+        }, 800);
+    };
+
+    const handleResolveDispute = (id: string) => {
+        setDisputes(prev => prev.map(d => d.id === id ? { ...d, status: "Resolved" } : d));
+    };
+
+    // --- FILTER LOGIC ---
+   const filteredDisputes = disputes.filter(dispute => {
         const matchesSearch = dispute.buyerName.toLowerCase().includes(searchQuery.toLowerCase()) || 
                               dispute.shopName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                               dispute.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -53,16 +244,7 @@ export default function DisputesPage() {
         const matchesStatus = statusFilter === "All" || dispute.status.includes(statusFilter);
         return matchesSearch && matchesStatus;
     });
-
-    const getStatusStyle = (status: string) => {
-        switch (status) {
-            case "Escalated": return { bg: "rgba(229, 62, 62, 0.1)", color: "red.400", border: "1px solid var(--chakra-colors-red-400)", icon: LuShieldAlert };
-            case "Awaiting Merchant": return { bg: "rgba(236, 201, 75, 0.1)", color: "yellow.400", border: "1px solid var(--chakra-colors-yellow-400)", icon: LuClock };
-            case "Awaiting Buyer": return { bg: "rgba(66, 153, 225, 0.1)", color: "blue.400", border: "1px solid var(--chakra-colors-blue-400)", icon: LuMessageSquare };
-            case "Resolved": return { bg: "rgba(92, 172, 125, 0.1)", color: "#5cac7d", border: "1px solid #5cac7d", icon: LuCheck };
-            default: return { bg: "#111111", color: "#888888", border: "1px solid #333333", icon: LuInfo };
-        }
-    };
+   
 
     return (
         <Box p={{ base: 4, lg: 8 }} maxW="1400px" mx="auto" animation="fade-in 0.3s ease" bg="#000000" minH="100vh">
@@ -76,7 +258,10 @@ export default function DisputesPage() {
                     <Text color="#888888" fontSize="sm">Mediate buyer-merchant conflicts, review evidence, and manage escrow releases.</Text>
                 </Box>
                 
-                <Button display={{ base: "none", sm: "flex" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} gap={2} h="44px" px={6} fontWeight="bold">
+                <Button 
+                    onClick={handleExportLedger} loading={isExporting} loadingText="Exporting..."
+                    display={{ base: "none", sm: "flex" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} gap={2} h="44px" px={6} fontWeight="bold"
+                >
                     <Icon as={LuDownload} color="#888888" strokeWidth="2.5" /> Export Ledger
                 </Button>
             </Flex>
@@ -161,10 +346,11 @@ export default function DisputesPage() {
                                         
                                         return (
                                             <Grid 
+                                                onClick={() => setSelectedDispute(dispute)}
                                                 key={dispute.id} 
                                                 templateColumns="1.5fr 1.5fr 1.5fr 2fr 1.2fr 100px" gap={4} px={6} py={5} 
                                                 borderBottom="1px solid #1A1A1A" 
-                                                alignItems="start" 
+                                                alignItems="start" cursor="pointer"
                                                 _hover={{ bg: "#111111" }} transition="background 0.2s"
                                             >
                                                 {/* ID & Date */}
@@ -245,6 +431,13 @@ export default function DisputesPage() {
                     </ScrollArea.Scrollbar>
                 </ScrollArea.Root>
             </Box>
+
+            {/* --- Modals --- */}
+            <DisputeDetailsDrawer 
+                dispute={selectedDispute} 
+                onClose={() => setSelectedDispute(null)} 
+                onResolve={handleResolveDispute} 
+            />
 
         </Box>
     );

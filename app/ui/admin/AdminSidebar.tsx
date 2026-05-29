@@ -42,7 +42,8 @@ const SUPER_ADMIN_NAV_ITEMS = [
         label: "Finances", 
         icon: LuWallet, 
         children: [
-            { label: "Transactions", icon: LuCreditCard, path: "/overwatch/finance" },
+            { label: "Finances", icon: LuWallet, path: "/overwatch/finance" },
+              { label: "Transactions", icon: LuCreditCard, path: "/overwatch/transactions" },
             { label: "Payouts", icon: LuLandmark, path: "/overwatch/payouts" },
             { label: "Subscriptions", icon: LuRefreshCw, path: "/overwatch/subscriptions" },
         ]

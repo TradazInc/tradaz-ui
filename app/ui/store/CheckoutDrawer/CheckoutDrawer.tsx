@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Button, Icon, IconButton, VStack, Spinner, Separator, Input, HStack, Badge 
+    Box, Flex, Text, Button, Icon, IconButton, VStack, Spinner, Separator, Input, HStack, Badge, Image 
 } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
     LuArrowLeft, LuX, LuMapPin, LuTruck, LuCreditCard, LuCheck, LuTicket, LuTrophy
 } from "react-icons/lu";
@@ -14,9 +15,38 @@ interface CheckoutDrawerProps {
     brandColor: string;
 }
 
+// --- LOGO COMPONENTS ---
+const MoniepointLogo = () => (
+    <Flex align="center" gap={3}>
+        <Image 
+            src="/Moniepoint.png" 
+            alt="Moniepoint Logo" 
+            boxSize="32px" 
+            bg="white"
+            objectFit="contain" 
+            rounded="md"
+        />
+        <Text color="white" fontWeight="bold" fontSize="md" letterSpacing="tight">Moniepoint</Text>
+    </Flex>
+);
+
+const OpayLogo = () => (
+    <Flex align="center" gap={3}>
+        <Image 
+            src="/opay.jpg" 
+            alt="OPay Logo" 
+            boxSize="32px" 
+            objectFit="contain" 
+            rounded="md"
+        />
+        <Text color="white" fontWeight="bold" fontSize="md" letterSpacing="tight">OPay</Text>
+    </Flex>
+);
+
 export const CheckoutDrawer = ({ isOpen, onClose, cartTotal, brandColor }: CheckoutDrawerProps) => {
     const [step, setStep] = useState(1);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
     // --- LOYALTY STATE ---
     const userBalance = 5000; 
@@ -40,7 +70,7 @@ export const CheckoutDrawer = ({ isOpen, onClose, cartTotal, brandColor }: Check
         { id: "express", name: "Express Delivery", price: 7500, eta: "1-2 Business Days" }
     ];
     const [selectedDeliveryId, setSelectedDeliveryId] = useState("standard");
-    const [selectedPayment, setSelectedPayment] = useState("paystack");
+    const [selectedPayment, setSelectedPayment] = useState("Moniepoint");
 
     const activeDelivery = deliveryRates.find(d => d.id === selectedDeliveryId) || deliveryRates[0];
     const couponDiscount = formData.coupon === "TRADAZ10" ? (cartTotal * 0.1) : 0; 
@@ -61,13 +91,19 @@ export const CheckoutDrawer = ({ isOpen, onClose, cartTotal, brandColor }: Check
         setIsProcessing(true);
         setTimeout(() => {
             setIsProcessing(false);
-            alert("Payment successful!");
-            onClose();
+            setIsSuccessModalOpen(true);
         }, 2000);
+    };
+
+    const closeSuccessModal = () => {
+        setIsSuccessModalOpen(false);
+        setStep(1); // Reset drawer for next time
+        onClose(); // Close the entire checkout drawer
     };
 
     return (
         <Box position="fixed" inset={0} zIndex={9999} pointerEvents={isOpen ? "auto" : "none"}>
+            {/* Drawer Backdrop */}
             <Box position="absolute" inset={0} bg="blackAlpha.600" backdropFilter="blur(4px)" opacity={isOpen ? 1 : 0} transition="opacity 0.3s ease" onClick={onClose} />
 
             <Flex 
@@ -202,14 +238,14 @@ export const CheckoutDrawer = ({ isOpen, onClose, cartTotal, brandColor }: Check
                                 <Text color="white" fontWeight="bold" fontSize="lg">Payment Method</Text>
                             </Flex>
                             <VStack gap={3}>
-                                {[{ id: "Moniepoint", name: "Monie point" }, { id: "Opay", name: "Opay" }].map((method) => (
+                                {[{ id: "Moniepoint", component: <MoniepointLogo /> }, { id: "Opay", component: <OpayLogo /> }].map((method) => (
                                     <Box 
                                         key={method.id} w="full" p={4} rounded="xl" cursor="pointer" transition="all 0.2s"
                                         bg={selectedPayment === method.id ? "rgba(92, 172, 125, 0.1)" : "#1A1C23"}
                                         border="1px solid" borderColor={selectedPayment === method.id ? brandColor : "whiteAlpha.100"}
                                         onClick={() => setSelectedPayment(method.id)}
                                     >
-                                        <Text color="white" fontWeight="bold">{method.name}</Text>
+                                        {method.component}
                                     </Box>
                                 ))}
                             </VStack>
@@ -248,6 +284,48 @@ export const CheckoutDrawer = ({ isOpen, onClose, cartTotal, brandColor }: Check
                     )}
                 </Box>
             </Flex>
+
+            {/* --- SUCCESS MODAL --- */}
+            <AnimatePresence>
+                {isSuccessModalOpen && (
+                    <Box position="fixed" inset={0} zIndex={10005} display="flex" alignItems="center" justifyContent="center" p={4}>
+                        <Box position="absolute" inset={0} bg="blackAlpha.800" backdropFilter="blur(5px)" onClick={closeSuccessModal} />
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }} 
+                            animate={{ opacity: 1, scale: 1, y: 0 }} 
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                        >
+                            <VStack bg="#1A1C23" p={8} rounded="3xl" border="1px solid" borderColor="whiteAlpha.200" gap={4} position="relative" zIndex={10006} w="full" maxW="380px" textAlign="center" shadow="2xl">
+                                <Flex boxSize="80px" bg="rgba(92, 172, 125, 0.1)" border="1px solid #5cac7d" rounded="full" align="center" justify="center" mb={2}>
+                                    <Icon as={LuCheck} color="#5cac7d" boxSize="40px" strokeWidth="3" />
+                                </Flex>
+                                <Box>
+                                    <Text color="white" fontSize="2xl" fontWeight="black" letterSpacing="tight" mb={2}>Payment Successful!</Text>
+                                    <Text color="gray.400" fontSize="sm" lineHeight="tall">
+                                        Your order has been placed successfully. A detailed receipt has been sent to your email.
+                                    </Text>
+                                </Box>
+                                
+                                <Box w="full" bg="#121212" p={4} rounded="xl" border="1px solid" borderColor="whiteAlpha.100" my={2}>
+                                    <Flex justify="space-between" mb={2}>
+                                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Amount Paid</Text>
+                                        <Text color="white" fontWeight="bold">₦{finalTotal.toLocaleString()}</Text>
+                                    </Flex>
+                                    <Flex justify="space-between">
+                                        <Text color="gray.500" fontSize="xs" fontWeight="bold" textTransform="uppercase">Paid Via</Text>
+                                        <Text color="white" fontWeight="bold">{selectedPayment}</Text>
+                                    </Flex>
+                                </Box>
+
+                                <Button w="full" h="50px" bg={brandColor} color="white" rounded="xl" fontWeight="bold" onClick={closeSuccessModal} _hover={{ filter: "brightness(1.1)" }}>
+                                    Continue Shopping
+                                </Button>
+                            </VStack>
+                        </motion.div>
+                    </Box>
+                )}
+            </AnimatePresence>
         </Box>
     );
 };
