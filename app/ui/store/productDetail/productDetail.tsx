@@ -314,14 +314,14 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                         onClick={() => setActiveTab("reviews")}
                         borderBottom={activeTab === "reviews" ? `2px solid ${brandColor}` : "2px solid transparent"}
                     >
-                        Reviews (0)
+                            Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion. Perfect for those who appreciate high-end style without compromise, this piece is a statement in accessible luxury. Whether paired with tailored joggers or vintage denim, it&apos;s your go-to for effortless layering.
                     </Box>
                 </Flex>
                 
                 <Box p={{ base: 6, md: 8 }}>
                     {activeTab === "description" && (
                         <Text color="gray.400" fontSize="sm" lineHeight="tall" animation="fade-in 0.3s ease" maxW="1000px">
-                            Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion. Perfect for those who appreciate high-end style without compromise, this piece is a statement in accessible luxury. Whether paired with tailored joggers or vintage denim, it's your go-to for effortless layering.
+                            Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion. Perfect for those who appreciate high-end style without compromise, this piece is a statement in accessible luxury. Whether paired with tailored joggers or vintage denim, it&apos;s your go-to for effortless layering.
                         </Text>
                     )}
                     {activeTab === "specifications" && (
