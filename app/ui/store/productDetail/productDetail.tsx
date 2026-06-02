@@ -281,31 +281,38 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
             {/* --- BOTTOM SECTION: TABS & CONTENT --- */}
             {/* Spans full width below the grid, naturally requiring the user to scroll to view details */}
             <Box mt={12} bg="#111111" rounded="xl" overflow="hidden" border="1px solid" borderColor="whiteAlpha.100">
-                <Flex bg="#1A1C23" borderBottom="1px solid" borderColor="whiteAlpha.100" direction={{ base: "column", sm: "row" }}>
+                <Flex 
+                    bg="#1A1C23" 
+                    borderBottom="1px solid" 
+                    borderColor="whiteAlpha.100" 
+                    direction="row" 
+                    overflowX="auto"
+                    css={{ '&::-webkit-scrollbar': { display: 'none' } }}
+                >
                     <Box 
-                        flex={1} textAlign="center" py={4} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                        flex={1} textAlign="center" py={4} px={4} cursor="pointer" fontSize={{ base: "xs", sm: "sm" }} fontWeight="bold" transition="all 0.2s" whiteSpace="nowrap"
                         color={activeTab === "description" ? "white" : "gray.500"}
                         bg={activeTab === "description" ? "whiteAlpha.100" : "transparent"}
                         onClick={() => setActiveTab("description")}
-                        borderBottom={{ base: activeTab === "description" ? `2px solid ${brandColor}` : "none", sm: "none" }}
+                        borderBottom={activeTab === "description" ? `2px solid ${brandColor}` : "2px solid transparent"}
                     >
                         Description
                     </Box>
                     <Box 
-                        flex={1} textAlign="center" py={4} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                        flex={1} textAlign="center" py={4} px={4} cursor="pointer" fontSize={{ base: "xs", sm: "sm" }} fontWeight="bold" transition="all 0.2s" whiteSpace="nowrap"
                         color={activeTab === "specifications" ? "white" : "gray.500"}
                         bg={activeTab === "specifications" ? "whiteAlpha.100" : "transparent"}
                         onClick={() => setActiveTab("specifications")}
-                        borderBottom={{ base: activeTab === "specifications" ? `2px solid ${brandColor}` : "none", sm: "none" }}
+                        borderBottom={activeTab === "specifications" ? `2px solid ${brandColor}` : "2px solid transparent"}
                     >
                         Specifications
                     </Box>
                     <Box 
-                        flex={1} textAlign="center" py={4} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                        flex={1} textAlign="center" py={4} px={4} cursor="pointer" fontSize={{ base: "xs", sm: "sm" }} fontWeight="bold" transition="all 0.2s" whiteSpace="nowrap"
                         color={activeTab === "reviews" ? "white" : "gray.500"}
                         bg={activeTab === "reviews" ? "whiteAlpha.100" : "transparent"}
                         onClick={() => setActiveTab("reviews")}
-                        borderBottom={{ base: activeTab === "reviews" ? `2px solid ${brandColor}` : "none", sm: "none" }}
+                        borderBottom={activeTab === "reviews" ? `2px solid ${brandColor}` : "2px solid transparent"}
                     >
                         Reviews (0)
                     </Box>
@@ -314,7 +321,7 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                 <Box p={{ base: 6, md: 8 }}>
                     {activeTab === "description" && (
                         <Text color="gray.400" fontSize="sm" lineHeight="tall" animation="fade-in 0.3s ease" maxW="1000px">
-                            Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion. Perfect for those who appreciate high-end style without compromise, this piece is a statement in accessible luxury. Whether paired with tailored joggers or vintage denim, it&apos;s your go-to for effortless layering.
+                            Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion. Perfect for those who appreciate high-end style without compromise, this piece is a statement in accessible luxury. Whether paired with tailored joggers or vintage denim, it's your go-to for effortless layering.
                         </Text>
                     )}
                     {activeTab === "specifications" && (
