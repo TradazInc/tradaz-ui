@@ -12,6 +12,7 @@ import {
 import { STORE_BANNERS, STORE_PRODUCTS } from "@/app/lib/data";
 import { ProductDetailView } from "../ui/store/productDetail/productDetail";
 
+
 // --- TYPES ---
 type ProductType = typeof STORE_PRODUCTS[0];
 type CartItem = ProductType & { quantity: number; variation?: string };

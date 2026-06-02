@@ -38,10 +38,7 @@ const selectStyle: React.CSSProperties = {
 export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: ProductDetailViewProps) => {
     const [activeImageIdx, setActiveImageIdx] = useState(0);
     const [selectedSize, setSelectedSize] = useState("");
-    
-    // I initialized state to 'Black' so it appears on load, consistent with standard e-comm behavior.
     const [selectedColor, setSelectedColor] = useState("Black"); 
-    
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState("description");
 
@@ -118,11 +115,12 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                 </Button>
             </Flex>
 
+            {/* --- TOP SECTION: IMAGE & PRIMARY DETAILS --- */}
             <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={10}>
                 
                 {/* LEFT COLUMN: Interactive Image Gallery */}
-                <Box>
-                    <Box bg="#1A1C23" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" mb={4} h={{ base: "400px", md: "480px" }} position="relative">
+                <Box display="flex" flexDirection="column">
+                    <Box bg="#1A1C23" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" mb={4} h={{ base: "350px", md: "450px", lg: "500px" }} position="relative">
                         <Badge position="absolute" top={4} right={4} bg="black" color="white" border="1px solid white" rounded="full" px={4} py={1} fontSize="xs" fontWeight="bold" zIndex={10}>
                             {product.isNew ? "New Release" : "Featured"}
                         </Badge>
@@ -145,12 +143,12 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                 </Box>
 
                 {/* RIGHT COLUMN: Product Details & Actions */}
-                <Flex direction="column" justify="flex-start">
+                <Flex direction="column" justify="flex-start" h="full">
                     
                     {/* Top Row: Title, Category & Like Button */}
                     <Flex justify="space-between" align="flex-start" mb={2}>
-                        <Box>
-                            <Text fontSize={{ base: "3xl", md: "4xl" }} fontWeight="bold" fontFamily="serif" color="white" lineHeight="1.1" mb={1}>
+                        <Box pr={4}>
+                            <Text fontSize={{ base: "2xl", sm: "3xl", lg: "4xl" }} fontWeight="bold" fontFamily="serif" color="white" lineHeight="1.1" mb={1}>
                                 {product.name}
                             </Text>
                             <Text fontSize="sm" color="gray.400">
@@ -159,7 +157,7 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                         </Box>
                         <IconButton 
                             aria-label="Save for later" h="44px" w="44px" rounded="full" bg="transparent" color="gray.400" border="1px solid" borderColor="whiteAlpha.200"
-                            _hover={{ bg: "whiteAlpha.100", color: brandColor, borderColor: brandColor }} transition="all 0.2s"
+                            _hover={{ bg: "whiteAlpha.100", color: brandColor, borderColor: brandColor }} transition="all 0.2s" flexShrink={0}
                         >
                             <Icon as={LuHeart} boxSize="20px" />
                         </IconButton>
@@ -176,7 +174,7 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                     </Flex>
 
                     {/* Variants: Size & Color side-by-side to save space */}
-                    <Flex gap={6} mb={6}>
+                    <Flex gap={6} mb={6} direction={{ base: "column", sm: "row" }}>
                         {/* Size Selection */}
                         <Box flex={1}>
                             <Text color="white" fontSize="xs" fontWeight="bold" mb={2}>SIZE</Text>
@@ -198,7 +196,6 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
 
                         {/* Color Selection */}
                         <Box flex={1}>
-                            {/* --- THE UPDATE IS HERE --- */}
                             <Text color="white" fontSize="xs" fontWeight="bold" mb={2} textTransform="uppercase">
                                 COLOR - {selectedColor}
                             </Text>
@@ -219,7 +216,6 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                                     border="2px solid" borderColor={selectedColor === "Gray" ? "white" : "transparent"}
                                     onClick={() => setSelectedColor("Gray")}
                                 />
-                                {/* --- ADDDED RED FOR EXAMPLE --- */}
                                 <Box 
                                     boxSize="34px" rounded="full" bg="red.500" cursor="pointer"
                                     border="2px solid" borderColor={selectedColor === "Red" ? "white" : "transparent"}
@@ -230,7 +226,7 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                     </Flex>
 
                     {/* Quantity & Add to Cart (Side by Side) */}
-                    <Flex gap={4} mb={8} h="54px">
+                    <Flex gap={4} mb={6} h="54px">
                         {/* Quantity Counter */}
                         <Flex align="center" border="1px solid" borderColor="whiteAlpha.200" rounded="md" w="130px" h="full">
                             <IconButton 
@@ -260,83 +256,91 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                         </Button>
                     </Flex>
 
-                    {/* Trust Badges (Horizontal, compact) */}
-                    <Flex justify="space-between" align="center" py={4} borderTop="1px solid" borderBottom="1px solid" borderColor="whiteAlpha.100" mb={6}>
+                    {/* Trust Badges (Horizontal, directly under Add to Cart) */}
+                    <Flex 
+                        justify="space-between" align="center" py={4} 
+                        borderTop="1px solid" borderBottom="1px solid" borderColor="whiteAlpha.100" 
+                    >
                         <Flex align="center" gap={2}>
-                            <Icon as={LuTruck} boxSize="16px" color="white" />
+                            <Icon as={LuTruck} boxSize="18px" color="white" />
                             <Text color="gray.300" fontSize="xs" fontWeight="medium">Free Shipping</Text>
                         </Flex>
                         <Flex align="center" gap={2}>
-                            <Icon as={LuUndo2} boxSize="16px" color="white" />
+                            <Icon as={LuUndo2} boxSize="18px" color="white" />
                             <Text color="gray.300" fontSize="xs" fontWeight="medium">30-Day Returns</Text>
                         </Flex>
                         <Flex align="center" gap={2}>
-                            <Icon as={LuShieldCheck} boxSize="16px" color="white" />
+                            <Icon as={LuShieldCheck} boxSize="18px" color="white" />
                             <Text color="gray.300" fontSize="xs" fontWeight="medium">Secure Payment</Text>
                         </Flex>
                     </Flex>
 
-                    {/* Bottom Tabs & Content */}
-                    <Box bg="#111111" rounded="xl" overflow="hidden">
-                        <Flex bg="#1A1C23" borderBottom="1px solid" borderColor="whiteAlpha.100">
-                            <Box 
-                                flex={1} textAlign="center" py={3} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
-                                color={activeTab === "description" ? "white" : "gray.500"}
-                                bg={activeTab === "description" ? "whiteAlpha.100" : "transparent"}
-                                onClick={() => setActiveTab("description")}
-                            >
-                                Description
-                            </Box>
-                            <Box 
-                                flex={1} textAlign="center" py={3} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
-                                color={activeTab === "specifications" ? "white" : "gray.500"}
-                                bg={activeTab === "specifications" ? "whiteAlpha.100" : "transparent"}
-                                onClick={() => setActiveTab("specifications")}
-                            >
-                                Specifications
-                            </Box>
-                            <Box 
-                                flex={1} textAlign="center" py={3} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
-                                color={activeTab === "reviews" ? "white" : "gray.500"}
-                                bg={activeTab === "reviews" ? "whiteAlpha.100" : "transparent"}
-                                onClick={() => setActiveTab("reviews")}
-                            >
-                                Reviews (0)
-                            </Box>
-                        </Flex>
-                        
-                        <Box p={5}>
-                            {activeTab === "description" && (
-                                <Text color="gray.400" fontSize="sm" lineHeight="tall" animation="fade-in 0.3s ease">
-                                    Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion.
-                                </Text>
-                            )}
-                            {activeTab === "specifications" && (
-                                <VStack align="stretch" gap={3} animation="fade-in 0.3s ease">
-                                    <Flex justify="space-between" borderBottom="1px dashed" borderColor="whiteAlpha.200" pb={2}>
-                                        <Text color="gray.500" fontSize="sm">Material</Text>
-                                        <Text color="white" fontSize="sm" fontWeight="medium">100% Premium Cotton</Text>
-                                    </Flex>
-                                    <Flex justify="space-between" borderBottom="1px dashed" borderColor="whiteAlpha.200" pb={2}>
-                                        <Text color="gray.500" fontSize="sm">Fit</Text>
-                                        <Text color="white" fontSize="sm" fontWeight="medium">Relaxed / Oversized</Text>
-                                    </Flex>
-                                    <Flex justify="space-between">
-                                        <Text color="gray.500" fontSize="sm">Care</Text>
-                                        <Text color="white" fontSize="sm" fontWeight="medium">Machine Wash Cold</Text>
-                                    </Flex>
-                                </VStack>
-                            )}
-                            {activeTab === "reviews" && (
-                                <Flex align="center" justify="center" h="100px" animation="fade-in 0.3s ease">
-                                    <Text color="gray.500" fontSize="sm" fontStyle="italic">No reviews yet for this product.</Text>
-                                </Flex>
-                            )}
-                        </Box>
-                    </Box>
-
                 </Flex>
             </Grid>
+
+            {/* --- BOTTOM SECTION: TABS & CONTENT --- */}
+            {/* Spans full width below the grid, naturally requiring the user to scroll to view details */}
+            <Box mt={12} bg="#111111" rounded="xl" overflow="hidden" border="1px solid" borderColor="whiteAlpha.100">
+                <Flex bg="#1A1C23" borderBottom="1px solid" borderColor="whiteAlpha.100" direction={{ base: "column", sm: "row" }}>
+                    <Box 
+                        flex={1} textAlign="center" py={4} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                        color={activeTab === "description" ? "white" : "gray.500"}
+                        bg={activeTab === "description" ? "whiteAlpha.100" : "transparent"}
+                        onClick={() => setActiveTab("description")}
+                        borderBottom={{ base: activeTab === "description" ? `2px solid ${brandColor}` : "none", sm: "none" }}
+                    >
+                        Description
+                    </Box>
+                    <Box 
+                        flex={1} textAlign="center" py={4} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                        color={activeTab === "specifications" ? "white" : "gray.500"}
+                        bg={activeTab === "specifications" ? "whiteAlpha.100" : "transparent"}
+                        onClick={() => setActiveTab("specifications")}
+                        borderBottom={{ base: activeTab === "specifications" ? `2px solid ${brandColor}` : "none", sm: "none" }}
+                    >
+                        Specifications
+                    </Box>
+                    <Box 
+                        flex={1} textAlign="center" py={4} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                        color={activeTab === "reviews" ? "white" : "gray.500"}
+                        bg={activeTab === "reviews" ? "whiteAlpha.100" : "transparent"}
+                        onClick={() => setActiveTab("reviews")}
+                        borderBottom={{ base: activeTab === "reviews" ? `2px solid ${brandColor}` : "none", sm: "none" }}
+                    >
+                        Reviews (0)
+                    </Box>
+                </Flex>
+                
+                <Box p={{ base: 6, md: 8 }}>
+                    {activeTab === "description" && (
+                        <Text color="gray.400" fontSize="sm" lineHeight="tall" animation="fade-in 0.3s ease" maxW="1000px">
+                            Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion. Perfect for those who appreciate high-end style without compromise, this piece is a statement in accessible luxury. Whether paired with tailored joggers or vintage denim, it&apos;s your go-to for effortless layering.
+                        </Text>
+                    )}
+                    {activeTab === "specifications" && (
+                        <VStack align="stretch" gap={4} animation="fade-in 0.3s ease" maxW="600px">
+                            <Flex justify="space-between" borderBottom="1px dashed" borderColor="whiteAlpha.200" pb={3}>
+                                <Text color="gray.500" fontSize="sm">Material</Text>
+                                <Text color="white" fontSize="sm" fontWeight="medium">100% Premium Cotton</Text>
+                            </Flex>
+                            <Flex justify="space-between" borderBottom="1px dashed" borderColor="whiteAlpha.200" pb={3}>
+                                <Text color="gray.500" fontSize="sm">Fit</Text>
+                                <Text color="white" fontSize="sm" fontWeight="medium">Relaxed / Oversized</Text>
+                            </Flex>
+                            <Flex justify="space-between">
+                                <Text color="gray.500" fontSize="sm">Care</Text>
+                                <Text color="white" fontSize="sm" fontWeight="medium">Machine Wash Cold</Text>
+                            </Flex>
+                        </VStack>
+                    )}
+                    {activeTab === "reviews" && (
+                        <Flex align="center" justify="center" h="150px" animation="fade-in 0.3s ease">
+                            <Text color="gray.500" fontSize="sm" fontStyle="italic">No reviews yet for this product.</Text>
+                        </Flex>
+                    )}
+                </Box>
+            </Box>
+
         </Box>
     );
 };
