@@ -11,7 +11,7 @@ import Link from "next/link";
 
 import { CheckoutDrawer } from "@/app/ui/store/CheckoutDrawer/CheckoutDrawer";
 
-// Define the CartItem type to match what we saved in localStorage
+
 type CartItem = {
     id: string;
     name: string;
@@ -137,8 +137,7 @@ export default function CartPage() {
     };
 
     const handleSaveForLater = () => {
-        // Here you would typically dispatch an action to move the item to a wishlist array in local storage
-        // For now, it will dismiss the item from the cart identically, but you can hook your wishlist logic here
+      
         if (itemToRemove) {
             removeItem(itemToRemove.id, itemToRemove.variation);
             setItemToRemove(null);

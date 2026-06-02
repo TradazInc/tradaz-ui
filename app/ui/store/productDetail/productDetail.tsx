@@ -1,15 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import { 
-    Box, Flex, Text, Image, Button, Icon, Badge, IconButton, SimpleGrid, HStack, VStack 
+    Box, Flex, Text, Image, Button, Icon, Badge, IconButton, HStack, VStack, Grid 
 } from "@chakra-ui/react";
 import { 
-    LuHeart, LuShoppingCart, LuStar, LuArrowLeft, LuTruck, LuShieldCheck, LuUndo2, LuCheck, LuX
+    LuHeart, LuShoppingCart, LuArrowLeft, LuTruck, LuShieldCheck, LuUndo2, LuCheck, LuX, LuMinus, LuPlus
 } from "react-icons/lu";
 
 import { ProductDetailViewProps } from "@/app/lib/definitions";
 
-// Properly type the cart item to prevent ESLint 'any' errors
 type CartItem = {
     id: string;
     name: string;
@@ -17,12 +16,34 @@ type CartItem = {
     image: string;
     quantity: number;
     variation?: string;
+    color?: string;
     [key: string]: unknown;
+};
+
+// Reusable native select style for dark mode
+const selectStyle: React.CSSProperties = {
+    width: "100%",
+    backgroundColor: "transparent",
+    color: "white",
+    height: "44px",
+    borderRadius: "8px",
+    padding: "0 16px",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    outline: "none",
+    cursor: "pointer",
+    fontSize: "14px",
+    appearance: "none", // hides default arrow to look cleaner
 };
 
 export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: ProductDetailViewProps) => {
     const [activeImageIdx, setActiveImageIdx] = useState(0);
     const [selectedSize, setSelectedSize] = useState("");
+    
+    // I initialized state to 'Black' so it appears on load, consistent with standard e-comm behavior.
+    const [selectedColor, setSelectedColor] = useState("Black"); 
+    
+    const [quantity, setQuantity] = useState(1);
+    const [activeTab, setActiveTab] = useState("description");
 
     // Custom Toast State
     const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -37,7 +58,6 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
 
     // --- ADD TO CART LOGIC ---
     const handleAddToCart = () => {
-       
         if (!selectedSize) {
             setToastType("error");
             setToastMessage("Please select a size before adding to cart.");
@@ -48,15 +68,14 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
         try {
             const existingCart: CartItem[] = JSON.parse(localStorage.getItem('tradaz_cart') || '[]');
             
-            
             const existingItemIndex = existingCart.findIndex(
-                (item: CartItem) => item.id === product.id && item.variation === selectedSize
+                (item: CartItem) => item.id === product.id && item.variation === selectedSize && item.color === selectedColor
             );
 
             if (existingItemIndex >= 0) {
-                existingCart[existingItemIndex].quantity += 1;
+                existingCart[existingItemIndex].quantity += quantity;
             } else {
-                existingCart.push({ ...product, quantity: 1, variation: selectedSize });
+                existingCart.push({ ...product, quantity: quantity, variation: selectedSize, color: selectedColor });
             }
 
             localStorage.setItem('tradaz_cart', JSON.stringify(existingCart));
@@ -64,7 +83,7 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
 
             // Show success message
             setToastType("success");
-            setToastMessage(`${product.name} (${selectedSize}) added to cart!`);
+            setToastMessage(`${quantity}x ${product.name} (${selectedSize}, ${selectedColor}) added to cart!`);
             setTimeout(() => setToastMessage(null), 3000);
 
         } catch (error) {
@@ -92,19 +111,20 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
             )}
 
             {/* Header / Back Button */}
-            <Flex align="center" gap={3} mb={8}>
-                <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2}>
+            <Flex align="center" gap={3} mb={6}>
+                <Button variant="ghost" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }} onClick={onBack} px={2} rounded="md" h="40px">
                     <Icon as={LuArrowLeft} boxSize="20px" mr={2} />
                     Back to Store
                 </Button>
             </Flex>
 
-            <SimpleGrid columns={{ base: 1, lg: 2 }} gap={12}>
-                {/* Left: Interactive Image Gallery */}
+            <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={10}>
+                
+                {/* LEFT COLUMN: Interactive Image Gallery */}
                 <Box>
-                    <Box bg="#1A1C23" rounded="3xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" mb={4} h={{ base: "400px", md: "500px" }} position="relative">
-                        <Badge position="absolute" top={4} left={4} bg={brandColor} color="white" rounded="md" px={3} py={1} fontSize="xs" fontWeight="bold" zIndex={10}>
-                            {product.isNew ? "NEW RELEASE" : "BEST SELLER"}
+                    <Box bg="#1A1C23" rounded="xl" border="1px solid" borderColor="whiteAlpha.100" overflow="hidden" mb={4} h={{ base: "400px", md: "480px" }} position="relative">
+                        <Badge position="absolute" top={4} right={4} bg="black" color="white" border="1px solid white" rounded="full" px={4} py={1} fontSize="xs" fontWeight="bold" zIndex={10}>
+                            {product.isNew ? "New Release" : "Featured"}
                         </Badge>
                         <Image src={mockImages[activeImageIdx]} alt={product.name} w="full" h="full" objectFit="cover" />
                     </Box>
@@ -112,9 +132,9 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                         {mockImages.map((img, idx) => (
                             <Box 
                                 key={idx} cursor="pointer" flexShrink={0}
-                                w="100px" h="100px" rounded="xl" overflow="hidden" 
+                                w="80px" h="80px" rounded="xl" overflow="hidden" 
                                 border="2px solid" borderColor={activeImageIdx === idx ? brandColor : "transparent"}
-                                opacity={activeImageIdx === idx ? 1 : 0.6}
+                                opacity={activeImageIdx === idx ? 1 : 0.5}
                                 _hover={{ opacity: 1 }} transition="all 0.2s"
                                 onClick={() => setActiveImageIdx(idx)}
                             >
@@ -124,97 +144,199 @@ export const ProductDetailView = ({ product, onBack, brandColor = "#5cac7d" }: P
                     </HStack>
                 </Box>
 
-                {/* Right: Product Details & Add to Cart */}
-                <Flex direction="column" justify="center">
-                    <Text fontSize="sm" color={brandColor} fontWeight="bold" textTransform="uppercase" letterSpacing="widest" mb={2}>
-                        {product.category}
-                    </Text>
-                    <Text fontSize={{ base: "3xl", md: "4xl" }} fontWeight="black" color="white" lineHeight="1.1" mb={4}>
-                        {product.name}
-                    </Text>
+                {/* RIGHT COLUMN: Product Details & Actions */}
+                <Flex direction="column" justify="flex-start">
                     
-                    <Flex align="center" gap={3} mb={6}>
-                        <Flex gap={1}>
-                            {[...Array(5)].map((_, i) => (
-                                <Icon key={i} as={LuStar} boxSize="16px" fill="yellow.400" color="yellow.400" />
-                            ))}
-                        </Flex>
-                        <Text fontSize="sm" color="gray.400" textDecoration="underline" cursor="pointer">
-                            Read {product.reviews || 120} Reviews
+                    {/* Top Row: Title, Category & Like Button */}
+                    <Flex justify="space-between" align="flex-start" mb={2}>
+                        <Box>
+                            <Text fontSize={{ base: "3xl", md: "4xl" }} fontWeight="bold" fontFamily="serif" color="white" lineHeight="1.1" mb={1}>
+                                {product.name}
+                            </Text>
+                            <Text fontSize="sm" color="gray.400">
+                                {product.category || "tripstore"}
+                            </Text>
+                        </Box>
+                        <IconButton 
+                            aria-label="Save for later" h="44px" w="44px" rounded="full" bg="transparent" color="gray.400" border="1px solid" borderColor="whiteAlpha.200"
+                            _hover={{ bg: "whiteAlpha.100", color: brandColor, borderColor: brandColor }} transition="all 0.2s"
+                        >
+                            <Icon as={LuHeart} boxSize="20px" />
+                        </IconButton>
+                    </Flex>
+                    
+                    {/* Price & Stock status */}
+                    <Flex align="baseline" gap={4} mb={6}>
+                        <Text fontSize="3xl" fontWeight="black" color="white">
+                            ₦{product.price.toLocaleString()}
+                        </Text>
+                        <Text fontSize="xs" color="red.400" fontWeight="bold">
+                            Only 1 left in stock!
                         </Text>
                     </Flex>
 
-                    <Text fontSize="4xl" fontWeight="black" color="white" mb={8}>
-                        ₦{product.price.toLocaleString()}
-                    </Text>
-
-                    {/* Variants Selection */}
-                    <Box mb={8}>
-                        <Flex justify="space-between" mb={2}>
-                            <Text color="white" fontWeight="bold">Select Size *</Text>
-                            <Text color="gray.500" fontSize="sm" textDecoration="underline" cursor="pointer">Size Guide</Text>
-                        </Flex>
-                        <SimpleGrid columns={4} gap={3}>
-                            {["S", "M", "L", "XL"].map((size) => (
-                                <Button 
-                                    key={size} variant="outline" 
-                                    borderColor={selectedSize === size ? brandColor : "whiteAlpha.200"} 
-                                    color={selectedSize === size ? brandColor : "white"}
-                                    bg={selectedSize === size ? "rgba(92, 172, 125, 0.1)" : "transparent"}
-                                    _hover={{ borderColor: brandColor }}
-                                    onClick={() => setSelectedSize(size)}
+                    {/* Variants: Size & Color side-by-side to save space */}
+                    <Flex gap={6} mb={6}>
+                        {/* Size Selection */}
+                        <Box flex={1}>
+                            <Text color="white" fontSize="xs" fontWeight="bold" mb={2}>SIZE</Text>
+                            <Box position="relative">
+                                <select 
+                                    style={selectStyle} 
+                                    value={selectedSize} 
+                                    onChange={(e) => setSelectedSize(e.target.value)}
                                 >
-                                    {size}
-                                </Button>
-                            ))}
-                        </SimpleGrid>
-                    </Box>
+                                    <option value="" disabled style={{ background: "#1A1C23" }}>Select size</option>
+                                    <option value="S" style={{ background: "#1A1C23" }}>Small (S)</option>
+                                    <option value="M" style={{ background: "#1A1C23" }}>Medium (M)</option>
+                                    <option value="L" style={{ background: "#1A1C23" }}>Large (L)</option>
+                                    <option value="XL" style={{ background: "#1A1C23" }}>Extra Large (XL)</option>
+                                </select>
+                                <Icon as={LuArrowLeft} transform="rotate(-90deg)" position="absolute" right="16px" top="14px" color="gray.400" pointerEvents="none" />
+                            </Box>
+                        </Box>
 
-                    {/* Actions */}
-                    <Flex gap={4} mb={8}>
-                        <Button 
-                            flex={1} h="60px" bg={brandColor} color="white" rounded="full" fontSize="lg" fontWeight="bold"
-                            _hover={{ filter: "brightness(1.1)", transform: "translateY(-2px)" }} transition="all 0.2s" shadow="xl"
-                            display="flex" gap={3}
-                            onClick={handleAddToCart}
-                        >
-                            <Icon as={LuShoppingCart} boxSize="24px" /> Add to Cart
-                        </Button>
-                        <IconButton 
-                            aria-label="Save for later" h="60px" w="60px" rounded="full" bg="#1A1C23" color="white" border="1px solid" borderColor="whiteAlpha.200"
-                            _hover={{ bg: "red.500", borderColor: "red.500" }} transition="all 0.2s"
-                        >
-                            <Icon as={LuHeart} boxSize="24px" />
-                        </IconButton>
+                        {/* Color Selection */}
+                        <Box flex={1}>
+                            {/* --- THE UPDATE IS HERE --- */}
+                            <Text color="white" fontSize="xs" fontWeight="bold" mb={2} textTransform="uppercase">
+                                COLOR - {selectedColor}
+                            </Text>
+                            <Flex gap={3} pt={1}>
+                                <Box 
+                                    boxSize="34px" rounded="full" bg="black" cursor="pointer"
+                                    border="2px solid" borderColor={selectedColor === "Black" ? "white" : "transparent"}
+                                    boxShadow={selectedColor === "Black" ? "0 0 0 1px black inset" : "none"}
+                                    onClick={() => setSelectedColor("Black")}
+                                />
+                                <Box 
+                                    boxSize="34px" rounded="full" bg="#E5E5E5" cursor="pointer"
+                                    border="2px solid" borderColor={selectedColor === "White" ? brandColor : "transparent"}
+                                    onClick={() => setSelectedColor("White")}
+                                />
+                                <Box 
+                                    boxSize="34px" rounded="full" bg="#4A5568" cursor="pointer"
+                                    border="2px solid" borderColor={selectedColor === "Gray" ? "white" : "transparent"}
+                                    onClick={() => setSelectedColor("Gray")}
+                                />
+                                {/* --- ADDDED RED FOR EXAMPLE --- */}
+                                <Box 
+                                    boxSize="34px" rounded="full" bg="red.500" cursor="pointer"
+                                    border="2px solid" borderColor={selectedColor === "Red" ? "white" : "transparent"}
+                                    onClick={() => setSelectedColor("Red")}
+                                />
+                            </Flex>
+                        </Box>
                     </Flex>
 
-                    {/* Trust Badges */}
-                    <VStack align="stretch" gap={4} bg="#1A1C23" p={6} rounded="2xl" border="1px solid" borderColor="whiteAlpha.100">
-                        <Flex align="center" gap={4}>
-                            <Icon as={LuTruck} boxSize="24px" color={brandColor} />
-                            <Box>
-                                <Text color="white" fontWeight="bold" fontSize="sm">Free Delivery</Text>
-                                <Text color="gray.500" fontSize="xs">Orders over ₦50,000</Text>
+                    {/* Quantity & Add to Cart (Side by Side) */}
+                    <Flex gap={4} mb={8} h="54px">
+                        {/* Quantity Counter */}
+                        <Flex align="center" border="1px solid" borderColor="whiteAlpha.200" rounded="md" w="130px" h="full">
+                            <IconButton 
+                                aria-label="Decrease quantity" variant="ghost" color="white" rounded="none" h="full" w="40px"
+                                onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                                _hover={{ bg: "whiteAlpha.100" }}
+                            >
+                                <Icon as={LuMinus} boxSize="14px" />
+                            </IconButton>
+                            <Text color="white" fontWeight="bold" flex={1} textAlign="center">{quantity}</Text>
+                            <IconButton 
+                                aria-label="Increase quantity" variant="ghost" color="white" rounded="none" h="full" w="40px"
+                                onClick={() => setQuantity(prev => prev + 1)}
+                                _hover={{ bg: "whiteAlpha.100" }}
+                            >
+                                <Icon as={LuPlus} boxSize="14px" />
+                            </IconButton>
+                        </Flex>
+
+                        {/* Add to Cart Button */}
+                        <Button 
+                            flex={1} h="full" bg="white" color="black" rounded="md" fontSize="md" fontWeight="bold"
+                            _hover={{ bg: "gray.200" }} transition="all 0.2s"
+                            display="flex" gap={3} onClick={handleAddToCart}
+                        >
+                            <Icon as={LuShoppingCart} boxSize="20px" /> Add to Cart
+                        </Button>
+                    </Flex>
+
+                    {/* Trust Badges (Horizontal, compact) */}
+                    <Flex justify="space-between" align="center" py={4} borderTop="1px solid" borderBottom="1px solid" borderColor="whiteAlpha.100" mb={6}>
+                        <Flex align="center" gap={2}>
+                            <Icon as={LuTruck} boxSize="16px" color="white" />
+                            <Text color="gray.300" fontSize="xs" fontWeight="medium">Free Shipping</Text>
+                        </Flex>
+                        <Flex align="center" gap={2}>
+                            <Icon as={LuUndo2} boxSize="16px" color="white" />
+                            <Text color="gray.300" fontSize="xs" fontWeight="medium">30-Day Returns</Text>
+                        </Flex>
+                        <Flex align="center" gap={2}>
+                            <Icon as={LuShieldCheck} boxSize="16px" color="white" />
+                            <Text color="gray.300" fontSize="xs" fontWeight="medium">Secure Payment</Text>
+                        </Flex>
+                    </Flex>
+
+                    {/* Bottom Tabs & Content */}
+                    <Box bg="#111111" rounded="xl" overflow="hidden">
+                        <Flex bg="#1A1C23" borderBottom="1px solid" borderColor="whiteAlpha.100">
+                            <Box 
+                                flex={1} textAlign="center" py={3} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                                color={activeTab === "description" ? "white" : "gray.500"}
+                                bg={activeTab === "description" ? "whiteAlpha.100" : "transparent"}
+                                onClick={() => setActiveTab("description")}
+                            >
+                                Description
+                            </Box>
+                            <Box 
+                                flex={1} textAlign="center" py={3} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                                color={activeTab === "specifications" ? "white" : "gray.500"}
+                                bg={activeTab === "specifications" ? "whiteAlpha.100" : "transparent"}
+                                onClick={() => setActiveTab("specifications")}
+                            >
+                                Specifications
+                            </Box>
+                            <Box 
+                                flex={1} textAlign="center" py={3} cursor="pointer" fontSize="sm" fontWeight="bold" transition="all 0.2s"
+                                color={activeTab === "reviews" ? "white" : "gray.500"}
+                                bg={activeTab === "reviews" ? "whiteAlpha.100" : "transparent"}
+                                onClick={() => setActiveTab("reviews")}
+                            >
+                                Reviews (0)
                             </Box>
                         </Flex>
-                        <Flex align="center" gap={4}>
-                            <Icon as={LuUndo2} boxSize="24px" color={brandColor} />
-                            <Box>
-                                <Text color="white" fontWeight="bold" fontSize="sm">Easy Returns</Text>
-                                <Text color="gray.500" fontSize="xs">30-day return policy</Text>
-                            </Box>
-                        </Flex>
-                        <Flex align="center" gap={4}>
-                            <Icon as={LuShieldCheck} boxSize="24px" color={brandColor} />
-                            <Box>
-                                <Text color="white" fontWeight="bold" fontSize="sm">Secure Payment</Text>
-                                <Text color="gray.500" fontSize="xs">100% safe & encrypted</Text>
-                            </Box>
-                        </Flex>
-                    </VStack>
+                        
+                        <Box p={5}>
+                            {activeTab === "description" && (
+                                <Text color="gray.400" fontSize="sm" lineHeight="tall" animation="fade-in 0.3s ease">
+                                    Effortless sophistication meets everyday comfort in this sleek black hoodie—an iconic blend of casual luxe and superior craftsmanship. Designed with soft, premium fabric and impeccable attention to detail, it offers a relaxed fit that seamlessly elevates your off-duty wardrobe. The minimalist embroidery and timeless black hue ensure versatile styling for any occasion.
+                                </Text>
+                            )}
+                            {activeTab === "specifications" && (
+                                <VStack align="stretch" gap={3} animation="fade-in 0.3s ease">
+                                    <Flex justify="space-between" borderBottom="1px dashed" borderColor="whiteAlpha.200" pb={2}>
+                                        <Text color="gray.500" fontSize="sm">Material</Text>
+                                        <Text color="white" fontSize="sm" fontWeight="medium">100% Premium Cotton</Text>
+                                    </Flex>
+                                    <Flex justify="space-between" borderBottom="1px dashed" borderColor="whiteAlpha.200" pb={2}>
+                                        <Text color="gray.500" fontSize="sm">Fit</Text>
+                                        <Text color="white" fontSize="sm" fontWeight="medium">Relaxed / Oversized</Text>
+                                    </Flex>
+                                    <Flex justify="space-between">
+                                        <Text color="gray.500" fontSize="sm">Care</Text>
+                                        <Text color="white" fontSize="sm" fontWeight="medium">Machine Wash Cold</Text>
+                                    </Flex>
+                                </VStack>
+                            )}
+                            {activeTab === "reviews" && (
+                                <Flex align="center" justify="center" h="100px" animation="fade-in 0.3s ease">
+                                    <Text color="gray.500" fontSize="sm" fontStyle="italic">No reviews yet for this product.</Text>
+                                </Flex>
+                            )}
+                        </Box>
+                    </Box>
 
                 </Flex>
-            </SimpleGrid>
+            </Grid>
         </Box>
     );
 };

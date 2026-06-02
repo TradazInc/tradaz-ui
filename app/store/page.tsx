@@ -372,7 +372,7 @@ export default function StorefrontHomePage() {
             </Box>
                 {/* --- FEATURED GRID --- */}
                 <Flex justify="space-between" align="flex-end" mb={6}>
-                    <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Featured Drops</Text>
+                    <Text fontSize={{ base: "2xl", md: "3xl" }} fontWeight="black" color="white" letterSpacing="tight">Featured Products</Text>
                 </Flex>
                 <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" }} gap={4} mb={16} w="full">
                     {featuredProducts.map((product) => (
