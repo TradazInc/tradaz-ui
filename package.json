@@ -13,6 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@talkjs/core": "^1.10.0",
+    "@talkjs/react": "^0.1.12",
     "@talkjs/react-components": "^0.2.1",
     "better-auth": "^1.4.19",
     "check-password-strength": "^3.0.0",
@@ -27,6 +28,7 @@
     "react-markdown": "^10.1.0",
     "react-type-animation": "^3.2.0",
     "swiper": "^12.1.2",
+    "talkjs": "^0.46.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {

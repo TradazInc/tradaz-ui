@@ -70,10 +70,10 @@ export const InventoryGridView = ({
   visibleItems,
   processedInventoryLength,
   searchQuery,
-  filterCategory,
+ 
   sortBy,
   handleSearch,
-  handleFilter,
+  
   handleSort,
   onSelectProduct,
   visibleCount,
@@ -121,11 +121,10 @@ export const InventoryGridView = ({
         </Text>
       </Box>
 
+     {/* --- STICKY SEARCH & SORT --- */}
       <Box
         position="sticky"
-       top={{ base: "-16px", md: "-32px" }}
-        mx={{ base: "-16px", md: "-32px" }}
-        px={{ base: "16px", md: "32px" }}
+        top={{ base: "-16px", md: "-32px" }} 
         zIndex={20}
         bg="rgba(18, 18, 20, 0.85)"
         backdropFilter="blur(12px)"
@@ -135,77 +134,45 @@ export const InventoryGridView = ({
         borderColor="whiteAlpha.100"
         w="full"
       >
-        <Flex
-          direction={{ base: "column", md: "row" }}
-          justify="space-between"
-          align="center"
-          gap={4}
-          w="full"
-        >
+        
+        <Flex gap={2} wrap="nowrap" w="full" align="center">
+         
           <Flex
-            w="full"
-            maxW={{ base: "full", md: "400px" }}
+            flex={1}
+            minW="0"
             align="center"
             {...controlStyles}
             _focusWithin={{ borderColor: "#5cac7d" }}
           >
-            <Icon as={LuSearch} color="gray.400" />
+            <Icon as={LuSearch} color="gray.400" mr={2} />
             <Input
               placeholder="Search by name or SKU..."
               border="none"
               _focus={{ outline: "none", boxShadow: "none" }}
               color="white"
               h="full"
+              w="full"
+              px={0}
               value={searchQuery}
               onChange={handleSearch}
             />
           </Flex>
 
-          <Flex gap={3} w={{ base: "full", md: "auto" }}>
-            <Box flex={1} w={{ base: "full", md: "180px" }}>
-              <select
-                value={filterCategory}
-                onChange={handleFilter}
-                style={nativeSelectStyle}
-              >
-                <option value="all" style={{ background: "#1A1C23" }}>
-                  All Products
-                </option>
-                <option value="featured" style={{ background: "#1A1C23" }}>
-                  Featured Only
-                </option>
-                <option value="low-stock" style={{ background: "#1A1C23" }}>
-                  Low Stock
-                </option>
-                <option value="out-of-stock" style={{ background: "#1A1C23" }}>
-                  Out of Stock
-                </option>
-              </select>
-            </Box>
-            <Box flex={1} w={{ base: "full", md: "180px" }}>
-              <select
-                value={sortBy}
-                onChange={handleSort}
-                style={nativeSelectStyle}
-              >
-                <option value="default" style={{ background: "#1A1C23" }}>
-                  Sort: Default
-                </option>
-                <option value="price-asc" style={{ background: "#1A1C23" }}>
-                  Price: Low to High
-                </option>
-                <option value="price-desc" style={{ background: "#1A1C23" }}>
-                  Price: High to Low
-                </option>
-                <option value="stock-asc" style={{ background: "#1A1C23" }}>
-                  Stock: Low to High
-                </option>
-                <option value="stock-desc" style={{ background: "#1A1C23" }}>
-                  Stock: High to Low
-                </option>
-              </select>
-            </Box>
-          </Flex>
+          
+          <Box w={{ base: "130px", sm: "150px", md: "180px" }} flexShrink={0}>
+            <select
+              value={sortBy}
+              onChange={handleSort}
+              style={nativeSelectStyle}
+            >
+              <option value="default" style={{ background: "#1A1C23" }}>Sort</option>
+              <option value="price-asc" style={{ background: "#1A1C23" }}>Price: Lowest</option>
+              <option value="price-desc" style={{ background: "#1A1C23" }}>Price: Highest</option>
+              <option value="stock-asc" style={{ background: "#1A1C23" }}>Stock: Lowest</option>
+              <option value="stock-desc" style={{ background: "#1A1C23" }}>Stock: Highest</option>
+            </select>
+          </Box>
+
         </Flex>
       </Box>
 
@@ -224,7 +191,6 @@ export const InventoryGridView = ({
             <Box
               key={product.id}
               bg="black"
-              // rounded="2xl"
               border="1px solid"
               borderColor="whiteAlpha.100"
               overflow="hidden"

@@ -4,7 +4,6 @@ import { Box, Flex, Text, SimpleGrid, Icon, Input, IconButton, Spinner } from "@
 import { LuSearch, LuEye } from "react-icons/lu";
 import { OnlineOrder } from "@/app/lib/definitions";
 
-
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "40px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
 const nativeSelectStyle: React.CSSProperties = { backgroundColor: "#0A0A0A", color: "white", height: "40px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
 
@@ -12,22 +11,22 @@ interface OnlineOrdersGridViewProps {
     visibleItems: OnlineOrder[];
     processedOrdersLength: number;
     totalOrders: number;
-    searchQuery: string; statusFilter: string; sortBy: string; sortOrder: string;
+    searchQuery: string; 
+    sortBy: string; 
     handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleStatusFilter: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     handleSortBy: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    handleSortOrder: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     onSelectOrder: (order: OnlineOrder) => void;
-    visibleCount: number; isLoadingMore: boolean; loaderRef: React.RefObject<HTMLDivElement | null>;
+    visibleCount: number; 
+    isLoadingMore: boolean; 
+    loaderRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export const OnlineOrdersGridView = ({
     visibleItems, processedOrdersLength, totalOrders,
-    searchQuery, statusFilter, sortBy, sortOrder,
-    handleSearch, handleStatusFilter, handleSortBy, handleSortOrder,
+    searchQuery, sortBy, 
+    handleSearch, handleSortBy,
     onSelectOrder, visibleCount, loaderRef
 }: OnlineOrdersGridViewProps) => {
-
 
     const getStatusStyle = (status: string) => {
         switch (status) {
@@ -50,64 +49,55 @@ export const OnlineOrdersGridView = ({
                 </Text>
             </Box>
 
-            
-            {/* Sticky Toolbar */}
-          <Box
-                  position="sticky"
-                  top={{ base: "-16px", md: "-32px" }}
-                  mx={{ base: "-16px", md: "-32px" }}
-                  px={{ base: "16px", md: "32px" }}
-                  zIndex={20}
-                  bg="rgba(0, 0, 0, 0.85)"
-                  backdropFilter="blur(12px)"
-                  py={3}
-                  mb={6}
-                  borderBottom="1px solid"
-                  borderColor="#1A1A1A"
-                  w="full"
-                >
-                <Flex direction={{ base: "column", md: "row" }} gap={3} w="full">
+            {/* --- STICKY SEARCH & SORT --- */}
+            <Box
+                position="sticky"
+                top={{ base: "-16px", md: "-32px" }}
+               
+                zIndex={20}
+                bg="rgba(0, 0, 0, 0.85)"
+                backdropFilter="blur(12px)"
+                py={3}
+                mb={4}
+                borderBottom="1px solid"
+                borderColor="#1A1A1A"
+                w="full"
+            >
+                <Flex gap={2} wrap="nowrap" w="full" align="center">
                     
-                    {/* Search Input - Full width on mobile */}
-                    <Flex flex={1} minW={{ base: "100%", md: "250px" }} align="center" {...controlStyles}>
+                    {/* Search Bar - Takes up remaining space */}
+                    <Flex flex={1} minW="0" align="center" {...controlStyles}>
                         <Icon as={LuSearch} color="#888888" mr={2} strokeWidth="2.5" />
-                        <Input placeholder="Search by order ID, customer..." border="none" _focus={{ outline: "none", boxShadow: "none" }} color="white" h="full" px={0} value={searchQuery} onChange={handleSearch} />
+                        <Input
+                            placeholder="Search by order ID, customer..."
+                            border="none"
+                            _focus={{ outline: "none", boxShadow: "none" }}
+                            color="white"
+                            fontSize="sm"
+                            value={searchQuery}
+                            onChange={handleSearch}
+                            px={0}
+                            w="full"
+                        />
                     </Flex>
-                    
-                    {/* Filters & Sort Controls */}
-                    <Flex gap={3} w={{ base: "100%", md: "auto" }} wrap="wrap">
-                        
-                        {/* Status Filter - Full width on mobile to avoid squishing with sort buttons */}
-                        <Box w={{ base: "100%", md: "auto" }}>
-                            <select value={statusFilter} onChange={handleStatusFilter} style={{ ...nativeSelectStyle, width: "100%" }}>
-                                <option value="all" style={{ background: "#0A0A0A" }}>All Statuses</option>
-                                <option value="delivered" style={{ background: "#0A0A0A" }}>Delivered</option>
-                                <option value="shipped" style={{ background: "#0A0A0A" }}>Shipped</option>
-                                <option value="processing" style={{ background: "#0A0A0A" }}>Processing</option>
-                                <option value="pending" style={{ background: "#0A0A0A" }}>Pending</option>
-                                <option value="cancelled" style={{ background: "#0A0A0A" }}>Cancelled</option>
-                            </select>
-                        </Box>
-                        
-                        {/* Sort Controls - Grouped to share 1 line on mobile (50/50 split) */}
-                        <Flex gap={3} w={{ base: "100%", md: "auto" }}>
-                            <Box flex={1}>
-                                <select value={sortBy} onChange={handleSortBy} style={{ ...nativeSelectStyle, width: "100%" }}>
-                                    <option value="date" style={{ background: "#0A0A0A" }}>Sort: Date</option>
-                                    <option value="total" style={{ background: "#0A0A0A" }}>Sort: Total</option>
-                                </select>
-                            </Box>
-                            <Box flex={1}>
-                                <select value={sortOrder} onChange={handleSortOrder} style={{ ...nativeSelectStyle, width: "100%" }}>
-                                    <option value="desc" style={{ background: "#0A0A0A" }}>Newest / Highest</option>
-                                    <option value="asc" style={{ background: "#0A0A0A" }}>Oldest / Lowest</option>
-                                </select>
-                            </Box>
-                        </Flex>
 
-                    </Flex>
+                    {/* ONE Sort Dropdown */}
+                    <Box w={{ base: "100px", sm: "140px", md: "160px" }} flexShrink={0}>
+                        <select
+                            value={sortBy}
+                            onChange={handleSortBy}
+                            style={{ ...nativeSelectStyle, width: "100%" }}
+                        >
+                            <option value="date-desc" style={{ background: "#0A0A0A" }}>Sort</option>
+                            <option value="date-asc" style={{ background: "#0A0A0A" }}>Oldest</option>
+                            <option value="total-desc" style={{ background: "#0A0A0A" }}>Highest</option>
+                            <option value="total-asc" style={{ background: "#0A0A0A" }}>Lowest</option>
+                        </select>
+                    </Box>
+
                 </Flex>
             </Box>
+            
             {/* Table Area */}
             {visibleItems.length === 0 ? (
                 <Flex justify="center" align="center" py={20} direction="column">

@@ -1,49 +1,71 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { Box } from "@chakra-ui/react";
-import { Chatbox } from "@talkjs/react-components";
+import React, { useCallback } from "react";
+import { Box, Flex, Spinner } from "@chakra-ui/react";
+import Talk from "talkjs";
+import { Session, Inbox } from "@talkjs/react";
 
-import { getTalkSession } from "@talkjs/core";
+export default function InboxPage() {
+  const appId = "tixw1Njw";
+  const userId = "sample_user_alice";
+  const otherUserId = "nina";
+  const conversationId = "sample_conversation";
 
-function Chat() {
-  const appId="tixw1Njw";
-  const userId="sample_user_alice";
-  const otherUserId = 'nina';
-  const conversationId="sample_conversation";
+  const syncUser = useCallback(
+    () =>
+      new Talk.User({
+        id: userId,
+        name: "Frank",
+        role: "default", 
+      }),
+    []
+  );
 
-   
-        
-       
-  const session = getTalkSession({ appId, userId });
+  const syncConversation = useCallback(
+    (session: Talk.Session) => {
+      const otherUser = new Talk.User({
+        id: otherUserId,
+        name: "Nina",
+        role: "default",
+      });
 
-  useEffect(() => {
-    session.currentUser.createIfNotExists({ name: 'Frank' });
-    session.user(otherUserId).createIfNotExists({ name: 'Nina' });
+      const conversation = session.getOrCreateConversation(conversationId);
+      
+      conversation.setParticipant(session.me);
+      conversation.setParticipant(otherUser);
 
-    const conversation = session.conversation(conversationId);
-    conversation.createIfNotExists();
-    conversation.participant(otherUserId).createIfNotExists();
-  }, [session, conversationId, otherUserId]);
+      return conversation;
+    },
+    []
+  );
+
+  // custom loading spinner 
+  const LoadingFallback = (
+    <Flex w="full" h="full" align="center" justify="center">
+      <Spinner color="#5cac7d" size="xl" />
+    </Flex>
+  );
 
   return (
-<Box 
-            h="calc(100vh - 120px)" 
-            maxW="1200px" 
-            mx="auto" 
-            rounded="2xl" 
-            overflow="hidden" 
-            border="1px solid" 
-            borderColor="whiteAlpha.100"
-        >
-            <Chatbox
+    <Box 
+        h="calc(100vh - 120px)" 
+      maxW="1400px" 
+        w="full"
+        mx="auto" 
+        rounded="2xl" 
+        overflow="hidden" 
+        border="1px solid" 
+        borderColor="whiteAlpha.100"
+        bg="#1A1C23"
+        position="relative"
+    >
+        <Session appId={appId} syncUser={syncUser}>
+            <Inbox
+                syncConversation={syncConversation}
                 style={{ width: '100%', height: '100%' }}
-                appId={appId}
-                userId={userId}
-                conversationId={conversationId}
+                loadingComponent={LoadingFallback} 
             />
-        </Box>
+        </Session>
+    </Box>
   );
 }
-
-export default Chat;
