@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import { Box, Flex, Spinner } from "@chakra-ui/react";
 import Talk from "talkjs";
 import { Session, Inbox } from "@talkjs/react";
+import * as myTheme from '../../my-theme';
 
 export default function InboxPage() {
   const appId = "tixw1Njw";
@@ -62,8 +63,9 @@ export default function InboxPage() {
         <Session appId={appId} syncUser={syncUser}>
             <Inbox
                 syncConversation={syncConversation}
-                style={{ width: '100%', height: '100%' }}
+                style={{ width: '100%', height: '100%',backgroundColor: 'black' }}
                 loadingComponent={LoadingFallback} 
+               
             />
         </Session>
     </Box>

@@ -40,22 +40,22 @@ const ITEMS_PER_PAGE = 10;
 
 export const useAdminSubscriptions = () => {
     
-    // 1. Data State (Removed the duplicate declaration)
+    //  Data State (Removed the duplicate declaration)
     const [allSubscriptions, setAllSubscriptions] = useState<Subscription[]>(() => generateExtendedSubscriptions(TOTAL_SUBSCRIPTIONS));
     
-    // 🚀 NEW: Handler to push new subscriptions into the list
+    // NEW: Handler to push new subscriptions into the list
     const handleAddSubscription = (newSub: Subscription) => {
         setAllSubscriptions(prev => [newSub, ...prev]);
     };
 
-    // 2. Search & Sort State
+    //  Search & Sort State
     const [searchQuery, setSearchQuery] = useState("");
     const [planFilter, setPlanFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
     const [sortBy, setSortBy] = useState("amount"); 
     const [sortOrder, setSortOrder] = useState("desc");
 
-    // 3. Infinite Scroll State
+    // Infinite Scroll State
     const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const loaderRef = useRef<HTMLDivElement>(null);
@@ -67,7 +67,7 @@ export const useAdminSubscriptions = () => {
     const handleSortBy = (e: React.ChangeEvent<HTMLSelectElement>) => { setSortBy(e.target.value); setVisibleCount(ITEMS_PER_PAGE); };
     const handleSortOrder = (e: React.ChangeEvent<HTMLSelectElement>) => { setSortOrder(e.target.value); setVisibleCount(ITEMS_PER_PAGE); };
 
-    // 4. Search & Sort Engine
+    // Search & Sort Engine
     const processedSubscriptions = useMemo(() => {
         let processed = [...allSubscriptions];
 
@@ -151,6 +151,6 @@ export const useAdminSubscriptions = () => {
         visibleItems, processedCount: processedSubscriptions.length, totalLimit: TOTAL_SUBSCRIPTIONS,
         visibleCount, isLoadingMore, loaderRef,
         kpiStats,
-        handleAddSubscription // 🚀 Exported the new handler here
+        handleAddSubscription 
     };
 };
