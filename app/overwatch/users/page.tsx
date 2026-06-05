@@ -11,15 +11,15 @@ import {
     LuPlus, LuTrash2, LuKey, LuLogOut, LuRepeat
 } from "react-icons/lu";
 
-// --- IMPORT YOUR ENTITY HOOKS ---
-import { useAdminUserList, useAdminUserActions } from "@/app/entities/admin/hooks";
+// --- ENTITY HOOKS ---
 import { CreateUserPayload } from "@/app/entities/admin/types";
+import { useAdminUsers, useAdminActions } from "@/app/entities/admin/hooks";
 
 // --- REUSABLE STYLES ---
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
 const nativeSelectStyle: React.CSSProperties = { backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px", minWidth: "160px" };
 const labelStyles = { color: "#888888", fontSize: "10px", fontWeight: "bold", textTransform: "uppercase" as const, letterSpacing: "wider", mb: 2, display: "block" };
-const dangerButtonStyle = { w: "full", h: "40px", rounded: "none", fontSize: "sm", fontWeight: "bold", border: "1px solid #333333", bg: "#0A0A0A", color: "white", _hover: { bg: "#111111" } };
+const dangerButtonStyle = { w: "full", h: "40px", rounded: "none", fontSize: "sm", fontWeight: "bold", border: "1px solid #333333", bg: "#0A0A0A", color: "white", _hover: { bg: "#111111" }, display: "flex", gap: "2" };
 
 // --- MOCK KPIs  ---
 const USER_KPIs = [
@@ -176,9 +176,10 @@ const ViewUserModal = ({ user, onClose }: { user: PlatformUser | null; onClose: 
     );
 };
 
-// --- MANAGE USER MODAL (NOW WITH DANGER ZONE) ---
+// --- MANAGE USER MODAL ---
 const ManageUserModal = ({ 
-    user, onClose, onUpdate, onDelete, onImpersonate, onRevokeSessions, onSetPassword, isSaving 
+    user, onClose, onUpdate, onDelete, onImpersonate, onRevokeSessions, onSetPassword,
+    isSavingRole, isDeleting, isRevoking
 }: { 
     user: PlatformUser | null; 
     onClose: () => void; 
@@ -187,7 +188,9 @@ const ManageUserModal = ({
     onImpersonate: (id: string) => Promise<void>;
     onRevokeSessions: (id: string) => Promise<void>;
     onSetPassword: (id: string) => Promise<void>;
-    isSaving: boolean;
+    isSavingRole: boolean;
+    isDeleting: boolean;
+    isRevoking: boolean;
 }) => {
     const [status, setStatus] = useState<PlatformUser["status"]>(user?.status || "Active");
     const [role, setRole] = useState<PlatformUser["role"]>(user?.role || "Buyer");
@@ -221,7 +224,6 @@ const ManageUserModal = ({
                                 <Box flex={1} overflowY="auto" px={6} py={8} css={{ '&::-webkit-scrollbar': { display: 'none' } }}>
                                     <VStack w="full" gap={6} align="stretch">
                                         
-                                        {/* Status & Role Settings */}
                                         <Box bg="#111111" p={4} border="1px solid #1A1A1A">
                                             <VStack align="stretch" gap={4}>
                                                 <Box>
@@ -251,21 +253,20 @@ const ManageUserModal = ({
                                             </VStack>
                                         </Box>
 
-                                        {/* Danger Zone / Advanced Actions */}
                                         <Box>
                                             <Text {...labelStyles} color="red.400" mb={3}>Advanced Actions</Text>
                                             <VStack gap={2}>
                                                 <Button {...dangerButtonStyle} onClick={() => onSetPassword(user.id)}>
-                                                    <Icon as={LuKey} mr={2} /> Force Password Reset
+                                                    <Icon as={LuKey} /> Force Password Reset
                                                 </Button>
-                                                <Button {...dangerButtonStyle} onClick={() => onRevokeSessions(user.id)}>
-                                                    <Icon as={LuLogOut} mr={2} /> Revoke All Sessions
+                                                <Button {...dangerButtonStyle} onClick={() => onRevokeSessions(user.id)} loading={isRevoking}>
+                                                    <Icon as={LuLogOut} /> Revoke All Sessions
                                                 </Button>
                                                 <Button {...dangerButtonStyle} onClick={() => onImpersonate(user.id)}>
-                                                    <Icon as={LuRepeat} mr={2} /> Impersonate Account
+                                                    <Icon as={LuRepeat} /> Impersonate Account
                                                 </Button>
-                                                <Button {...dangerButtonStyle} onClick={() => onDelete(user.id)} color="red.400" borderColor="red.900" _hover={{ bg: "red.900", color: "white" }}>
-                                                    <Icon as={LuTrash2} mr={2} /> Delete User (Irreversible)
+                                                <Button {...dangerButtonStyle} onClick={() => onDelete(user.id)} loading={isDeleting} color="red.400" borderColor="red.900" _hover={{ bg: "red.900", color: "white" }}>
+                                                    <Icon as={LuTrash2} /> Delete User (Irreversible)
                                                 </Button>
                                             </VStack>
                                         </Box>
@@ -274,7 +275,7 @@ const ManageUserModal = ({
 
                                 <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
                                     <Button variant="outline" borderColor="#333333" onClick={onClose} h="44px" rounded="none" color="#888888" bg="#0A0A0A" _hover={{ bg: "#1A1A1A", color: "white" }}>Cancel</Button>
-                                    <Button flex="1" h="44px" bg="white" color="black" rounded="none" fontWeight="bold" onClick={handleSaveChanges} loading={isSaving} loadingText="Saving..." _hover={{ bg: "#E5E5E5" }}>Save Changes</Button>
+                                    <Button flex="1" h="44px" bg="white" color="black" rounded="none" fontWeight="bold" onClick={handleSaveChanges} loading={isSavingRole} loadingText="Saving..." _hover={{ bg: "#E5E5E5" }}>Save Changes</Button>
                                 </Flex>
                             </Box>
                         </motion.div>
@@ -286,67 +287,50 @@ const ManageUserModal = ({
 };
 
 export default function UsersPage() {
-    // --- BACKEND HOOKS ---
-    const { data, isLoading, fetchUsers } = useAdminUserList();
-    const { createUser, setRole, banUser, unbanUser, removeUser, setPassword, revokeAllSessions, impersonateUser, isMutating } = useAdminUserActions();
+    // --- BACKEND HOOKS (TanStack Query) ---
+    const { data, isLoading } = useAdminUsers({ limit: 100 });
+    const actions = useAdminActions();
 
     // Local UI State
     const [searchQuery, setSearchQuery] = useState("");
     const [roleFilter, setRoleFilter] = useState("All");
     const [statusFilter, setStatusFilter] = useState("All");
-    
-    // Modal Toggles
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [viewingUser, setViewingUser] = useState<PlatformUser | null>(null);
     const [managingUser, setManagingUser] = useState<PlatformUser | null>(null);
     const [isExporting, setIsExporting] = useState(false);
 
-    // Initial Data Load
-    React.useEffect(() => {
-        fetchUsers({ limit: 100 });
-    }, [fetchUsers]);
-
     // --- ACTIONS ---
     const handleCreateUser = async (payload: CreateUserPayload) => {
         try {
-            await createUser(payload);
+            await actions.createUser.mutateAsync(payload);
             alert("User created successfully!");
-            await fetchUsers();
-        } catch {
-            alert("Failed to create user");
-        }
+        } catch { alert("Failed to create user"); }
     };
 
     const handleUpdateUser = async (id: string, updates: Partial<PlatformUser>, banReason?: string) => {
         try {
             if (updates.role && updates.role !== managingUser?.role) {
-                await setRole({ userId: id, role: updates.role });
+                await actions.setRole.mutateAsync({ userId: id, role: updates.role });
             }
 
             if (updates.status !== managingUser?.status) {
-                if (updates.status === "Banned") {
-                    if (!banReason) return alert("Ban reason is required!");
-                    await banUser({ userId: id, banReason });
-                } else if (updates.status === "Active" && managingUser?.status === "Banned") {
-                    await unbanUser({ userId: id });
+                if (updates.status === "Banned" && banReason) {
+                    await actions.banUser.mutateAsync({ userId: id, banReason });
+                } else if (updates.status === "Active") {
+                    await actions.unbanUser.mutateAsync({ userId: id });
                 }
             }
-
             alert("User updated successfully");
-            await fetchUsers(); 
-        } catch {
-            alert("Failed to update user");
-        }
+        } catch { alert("Failed to update user"); }
     };
 
-    // Advanced Danger Zone Actions
     const handleDeleteUser = async (id: string) => {
         if (!window.confirm("Are you sure you want to completely delete this user? This cannot be undone.")) return;
         try {
-            await removeUser({ userId: id });
+            await actions.removeUser.mutateAsync({ userId: id });
             alert("User deleted permanently.");
             setManagingUser(null);
-            await fetchUsers();
         } catch { alert("Failed to delete user"); }
     };
 
@@ -354,7 +338,7 @@ export default function UsersPage() {
         const newPassword = window.prompt("Enter the new password for this user:");
         if (!newPassword) return;
         try {
-            await setPassword({ userId: id, newPassword });
+            await actions.setPassword.mutateAsync({ userId: id, newPassword });
             alert("Password updated successfully.");
         } catch { alert("Failed to update password"); }
     };
@@ -362,7 +346,7 @@ export default function UsersPage() {
     const handleRevokeSessions = async (id: string) => {
         if (!window.confirm("This will log the user out of all devices. Continue?")) return;
         try {
-            await revokeAllSessions({ userId: id });
+            await actions.revokeAll.mutateAsync({ userId: id });
             alert("All sessions revoked.");
         } catch { alert("Failed to revoke sessions"); }
     };
@@ -370,12 +354,11 @@ export default function UsersPage() {
     const handleImpersonate = async (id: string) => {
         if (!window.confirm("You are about to log in as this user. Proceed?")) return;
         try {
-            const response = await impersonateUser({ userId: id });
+            const response = await actions.impersonate.mutateAsync({ userId: id });
             alert(`Impersonation active. Session Token: ${response.session}`);
         } catch { alert("Failed to impersonate"); }
     };
 
-    // Handle CSV Export
     const handleExport = () => {
         setIsExporting(true);
         setTimeout(() => {
@@ -444,7 +427,7 @@ export default function UsersPage() {
                         onClick={handleExport} loading={isExporting} loadingText="Exporting..."
                         display={{ base: "none", sm: "flex" }} bg="#111111" border="1px solid #333333" color="white" rounded="none" _hover={{ bg: "#1A1A1A" }} gap={2} h="44px" px={6} fontWeight="bold"
                     >
-                        <Icon as={LuArrowUpRight} color="#888888" strokeWidth="2.5" /> Export
+                        <Icon as={LuArrowUpRight} strokeWidth="2.5" /> Export
                     </Button>
                     <Button 
                         onClick={() => setIsCreateModalOpen(true)}
@@ -608,7 +591,7 @@ export default function UsersPage() {
                 isOpen={isCreateModalOpen} 
                 onClose={() => setIsCreateModalOpen(false)} 
                 onCreate={handleCreateUser} 
-                isSaving={isMutating} 
+                isSaving={actions.createUser.isPending} 
             />
 
             <ViewUserModal user={viewingUser} onClose={() => setViewingUser(null)} />
@@ -622,7 +605,9 @@ export default function UsersPage() {
                 onImpersonate={handleImpersonate}
                 onRevokeSessions={handleRevokeSessions}
                 onSetPassword={handleSetPassword}
-                isSaving={isMutating} 
+                isSavingRole={actions.setRole.isPending || actions.banUser.isPending || actions.unbanUser.isPending}
+                isDeleting={actions.removeUser.isPending}
+                isRevoking={actions.revokeAll.isPending}
             />
         </Box>
     );

@@ -1,56 +1,33 @@
-// entities/admin/hooks.ts
-import { useState, useCallback } from "react";
+
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminApi } from "./api";
 import * as T from "./types";
 
-//  Dashboard/Listing Pages
-export function useAdminUserList() {
-  const [data, setData] = useState<T.ListUsersResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const fetchUsers = useCallback(async (params?: T.ListUsersParams) => {
-    setIsLoading(true);
-    try {
-      const response = await adminApi.listUsers(params);
-      setData(response);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  return { data, isLoading, fetchUsers };
+// The Data Fetcher 
+export function useAdminUsers(params?: T.ListUsersParams) {
+  return useQuery({
+    queryKey: ["admin", "users", params], // key for caching
+    queryFn: () => adminApi.listUsers(params),
+  });
 }
 
+// 2. The Mutator (Replaces useAdminUserActions)
+export function useAdminActions() {
+  const queryClient = useQueryClient();
 
-
-export function useAdminUserActions() {
-  const [isMutating, setIsMutating] = useState(false);
-
-  const executeMutation = async <P, R>(
-    mutationFn: (payload: P) => Promise<R>, 
-    payload: P
-  ): Promise<R> => {
-    setIsMutating(true);
-    try {
-      return await mutationFn(payload);
-    } finally {
-      setIsMutating(false);
-    }
+  // Helper to automatically refresh the user table after any action!
+  const onSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
   };
 
   return {
-    isMutating,
-    
-    createUser: (p: T.CreateUserPayload) => executeMutation(adminApi.createUser, p),
-    setPassword: (p: T.SetPasswordPayload) => executeMutation(adminApi.setPassword, p),
-    impersonateUser: (p: T.UserIdPayload) => executeMutation(adminApi.impersonateUser, p),
-   
-    banUser: (p: T.BanUserPayload) => executeMutation(adminApi.banUser, p),
-    unbanUser: (p: T.UserIdPayload) => executeMutation(adminApi.unbanUser, p),
-    setRole: (p: T.SetRolePayload) => executeMutation(adminApi.setRole, p),
-    removeUser: (p: T.UserIdPayload) => executeMutation(adminApi.removeUser, p),
-    revokeAllSessions: (p: T.UserIdPayload) => executeMutation(adminApi.revokeAllSessions, p),
+    createUser: useMutation({ mutationFn: adminApi.createUser, onSuccess }),
+    setRole: useMutation({ mutationFn: adminApi.setRole, onSuccess }),
+    banUser: useMutation({ mutationFn: adminApi.banUser, onSuccess }),
+    unbanUser: useMutation({ mutationFn: adminApi.unbanUser, onSuccess }),
+    removeUser: useMutation({ mutationFn: adminApi.removeUser, onSuccess }),
+    setPassword: useMutation({ mutationFn: adminApi.setPassword, onSuccess }),
+    revokeAll: useMutation({ mutationFn: adminApi.revokeAllSessions, onSuccess }),
+    impersonate: useMutation({ mutationFn: adminApi.impersonateUser }),
   };
 }
