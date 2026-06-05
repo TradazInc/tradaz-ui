@@ -13,19 +13,22 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation"; 
 import { useForm } from "react-hook-form";
+import Link from "next/link"; 
 import { PasswordInput } from "../../../components/ui/password-input";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
 
-import { authClient } from "@/app/lib/auth"; 
-
+// --- IMPORT YOUR ENTITY HOOK ---
+import { useAuthActions } from "@/app/entities/auth/hooks";
 import { SignUpData } from "../../lib/definitions"; 
 
 const SignUpForm = () => {
   const router = useRouter(); 
   const [authError, setAuthError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  
+  // 1. Pull in the signUp mutation from our TanStack hook
+  const { signUp } = useAuthActions();
   
   const {
     register,
@@ -33,48 +36,37 @@ const SignUpForm = () => {
     formState: { errors },
   } = useForm<SignUpData>();
 
+  // 2. Consume your new API hook on submit
   const onSubmit = handleSubmit(async (data) => {
     setAuthError(""); 
 
-    await authClient.signUp.email({
+    try {
+      // Call the API endpoint
+      await signUp.mutateAsync({
+        name: data.name,
         email: data.email,
         password: data.password,
-        name: data.name,
+        rememberMe: true, // Assuming you want this default as seen in SignIn
         callbackURL: "/dashboard"
-    }, {
-        onRequest: () => {
-            setIsLoading(true);
-        },
-        onSuccess: () => {
-            setIsLoading(false);
-            console.log("Successfully signed up!");
-            router.push("/dashboard");
-        },
-        onError: (ctx) => {
-            setIsLoading(false);
-            console.error("Failed to sign up:", ctx.error.message);
-            setAuthError(ctx.error.message);
-        },
-    });
+      });
+      
+      console.log("Successfully signed up!");
+      router.push("/dashboard");
+
+    } catch (error) {
+      // TanStack automatically catches network errors and throws them here
+      const message = error instanceof Error ? error.message : "Failed to sign up. Please try again.";
+      console.error("Failed to sign up:", message);
+      setAuthError(message);
+    }
   });
 
-  //google auth
+  // Google Auth 
   const handleGoogleSignIn = async () => {
-    setAuthError(""); 
-    setIsLoading(true);
-
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/dashboard", 
-      });
-    } catch (error) { 
-      setIsLoading(false);
-  
-      const errorMessage = error instanceof Error ? error.message : "Failed to initialize Google login.";
-      setAuthError(errorMessage);
-    }
+    setAuthError("Google Sign-In is not yet wired to the custom backend."); 
+    // TODO: Wire this to your custom /api/auth/sign-in/social endpoint once built!
   };
+
   return (
     <Box w={"full"}>
       <form onSubmit={onSubmit} style={{ width: "100%" }}>
@@ -99,6 +91,9 @@ const SignUpForm = () => {
               borderRadius={"7px"}
               borderWidth={"2px"}
               borderColor="#292929"
+              bg="white"
+              color="black"
+              _placeholder={{ color: "gray.500" }}
             />
             <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
           </Field.Root>
@@ -116,6 +111,9 @@ const SignUpForm = () => {
               borderRadius={"7px"}
               borderWidth={"2px"}
               borderColor="#292929"
+              bg="white"
+              color="black"
+              _placeholder={{ color: "gray.500" }}
             />
             <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
           </Field.Root>
@@ -134,7 +132,10 @@ const SignUpForm = () => {
               maxH={"45px"}
               borderRadius={"7px"}
               borderWidth={"2px"}
+              color="black"    
+              bg="white"
               borderColor={"#292929"}
+              _placeholder={{ color: "gray.500" }}
             />
             <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
           </Field.Root>
@@ -144,7 +145,9 @@ const SignUpForm = () => {
             
             <Button 
                 type="submit" 
-                disabled={isLoading}
+                // We map the loading state directly to the TanStack mutation!
+                loading={signUp.isPending}
+                loadingText="Signing up..."
                 w="full"
                 h="45px"
                 bg="white"
@@ -153,14 +156,14 @@ const SignUpForm = () => {
                 borderRadius="7px"
                 fontWeight="600"
             >
-              {isLoading ? "Signing up..." : "Sign Up"}
+              Sign Up
             </Button>
             
             <SeparatorText />
 
             <Button 
                 type="button" 
-              onClick={handleGoogleSignIn }
+                onClick={handleGoogleSignIn}
                 variant="outline"
                 w="full"
                 h="45px"
@@ -186,7 +189,9 @@ const SignUpForm = () => {
               >
                 Already have an account?
               </Text>
-              <LinkText>Sign In</LinkText>
+              <Link href="/signin">
+                <LinkText>Sign In</LinkText>
+              </Link>
             </HStack>
           </VStack>
         </Stack>

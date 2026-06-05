@@ -1,7 +1,7 @@
 import { Provider } from "./ui/Provider";
+import { Providers } from "./provider";
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-
 interface Props {
   children: React.ReactNode;
 }
@@ -22,9 +22,11 @@ export default function RootLayout({ children }: Readonly<Props>) {
         `}</style>
       </head>
       <body>
+        <Providers>
         <Provider>
             {children}
         </Provider>
+        </Providers>
       </body>
     </html>
   );

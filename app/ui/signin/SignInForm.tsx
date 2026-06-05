@@ -15,17 +15,25 @@ import { useRouter } from "next/navigation";
 import Link from "next/link"; 
 import { useForm } from "react-hook-form";
 import { PasswordInput } from "../../../components/ui/password-input";
-import { authClient } from "@/app/lib/auth"; 
 import { SignInData } from "../../lib/definitions";
 
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
 
+// --- IMPORT YOUR ENTITY HOOK ---
+import { useAuthActions } from "@/app/entities/auth/hooks";
+
+// Keep this temporarily if you are still using it for Google Auth
+import { authClient } from "@/app/lib/auth"; 
+
 const SignInForm = () => {
   const router = useRouter(); 
   const [authError, setAuthError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false); // Kept specifically for Google Auth
+  
+  //  Pull in the signIn mutation from our TanStack hook
+  const { signIn } = useAuthActions();
 
   const {
     register,
@@ -33,36 +41,34 @@ const SignInForm = () => {
     formState: { errors },
   } = useForm<SignInData>();
 
-  // Better Auth Sign In
+  // Consume your new API hook on submit
   const onSubmit = handleSubmit(async (data) => {
     setAuthError(""); 
 
-    await authClient.signIn.email({
+    try {
+      // Call the custom backend API endpoint
+      await signIn.mutateAsync({
         email: data.email, 
         password: data.password,
-        rememberMe: true 
-    }, {
-        onRequest: () => {
-            setIsLoading(true);
-        },
-        onSuccess: () => {
-            setIsLoading(false);
-            console.log("Successfully signed in!");
-            router.push("/dashboard"); 
-        },
-        onError: (ctx) => {
-            setIsLoading(false);
-            console.error("Sign in failed:", ctx.error.message);
-            setAuthError(ctx.error.message);
-        },
-    });
+        rememberMe: true,
+        callbackURL: "/business"
+      });
+      
+      console.log("Successfully signed in!");
+      router.push("/business"); 
+
+    } catch (error) {
+      // TanStack automatically catches network errors and throws them here
+      const message = error instanceof Error ? error.message : "Sign in failed. Please check your credentials.";
+      console.error("Sign in failed:", message);
+      setAuthError(message);
+    }
   });
 
-
- // google auth
- const handleGoogleSignIn = async () => {
+  // Google Auth
+  const handleGoogleSignIn = async () => { 
     setAuthError(""); 
-    setIsLoading(true);
+    setIsGoogleLoading(true);
 
     try {
       await authClient.signIn.social({
@@ -70,18 +76,17 @@ const SignInForm = () => {
         callbackURL: "/dashboard", 
       });
     } catch (error) { 
-      setIsLoading(false);
-  
+      setIsGoogleLoading(false);
       const errorMessage = error instanceof Error ? error.message : "Failed to initialize Google login.";
       setAuthError(errorMessage);
     }
   };
+
   return (
     <Box w={"full"}>
       <form onSubmit={onSubmit} style={{ width: "100%" }}>
         <Stack gap={4} w={"full"}>
           
-        
           {authError && (
              <Text color="red.400" fontSize="sm" textAlign="center" bg="red.900" p={2} rounded="md">
                {authError}
@@ -102,6 +107,9 @@ const SignInForm = () => {
               borderRadius={"7px"}
               borderWidth={"2px"}
               borderColor="#292929"
+              bg="white"
+              color="black"
+              _placeholder={{ color: "gray.500" }} 
             />
             <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
           </Field.Root>
@@ -118,6 +126,9 @@ const SignInForm = () => {
               borderRadius={"7px"}
               borderWidth={"2px"}
               borderColor={"#292929"}
+              bg="white"
+              color="black"
+              _placeholder={{ color: "gray.500" }}
             />
             <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
           </Field.Root>
@@ -130,7 +141,8 @@ const SignInForm = () => {
 
             <Button 
                 type="submit" 
-                disabled={isLoading}
+                loading={signIn.isPending}
+                loadingText="Signing in..."
                 w="full"
                 h="45px"
                 bg="white"
@@ -139,7 +151,7 @@ const SignInForm = () => {
                 borderRadius="7px"
                 fontWeight="600"
             >
-              {isLoading ? "Signing in..." : "Sign In"}
+              Sign In
             </Button>
 
             <SeparatorText />
@@ -147,6 +159,7 @@ const SignInForm = () => {
             <Button 
                 type="button" 
                 onClick={handleGoogleSignIn}
+                loading={isGoogleLoading}
                 variant="outline"
                 w="full"
                 h="45px"

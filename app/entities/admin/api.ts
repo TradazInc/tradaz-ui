@@ -1,5 +1,4 @@
-// entities/admin/api.ts
-import { apiFetch } from "../../lib/api-client";
+import { apiFetch } from "@/app/lib/api-client"; 
 import * as T from "./types"; 
 
 const BASE = "auth/admin";
