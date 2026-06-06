@@ -4,7 +4,7 @@ import React, { useCallback } from "react";
 import { Box, Flex, Spinner } from "@chakra-ui/react";
 import Talk from "talkjs";
 import { Session, Inbox } from "@talkjs/react";
-import * as myTheme from '../../my-theme';
+
 
 export default function InboxPage() {
   const appId = "tixw1Njw";

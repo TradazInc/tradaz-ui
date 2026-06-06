@@ -1,5 +1,5 @@
 import { Text } from "@chakra-ui/react";
-import { manrope } from "../fonts";
+
 import Link from "next/link";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 const LinkText = ({ children, textAlign }: Props) => {
   return (
     <Text
-      className={manrope.className}
+      
       color={"#1C86FF"}
       textDecoration={"underline"}
       textAlign={textAlign}
