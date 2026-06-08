@@ -1,5 +1,3 @@
-
-// Fallback to empty string allows for relative paths if hosting Next.js and the API together
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -8,7 +6,7 @@ interface FetchOptions extends Omit<RequestInit, 'body'> {
   method?: HttpMethod;
   headers?: HeadersInit;
   body?: unknown; // Changed to unknown to accept plain objects/arrays
- params?: Record<string, string | number | boolean | undefined | null>;
+  params?: Record<string, string | number | boolean | undefined | null>;
 }
 
 export async function apiFetch<T>(
@@ -56,6 +54,7 @@ export async function apiFetch<T>(
     method,
     headers: clientHeaders,
     body: serializedBody,
+    credentials: "include", // <--- THIS IS THE CRITICAL FIX
   });
 
   // Handle empty or 204 No Content responses safely

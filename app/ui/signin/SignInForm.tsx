@@ -47,13 +47,17 @@ const SignInForm = () => {
 
     try {
       // Call the custom backend API endpoint
-      await signIn.mutateAsync({
+     const response = await signIn.mutateAsync({
         email: data.email, 
         password: data.password,
         rememberMe: true,
         callbackURL: "/business"
       });
       
+      if (response.token) {
+         localStorage.setItem("auth_token", response.token);
+      }
+
       console.log("Successfully signed in!");
       router.push("/business"); 
 
