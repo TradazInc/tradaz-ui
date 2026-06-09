@@ -20,7 +20,7 @@ const LinkText = ({ children, textAlign }: Props) => {
       letterSpacing={"-0.1px"}
       textDecorationThickness={"0%"}
     >
-      <Link href={"/"}>{children}</Link>
+      <Link href={"/signin"}>{children}</Link>
     </Text>
   );
 };

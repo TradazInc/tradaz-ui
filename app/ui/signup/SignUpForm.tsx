@@ -19,16 +19,17 @@ import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
 
-// --- IMPORT YOUR ENTITY HOOK ---
-import { useAuthActions } from "@/app/entities/auth/hooks";
+// --- IMPORT ONLY BETTER AUTH ---
+import { authClient, signUp } from "@/app/lib/auth"; 
 import { SignUpData } from "../../lib/definitions"; 
 
 const SignUpForm = () => {
   const router = useRouter(); 
   const [authError, setAuthError] = useState("");
   
-  //  Pull in the signUp mutation from our TanStack hook
-  const { signUp } = useAuthActions();
+  // Local loading states for our buttons
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   
   const {
     register,
@@ -36,35 +37,51 @@ const SignUpForm = () => {
     formState: { errors },
   } = useForm<SignUpData>();
 
-  //  Consume your new API hook on submit
+  // --- EMAIL SIGN UP  ---
   const onSubmit = handleSubmit(async (data) => {
     setAuthError(""); 
+    setIsEmailLoading(true);
 
     try {
-      // Call the API endpoint
-      await signUp.mutateAsync({
+      // Better Auth's native email registration
+      const { error } = await signUp.email({
         name: data.name,
         email: data.email,
         password: data.password,
-        rememberMe: true,
-        callbackURL: "/business"
       });
       
+      if (error) {
+        setAuthError(error.message || "Failed to sign up. Please try again.");
+        setIsEmailLoading(false);
+        return;
+      }
+
       console.log("Successfully signed up!");
       router.push("/business");
 
     } catch (error) {
-      // TanStack automatically catches network errors and throws them here
-      const message = error instanceof Error ? error.message : "Failed to sign up. Please try again.";
-      console.error("Failed to sign up:", message);
-      setAuthError(message);
+      console.error("Failed to sign up:", error);
+      setAuthError("An unexpected system error occurred.");
+      setIsEmailLoading(false);
     }
   });
 
-  // Google Auth 
+  // --- GOOGLE SIGN UP/IN ---
   const handleGoogleSignIn = async () => {
-    setAuthError("Google Sign-In is not yet wired to the custom backend."); 
-    // TODO: Wire this to your custom /api/auth/sign-in/social endpoint once built!
+    setAuthError(""); 
+    setIsGoogleLoading(true);
+
+    try {
+      // Better Auth handles the redirect to Google automatically!
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/business", 
+      });
+    } catch (error) {
+      setIsGoogleLoading(false);
+      const errorMessage = error instanceof Error ? error.message : "Failed to initialize Google sign-up.";
+      setAuthError(errorMessage);
+    }
   };
 
   return (
@@ -145,8 +162,7 @@ const SignUpForm = () => {
             
             <Button 
                 type="submit" 
-                // We map the loading state directly to the TanStack mutation!
-                loading={signUp.isPending}
+                loading={isEmailLoading}
                 loadingText="Signing up..."
                 w="full"
                 h="45px"
@@ -155,6 +171,7 @@ const SignUpForm = () => {
                 _hover={{ bg: "gray.200" }}
                 borderRadius="7px"
                 fontWeight="600"
+                disabled={isGoogleLoading}
             >
               Sign Up
             </Button>
@@ -164,6 +181,7 @@ const SignUpForm = () => {
             <Button 
                 type="button" 
                 onClick={handleGoogleSignIn}
+                loading={isGoogleLoading}
                 variant="outline"
                 w="full"
                 h="45px"
@@ -173,6 +191,7 @@ const SignUpForm = () => {
                 color="white"
                 bg="transparent"
                 _hover={{ bg: "whiteAlpha.50" }}
+                disabled={isEmailLoading}
             >
               <GoogleIcon maxW={"20px"} maxH={"20px"} />
               <Text fontSize={"14px"} fontWeight={"600"} ml={2}>

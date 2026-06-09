@@ -21,19 +21,17 @@ import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
 
-// --- IMPORT YOUR ENTITY HOOK ---
-import { useAuthActions } from "@/app/entities/auth/hooks";
+// --- IMPORT ONLY BETTER AUTH ---
 
-// Keep this temporarily if you are still using it for Google Auth
-import { authClient } from "@/app/lib/auth"; 
+import { authClient, signIn } from "@/app/lib/auth"; 
 
 const SignInForm = () => {
   const router = useRouter(); 
   const [authError, setAuthError] = useState("");
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false); // Kept specifically for Google Auth
   
-  //  Pull in the signIn mutation from our TanStack hook
-  const { signIn } = useAuthActions();
+  // We need loading states for both buttons now
+  const [isEmailLoading, setIsEmailLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false); 
 
   const {
     register,
@@ -41,35 +39,36 @@ const SignInForm = () => {
     formState: { errors },
   } = useForm<SignInData>();
 
-  // Consume your new API hook on submit
+  // --- EMAIL SIGN IN (Now powered by Better Auth) ---
   const onSubmit = handleSubmit(async (data) => {
     setAuthError(""); 
+    setIsEmailLoading(true);
 
     try {
-      // Call the custom backend API endpoint
-     const response = await signIn.mutateAsync({
+      // Better Auth's native email login
+      const {  error } = await signIn.email({
         email: data.email, 
         password: data.password,
-        rememberMe: true,
-        callbackURL: "/business"
       });
       
-      if (response.token) {
-         localStorage.setItem("auth_token", response.token);
+      if (error) {
+       
+        setAuthError(error.message || "Sign in failed. Please check your credentials.");
+        setIsEmailLoading(false);
+        return;
       }
 
       console.log("Successfully signed in!");
       router.push("/business"); 
 
     } catch (error) {
-      // TanStack automatically catches network errors and throws them here
-      const message = error instanceof Error ? error.message : "Sign in failed. Please check your credentials.";
-      console.error("Sign in failed:", message);
-      setAuthError(message);
+      console.error("Sign in failed:", error);
+      setAuthError("An unexpected system error occurred.");
+      setIsEmailLoading(false);
     }
   });
 
-  // Google Auth
+  // --- GOOGLE SIGN IN ---
   const handleGoogleSignIn = async () => { 
     setAuthError(""); 
     setIsGoogleLoading(true);
@@ -145,7 +144,7 @@ const SignInForm = () => {
 
             <Button 
                 type="submit" 
-                loading={signIn.isPending}
+                loading={isEmailLoading} 
                 loadingText="Signing in..."
                 w="full"
                 h="45px"
@@ -154,6 +153,7 @@ const SignInForm = () => {
                 _hover={{ bg: "gray.200" }}
                 borderRadius="7px"
                 fontWeight="600"
+                disabled={isGoogleLoading} 
             >
               Sign In
             </Button>
@@ -173,6 +173,7 @@ const SignInForm = () => {
                 color="white"
                 bg="transparent"
                 _hover={{ bg: "whiteAlpha.50" }}
+                disabled={isEmailLoading} 
             >
               <GoogleIcon maxW={"20px"} maxH={"20px"} />
               <Text fontSize={"14px"} fontWeight={"600"} ml={2}>

@@ -22,7 +22,7 @@ const SigninSidePanel = () => {
       <Box position="absolute" bottom="-10%" left="-10%" w="200px" h="200px" bg="whiteAlpha.200" rounded="full" />
       <Box position="absolute" top="30%" left="15%" w="40px" h="40px" bg="whiteAlpha.200" transform="rotate(45deg)" />
       
-      {/* Content matching your reference image */}
+      
       <Flex direction="column" gap={6} zIndex={1} align="center">
         <Heading fontSize="4xl" fontWeight="bold">
           Hello, Friend!
