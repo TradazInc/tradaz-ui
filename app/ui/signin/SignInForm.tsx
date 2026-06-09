@@ -77,7 +77,7 @@ const SignInForm = () => {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard", 
+        callbackURL: "/business", 
       });
     } catch (error) { 
       setIsGoogleLoading(false);

@@ -27,7 +27,7 @@ const SignUpForm = () => {
   const router = useRouter(); 
   const [authError, setAuthError] = useState("");
   
-  // 1. Pull in the signUp mutation from our TanStack hook
+  //  Pull in the signUp mutation from our TanStack hook
   const { signUp } = useAuthActions();
   
   const {
@@ -36,7 +36,7 @@ const SignUpForm = () => {
     formState: { errors },
   } = useForm<SignUpData>();
 
-  // 2. Consume your new API hook on submit
+  //  Consume your new API hook on submit
   const onSubmit = handleSubmit(async (data) => {
     setAuthError(""); 
 
@@ -46,12 +46,12 @@ const SignUpForm = () => {
         name: data.name,
         email: data.email,
         password: data.password,
-        rememberMe: true, // Assuming you want this default as seen in SignIn
-        callbackURL: "/dashboard"
+        rememberMe: true,
+        callbackURL: "/business"
       });
       
       console.log("Successfully signed up!");
-      router.push("/dashboard");
+      router.push("/business");
 
     } catch (error) {
       // TanStack automatically catches network errors and throws them here
