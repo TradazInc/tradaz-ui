@@ -4,6 +4,7 @@ import { ElementType } from "react";
 export interface SignInData {
   email: string; 
   password: string;
+    username?: string; 
 }
 export interface SignInResponse {
   token: string;
@@ -26,33 +27,11 @@ export interface SignUpData {
   name: string;
   email: string;
   password: string;
+ username?: string;
 }
 
 
 
-// Onboarding Type Definitions
-export interface OnboardingData {
-    businessName: string;
-    subDomain: string;
-    about: string;
-    address: string;
-    phone: string;
-    categoryId?: number;
-    category?: string;  
-    primaryColor: string;
-    secondaryColor: string;
-    tertiaryColor: string;
-    logo: File | null;  
-}
-
-//  interface for all three of your form steps!
-export interface StepFormProps {
-  data: OnboardingData;
-  update: (newData: Partial<OnboardingData>) => void;
-  onNext?: () => void;
-  onBack?: () => void;
-  onFinish?: () => void;
-}
 
 
 

@@ -9,78 +9,90 @@ import {
   Stack,
   Text,
   VStack,
-  Button
+  Button,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import Link from "next/link"; 
+
 import { PasswordInput } from "../../../components/ui/password-input";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
-
-// --- IMPORT ONLY BETTER AUTH ---
-import { authClient, signUp } from "@/app/lib/auth"; 
-import { SignUpData } from "../../lib/definitions"; 
+import { authClient } from "@/app/lib/auth-client";
+import { SignUpData } from "../../lib/definitions";
+import { toaster } from "@/components/ui/toaster";
 
 const SignUpForm = () => {
-  const router = useRouter(); 
-  const [authError, setAuthError] = useState("");
-  
-  // Local loading states for our buttons
+  const router = useRouter();
   const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<SignUpData>();
 
-  // --- EMAIL SIGN UP  ---
   const onSubmit = handleSubmit(async (data) => {
-    setAuthError(""); 
     setIsEmailLoading(true);
 
     try {
-      // Better Auth's native email registration
-      const { error } = await signUp.email({
+      const { error } = await authClient.signUp.email({
         name: data.name,
         email: data.email,
         password: data.password,
+        username: data.username,
       });
-      
+
       if (error) {
-        setAuthError(error.message || "Failed to sign up. Please try again.");
-        setIsEmailLoading(false);
+        toaster.create({
+          title: "Sign up failed",
+          description:
+            error.message || "Please check your details and try again.",
+          type: "error",
+        });
         return;
       }
 
-      console.log("Successfully signed up!");
+      toaster.create({
+        title: "Account created",
+        description: "Welcome aboard! Redirecting...",
+        type: "success",
+      });
       router.push("/business");
-
-    } catch (error) {
-      console.error("Failed to sign up:", error);
-      setAuthError("An unexpected system error occurred.");
+    } catch (err) {
+      console.error("Failed to sign up:", err);
+      toaster.create({
+        title: "Unexpected error",
+        description: "Something went wrong. Please try again later.",
+        type: "error",
+      });
+    } finally {
       setIsEmailLoading(false);
     }
   });
 
-  // --- GOOGLE SIGN UP/IN ---
   const handleGoogleSignIn = async () => {
-    setAuthError(""); 
     setIsGoogleLoading(true);
 
     try {
-      // Better Auth handles the redirect to Google automatically!
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/business", 
+        callbackURL: "/business",
       });
     } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to initialize Google sign-up.";
+
+      toaster.create({
+        title: "Google sign‑up error",
+        description: message,
+        type: "error",
+      });
+    } finally {
       setIsGoogleLoading(false);
-      const errorMessage = error instanceof Error ? error.message : "Failed to initialize Google sign-up.";
-      setAuthError(errorMessage);
     }
   };
 
@@ -88,15 +100,7 @@ const SignUpForm = () => {
     <Box w={"full"}>
       <form onSubmit={onSubmit} style={{ width: "100%" }}>
         <Stack gap={4} w={"full"}>
-          
-          {/* Show Auth Error if it exists */}
-          {authError && (
-             <Text color="red.400" fontSize="sm" textAlign="center" bg="red.900" p={2} rounded="md">
-               {authError}
-             </Text>
-          )}
-
-          {/* Name Field */}
+          {/* Full Name Field */}
           <Field.Root invalid={!!errors.name} w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Full Name *
@@ -135,21 +139,58 @@ const SignUpForm = () => {
             <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
           </Field.Root>
 
+          {/* Username Field */}
+          <Field.Root invalid={!!errors.username} w={"full"}>
+            <Field.Label fontWeight={"400"} fontSize={"14px"}>
+              Username *
+            </Field.Label>
+            <Input
+              {...register("username", {
+                required: "Username is required",
+                minLength: {
+                  value: 3,
+                  message: "Username must be at least 3 characters",
+                },
+                maxLength: {
+                  value: 30,
+                  message: "Username must be 30 characters or less",
+                },
+                pattern: {
+                  value: /^[a-zA-Z0-9_.]+$/,
+                  message:
+                    "Only letters, numbers, underscores, and dots allowed",
+                },
+              })}
+              placeholder="Choose a username"
+              maxH={"45px"}
+              borderRadius={"7px"}
+              borderWidth={"2px"}
+              borderColor="#292929"
+              bg="white"
+              color="black"
+              _placeholder={{ color: "gray.500" }}
+            />
+            <Field.ErrorText>{errors.username?.message}</Field.ErrorText>
+          </Field.Root>
+
           {/* Password Field */}
           <Field.Root invalid={!!errors.password} w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Password *
             </Field.Label>
             <PasswordInput
-              {...register("password", { 
-                  required: "Password is required",
-                  minLength: { value: 8, message: "Password must be at least 8 characters" }
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters",
+                },
               })}
               placeholder="Enter password"
               maxH={"45px"}
               borderRadius={"7px"}
               borderWidth={"2px"}
-              color="black"    
+              color="black"
               bg="white"
               borderColor={"#292929"}
               _placeholder={{ color: "gray.500" }}
@@ -157,41 +198,40 @@ const SignUpForm = () => {
             <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
           </Field.Root>
 
-          {/* Buttons Area */}
+          {/* Buttons */}
           <VStack w={"full"}>
-            
-            <Button 
-                type="submit" 
-                loading={isEmailLoading}
-                loadingText="Signing up..."
-                w="full"
-                h="45px"
-                bg="white"
-                color="black"
-                _hover={{ bg: "gray.200" }}
-                borderRadius="7px"
-                fontWeight="600"
-                disabled={isGoogleLoading}
+            <Button
+              type="submit"
+              loading={isEmailLoading}
+              loadingText="Signing up..."
+              w="full"
+              h="45px"
+              bg="white"
+              color="black"
+              _hover={{ bg: "gray.200" }}
+              borderRadius="7px"
+              fontWeight="600"
+              disabled={isGoogleLoading}
             >
               Sign Up
             </Button>
-            
+
             <SeparatorText />
 
-            <Button 
-                type="button" 
-                onClick={handleGoogleSignIn}
-                loading={isGoogleLoading}
-                variant="outline"
-                w="full"
-                h="45px"
-                borderRadius="7px"
-                borderWidth="2px"
-                borderColor="#292929"
-                color="white"
-                bg="transparent"
-                _hover={{ bg: "whiteAlpha.50" }}
-                disabled={isEmailLoading}
+            <Button
+              type="button"
+              onClick={handleGoogleSignIn}
+              loading={isGoogleLoading}
+              variant="outline"
+              w="full"
+              h="45px"
+              borderRadius="7px"
+              borderWidth="2px"
+              borderColor="#292929"
+              color="white"
+              bg="transparent"
+              _hover={{ bg: "whiteAlpha.50" }}
+              disabled={isEmailLoading}
             >
               <GoogleIcon maxW={"20px"} maxH={"20px"} />
               <Text fontSize={"14px"} fontWeight={"600"} ml={2}>
@@ -208,9 +248,7 @@ const SignUpForm = () => {
               >
                 Already have an account?
               </Text>
-              <Link href="/signin">
-                <LinkText>Sign In</LinkText>
-              </Link>
+              <LinkText>Sign In</LinkText>
             </HStack>
           </VStack>
         </Stack>

@@ -1,4 +1,6 @@
-// --- COMMON MODELS ---
+// auth/types.ts
+// ... existing imports/exports ...
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -7,9 +9,11 @@ export interface AuthUser {
   emailVerified?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  // username plugin fields
+  username?: string;
+  displayUsername?: string;
 }
 
-// --- PAYLOADS (Requests) ---
 export interface SignUpEmailPayload {
   name: string;
   email: string;
@@ -17,6 +21,9 @@ export interface SignUpEmailPayload {
   image?: string;
   callbackURL?: string;
   rememberMe?: boolean;
+  // username plugin
+  username?: string;
+  displayUsername?: string;
 }
 
 export interface SignInEmailPayload {
@@ -26,24 +33,17 @@ export interface SignInEmailPayload {
   rememberMe?: boolean;
 }
 
-// --- RESPONSES ---
-export interface SessionResponse {
-  session: string;
-  user: string | AuthUser; 
+// New for username sign-in
+export interface SignInUsernamePayload {
+  username: string;
+  password: string;
+  callbackURL?: string;
+  rememberMe?: boolean;
 }
 
-export interface SignOutResponse {
-  success: boolean;
+// New for update user
+export interface UpdateUserPayload {
+  username?: string;
 }
 
-export interface SignUpResponse {
-  token: string;
-  user: AuthUser;
-}
-
-export interface SignInResponse {
-  redirect: boolean;
-  token: string;
-  url?: string;
-  user: Record<string, unknown> | AuthUser;
-}
+// ... keep SessionResponse, SignUpResponse, etc. as-is ...

@@ -1,45 +1,77 @@
-// app/entities/auth/hooks.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { authApi } from "./api";
+import { authClient } from "@/app/lib/auth-client"; 
 
-
-// --- GET: Fetch Session State ---
+// ---- Session ----
 export function useAuthSession() {
   return useQuery({
     queryKey: ["auth", "session"],
-    queryFn: authApi.getSession,
-    retry: false, 
+    queryFn: () => authClient.getSession(),
+    retry: false,
   });
 }
 
-// --- POST: Mutate Auth State ---
+// ---- Mutations ----
 export function useAuthActions() {
   const queryClient = useQueryClient();
 
-  // Helper to globally refresh session data across the app after auth events
-  const refreshSession = () => {
+  const refreshSession = () =>
     queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
-  };
 
-  // Helper to completely clear the cache when logging out
-  const clearSession = () => {
-    queryClient.clear();
-  };
+  const clearSession = () => queryClient.clear();
+
+  // Email sign-up (already supports username & displayUsername fields)
+  const signUp = useMutation({
+    mutationFn: (data: {
+      email: string;
+      password: string;
+      name: string;
+      username?: string;
+      displayUsername?: string;
+    }) => authClient.signUp.email(data),
+    onSuccess: refreshSession,
+  });
+
+  // Email sign-in (keep if you still need it)
+  const signInEmail = useMutation({
+    mutationFn: (data: { email: string; password: string }) =>
+      authClient.signIn.email(data),
+    onSuccess: refreshSession,
+  });
+
+  // Username sign-in (new)
+  const signInUsername = useMutation({
+    mutationFn: (data: { username: string; password: string }) =>
+      authClient.signIn.username(data),
+    onSuccess: refreshSession,
+  });
+
+  // Sign out
+  const signOut = useMutation({
+    mutationFn: () => authClient.signOut(),
+    onSuccess: clearSession,
+  });
+
+  // Update user (can update username)
+  const updateUser = useMutation({
+    mutationFn: (data: { username?: string }) =>
+      authClient.updateUser(data),
+    onSuccess: refreshSession,
+  });
 
   return {
-    signUp: useMutation({ 
-      mutationFn: authApi.signUpEmail, 
-      onSuccess: refreshSession 
-    }),
-    
-    signIn: useMutation({ 
-      mutationFn: authApi.signInEmail, 
-      onSuccess: refreshSession 
-    }),
-    
-    signOut: useMutation({ 
-      mutationFn: authApi.signOut, 
-      onSuccess: clearSession 
-    }),
+    signUp,
+    signInEmail,      // still available
+    signInUsername,   // new
+    signOut,
+    updateUser,       // new
   };
+}
+
+// ---- Username availability check (query) ----
+export function useIsUsernameAvailable(username: string) {
+  return useQuery({
+    queryKey: ["auth", "username-available", username],
+    queryFn: () => authClient.isUsernameAvailable({ username }),
+    enabled: username.length > 0, // only run when username is not empty
+  });
 }
