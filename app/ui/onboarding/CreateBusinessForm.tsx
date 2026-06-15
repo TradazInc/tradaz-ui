@@ -100,16 +100,12 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
         name: formData.name,
         slug: formData.slug,
         keepCurrentActiveOrganization: false,
+        categoryId: Number(formData.categoryId),   
         metadata: {
-          categoryId: Number(formData.categoryId),
           about: formData.about,
           phone: formData.phone,
           address: formData.address,
-          theme: {
-            primary: "#FFFFFF",
-            secondary: "#000000",
-            tertiary: "#1A1A1A",
-          },
+          
         },
       });
 

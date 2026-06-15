@@ -61,10 +61,6 @@ export interface UpdateMemberRolePayload {
   organizationId?: string | null;
 }
 
-export interface HasPermissionPayload {
-  permissions: Record<string, unknown>;
-}
-
 //  TEAM PAYLOADS 
 export interface CreateTeamPayload {
   name: string;
