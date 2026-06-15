@@ -40,7 +40,7 @@ const SignUpForm = () => {
         name: data.name,
         email: data.email,
         password: data.password,
-        // username removed
+        
       });
 
       if (error) {
