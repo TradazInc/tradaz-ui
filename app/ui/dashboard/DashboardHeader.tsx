@@ -151,7 +151,7 @@ export const DashboardHeader = ({
                         >
                             <Flex as="button" align="center" gap={{ base: 1, sm: 2 }} cursor="pointer" color="#888888" _hover={{ color: "white" }} transition="all 0.2s" outline="none">
                                 <Icon as={LuStore} boxSize={{ base: "14px", sm: "18px" }} css={iconStyle} flexShrink={0} />
-                                {/* Added maxW to force text truncation on small mobile screens */}
+                               
                                 <Text fontSize={{ base: "xs", sm: "sm" }} fontWeight="300" lineClamp={1} color="white" maxW={{ base: "80px", sm: "120px", md: "none" }}>
                                     {activeStoreName}
                                 </Text>

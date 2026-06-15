@@ -8,7 +8,6 @@ export function useAuthSession() {
   return useQuery({
     queryKey: ["auth", "session"],
     queryFn: authApi.getSession,
-    // Optional: Don't automatically retry if the user isn't logged in (returns 401)
     retry: false, 
   });
 }
@@ -40,7 +39,7 @@ export function useAuthActions() {
     
     signOut: useMutation({ 
       mutationFn: authApi.signOut, 
-      onSuccess: clearSession // Wipes cached data globally for security
+      onSuccess: clearSession 
     }),
   };
 }

@@ -2,6 +2,16 @@ import { apiFetch } from "@/app/lib/api-client";
 import * as T from "./types"; 
 
 const BASE = "auth";
+const baseURL = process.env.NEXT_PUBLIC_API_URL || process.env.BASE_URL || "";
+
+// Axios client  for Admin/Auth requests
+const apiFetch = axios.create({
+  baseURL,
+  withCredentials: true, 
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 export const authApi = {
   // GET: Fetch current session

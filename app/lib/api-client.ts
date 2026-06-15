@@ -1,4 +1,3 @@
-
 const baseURL = process.env.BASE_URL;
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -9,6 +8,7 @@ interface FetchOptions extends RequestInit {
  body?: BodyInit;
  params?: Record<string, string | number>;
 }
+
 
 async function apiFetch<T>(
  endpoint: string,

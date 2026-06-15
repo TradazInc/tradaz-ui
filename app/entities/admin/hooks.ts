@@ -11,7 +11,7 @@ export function useAdminUsers(params?: T.ListUsersParams) {
   });
 }
 
-// 2. The Mutator (Replaces useAdminUserActions)
+
 export function useAdminActions() {
   const queryClient = useQueryClient();
 
