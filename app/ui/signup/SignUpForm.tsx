@@ -13,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-
 import { PasswordInput } from "../../../components/ui/password-input";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
@@ -41,7 +40,7 @@ const SignUpForm = () => {
         name: data.name,
         email: data.email,
         password: data.password,
-        username: data.username,
+        // username removed
       });
 
       if (error) {
@@ -137,40 +136,6 @@ const SignUpForm = () => {
               _placeholder={{ color: "gray.500" }}
             />
             <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
-          </Field.Root>
-
-          {/* Username Field */}
-          <Field.Root invalid={!!errors.username} w={"full"}>
-            <Field.Label fontWeight={"400"} fontSize={"14px"}>
-              Username *
-            </Field.Label>
-            <Input
-              {...register("username", {
-                required: "Username is required",
-                minLength: {
-                  value: 3,
-                  message: "Username must be at least 3 characters",
-                },
-                maxLength: {
-                  value: 30,
-                  message: "Username must be 30 characters or less",
-                },
-                pattern: {
-                  value: /^[a-zA-Z0-9_.]+$/,
-                  message:
-                    "Only letters, numbers, underscores, and dots allowed",
-                },
-              })}
-              placeholder="Choose a username"
-              maxH={"45px"}
-              borderRadius={"7px"}
-              borderWidth={"2px"}
-              borderColor="#292929"
-              bg="white"
-              color="black"
-              _placeholder={{ color: "gray.500" }}
-            />
-            <Field.ErrorText>{errors.username?.message}</Field.ErrorText>
           </Field.Root>
 
           {/* Password Field */}

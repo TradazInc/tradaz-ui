@@ -12,7 +12,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { PasswordInput } from "../../../components/ui/password-input";
 import { SignInData } from "../../lib/definitions";
@@ -190,9 +189,9 @@ const SignInForm = () => {
               >
                 Don’t have an account?
               </Text>
-              <Link href="/signup" style={{ color: "blue.400", fontWeight: 600 }}>
+              <LinkText>
                 Sign Up
-              </Link>
+              </LinkText>
             </HStack>
           </VStack>
         </Stack>

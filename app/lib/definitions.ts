@@ -4,7 +4,7 @@ import { ElementType } from "react";
 export interface SignInData {
   email: string; 
   password: string;
-    username?: string; 
+    
 }
 export interface SignInResponse {
   token: string;
@@ -27,7 +27,7 @@ export interface SignUpData {
   name: string;
   email: string;
   password: string;
- username?: string;
+
 }
 
 
