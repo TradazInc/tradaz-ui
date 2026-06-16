@@ -18,11 +18,11 @@ export function useBusinessActions() {
         try {
           const { data, error } = await authClient.organization.create(payload);
           if (error) throw new Error(error.message);
-          return data ?? {}; 
+          return data ?? {};
         } catch (err) {
-          
+
           if (err instanceof SyntaxError && err.message.includes("JSON")) {
-            return {}; 
+            return {};
           }
           throw err;
         }

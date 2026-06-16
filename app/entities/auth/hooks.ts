@@ -19,7 +19,7 @@ export function useAuthActions() {
 
   const clearSession = () => queryClient.clear();
 
-  // Email sign-up (already supports username & displayUsername fields)
+  // Email sign-up 
   const signUp = useMutation({
     mutationFn: (data: {
       email: string;
@@ -31,7 +31,7 @@ export function useAuthActions() {
     onSuccess: refreshSession,
   });
 
-  // Email sign-in (keep if you still need it)
+  // Email sign-in 
   const signInEmail = useMutation({
     mutationFn: (data: { email: string; password: string }) =>
       authClient.signIn.email(data),
@@ -39,11 +39,11 @@ export function useAuthActions() {
   });
 
   // Username sign-in (new)
-  const signInUsername = useMutation({
-    mutationFn: (data: { username: string; password: string }) =>
-      authClient.signIn.username(data),
-    onSuccess: refreshSession,
-  });
+  // const signInUsername = useMutation({
+  //   mutationFn: (data: { username: string; password: string }) =>
+  //     authClient.signIn.username(data),
+  //   onSuccess: refreshSession,
+  // });
 
   // Sign out
   const signOut = useMutation({
@@ -60,10 +60,9 @@ export function useAuthActions() {
 
   return {
     signUp,
-    signInEmail,      // still available
-    signInUsername,   // new
+    signInEmail,      
     signOut,
-    updateUser,       // new
+    updateUser,       
   };
 }
 
