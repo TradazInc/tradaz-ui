@@ -30,11 +30,6 @@ export interface SignUpData {
 
 }
 
-
-
-
-
-
 // Dashboard & Store Definitions
 export interface Business {
     id: string;

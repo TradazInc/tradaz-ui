@@ -21,7 +21,7 @@ import {
   LuTrash2,
   LuX,
 } from "react-icons/lu";
-import { InventoryProduct } from "@/app/lib/definitions";
+import { GridProduct } from "../inventory/InventoryOverview"; 
 
 const controlStyles = {
   bg: "#121214",
@@ -47,19 +47,16 @@ const nativeSelectStyle: React.CSSProperties = {
 };
 
 interface InventoryGridViewProps {
-  visibleItems: InventoryProduct[];
+  visibleItems: GridProduct[]; 
   processedInventoryLength: number;
   searchQuery: string;
-  filterCategory: string;
   sortBy: string;
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleFilter: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   handleSort: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSelectProduct: (product: InventoryProduct) => void;
+  onSelectProduct: (product: GridProduct) => void; 
   visibleCount: number;
   isLoadingMore: boolean;
   loaderRef: React.RefObject<HTMLDivElement | null>;
-
   onDelete: (id: string) => void;
   onRestock: (id: string, amount: number) => void;
   onEdit: (id: string) => void;
@@ -70,10 +67,8 @@ export const InventoryGridView = ({
   visibleItems,
   processedInventoryLength,
   searchQuery,
- 
   sortBy,
   handleSearch,
-  
   handleSort,
   onSelectProduct,
   visibleCount,
@@ -84,7 +79,6 @@ export const InventoryGridView = ({
   onEdit,
   toggleFavorite,
 }: InventoryGridViewProps) => {
-
   const [restockTarget, setRestockTarget] = useState<string | null>(null);
   const [restockAmount, setRestockAmount] = useState("");
 
@@ -97,13 +91,7 @@ export const InventoryGridView = ({
   };
 
   return (
-    <Box
-      w="full"
-      maxW="100%"
-      display="flex"
-      flexDirection="column"
-      position="relative"
-    >
+    <Box w="full" maxW="100%" display="flex" flexDirection="column" position="relative">
       <Box mb={4} pt={2}>
         <Text color="#fff" fontWeight="bold" fontSize="3xl" mb={1}>
           Inventory
@@ -121,10 +109,10 @@ export const InventoryGridView = ({
         </Text>
       </Box>
 
-     {/* --- STICKY SEARCH & SORT --- */}
+      {/* --- STICKY SEARCH & SORT --- */}
       <Box
         position="sticky"
-        top={{ base: "-16px", md: "-32px" }} 
+        top={{ base: "-16px", md: "-32px" }}
         zIndex={20}
         bg="rgba(18, 18, 20, 0.85)"
         backdropFilter="blur(12px)"
@@ -134,16 +122,8 @@ export const InventoryGridView = ({
         borderColor="whiteAlpha.100"
         w="full"
       >
-        
         <Flex gap={2} wrap="nowrap" w="full" align="center">
-         
-          <Flex
-            flex={1}
-            minW="0"
-            align="center"
-            {...controlStyles}
-            _focusWithin={{ borderColor: "#5cac7d" }}
-          >
+          <Flex flex={1} minW="0" align="center" {...controlStyles} _focusWithin={{ borderColor: "#5cac7d" }}>
             <Icon as={LuSearch} color="gray.400" mr={2} />
             <Input
               placeholder="Search by name or SKU..."
@@ -158,13 +138,8 @@ export const InventoryGridView = ({
             />
           </Flex>
 
-          
           <Box w={{ base: "130px", sm: "150px", md: "180px" }} flexShrink={0}>
-            <select
-              value={sortBy}
-              onChange={handleSort}
-              style={nativeSelectStyle}
-            >
+            <select value={sortBy} onChange={handleSort} style={nativeSelectStyle}>
               <option value="default" style={{ background: "#1A1C23" }}>Sort</option>
               <option value="price-asc" style={{ background: "#1A1C23" }}>Price: Lowest</option>
               <option value="price-desc" style={{ background: "#1A1C23" }}>Price: Highest</option>
@@ -172,7 +147,6 @@ export const InventoryGridView = ({
               <option value="stock-desc" style={{ background: "#1A1C23" }}>Stock: Highest</option>
             </select>
           </Box>
-
         </Flex>
       </Box>
 
@@ -226,29 +200,15 @@ export const InventoryGridView = ({
                   justify="center"
                   align="center"
                 >
-                  <Button
-                    bg="#5cac7d"
-                    color="white"
-                    border="none"
-                    shadow="xl"
-                    _hover={{ bg: "#4a9c6d", transform: "translateY(-2px)" }}
-                  >
+                  <Button bg="#5cac7d" color="white" border="none" shadow="xl"
+                    _hover={{ bg: "#4a9c6d", transform: "translateY(-2px)" }}>
                     View Details
                   </Button>
                 </Flex>
                 {product.isFeatured && (
-                  <Box
-                    position="absolute"
-                    top={3}
-                    right={3}
-                    bg="blackAlpha.800"
-                    color="white"
-                    fontSize="xs"
-                    fontWeight="bold"
-                    px={3}
-                    py={1}
-                    backdropFilter="blur(4px)"
-                  >
+                  <Box position="absolute" top={3} right={3} bg="blackAlpha.800"
+                    color="white" fontSize="xs" fontWeight="bold" px={3} py={1}
+                    backdropFilter="blur(4px)">
                     Featured
                   </Box>
                 )}
@@ -256,51 +216,27 @@ export const InventoryGridView = ({
 
               <Box p={5}>
                 <Flex justify="space-between" align="start" mb={4}>
-                  <Text
-                    color="white"
-                    fontWeight="bold"
-                    fontSize="lg"
-                    lineClamp={1}
-                    flex={1}
-                    pr={2}
-                  >
+                  <Text color="white" fontWeight="bold" fontSize="lg"
+                    lineClamp={1} flex={1} pr={2}>
                     {product.name}
                   </Text>
-                  <Icon
-                    as={LuStar}
+                  <Icon as={LuStar}
                     color={product.isFavorite ? "orange.400" : "gray.600"}
                     fill={product.isFavorite ? "orange.400" : "transparent"}
-                    boxSize="18px"
-                    cursor="pointer"
-                    transition="all 0.2s"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFavorite(product.id);
-                    }}
+                    boxSize="18px" cursor="pointer" transition="all 0.2s"
+                    onClick={(e) => { e.stopPropagation(); toggleFavorite(product.id); }}
                   />
                 </Flex>
 
-                <Flex
-                  justify="space-between"
-                  align="center"
-                  mb={3}
-                  borderBottom="1px solid"
-                  borderColor="whiteAlpha.50"
-                  pb={3}
-                >
+                <Flex justify="space-between" align="center" mb={3}
+                  borderBottom="1px solid" borderColor="whiteAlpha.50" pb={3}>
                   <Text color="gray.400" fontSize="xs">
-                    SKU:{" "}
-                    <Text as="span" color="gray.300" fontFamily="monospace">
+                    SKU: <Text as="span" color="gray.300" fontFamily="monospace">
                       {product.sku}
                     </Text>
                   </Text>
-                  <Icon
-                    as={LuPrinter}
-                    color="gray.400"
-                    cursor="pointer"
-                    _hover={{ color: "white" }}
-                    boxSize="14px"
-                  />
+                  <Icon as={LuPrinter} color="gray.400" cursor="pointer"
+                    _hover={{ color: "white" }} boxSize="14px" />
                 </Flex>
 
                 <Flex justify="space-between" align="center" mb={4}>
@@ -308,16 +244,14 @@ export const InventoryGridView = ({
                     <Text color="gray.400" fontSize="xs" mb={1}>
                       Variations:{" "}
                       <Text as="span" color="white" fontWeight="bold">
-                        {product.variations || 1}
+                        {product.variations}
                       </Text>
                     </Text>
                     <Text color="gray.400" fontSize="xs">
                       Stock:{" "}
-                      <Text
-                        as="span"
+                      <Text as="span"
                         color={product.stock < 5 ? "red.400" : "white"}
-                        fontWeight={product.stock < 5 ? "bold" : "normal"}
-                      >
+                        fontWeight={product.stock < 5 ? "bold" : "normal"}>
                         {product.stock}
                       </Text>
                     </Text>
@@ -328,48 +262,22 @@ export const InventoryGridView = ({
                 </Flex>
 
                 <Flex gap={2}>
-                  {/*  Wired up Restock Modal Trigger */}
-                  <Button
-                    flex={1}
-                    size="sm"
-                    bg="rgba(92, 172, 125, 0.15)"
-                    color="#5cac7d"
-                    _hover={{ bg: "rgba(92, 172, 125, 0.25)" }}
-                    border="none"
-                    fontSize="xs"
-                    px={0}
-                    onClick={() => setRestockTarget(product.id)}
-                  >
+                  <Button flex={1} size="sm" bg="rgba(92, 172, 125, 0.15)"
+                    color="#5cac7d" _hover={{ bg: "rgba(92, 172, 125, 0.25)" }}
+                    border="none" fontSize="xs" px={0}
+                    onClick={() => setRestockTarget(product.id)}>
                     <Icon as={LuPackagePlus} mr={1.5} boxSize="14px" /> Restock
                   </Button>
-
-                  {/*  Wired up Edit Action */}
-                  <Button
-                    flex={1}
-                    size="sm"
-                    bg="rgba(66, 153, 225, 0.15)"
-                    color="blue.300"
-                    _hover={{ bg: "rgba(66, 153, 225, 0.25)" }}
-                    border="none"
-                    fontSize="xs"
-                    px={0}
-                    onClick={() => onEdit(product.id)}
-                  >
+                  <Button flex={1} size="sm" bg="rgba(66, 153, 225, 0.15)"
+                    color="blue.300" _hover={{ bg: "rgba(66, 153, 225, 0.25)" }}
+                    border="none" fontSize="xs" px={0}
+                    onClick={() => onEdit(product.id)}>
                     <Icon as={LuPencil} mr={1.5} boxSize="14px" /> Edit
                   </Button>
-
-                  {/*  Wired up Delete Action */}
-                  <Button
-                    flex={1}
-                    size="sm"
-                    bg="rgba(245, 101, 101, 0.15)"
-                    color="red.400"
-                    _hover={{ bg: "rgba(245, 101, 101, 0.25)" }}
-                    border="none"
-                    fontSize="xs"
-                    px={0}
-                    onClick={() => onDelete(product.id)}
-                  >
+                  <Button flex={1} size="sm" bg="rgba(245, 101, 101, 0.15)"
+                    color="red.400" _hover={{ bg: "rgba(245, 101, 101, 0.25)" }}
+                    border="none" fontSize="xs" px={0}
+                    onClick={() => onDelete(product.id)}>
                     <Icon as={LuTrash2} mr={1.5} boxSize="14px" /> Delete
                   </Button>
                 </Flex>
@@ -385,77 +293,37 @@ export const InventoryGridView = ({
         </Flex>
       )}
 
-      {/* Restock Modal for the Grid View */}
       {restockTarget && (
-        <Box
-          position="fixed"
-          inset={0}
-          zIndex={9999}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Box
-            position="absolute"
-            inset={0}
-            bg="blackAlpha.700"
-            backdropFilter="blur(4px)"
-            onClick={() => setRestockTarget(null)}
-          />
-          <Box
-            position="relative"
-            bg="#1A1C23"
-            p={6}
-            rounded="2xl"
-            border="1px solid"
-            borderColor="whiteAlpha.100"
-            w="90%"
-            maxW="400px"
-            shadow="2xl"
-            animation="fade-in 0.2s ease-out"
-          >
+        <Box position="fixed" inset={0} zIndex={9999} display="flex"
+          alignItems="center" justifyContent="center">
+          <Box position="absolute" inset={0} bg="blackAlpha.700"
+            backdropFilter="blur(4px)" onClick={() => setRestockTarget(null)} />
+          <Box position="relative" bg="#1A1C23" p={6} rounded="2xl"
+            border="1px solid" borderColor="whiteAlpha.100" w="90%"
+            maxW="400px" shadow="2xl" animation="fade-in 0.2s ease-out">
             <Flex justify="space-between" align="center" mb={4}>
               <Text color="white" fontWeight="bold" fontSize="lg">
                 Restock Product
               </Text>
-              <IconButton
-                aria-label="Close"
-                size="sm"
-                variant="ghost"
-                color="gray.400"
-                onClick={() => setRestockTarget(null)}
-              >
+              <IconButton aria-label="Close" size="sm" variant="ghost"
+                color="gray.400" onClick={() => setRestockTarget(null)}>
                 <LuX />
               </IconButton>
             </Flex>
             <Text color="gray.400" fontSize="sm" mb={4}>
               Enter the quantity to add to the existing stock.
             </Text>
-            <Input
-              type="number"
-              placeholder="Enter quantity (e.g. 50)"
-              {...controlStyles}
-              mb={6}
-              value={restockAmount}
-              onChange={(e) => setRestockAmount(e.target.value)}
-              autoFocus
-            />
+            <Input type="number" placeholder="Enter quantity (e.g. 50)"
+              {...controlStyles} mb={6} value={restockAmount}
+              onChange={(e) => setRestockAmount(e.target.value)} autoFocus />
             <Flex gap={3} justify="flex-end">
-              <Button
-                variant="ghost"
-                color="gray.400"
+              <Button variant="ghost" color="gray.400"
                 _hover={{ bg: "whiteAlpha.50" }}
-                onClick={() => setRestockTarget(null)}
-              >
+                onClick={() => setRestockTarget(null)}>
                 Cancel
               </Button>
-              <Button
-                bg="#5cac7d"
-                color="white"
-                _hover={{ bg: "#4a9c6d" }}
-                onClick={submitRestock}
-                disabled={!restockAmount}
-              >
+              <Button bg="#5cac7d" color="white" _hover={{ bg: "#4a9c6d" }}
+                onClick={submitRestock} disabled={!restockAmount}>
                 Update Stock
               </Button>
             </Flex>
