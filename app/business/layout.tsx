@@ -1,50 +1,39 @@
 "use client";
 import { useState } from "react";
 import { Flex, Box, IconButton, Icon, Text, Breadcrumb } from "@chakra-ui/react";
-import { LuMenu } from "react-icons/lu"; 
-import { Sidebar } from "@/app/ui/dashboard/Sidebar"; 
-import { DashboardHeader } from "@/app/ui/dashboard/DashboardHeader"; 
+import { LuMenu } from "react-icons/lu";
+import { Sidebar } from "@/app/ui/dashboard/Sidebar";
+import { DashboardHeader } from "@/app/ui/dashboard/DashboardHeader";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  const [businesses] = useState([
-    { id: "1", name: "Tradaz Fashion", category: "Retail" },
-    { id: "2", name: "Wada Tech", category: "Software" }
-  ]);
-  const [activeBusinessId, setActiveBusinessId] = useState("1");
-  
+  // Only store state remains 
   const [availableStores] = useState([
     { id: "1", name: "Downtown Outlet", address: "Lagos" },
-    { id: "2", name: "Island Branch", address: "Lagos" }
+    { id: "2", name: "Island Branch", address: "Lagos" },
   ]);
   const [activeStoreId, setActiveStoreId] = useState("1");
 
-  const activeBusiness =
-    businesses.find((b) => b.id === activeBusinessId) || businesses[0];
-
   return (
     <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
-
       {/* HEADER */}
       <Flex
-        h="50px" 
+        h="50px"
         w="full"
         align="center"
         bg="#000000"
         position="relative"
         zIndex={100}
         flexShrink={0}
-        pl={6} 
-        pr={{ base: 4, md: 8 }} 
-        gap={3} 
+        pl={6}
+        pr={{ base: 4, md: 8 }}
+        gap={3}
       >
-        
         {/* MOBILE MENU */}
         <IconButton
           aria-label="Open Menu"
@@ -59,15 +48,13 @@ export default function DashboardLayout({
           <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
         </IconButton>
 
-       
         <Breadcrumb.Root>
           <Breadcrumb.List gap={3}>
-            
             {/* LOGO */}
             <Breadcrumb.Item>
               <Text
                 fontSize="xl"
-                fontWeight="extrabold" 
+                fontWeight="extrabold"
                 color="white"
                 letterSpacing="tight"
                 userSelect="none"
@@ -77,10 +64,13 @@ export default function DashboardLayout({
             </Breadcrumb.Item>
 
             {/* BREADCRUMB SEPARATOR */}
-            <Breadcrumb.Separator color="gray.600" fontSize="xl" display={{ base: "none", md: "block" }}>
+            <Breadcrumb.Separator
+              color="gray.600"
+              fontSize="xl"
+              display={{ base: "none", md: "block" }}
+            >
               /
             </Breadcrumb.Separator>
-
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
@@ -88,19 +78,15 @@ export default function DashboardLayout({
         <Flex
           flex={1}
           h="full"
-          align="center" 
-          overflow="visible" 
+          align="center"
+          overflow="visible"
           position="relative"
-          zIndex={2} 
+          zIndex={2}
         >
           <DashboardHeader
-            businesses={businesses}
-            activeBusiness={activeBusiness}
-            onBusinessChange={setActiveBusinessId}
             availableStores={availableStores}
             activeStoreId={activeStoreId}
             onStoreChange={setActiveStoreId}
-            onOpenSidebar={() => setSidebarOpen(true)}
           />
         </Flex>
 
@@ -112,19 +98,19 @@ export default function DashboardLayout({
           right="0"
           h="1px"
           bg="#1A1A1A"
-          zIndex={10} 
+          zIndex={10}
           pointerEvents="none"
-        /> 
+        />
       </Flex>
 
       {/* MAIN CONTENT AREA */}
-      <Flex 
-          flex={1} 
-          position="relative" 
-          bg="#000000" 
-          alignItems="stretch" 
-          minH={0} 
-          overflow="hidden" 
+      <Flex
+        flex={1}
+        position="relative"
+        bg="#000000"
+        alignItems="stretch"
+        minH={0}
+        overflow="hidden"
       >
         <Sidebar
           isOpen={isSidebarOpen}

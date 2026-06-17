@@ -1,8 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/app/lib/auth-client";
 
-export const useBusinessList = authClient.useListOrganizations;
-export const useActiveBusiness = authClient.useActiveOrganization;
+export function useBusinessList() {
+  return authClient.useListOrganizations;
+}
+
+export function useActiveBusiness() {
+  return authClient.useActiveOrganization;
+}
 
 export function useBusinessActions() {
   const queryClient = useQueryClient();
@@ -20,7 +25,6 @@ export function useBusinessActions() {
           if (error) throw new Error(error.message);
           return data ?? {};
         } catch (err) {
-
           if (err instanceof SyntaxError && err.message.includes("JSON")) {
             return {};
           }
