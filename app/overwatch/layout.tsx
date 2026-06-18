@@ -34,14 +34,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             {/* --- MOBILE SIDEBAR DRAWER --- */}
             <Box display={{ base: "block", lg: "none" }}>
-                {/* Backdrop */}
+                
                 <Box 
                     position="fixed" inset={0} bg="blackAlpha.800" backdropFilter="blur(4px)" zIndex={999}
                     opacity={isMobileOpen ? 1 : 0} pointerEvents={isMobileOpen ? "auto" : "none"} transition="opacity 0.3s"
                     onClick={() => setIsMobileOpen(false)}
                 />
                 
-                {/* Drawer */}
+                
                 <Flex 
                     position="fixed" top={0} left={0} h="100dvh" w="280px" bg="#000000" zIndex={1000}
                     borderRight="1px solid" borderColor="whiteAlpha.100" flexDirection="column"
@@ -54,7 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* --- MAIN CONTENT AREA --- */}
             <Flex flex={1} direction="column" overflow="hidden">
                 
-                {/* Admin Header */}
+                
                 <Flex 
                     h="70px" bg="#121212" borderBottom="1px solid" borderColor="whiteAlpha.100" 
                     align="center" justify="space-between" px={{ base: 4, lg: 8 }} flexShrink={0}
@@ -75,7 +75,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         {/* Notifications Wrapper */}
                         <Box position="relative">
                             
-                            {/* Click-away backdrop (invisible) to close dropdown */}
+                           
                             {isNotifOpen && (
                                 <Box position="fixed" inset={0} zIndex={998} onClick={() => setIsNotifOpen(false)} />
                             )}

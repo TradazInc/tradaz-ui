@@ -10,10 +10,10 @@ import {
     LuUsers, LuUser, LuMessageSquare, LuWallet, LuCreditCard, LuLandmark, 
     LuRefreshCw, LuShield, LuScale, LuUndo, LuFileText,  
     LuSettings, LuMenu, LuX, LuZap, LuServer, LuShieldCheck,
-    LuChevronDown, LuChevronRight, LuLogOut
+    LuChevronDown, LuChevronRight, LuLogOut, LuLayers
 } from "react-icons/lu";
 
-// --- THE NEW CONTROL PLANE TAXONOMY ---
+
 const SUPER_ADMIN_NAV_ITEMS = [
     { 
         label: "Overview", 
@@ -31,6 +31,15 @@ const SUPER_ADMIN_NAV_ITEMS = [
         ]
     }, 
     { 
+       
+        label: "Platform Data", 
+        icon: LuLayers, 
+        children: [
+            { label: "Categories", icon: LuLayers, path: "/overwatch/categories" },
+            
+        ]
+    }, 
+    { 
         label: "Users", 
         icon: LuUsers, 
         children: [
@@ -43,7 +52,7 @@ const SUPER_ADMIN_NAV_ITEMS = [
         icon: LuWallet, 
         children: [
             { label: "Finances", icon: LuWallet, path: "/overwatch/finance" },
-              { label: "Transactions", icon: LuCreditCard, path: "/overwatch/transactions" },
+            { label: "Transactions", icon: LuCreditCard, path: "/overwatch/transactions" },
             { label: "Payouts", icon: LuLandmark, path: "/overwatch/payouts" },
             { label: "Subscriptions", icon: LuRefreshCw, path: "/overwatch/subscriptions" },
         ]
@@ -67,16 +76,15 @@ const SUPER_ADMIN_NAV_ITEMS = [
         ]
     },
     { 
+        
         label: "Settings", 
         icon: LuSettings, 
         children: [
             { label: "General Settings", icon: LuSettings, path: "/overwatch/settings" },
-            { label: "Staff Accounts", icon: LuUsers, path: "/overwatch/staff" },
             { label: "Activity Logs", icon: LuFileText, path: "/overwatch/logs" },
         ]
     },
 ];
-
 interface AdminSidebarProps {
     isCollapsed: boolean;
     setIsCollapsed: (val: boolean) => void;
