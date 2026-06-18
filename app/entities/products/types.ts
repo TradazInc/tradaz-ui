@@ -2,20 +2,20 @@
 export type Gender = "male" | "female" | "unisex";
 export type ProductStatus = "approved" | "pending" | "rejected";
 
-// ---- Image ----
+
 export interface ProductImage {
   id?: string;
   url: string;
 }
 
-// ---- Team Variation (inventory per team/location) ----
+
 export interface TeamVariation {
   id?: string;
   quantity: number;
   teamId: string;
 }
 
-// ---- Variation (SKU-level) ----
+
 export interface ProductVariation {
   id?: string;
   sku: string;
@@ -25,7 +25,6 @@ export interface ProductVariation {
   teamVariations: TeamVariation[];
 }
 
-// ---- Product ----
 export interface Product {
   id: string;
   name: string;
@@ -49,7 +48,7 @@ export interface Pagination {
   count: number;
 }
 
-// ---- API Response Shapes ----
+
 export interface ProductListResponse {
   products: Product[];
   pagination: Pagination;
@@ -59,7 +58,7 @@ export interface ProductResponse {
   product: Product;
 }
 
-// ---- Request Payloads ----
+
 export interface CreateProductPayload {
   name: string;
   brand: string;
@@ -88,7 +87,7 @@ export interface UpdateProductStatusPayload {
   productStatus: ProductStatus;
 }
 
-// ---- Query Parameters ----
+// Query Parameters 
 export interface ProductListParams {
   categoryId?: string;
   name?: string;

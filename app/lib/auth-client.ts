@@ -10,7 +10,7 @@ export const authClient = createAuthClient({
         organization: {
           additionalFields: {
             categoryId: {
-              type: "number",
+              type: "string",
               required: false,
             },
             

@@ -52,11 +52,11 @@ const labelStyles = {
 export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
   const { create } = useBusinessActions();
 
-  // Native React State
+  
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
-    categoryId: 0,
+    categoryId: "",   
     about: "",
     phone: "",
     address: "",
@@ -92,7 +92,7 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
       return setErrorMsg("Business name must be at least 2 characters.");
     if (formData.slug.length < 2)
       return setErrorMsg("Slug must be at least 2 characters.");
-    if (formData.categoryId === 0)
+    if (formData.categoryId === "")   
       return setErrorMsg("Please select an industry category.");
 
     try {
@@ -100,19 +100,19 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
         name: formData.name,
         slug: formData.slug,
         keepCurrentActiveOrganization: false,
-        categoryId: Number(formData.categoryId),   
+        categoryId: formData.categoryId, 
         metadata: {
           about: formData.about,
           phone: formData.phone,
           address: formData.address,
-          
         },
       });
 
+     
       setFormData({
         name: "",
         slug: "",
-        categoryId: 0,
+        categoryId: "",
         about: "",
         phone: "",
         address: "",
@@ -232,7 +232,7 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      categoryId: Number(e.target.value),
+                      categoryId: e.target.value, 
                     }))
                   }
                   style={{
@@ -245,19 +245,20 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
                   }}
                   required
                 >
-                  <option value={0} disabled style={{ background: "#0A0A0A" }}>
+                  <option value="" disabled style={{ background: "#0A0A0A" }}>
                     Select Industry
                   </option>
-                  <option value={1} style={{ background: "#0A0A0A" }}>
+                  {/* All values are strings */}
+                  <option value="1" style={{ background: "#0A0A0A" }}>
                     Retail & Premium Goods
                   </option>
-                  <option value={2} style={{ background: "#0A0A0A" }}>
+                  <option value="2" style={{ background: "#0A0A0A" }}>
                     Food & Beverage
                   </option>
-                  <option value={3} style={{ background: "#0A0A0A" }}>
+                  <option value="3" style={{ background: "#0A0A0A" }}>
                     Consumer Electronics
                   </option>
-                  <option value={4} style={{ background: "#0A0A0A" }}>
+                  <option value="4" style={{ background: "#0A0A0A" }}>
                     Digital Services
                   </option>
                 </select>

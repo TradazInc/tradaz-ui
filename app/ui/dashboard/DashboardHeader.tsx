@@ -160,7 +160,7 @@ export const DashboardHeader = ({
   activeStoreId,
   onStoreChange,
 }: ExtendedHeaderProps) => {
-  // ---- Real business data ----
+ 
   const orgsAtom = useBusinessList() as unknown as {
     data?: Array<{ id: string; name: string }>;
   };
@@ -168,12 +168,12 @@ export const DashboardHeader = ({
     data?: { id: string; name: string } | null;
   };
 
-  // ---- Local state ----
+  //  Local state 
   const [activeDropdown, setActiveDropdown] = useState<"notif" | "profile" | null>(null);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isAddStoreOpen, setIsAddStoreOpen] = useState(false);
 
-  // ---- Mapped data for dropdown ----
+  // Mapped data for dropdown 
   const businessItems = (orgsAtom.data ?? []).map((org) => ({
     id: org.id,
     name: org.name,
@@ -194,7 +194,7 @@ export const DashboardHeader = ({
 
   return (
     <>
-      {/* --- GLOBAL OVERLAY TO CLOSE DROPDOWNS --- */}
+      {/*GLOBAL OVERLAY TO CLOSE DROPDOWNS*/}
       {activeDropdown && (
         <Box position="fixed" inset={0} zIndex={99998} onClick={closeAll} />
       )}
@@ -288,7 +288,7 @@ export const DashboardHeader = ({
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
-        {/* Right side: Notifications + Profile */}
+        
         <Flex gap={{ base: 3, sm: 6 }} align="center" ml="auto">
           {/* --- NOTIFICATIONS DROPDOWN --- */}
           <Box position="relative">

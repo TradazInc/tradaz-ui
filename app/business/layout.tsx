@@ -63,7 +63,7 @@ export default function DashboardLayout({
               </Text>
             </Breadcrumb.Item>
 
-            {/* BREADCRUMB SEPARATOR */}
+            
             <Breadcrumb.Separator
               color="gray.600"
               fontSize="xl"
@@ -74,7 +74,7 @@ export default function DashboardLayout({
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
-        {/* RIGHT SECTION (DashboardHeader) */}
+        {/* DashboardHeader */}
         <Flex
           flex={1}
           h="full"
@@ -90,7 +90,7 @@ export default function DashboardLayout({
           />
         </Flex>
 
-        {/* UNBREAKABLE LINE */}
+        
         <Box
           position="absolute"
           bottom="0"
