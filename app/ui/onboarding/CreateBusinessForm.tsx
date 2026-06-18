@@ -22,6 +22,7 @@ import {
 } from "react-icons/lu";
 
 import { useBusinessActions } from "@/app/entities/business/hooks";
+import { useBusinessCategories } from "@/app/entities/business-categories/hooks"; 
 
 interface CreateBusinessFormProps {
   onSuccess: () => void;
@@ -51,12 +52,12 @@ const labelStyles = {
 
 export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
   const { create } = useBusinessActions();
+  const { data: categories, isLoading: categoriesLoading } = useBusinessCategories(); // 👈 fetch categories
 
-  
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
-    categoryId: "",   
+    categoryId: "",
     about: "",
     phone: "",
     address: "",
@@ -92,7 +93,7 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
       return setErrorMsg("Business name must be at least 2 characters.");
     if (formData.slug.length < 2)
       return setErrorMsg("Slug must be at least 2 characters.");
-    if (formData.categoryId === "")   
+    if (formData.categoryId === "")
       return setErrorMsg("Please select an industry category.");
 
     try {
@@ -100,7 +101,7 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
         name: formData.name,
         slug: formData.slug,
         keepCurrentActiveOrganization: false,
-        categoryId: formData.categoryId, 
+        categoryId: formData.categoryId,
         metadata: {
           about: formData.about,
           phone: formData.phone,
@@ -108,7 +109,6 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
         },
       });
 
-     
       setFormData({
         name: "",
         slug: "",
@@ -118,7 +118,6 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
         address: "",
       });
 
-      // Success Toast
       toaster.create({
         title: "Business created successfully",
         description: `${formData.name} has been provisioned.`,
@@ -232,7 +231,7 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      categoryId: e.target.value, 
+                      categoryId: e.target.value,
                     }))
                   }
                   style={{
@@ -246,21 +245,13 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
                   required
                 >
                   <option value="" disabled style={{ background: "#0A0A0A" }}>
-                    Select Industry
+                    {categoriesLoading ? "Loading..." : "Select Industry"}
                   </option>
-                  {/* All values are strings */}
-                  <option value="1" style={{ background: "#0A0A0A" }}>
-                    Retail & Premium Goods
-                  </option>
-                  <option value="2" style={{ background: "#0A0A0A" }}>
-                    Food & Beverage
-                  </option>
-                  <option value="3" style={{ background: "#0A0A0A" }}>
-                    Consumer Electronics
-                  </option>
-                  <option value="4" style={{ background: "#0A0A0A" }}>
-                    Digital Services
-                  </option>
+                  {categories?.map((cat) => (
+                    <option key={cat.id} value={cat.id} style={{ background: "#0A0A0A" }}>
+                      {cat.name}
+                    </option>
+                  ))}
                 </select>
               </Flex>
             </Box>
