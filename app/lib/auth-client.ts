@@ -3,6 +3,9 @@ import { usernameClient, organizationClient, adminClient } from "better-auth/cli
 
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  fetchOptions: {
+    credentials: "include",   
+  },
   plugins: [
     usernameClient(),
     organizationClient({
