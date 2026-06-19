@@ -12,13 +12,6 @@ export default function DashboardLayout({
 }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
-  // Only store state remains 
-  const [availableStores] = useState([
-    { id: "1", name: "Downtown Outlet", address: "Lagos" },
-    { id: "2", name: "Island Branch", address: "Lagos" },
-  ]);
-  const [activeStoreId, setActiveStoreId] = useState("1");
-
   return (
     <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
       {/* HEADER */}
@@ -63,7 +56,6 @@ export default function DashboardLayout({
               </Text>
             </Breadcrumb.Item>
 
-            
             <Breadcrumb.Separator
               color="gray.600"
               fontSize="xl"
@@ -74,7 +66,7 @@ export default function DashboardLayout({
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
-        {/* DashboardHeader */}
+        {/* DashboardHeader – no props needed */}
         <Flex
           flex={1}
           h="full"
@@ -83,14 +75,9 @@ export default function DashboardLayout({
           position="relative"
           zIndex={2}
         >
-          <DashboardHeader
-            availableStores={availableStores}
-            activeStoreId={activeStoreId}
-            onStoreChange={setActiveStoreId}
-          />
+          <DashboardHeader />
         </Flex>
 
-        
         <Box
           position="absolute"
           bottom="0"

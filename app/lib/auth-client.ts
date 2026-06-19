@@ -6,15 +6,16 @@ export const authClient = createAuthClient({
   plugins: [
     usernameClient(),
     organizationClient({
+      teams: { enabled: true },   
       schema: {
         organization: {
           additionalFields: {
-            categoryId: {
-              type: "string",
-              required: false,
-            },
-            
-            
+            categoryId: { type: "string", required: false },
+          },
+        },
+        team: {
+          additionalFields: {
+            address: { type: "string", required: true },
           },
         },
       },

@@ -26,11 +26,13 @@ import {
 } from "react-icons/lu";
 import { OnboardingModal } from "../onboarding/OnboardingModel";
 import { AddStoreModal } from "../onboarding/AddStoreModal";
-import { Store } from "@/app/lib/definitions";
 import { useBusinessList, useActiveBusiness } from "@/app/entities/business/hooks";
+import { useTeamList, useTeamActions } from "@/app/entities/stores/hooks";
 import { authClient } from "@/app/lib/auth-client";
 
-
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 interface BreadcrumbMenuItemProps {
   children: React.ReactNode;
   items: Array<{ id: string; name: string }>;
@@ -41,14 +43,9 @@ interface BreadcrumbMenuItemProps {
   emptyMessage?: string;
 }
 
-interface ExtendedHeaderProps {
-  availableStores?: Store[];
-  activeStoreId?: string;
-  onStoreChange?: (id: string) => void;
-}
-
-
-// BreadcrumbMenuItem
+// ---------------------------------------------------------------------------
+// BreadcrumbMenuItem (unchanged)
+// ---------------------------------------------------------------------------
 const BreadcrumbMenuItem = ({
   children,
   items,
@@ -56,7 +53,7 @@ const BreadcrumbMenuItem = ({
   onSelect,
   addActionLabel,
   onAddAction,
-   emptyMessage = "No business found.",
+  emptyMessage = "No items found.",
 }: BreadcrumbMenuItemProps) => (
   <Breadcrumb.Item>
     <Menu.Root>
@@ -154,35 +151,48 @@ const BreadcrumbMenuItem = ({
 );
 
 
-// DashboardHeader
-export const DashboardHeader = ({
-  availableStores = [],
-  activeStoreId,
-  onStoreChange,
-}: ExtendedHeaderProps) => {
- 
+export const DashboardHeader = () => {
+  // ---- Business data ----
   const orgsAtom = useBusinessList() as unknown as {
     data?: Array<{ id: string; name: string }>;
   };
   const activeOrgAtom = useActiveBusiness() as unknown as {
     data?: { id: string; name: string } | null;
   };
+  const activeBusiness = activeOrgAtom.data ?? null;
 
-  //  Local state 
-  const [activeDropdown, setActiveDropdown] = useState<"notif" | "profile" | null>(null);
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
-  const [isAddStoreOpen, setIsAddStoreOpen] = useState(false);
-
-  // Mapped data for dropdown 
   const businessItems = (orgsAtom.data ?? []).map((org) => ({
     id: org.id,
     name: org.name,
   }));
 
-  const activeBusiness = activeOrgAtom.data ?? null;
+  // ---- Store (team) data ----
+const { data: teamsData } = useTeamList(activeBusiness?.id);
+const { setActive: setActiveTeam } = useTeamActions();
 
-  const activeStoreName =
-    availableStores?.find((s: Store) => s.id === activeStoreId)?.name ?? "Select Store";
+// Safely extract the array from the query result
+const teamsArray = Array.isArray(teamsData) ? teamsData : [];
+
+const storeItems = teamsArray.map((team) => ({
+  id: team.id,
+  name: team.name,
+}));
+
+// Track active team ID locally (updated via mutation)
+const [activeTeamId, setActiveTeamId] = useState<string | undefined>(undefined);
+
+const handleStoreChange = async (teamId: string) => {
+  await setActiveTeam.mutateAsync({ teamId }); 
+  setActiveTeamId(teamId);
+};
+
+const activeStoreName =
+  storeItems.find((s) => s.id === activeTeamId)?.name ?? "Select Store";
+
+  // ---- Local state ----
+  const [activeDropdown, setActiveDropdown] = useState<"notif" | "profile" | null>(null);
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+  const [isAddStoreOpen, setIsAddStoreOpen] = useState(false);
 
   const toggleDropdown = (dropdown: "notif" | "profile") => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
@@ -194,7 +204,6 @@ export const DashboardHeader = ({
 
   return (
     <>
-      {/*GLOBAL OVERLAY TO CLOSE DROPDOWNS*/}
       {activeDropdown && (
         <Box position="fixed" inset={0} zIndex={99998} onClick={closeAll} />
       )}
@@ -211,6 +220,7 @@ export const DashboardHeader = ({
               }}
               addActionLabel="Add New Business"
               onAddAction={() => setIsOnboardingOpen(true)}
+              emptyMessage="No business found"
             >
               <Flex
                 as="button"
@@ -222,12 +232,7 @@ export const DashboardHeader = ({
                 transition="all 0.2s"
                 outline="none"
               >
-                <Icon
-                  as={LuBuilding2}
-                  boxSize={{ base: "14px", sm: "18px" }}
-                  css={iconStyle}
-                  flexShrink={0}
-                />
+                <Icon as={LuBuilding2} boxSize={{ base: "14px", sm: "18px" }} css={iconStyle} flexShrink={0} />
                 <Text
                   fontSize={{ base: "xs", sm: "sm" }}
                   fontWeight="300"
@@ -241,21 +246,18 @@ export const DashboardHeader = ({
               </Flex>
             </BreadcrumbMenuItem>
 
-            <Breadcrumb.Separator
-              color="gray.600"
-              fontSize={{ base: "sm", sm: "xl" }}
-              mx={{ base: 0, sm: 1 }}
-            >
+            <Breadcrumb.Separator color="gray.600" fontSize={{ base: "sm", sm: "xl" }} mx={{ base: 0, sm: 1 }}>
               /
             </Breadcrumb.Separator>
 
-            {/* STORE BREADCRUMB */}
+            {/* STORE BREADCRUMB – NOW REAL DATA */}
             <BreadcrumbMenuItem
-              items={availableStores}
-              activeId={activeStoreId}
-              onSelect={(id) => onStoreChange?.(id)}
+              items={storeItems}
+              activeId={activeTeamId}
+              onSelect={handleStoreChange}
               addActionLabel="Add New Store"
               onAddAction={() => setIsAddStoreOpen(true)}
+              emptyMessage="No store found"
             >
               <Flex
                 as="button"
@@ -267,12 +269,7 @@ export const DashboardHeader = ({
                 transition="all 0.2s"
                 outline="none"
               >
-                <Icon
-                  as={LuStore}
-                  boxSize={{ base: "14px", sm: "18px" }}
-                  css={iconStyle}
-                  flexShrink={0}
-                />
+                <Icon as={LuStore} boxSize={{ base: "14px", sm: "18px" }} css={iconStyle} flexShrink={0} />
                 <Text
                   fontSize={{ base: "xs", sm: "sm" }}
                   fontWeight="300"
@@ -288,7 +285,8 @@ export const DashboardHeader = ({
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
-        
+        {/* Right side – unchanged */}
+         
         <Flex gap={{ base: 3, sm: 6 }} align="center" ml="auto">
           {/* --- NOTIFICATIONS DROPDOWN --- */}
           <Box position="relative">
@@ -584,7 +582,6 @@ export const DashboardHeader = ({
         </Flex>
       </Flex>
 
-      {/* MODALS */}
       <OnboardingModal isOpen={isOnboardingOpen} onClose={() => setIsOnboardingOpen(false)} />
       <AddStoreModal isOpen={isAddStoreOpen} onClose={() => setIsAddStoreOpen(false)} />
     </>

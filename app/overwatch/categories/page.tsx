@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -21,7 +21,7 @@ import {
   useCategoryActions,
 } from "@/app/entities/business-categories/hooks";
 import { controlStyles, labelStyles } from "./style";
-
+import { authClient } from "@/app/lib/auth-client";
 
 
 export default function CategoriesPage() {
@@ -47,6 +47,12 @@ export default function CategoriesPage() {
     if (!window.confirm(`Delete "${categoryName}"?`)) return;
     remove.mutate(id);
   };
+
+   useEffect(() => {
+  authClient.getSession().then((res) => {
+    console.log("Current user role:", res?.data?.user?.role);
+  });
+}, []);
 
   return (
     <Box
