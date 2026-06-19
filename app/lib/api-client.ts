@@ -29,7 +29,7 @@ async function apiFetch<T>(
 
   return authClient.$fetch<T>(url.toString(), {
     method,
-    credentials: "include",
+    // credentials: "include",
     headers: normalizedHeaders,
     body,
   });
