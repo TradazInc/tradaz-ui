@@ -50,7 +50,7 @@ export default function CategoriesPage() {
 
    useEffect(() => {
   authClient.getSession().then((res) => {
-    console.log("Current user role:", res?.data?.user?.role);
+    console.log("Full session:", res);
   });
 }, []);
 
