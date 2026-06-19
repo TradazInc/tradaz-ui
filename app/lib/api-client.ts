@@ -1,3 +1,5 @@
+import { authClient } from "./auth-client";
+
 const baseURL = process.env.BASE_URL;
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -12,27 +14,25 @@ interface FetchOptions extends RequestInit {
 async function apiFetch<T>(
   endpoint: string,
   { method = "GET", params = {}, body, headers = {} }: FetchOptions = {},
-): Promise<T> {
+){
   // initialize base url and append params
   const url = new URL(baseURL + endpoint);
   Object.entries(params).forEach(([key, value]) => {
     url.searchParams.append(key, String(value));
   });
 
-  // set options and fetch data
-  const response = await fetch(url.toString(), {
+  // normalize headers to a Headers instance to satisfy HeadersInit typings
+  const normalizedHeaders = new Headers(headers);
+  if (!normalizedHeaders.has("Content-Type")) {
+    normalizedHeaders.set("Content-Type", "application/json");
+  }
+
+  return authClient.$fetch<T>(url.toString(), {
     method,
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...headers,
-    },
+    headers: normalizedHeaders,
     body,
   });
-
-  // return response or throw error
-  if (!response.ok) throw new Error(`API error ${response.status}`);
-  return response.json();
 }
 
 export class ApiClient<T> {
