@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/auth/:path*",
-      "destination": "https://tradaz-api.onrender.com/api/auth/:path*"
+      "source": "/:path*",
+      "destination": "https://tradaz-api.onrender.com/:path*"
     }
   ]
 }
