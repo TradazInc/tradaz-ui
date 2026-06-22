@@ -21,8 +21,9 @@ import {
   LuMapPin,
 } from "react-icons/lu";
 
-import { useBusinessActions } from "@/app/entities/business/hooks";
-import { useBusinessCategories } from "@/app/entities/business-categories/hooks"; 
+
+import {useBusinessCategories} from "@/entities/business-categories/hooks";
+import {useBusinessActions} from "@/entities/business/hooks";
 
 interface CreateBusinessFormProps {
   onSuccess: () => void;

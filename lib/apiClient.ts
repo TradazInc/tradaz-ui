@@ -1,4 +1,4 @@
-import { authClient } from "../tradaz-ui/app/lib/authClient";
+import { authClient } from "./authClient";
 
 const baseURL = process.env.BASE_URL;
 

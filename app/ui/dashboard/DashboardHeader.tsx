@@ -33,9 +33,9 @@ import {
 import { useTeamList, useTeamActions } from "@/app/entities/stores/hooks";
 import { authClient } from "@/app/lib/authClient";
 
-// ---------------------------------------------------------------------------
+
 // Types
-// ---------------------------------------------------------------------------
+
 interface BreadcrumbMenuItemProps {
   children: React.ReactNode;
   items: Array<{ id: string; name: string }>;
@@ -46,9 +46,7 @@ interface BreadcrumbMenuItemProps {
   emptyMessage?: string;
 }
 
-// ---------------------------------------------------------------------------
-// BreadcrumbMenuItem (unchanged)
-// ---------------------------------------------------------------------------
+
 const BreadcrumbMenuItem = ({
   children,
   items,

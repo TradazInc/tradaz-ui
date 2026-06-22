@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LuX } from "react-icons/lu";
-import { useActiveBusiness } from "@/app/entities/business/hooks";
-import { useTeamActions } from "@/app/entities/stores/hooks";
+import { useActiveBusiness } from "@/entities/business/hooks";
+import {useTeamActions} from "@/entities/stores/hooks"
 
 interface AddStoreModalProps {
   isOpen: boolean;

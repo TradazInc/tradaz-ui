@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { generateDummyCustomers } from "@/app/lib/data";
-import { Customer } from "@/app/lib/definitions";
+import { generateDummyCustomers } from "./../data/data";
+import { Customer } from "./../types/definitions";
 
 const TOTAL_CUSTOMERS = 150;
 const ITEMS_PER_PAGE = 10;
