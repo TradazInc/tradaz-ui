@@ -14,18 +14,15 @@ import {
 } from "@chakra-ui/react";
 import { LuLayers, LuTrash2, LuPlus } from "react-icons/lu";
 
-
 // --- ENTITY HOOKS ---
 import {
   useBusinessCategories,
   useCategoryActions,
 } from "@/app/entities/business-categories/hooks";
 import { controlStyles, labelStyles } from "./style";
-import { authClient } from "@/app/lib/auth-client";
-
+import { authClient } from "@/app/lib/authClient";
 
 export default function CategoriesPage() {
-  
   const { data: categories, isLoading } = useBusinessCategories();
   const { create, remove } = useCategoryActions();
 
@@ -48,11 +45,11 @@ export default function CategoriesPage() {
     remove.mutate(id);
   };
 
-   useEffect(() => {
-  authClient.getSession().then((res) => {
-    console.log("Full session:", res);
-  });
-}, []);
+  useEffect(() => {
+    authClient.getSession().then((res) => {
+      console.log("Full session:", res);
+    });
+  }, []);
 
   return (
     <Box
@@ -88,7 +85,6 @@ export default function CategoriesPage() {
         </Text>
       </Box>
 
-      
       <Grid
         templateColumns={{ base: "1fr", lg: "350px 1fr" }}
         gap={10}
@@ -120,7 +116,10 @@ export default function CategoriesPage() {
           <VStack align="stretch" gap={5}>
             <Box>
               <Text as="label" {...labelStyles}>
-                Name <Text as="span" color="red.400">*</Text>
+                Name{" "}
+                <Text as="span" color="red.400">
+                  *
+                </Text>
               </Text>
               <Input
                 value={name}
@@ -149,7 +148,6 @@ export default function CategoriesPage() {
           </VStack>
         </Box>
 
-      
         <Box>
           <Text
             fontSize="10px"

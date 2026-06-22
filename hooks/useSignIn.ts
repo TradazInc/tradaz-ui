@@ -1,6 +1,6 @@
-import { ApiClient } from "../lib/api-client";
+import { ApiClient } from "../../lib/apiClient";
 
-import { SignInData, SignInResponse } from "../lib/definitions";
+import { SignInData, SignInResponse } from "../../types/definitions";
 
 // Signin Service
 const signInService = new ApiClient<SignInResponse>("/login");

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/authClient";
 
 export function useBusinessList() {
   return authClient.useListOrganizations;
@@ -18,7 +18,7 @@ export function useBusinessActions() {
   return {
     create: useMutation({
       mutationFn: async (
-        payload: Parameters<typeof authClient.organization.create>[0]
+        payload: Parameters<typeof authClient.organization.create>[0],
       ) => {
         try {
           const { data, error } = await authClient.organization.create(payload);
@@ -35,7 +35,7 @@ export function useBusinessActions() {
     }),
     update: useMutation({
       mutationFn: async (
-        payload: Parameters<typeof authClient.organization.update>[0]
+        payload: Parameters<typeof authClient.organization.update>[0],
       ) => {
         const { data, error } = await authClient.organization.update(payload);
         if (error) throw new Error(error.message);
@@ -45,7 +45,7 @@ export function useBusinessActions() {
     }),
     delete: useMutation({
       mutationFn: async (
-        payload: Parameters<typeof authClient.organization.delete>[0]
+        payload: Parameters<typeof authClient.organization.delete>[0],
       ) => {
         const { data, error } = await authClient.organization.delete(payload);
         if (error) throw new Error(error.message);
@@ -55,9 +55,10 @@ export function useBusinessActions() {
     }),
     setActive: useMutation({
       mutationFn: async (
-        payload: Parameters<typeof authClient.organization.setActive>[0]
+        payload: Parameters<typeof authClient.organization.setActive>[0],
       ) => {
-        const { data, error } = await authClient.organization.setActive(payload);
+        const { data, error } =
+          await authClient.organization.setActive(payload);
         if (error) throw new Error(error.message);
         return data;
       },
@@ -65,7 +66,7 @@ export function useBusinessActions() {
     }),
     leave: useMutation({
       mutationFn: async (
-        payload: Parameters<typeof authClient.organization.leave>[0]
+        payload: Parameters<typeof authClient.organization.leave>[0],
       ) => {
         const { data, error } = await authClient.organization.leave(payload);
         if (error) throw new Error(error.message);

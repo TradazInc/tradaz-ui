@@ -14,11 +14,11 @@ import {
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { PasswordInput } from "../../../components/ui/password-input";
-import { SignInData } from "../../lib/definitions";
+import { SignInData } from "../../../types/definitions";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
-import { authClient } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/authClient";
 import { toaster } from "@/components/ui/toaster";
 
 const SignInForm = () => {
@@ -79,9 +79,7 @@ const SignInForm = () => {
       });
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Google login failed.";
+        error instanceof Error ? error.message : "Google login failed.";
       toaster.create({
         title: "Google sign‑in error",
         description: message,
@@ -189,9 +187,7 @@ const SignInForm = () => {
               >
                 Don’t have an account?
               </Text>
-              <LinkText>
-                Sign Up
-              </LinkText>
+              <LinkText>Sign Up</LinkText>
             </HStack>
           </VStack>
         </Stack>

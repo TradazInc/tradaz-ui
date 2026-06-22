@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/authClient";
 
 // ---- Queries ----
 export function useListUsers(
@@ -130,7 +130,8 @@ export function useAdminActions() {
       mutationFn: async (
         payload: Parameters<typeof authClient.admin.revokeUserSession>[0],
       ) => {
-        const { data, error } = await authClient.admin.revokeUserSession(payload);
+        const { data, error } =
+          await authClient.admin.revokeUserSession(payload);
         if (error) throw new Error(error.message);
         return data;
       },
@@ -140,7 +141,8 @@ export function useAdminActions() {
       mutationFn: async (
         payload: Parameters<typeof authClient.admin.revokeUserSessions>[0],
       ) => {
-        const { data, error } = await authClient.admin.revokeUserSessions(payload);
+        const { data, error } =
+          await authClient.admin.revokeUserSessions(payload);
         if (error) throw new Error(error.message);
         return data;
       },

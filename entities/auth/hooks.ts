@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/app/lib/auth-client"; 
+import { authClient } from "@/app/lib/authClient";
 
 // ---- Session ----
 export function useAuthSession() {
@@ -19,7 +19,7 @@ export function useAuthActions() {
 
   const clearSession = () => queryClient.clear();
 
-  // Email sign-up 
+  // Email sign-up
   const signUp = useMutation({
     mutationFn: (data: {
       email: string;
@@ -31,7 +31,7 @@ export function useAuthActions() {
     onSuccess: refreshSession,
   });
 
-  // Email sign-in 
+  // Email sign-in
   const signInEmail = useMutation({
     mutationFn: (data: { email: string; password: string }) =>
       authClient.signIn.email(data),
@@ -53,16 +53,15 @@ export function useAuthActions() {
 
   // Update user (can update username)
   const updateUser = useMutation({
-    mutationFn: (data: { username?: string }) =>
-      authClient.updateUser(data),
+    mutationFn: (data: { username?: string }) => authClient.updateUser(data),
     onSuccess: refreshSession,
   });
 
   return {
     signUp,
-    signInEmail,      
+    signInEmail,
     signOut,
-    updateUser,       
+    updateUser,
   };
 }
 

@@ -26,9 +26,12 @@ import {
 } from "react-icons/lu";
 import { OnboardingModal } from "../onboarding/OnboardingModel";
 import { AddStoreModal } from "../onboarding/AddStoreModal";
-import { useBusinessList, useActiveBusiness } from "@/app/entities/business/hooks";
+import {
+  useBusinessList,
+  useActiveBusiness,
+} from "@/app/entities/business/hooks";
 import { useTeamList, useTeamActions } from "@/app/entities/stores/hooks";
-import { authClient } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/authClient";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -150,7 +153,6 @@ const BreadcrumbMenuItem = ({
   </Breadcrumb.Item>
 );
 
-
 export const DashboardHeader = () => {
   // ---- Business data ----
   const orgsAtom = useBusinessList() as unknown as {
@@ -167,30 +169,34 @@ export const DashboardHeader = () => {
   }));
 
   // ---- Store (team) data ----
-const { data: teamsData } = useTeamList(activeBusiness?.id);
-const { setActive: setActiveTeam } = useTeamActions();
+  const { data: teamsData } = useTeamList(activeBusiness?.id);
+  const { setActive: setActiveTeam } = useTeamActions();
 
-// Safely extract the array from the query result
-const teamsArray = Array.isArray(teamsData) ? teamsData : [];
+  // Safely extract the array from the query result
+  const teamsArray = Array.isArray(teamsData) ? teamsData : [];
 
-const storeItems = teamsArray.map((team) => ({
-  id: team.id,
-  name: team.name,
-}));
+  const storeItems = teamsArray.map((team) => ({
+    id: team.id,
+    name: team.name,
+  }));
 
-// Track active team ID locally (updated via mutation)
-const [activeTeamId, setActiveTeamId] = useState<string | undefined>(undefined);
+  // Track active team ID locally (updated via mutation)
+  const [activeTeamId, setActiveTeamId] = useState<string | undefined>(
+    undefined,
+  );
 
-const handleStoreChange = async (teamId: string) => {
-  await setActiveTeam.mutateAsync({ teamId }); 
-  setActiveTeamId(teamId);
-};
+  const handleStoreChange = async (teamId: string) => {
+    await setActiveTeam.mutateAsync({ teamId });
+    setActiveTeamId(teamId);
+  };
 
-const activeStoreName =
-  storeItems.find((s) => s.id === activeTeamId)?.name ?? "Select Store";
+  const activeStoreName =
+    storeItems.find((s) => s.id === activeTeamId)?.name ?? "Select Store";
 
   // ---- Local state ----
-  const [activeDropdown, setActiveDropdown] = useState<"notif" | "profile" | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<
+    "notif" | "profile" | null
+  >(null);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isAddStoreOpen, setIsAddStoreOpen] = useState(false);
 
@@ -232,7 +238,12 @@ const activeStoreName =
                 transition="all 0.2s"
                 outline="none"
               >
-                <Icon as={LuBuilding2} boxSize={{ base: "14px", sm: "18px" }} css={iconStyle} flexShrink={0} />
+                <Icon
+                  as={LuBuilding2}
+                  boxSize={{ base: "14px", sm: "18px" }}
+                  css={iconStyle}
+                  flexShrink={0}
+                />
                 <Text
                   fontSize={{ base: "xs", sm: "sm" }}
                   fontWeight="300"
@@ -242,11 +253,20 @@ const activeStoreName =
                 >
                   {activeBusiness?.name ?? "Select Business"}
                 </Text>
-                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} flexShrink={0} />
+                <Icon
+                  as={LuChevronDown}
+                  boxSize="16px"
+                  css={iconStyle}
+                  flexShrink={0}
+                />
               </Flex>
             </BreadcrumbMenuItem>
 
-            <Breadcrumb.Separator color="gray.600" fontSize={{ base: "sm", sm: "xl" }} mx={{ base: 0, sm: 1 }}>
+            <Breadcrumb.Separator
+              color="gray.600"
+              fontSize={{ base: "sm", sm: "xl" }}
+              mx={{ base: 0, sm: 1 }}
+            >
               /
             </Breadcrumb.Separator>
 
@@ -269,7 +289,12 @@ const activeStoreName =
                 transition="all 0.2s"
                 outline="none"
               >
-                <Icon as={LuStore} boxSize={{ base: "14px", sm: "18px" }} css={iconStyle} flexShrink={0} />
+                <Icon
+                  as={LuStore}
+                  boxSize={{ base: "14px", sm: "18px" }}
+                  css={iconStyle}
+                  flexShrink={0}
+                />
                 <Text
                   fontSize={{ base: "xs", sm: "sm" }}
                   fontWeight="300"
@@ -279,14 +304,19 @@ const activeStoreName =
                 >
                   {activeStoreName}
                 </Text>
-                <Icon as={LuChevronDown} boxSize="16px" css={iconStyle} flexShrink={0} />
+                <Icon
+                  as={LuChevronDown}
+                  boxSize="16px"
+                  css={iconStyle}
+                  flexShrink={0}
+                />
               </Flex>
             </BreadcrumbMenuItem>
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
         {/* Right side – unchanged */}
-         
+
         <Flex gap={{ base: 3, sm: 6 }} align="center" ml="auto">
           {/* --- NOTIFICATIONS DROPDOWN --- */}
           <Box position="relative">
@@ -383,7 +413,12 @@ const activeStoreName =
                       <Text fontSize="12px" color="#888888" mt={1}>
                         Order #POS-8829 needs fulfillment.
                       </Text>
-                      <Text fontSize="10px" color="#555555" mt={2} fontWeight="bold">
+                      <Text
+                        fontSize="10px"
+                        color="#555555"
+                        mt={2}
+                        fontWeight="bold"
+                      >
                         10 MINS AGO
                       </Text>
                     </Box>
@@ -417,7 +452,9 @@ const activeStoreName =
                   size="sm"
                   border="1px solid"
                   rounded="full"
-                  borderColor={activeDropdown === "profile" ? "white" : "#333333"}
+                  borderColor={
+                    activeDropdown === "profile" ? "white" : "#333333"
+                  }
                   transition="all 0.2s"
                   _hover={{ borderColor: "white" }}
                 >
@@ -478,7 +515,12 @@ const activeStoreName =
                     </Avatar.Root>
                   </AvatarGroup>
                   <Box overflow="hidden">
-                    <Text fontSize="13px" fontWeight="bold" color="white" lineClamp={1}>
+                    <Text
+                      fontSize="13px"
+                      fontWeight="bold"
+                      color="white"
+                      lineClamp={1}
+                    >
                       Wada Gift
                     </Text>
                     <Text fontSize="12px" color="#888888" lineClamp={1}>
@@ -582,8 +624,14 @@ const activeStoreName =
         </Flex>
       </Flex>
 
-      <OnboardingModal isOpen={isOnboardingOpen} onClose={() => setIsOnboardingOpen(false)} />
-      <AddStoreModal isOpen={isAddStoreOpen} onClose={() => setIsAddStoreOpen(false)} />
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+      />
+      <AddStoreModal
+        isOpen={isAddStoreOpen}
+        onClose={() => setIsAddStoreOpen(false)}
+      />
     </>
   );
 };

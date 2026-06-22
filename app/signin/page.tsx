@@ -5,7 +5,7 @@ import SignInHeader from "../ui/signin/SignInHeader";
 import SigninSidePanel from "../ui/signin/SigninSidePanel";
 import BackToHome from "../ui/component/BackToHome";
 import TradazHeader from "../ui/TradazHeader";
-import { authClient } from "../lib/auth-client";
+import { authClient } from "../lib/authClient";
 import { useEffect } from "react";
 
 const SigninPage = () => {

@@ -1,4 +1,4 @@
-import { authClient } from "./auth-client";
+import { authClient } from "../tradaz-ui/app/lib/authClient";
 
 const baseURL = process.env.BASE_URL;
 
@@ -14,7 +14,7 @@ interface FetchOptions extends RequestInit {
 async function apiFetch<T>(
   endpoint: string,
   { method = "GET", params = {}, body, headers = {} }: FetchOptions = {},
-){
+) {
   // initialize base url and append params
   const url = new URL(baseURL + endpoint);
   Object.entries(params).forEach(([key, value]) => {
@@ -29,7 +29,7 @@ async function apiFetch<T>(
 
   return authClient.$fetch<T>(url.toString(), {
     method,
-    // credentials: "include",
+    credentials: "include",
     headers: normalizedHeaders,
     body,
   });
