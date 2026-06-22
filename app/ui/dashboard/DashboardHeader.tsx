@@ -26,13 +26,9 @@ import {
 } from "react-icons/lu";
 import { OnboardingModal } from "../onboarding/OnboardingModel";
 import { AddStoreModal } from "../onboarding/AddStoreModal";
-import {
-  useBusinessList,
-  useActiveBusiness,
-} from "@/entities/business/hooks";
+import { useBusinessList, useActiveBusiness } from "@/entities/business/hooks";
 import { useTeamList, useTeamActions } from "@/entities/stores/hooks";
 import { authClient } from "@/lib/authClient";
-
 
 // Types
 
@@ -45,7 +41,6 @@ interface BreadcrumbMenuItemProps {
   onAddAction?: () => void;
   emptyMessage?: string;
 }
-
 
 const BreadcrumbMenuItem = ({
   children,
