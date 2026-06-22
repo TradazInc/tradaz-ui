@@ -18,7 +18,7 @@ import {
   LuBan,
   LuTrash2,
 } from "react-icons/lu";
-import { Customer } from "@/app/lib/definitions";
+import { Customer } from "@/types/definitions";
 
 const controlStyles = {
   bg: "#0A0A0A",
