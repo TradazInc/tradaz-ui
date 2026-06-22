@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { InventoryProduct } from "@/app/lib/definitions";
+import { InventoryProduct } from "@/types/definitions";
 
 // --- TYPES ---
 export interface ProductVariation {

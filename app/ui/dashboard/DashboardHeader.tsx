@@ -29,9 +29,9 @@ import { AddStoreModal } from "../onboarding/AddStoreModal";
 import {
   useBusinessList,
   useActiveBusiness,
-} from "@/app/entities/business/hooks";
-import { useTeamList, useTeamActions } from "@/app/entities/stores/hooks";
-import { authClient } from "@/app/lib/authClient";
+} from "@/entities/business/hooks";
+import { useTeamList, useTeamActions } from "@/entities/stores/hooks";
+import { authClient } from "@/lib/authClient";
 
 
 // Types

@@ -8,8 +8,8 @@ import {
     LuEye, LuTarget, LuSquare, LuTrash2, LuSearch, LuX
 } from "react-icons/lu";
 
-import { generateDummyPopups } from "@/app/lib/data";
-import { PopupCampaign } from "@/app/lib/definitions";
+import { generateDummyPopups } from "@/data/data";
+import { PopupCampaign } from "@/types/definitions";
 
 // --- REUSABLE STYLES ---
 const inputStyles = { bg: "#000000", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };

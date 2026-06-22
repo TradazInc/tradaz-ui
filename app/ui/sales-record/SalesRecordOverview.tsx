@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
-import { useSales } from "@/app/hooks/useSales";
+import { useSales } from "@/hooks/useSales";
 import { SalesGridView } from "./SalesGridView";
 import { SalesDetailView } from "./SalesDetailView";
+
 
 export const SalesRecordOverview = () => {
   const salesState = useSales();

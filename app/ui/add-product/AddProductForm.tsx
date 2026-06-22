@@ -31,13 +31,13 @@ import {
   LuCheck,
   LuTrash2,
 } from "react-icons/lu";
-import { useProductActions } from "@/app/entities/products/hooks";
+import { useProductActions } from "@/entities/products/hooks";
 import type {
   CreateProductPayload,
   Gender,
   ProductVariation,
-} from "@/app/entities/products/types";
-import { productsApi } from "@/app/entities/products/api";
+} from "@/entities/products/types";
+import { productsApi } from "@/entities/products/api";
 
 
 // Reusable styles

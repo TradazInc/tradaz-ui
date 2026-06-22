@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useOnlineOrders } from "@/app/hooks/useOnlineOrders";
+import { useOnlineOrders } from "@/hooks/useOnlineOrders";
 import { OnlineOrdersGridView } from "./OnlineOrdersGridView";
 import { OnlineOrderDetailView } from "./OnlineOrderDetailView";
 

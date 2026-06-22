@@ -2,7 +2,7 @@
 import React from "react";
 import { Box, Flex, Text, SimpleGrid, Icon, Button, Badge,Avatar, AvatarGroup } from "@chakra-ui/react";
 import { LuArrowLeft, LuMail, LuPhone, LuMapPin, LuShoppingBag, LuBan, LuTrash2, LuPencil } from "react-icons/lu";
-import { Customer } from "@/app/lib/definitions";
+import { Customer } from "@/types/definitions";
 
 interface CustomerDetailViewProps {
     customer: Customer;

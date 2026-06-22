@@ -9,8 +9,8 @@ import {
     LuWallet, LuEye, LuX, LuCheck 
 } from "react-icons/lu";
 
-import { generateDummyTaxableSales } from "@/app/lib/data";
-import { TaxableSale } from "@/app/lib/definitions";
+import { generateDummyTaxableSales } from "@/data/data";
+import { TaxableSale } from "@/types/definitions";
 
 type TimeFilter = "1M" | "3M" | "6M" | "1Y" | "ALL";
 

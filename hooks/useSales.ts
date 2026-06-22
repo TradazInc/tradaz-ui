@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { generateDummySales } from "@/app/lib/data";
-import { SalesRecord } from "@/app/lib/definitions";
+import { generateDummySales } from "@/data/data";
+import { SalesRecord } from "@/types/definitions";
 
 export interface ExtendedSalesRecord extends SalesRecord {
     status?: string;

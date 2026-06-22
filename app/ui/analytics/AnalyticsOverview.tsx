@@ -4,7 +4,7 @@ import React from "react";
 import { SimpleGrid, Flex, Text, Icon, Box, BoxProps } from "@chakra-ui/react";
 
 import { LuTrendingUp, LuDollarSign, LuShoppingCart } from "react-icons/lu";
-import { MetricCardProps } from '@/app/lib/definitions';
+import { MetricCardProps } from '@/types/definitions';
 
 
 const GridCard = ({ children, ...rest }: { children: React.ReactNode } & BoxProps) => {

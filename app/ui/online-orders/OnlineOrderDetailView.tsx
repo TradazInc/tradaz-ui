@@ -17,7 +17,7 @@ import {
   LuCreditCard,
   LuPackage,
 } from "react-icons/lu";
-import { OnlineOrder } from "@/app/lib/definitions";
+import { OnlineOrder } from "@/types/definitions";
 
 interface OnlineOrderDetailViewProps {
   order: OnlineOrder;

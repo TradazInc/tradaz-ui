@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useMemo, useCallback } from "react";
-import { useProductList, useProductActions } from "@/app/entities/products/hooks";
-import type { Product } from "@/app/entities/products/types";
+import { useProductList, useProductActions } from "@/entities/products/hooks";
+import type { Product } from "@/entities/products/types";
 import { ProductDetailView } from "./productDetailView";
 import { InventoryGridView } from "./inventoryGridView";
 import { InventorySkeleton } from "./InventorySkeleton";

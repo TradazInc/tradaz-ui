@@ -7,8 +7,8 @@ import {
     LuTrendingUp, LuPause, LuPlay, LuTrash2, LuPackageOpen, LuTruck, LuX
 } from "react-icons/lu";
 
-import { generateDummyPromotions } from "@/app/lib/data";
-import { PromotionCampaign } from "@/app/lib/definitions";
+import { generateDummyPromotions } from "@/data/data";
+import { PromotionCampaign } from "@/types/definitions";
 
 // --- REUSABLE STYLES ---
 const inputStyles = { bg: "#000000", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };

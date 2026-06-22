@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { generateDummyExpenses } from "@/app/lib/data";
-import { Expense } from "@/app/lib/definitions";
+import { generateDummyExpenses } from "@/data/data";
+import { Expense } from "@/types/definitions";
 
 const TOTAL_EXPENSES_LIMIT = 60;
 const ITEMS_PER_PAGE = 15;

@@ -10,7 +10,7 @@ import {
     LuPrinter, LuTrophy, LuX, LuWifi
 } from "react-icons/lu";
 
-import { initialPosCart } from "@/app/lib/data";
+import { initialPosCart } from "@/data/data";
 
 const inputStyles = {
     bg: "#0A0A0A",

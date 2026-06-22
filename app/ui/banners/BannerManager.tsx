@@ -7,8 +7,8 @@ import {
     LuPower, LuPowerOff, LuSquare, LuTrash2, LuMonitorSmartphone, LuX
 } from "react-icons/lu";
 
-import { generateDummyBanners } from "@/app/lib/data";
-import { PromoBanner } from "@/app/lib/definitions";
+import { generateDummyBanners } from "@/data/data";
+import { PromoBanner } from "@/types/definitions";
 
 // --- REUSABLE STYLES ---
 const inputStyles = { bg: "#000000", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };

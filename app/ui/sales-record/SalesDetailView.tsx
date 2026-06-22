@@ -10,7 +10,7 @@ import {
   LuReceipt,
   LuCircleCheck,
 } from "react-icons/lu";
-import { SalesRecord } from "@/app/lib/definitions";
+import { SalesRecord } from "@/types/definitions";
 
 interface SalesDetailViewProps {
   sale: SalesRecord;

@@ -6,8 +6,8 @@ import {
     LuBanknote, LuMessageSquare, LuMessageCircle, LuGift
 } from "react-icons/lu";
 
-import { generateDummyRefunds } from "@/app/lib/data";
-import { RefundRequest } from "@/app/lib/definitions";
+import { generateDummyRefunds } from "@/data/data";
+import { RefundRequest } from "@/types/definitions";
 
 export const RefundManager = () => {
     const [refunds, setRefunds] = useState<RefundRequest[]>(generateDummyRefunds());

@@ -7,8 +7,8 @@ import {
     LuDownload, LuSave, LuShieldCheck, LuPercent
 } from "react-icons/lu";
 
-import { generateDummyVatRecords } from "@/app/lib/data";
-import { VatRemittance } from "@/app/lib/definitions";
+import { generateDummyVatRecords } from "@/data/data";
+import { VatRemittance } from "@/types/definitions";
 
 export const VatManager = () => {
     const [records, setRecords] = useState<VatRemittance[]>(generateDummyVatRecords());

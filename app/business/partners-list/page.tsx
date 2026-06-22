@@ -5,7 +5,7 @@ import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, IconButton, Avatar, G
 import { motion, AnimatePresence } from "framer-motion";
 import {
     LuSearch, LuRefreshCw, LuStore, LuCheck,
-    LuBan, LuClock, LuMail, LuSend, LuEye, LuEllipsisVertical, LuX, LuBox, LuBanknote
+    LuBan, LuClock, LuMail, LuSend, LuEye, LuX, LuBox, LuBanknote
 } from "react-icons/lu";
 
 // --- REUSABLE STYLES ---

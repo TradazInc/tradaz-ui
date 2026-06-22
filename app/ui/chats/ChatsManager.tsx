@@ -7,8 +7,8 @@ import {
     LuCheck, LuClock, LuCircleDashed
 } from "react-icons/lu";
 
-import { generateDummyChats } from "@/app/lib/data";
-import { CustomerChat } from "@/app/lib/definitions";
+import { generateDummyChats } from "@/data/data";
+import { CustomerChat } from "@/types/definitions";
 
 // --- INNER COMPONENT ---
 const ChatManagerInner = () => {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { generateDummyRevenue } from "@/app/lib/data";
-import { RevenueTransaction } from "@/app/lib/definitions";
+import { generateDummyRevenue } from "@/data/data";
+import { RevenueTransaction } from "@/types/definitions";
 
 const TOTAL_LIMIT = 60;
 const ITEMS_PER_PAGE = 15;

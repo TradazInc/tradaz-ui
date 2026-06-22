@@ -7,8 +7,8 @@ import {
     LuPackageCheck, LuArrowRight, LuMessageSquare, LuMessageCircle
 } from "react-icons/lu";
 
-import { generateDummyExchanges } from "@/app/lib/data";
-import { ExchangeRequest } from "@/app/lib/definitions";
+import { generateDummyExchanges } from "@/data/data";
+import { ExchangeRequest } from "@/types/definitions";
 
 export const ExchangeManager = () => {
     const router = useRouter(); 

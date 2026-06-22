@@ -3,10 +3,10 @@ import React from "react";
 import { Box, Flex, Text, Button, Icon } from "@chakra-ui/react";
 import {  LuTriangle } from "react-icons/lu";
 
-import { useCustomers } from "@/app/hooks/useCustomer";
+import { useCustomers } from "@/hooks/useCustomer";
 import { CustomerGridView } from "./CustomerGridView";
 import { CustomerDetailView } from "./CustomerDetailView";
-import { Customer } from "@/app/lib/definitions";
+import { Customer } from "@/types/definitions";
 
 // --- ACTION CONFIRMATION MODAL ---
 const ActionModal = ({ 

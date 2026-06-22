@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import { generateDummyVouchers } from "@/app/lib/data";
-import { GiftVoucher } from "@/app/lib/definitions";
+import { generateDummyVouchers } from "@/data/data";
+import { GiftVoucher } from "@/types/definitions";
 
 export const useVouchers = () => {
     const [vouchers, setVouchers] = useState<GiftVoucher[]>(() => generateDummyVouchers());

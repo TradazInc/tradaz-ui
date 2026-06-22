@@ -446,3 +446,14 @@ export interface PastReview {
   comment: string;
   date: string;
 }
+
+
+export interface ExtendedSalesRecord extends SalesRecord {
+  
+  customerName?: string;
+  customerEmail?: string;
+  cashierId?: string;
+  receiptUrl?: string;
+  items?: CartItem[]; 
+  notes?: string;
+}

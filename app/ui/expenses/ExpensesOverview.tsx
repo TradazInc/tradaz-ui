@@ -31,8 +31,8 @@ import {
   LuCalendar,
 } from "react-icons/lu";
 
-import { useExpenses } from "@/app/hooks/useExpenses";
-import { Expense } from "@/app/lib/definitions";
+import { useExpenses } from "@/hooks/useExpenses";
+import { Expense } from "@/types/definitions";
 
 const controlStyles = {
   bg: "#0A0A0A",

@@ -18,7 +18,7 @@ import {
   LuEye,
   LuPlus,
 } from "react-icons/lu";
-import { SalesRecord } from "@/app/lib/definitions";
+import { ExtendedSalesRecord } from "@/types/definitions";
 
 import { SalesPosModal, NewSalePayload } from "./SalesPosModal";
 
@@ -47,7 +47,7 @@ const nativeSelectStyle: React.CSSProperties = {
 };
 
 interface SalesGridViewProps {
-  visibleItems: SalesRecord[];
+  visibleItems: ExtendedSalesRecord[]; // <-- FIXED
   processedSalesLength: number;
   searchQuery: string;
   sortBy: string;
@@ -55,7 +55,7 @@ interface SalesGridViewProps {
   handleSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSortBy: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   handleSortOrder: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSelectSale: (sale: SalesRecord) => void;
+  onSelectSale: (sale: ExtendedSalesRecord) => void; // <-- FIXED
   visibleCount: number;
   loaderRef: React.RefObject<HTMLDivElement | null>;
   onAddSale: (saleData: NewSalePayload) => void;
@@ -270,7 +270,7 @@ export const SalesGridView = ({
               </Box>
             </Box>
             <Box as="tbody">
-              {visibleItems.map((sale: SalesRecord, idx: number) => (
+              {visibleItems.map((sale: ExtendedSalesRecord, idx: number) => ( // <-- FIXED
                 <Box
                   as="tr"
                   key={idx}

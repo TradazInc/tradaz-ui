@@ -23,8 +23,8 @@ import {
   LuTag,
 } from "react-icons/lu";
 
-import { generateDummyReviews } from "@/app/lib/data";
-import { ProductReview } from "@/app/lib/definitions";
+import { generateDummyReviews } from "@/data/data";
+import { ProductReview } from "@/types/definitions";
 
 export const ReviewsManager = () => {
   const [reviews, setReviews] = useState<ProductReview[]>(

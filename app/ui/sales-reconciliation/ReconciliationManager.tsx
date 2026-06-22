@@ -6,8 +6,8 @@ import {
     LuClock, LuDownload, LuSignature, LuWallet
 } from "react-icons/lu";
 
-import { generateDummyReconciliations } from "@/app/lib/data";
-import { ReconciliationRecord } from "@/app/lib/definitions";
+import { generateDummyReconciliations } from "@/data/data";
+import { ReconciliationRecord } from "@/types/definitions";
 
 export const ReconciliationManager = () => {
     const [records, setRecords] = useState<ReconciliationRecord[]>(generateDummyReconciliations());

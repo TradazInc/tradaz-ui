@@ -8,7 +8,7 @@ import {
 } from "react-icons/lu";
 
 import { AddStaffForm } from "@/app/ui/dashboard/AddStaffForm";
-import { useStaff, StaffRole, StaffMember } from "@/app/hooks/useStaff";
+import { useStaff, StaffRole, StaffMember } from "@/hooks/useStaff";
 
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
 const nativeSelectStyle: React.CSSProperties = { width: "100%", backgroundColor: "#0A0A0A", color: "white", height: "44px", borderRadius: "0px", padding: "0 12px", border: "1px solid #333333", outline: "none", cursor: "pointer", fontSize: "14px" };
