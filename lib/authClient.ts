@@ -11,12 +11,12 @@ export const authClient = createAuthClient({
       schema: {
         organization: {
           additionalFields: {
-            categoryId: { type: "string", required: false },
+            categoryId: { type: "string", input: true, required: true },
           },
         },
         team: {
           additionalFields: {
-            address: { type: "string", required: true },
+            address: { type: "string", input: true, required: true },
           },
         },
       },
