@@ -18,7 +18,7 @@ import { SignInData } from "../../../types/definitions";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
-import { authClient } from "@/app/lib/authClient";
+import { authClient } from "@/lib/authClient";
 import { toaster } from "@/components/ui/toaster";
 
 const SignInForm = () => {

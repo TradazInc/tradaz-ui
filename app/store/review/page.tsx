@@ -7,8 +7,8 @@ import {
     LuStar, LuCheck
 } from "react-icons/lu";
 
-import { PendingReview, PastReview } from "@/app/lib/definitions";
-import { MOCK_PENDING_REVIEWS, MOCK_PAST_REVIEWS } from "@/app/lib/data";
+import { PendingReview, PastReview } from "@/types/definitions";
+import { MOCK_PENDING_REVIEWS, MOCK_PAST_REVIEWS } from "@/data/data";
 
 export default function ReviewsPage() {
     const brandColor = "#5cac7d";

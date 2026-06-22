@@ -17,7 +17,7 @@ import { PasswordInput } from "../../../components/ui/password-input";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
-import { authClient } from "@/app/lib/authClient";
+import { authClient } from "@/lib/authClient";
 import { SignUpData } from "../../../types/definitions";
 import { toaster } from "@/components/ui/toaster";
 

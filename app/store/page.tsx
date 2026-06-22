@@ -9,7 +9,7 @@ import {
     LuHeart, LuShoppingCart, LuArrowRight, LuStar, LuCheck, LuX, LuMinus, LuPlus, LuMegaphone 
 } from "react-icons/lu";
 
-import { STORE_BANNERS, STORE_PRODUCTS } from "@/app/lib/data";
+import { STORE_BANNERS, STORE_PRODUCTS } from "@/data/data";
 import { ProductDetailView } from "../ui/store/productDetail/productDetail";
 
 

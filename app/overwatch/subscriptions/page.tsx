@@ -8,7 +8,7 @@ import {
     LuClock, LuEllipsisVertical, LuX, LuDownload, LuZap, LuBan
 } from "react-icons/lu";
 
-import { useAdminSubscriptions, Subscription,  SubStatus } from "@/app/hooks/useAdminSubscriptions";
+import { useAdminSubscriptions, Subscription,  SubStatus } from "@/hooks/useAdminSubscriptions";
 
 import { CreateCustomPlanForm } from "../../ui/admin/subscriptions/CreateCustomPlanForm";
 

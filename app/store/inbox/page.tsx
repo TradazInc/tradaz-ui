@@ -8,8 +8,8 @@ import {
     LuSend, LuSearch, LuEllipsisVertical, LuPackage, LuPaperclip, LuImage, LuMic, LuVideo 
 } from "react-icons/lu";
 
-import { Message as BaseMessage, ChatSession } from "@/app/lib/definitions";
-import { MOCK_CHATS, MOCK_MESSAGES } from "@/app/lib/data";
+import { Message as BaseMessage, ChatSession } from "@/types/definitions";
+import { MOCK_CHATS, MOCK_MESSAGES } from "@/data/data";
 
 
 export interface ExtendedMessage extends BaseMessage {

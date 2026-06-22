@@ -22,7 +22,7 @@ import {
 } from "react-icons/lu";
 
 
-import { useBusinessList, useBusinessActions } from "@/app/entities/business/hooks";
+import { useBusinessList, useBusinessActions } from "@/entities/business/hooks";
 import { toaster } from "@/components/ui/toaster";
 
 

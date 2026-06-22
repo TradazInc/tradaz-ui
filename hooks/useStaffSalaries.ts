@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { generateDummyStaffSalaries } from "@/app/lib/data";
-import { StaffSalary } from "@/app/lib/definitions";
+import { generateDummyStaffSalaries } from "@/data/data";
+import { StaffSalary } from "@/types/definitions";
 
 const TOTAL_STAFF = 45;
 const ITEMS_PER_PAGE = 10;

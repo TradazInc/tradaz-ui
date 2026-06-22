@@ -7,8 +7,8 @@ import {
     LuGift, LuCopy, LuCheck, LuCreditCard, LuSend, 
 } from "react-icons/lu";
 
-import { GiftCard } from "@/app/lib/definitions";
-import { MOCK_GIFT_CARDS } from "@/app/lib/data";
+import { GiftCard } from "@/types/definitions";
+import { MOCK_GIFT_CARDS } from "@/data/data";
 
 export default function GiftCardsPage() {
     const brandColor = "#5cac7d";

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { generateDummyOnlineOrders } from "@/app/lib/data";
-import { OnlineOrder } from "@/app/lib/definitions";
+import { generateDummyOnlineOrders } from "@/data/data";
+import { OnlineOrder } from "@/types/definitions";
 
 const TOTAL_ORDERS = 150;
 const ITEMS_PER_PAGE = 10;

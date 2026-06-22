@@ -8,7 +8,7 @@ import {
 } from "react-icons/lu";
 import Link from "next/link";
 
-import { STORE_PRODUCTS } from "@/app/lib/data";
+import { STORE_PRODUCTS } from "@/data/data";
 
 export default function SavedItemsPage() {
     const brandColor = "#5cac7d";

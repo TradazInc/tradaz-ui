@@ -18,9 +18,9 @@ import { LuLayers, LuTrash2, LuPlus } from "react-icons/lu";
 import {
   useBusinessCategories,
   useCategoryActions,
-} from "@/app/entities/business-categories/hooks";
+} from "@/entities/business-categories/hooks";
 import { controlStyles, labelStyles } from "./style";
-import { authClient } from "@/app/lib/authClient";
+import { authClient } from "@/lib/authClient";
 
 export default function CategoriesPage() {
   const { data: categories, isLoading } = useBusinessCategories();

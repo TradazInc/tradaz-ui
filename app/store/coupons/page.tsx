@@ -7,8 +7,8 @@ import {
     LuTicket, LuCopy, LuCheck, LuClock, LuPlus, LuInfo 
 } from "react-icons/lu";
 
-import { Coupon } from "@/app/lib/definitions";
-import { MOCK_COUPONS } from "@/app/lib/data";
+import { Coupon } from "@/types/definitions";
+import { MOCK_COUPONS } from "@/data/data";
 
 export default function CouponsPage() {
     const brandColor = "#5cac7d";
