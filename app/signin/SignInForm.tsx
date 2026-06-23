@@ -31,8 +31,8 @@ const SignInForm = () => {
     startEmailTransition(async () => {
       await authClient.signIn.email(
         {
-          email: formData.get("Email") as string,
-          password: formData.get("Password") as string,
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
           rememberMe: true,
         },
         {
@@ -50,13 +50,17 @@ const SignInForm = () => {
 
             if (session.user.role === Role.admin) {
               router.push("/overwatch");
-            } else if (session.user.role === Role.user) {
-              session.member?.role === OrgRole.customer
-                ? router.push("/store")
-                : session.member?.role === OrgRole.vendor
-                  ? router.push("/vendor")
-                  : router.push("/business");
             }
+            if (session.member?.role === OrgRole.customer) {
+              router.push("/store");
+            }
+            if (session.member?.role === OrgRole.vendor) {
+              router.push("/vendor");
+            }
+            if (session.member?.role === OrgRole.vendor) {
+              router.push("/vendor");
+            }
+            router.push("/business");
           },
           onError: (ctx) => {
             // display the error message
@@ -99,9 +103,10 @@ const SignInForm = () => {
           {/* Email Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
-              Email
+              Email <Field.RequiredIndicator />
             </Field.Label>
             <Input
+              name="email"
               placeholder="Enter email address"
               type="email"
               maxH={"45px"}
@@ -117,9 +122,10 @@ const SignInForm = () => {
           {/* Password Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
-              Password
+              Password <Field.RequiredIndicator />
             </Field.Label>
             <PasswordInput
+              name="password"
               placeholder="Enter password"
               maxH={"45px"}
               borderRadius={"7px"}
