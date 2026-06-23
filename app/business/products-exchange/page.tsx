@@ -1,4 +1,4 @@
-import { ExchangeManager } from "@/app/ui/exchanges/ExchnagerManager";
+import { ExchangeManager } from "@/app/business/products-exchange/ExchnagerManager";
 
 export default function ExchangesPage() {
     return <ExchangeManager/>

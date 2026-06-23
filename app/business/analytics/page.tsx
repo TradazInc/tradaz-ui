@@ -1,4 +1,4 @@
-import { AnalyticsOverview } from "@/app/ui/analytics/AnalyticsOverview";
+import { AnalyticsOverview } from "@/app/business/analytics/AnalyticsOverview";
 
 
 export default function AnalyticsPage() {

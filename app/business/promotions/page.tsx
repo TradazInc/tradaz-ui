@@ -1,4 +1,4 @@
-import { PromotionManager } from "@/app/ui/Promotions/PromotionManager";
+import { PromotionManager } from "@/app/business/promotions/PromotionManager";
 
 
 export default function PromotionsPage() {

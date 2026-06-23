@@ -6,7 +6,7 @@ import type {
   CreateProductPayload,
   UpdateProductPayload,
   UpdateProductStatusPayload,
-} from "@/app/entities/products/types";
+} from "@/entities/products/types";
 
 const BASE = "/api/products";
 const baseURL = process.env.NEXT_PUBLIC_API_URL || "";

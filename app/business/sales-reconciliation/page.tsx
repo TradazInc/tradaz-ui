@@ -1,4 +1,4 @@
-import { ReconciliationManager } from "@/app/ui/sales-reconciliation/ReconciliationManager";
+import { ReconciliationManager } from "@/app/business/sales-reconciliation/ReconciliationManager";
 
 
 export default function ReconciliationPage() {

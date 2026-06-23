@@ -3,9 +3,9 @@
 import React from "react";
 import { Box, SimpleGrid, Skeleton } from "@chakra-ui/react";
 
-import { DashboardMetrics } from "../ui/dashboard/DashboardMetrics";
-import { Analytics } from "../ui/dashboard/Analytics";
-import { RecentActivity } from "../ui/dashboard/RecentActivity";
+import { DashboardMetrics } from "./DashboardMetrics";
+import { Analytics } from "./Analytics";
+import { RecentActivity } from "./RecentActivity";
 import { useDashboardData } from "@/hooks/useDashboardData"; 
 
 export default function DashboardPage() {

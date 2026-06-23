@@ -1,4 +1,4 @@
-import { SalesRecordSkeleton } from "@/app/ui/sales-record/SalesRecordSkeleton";
+import { SalesRecordSkeleton } from "@/app/business/sales-record/SalesRecordSkeleton";
 
 export default function Loading() {
     return <SalesRecordSkeleton />;

@@ -1,4 +1,4 @@
-import { UIConfigManager } from "@/app/ui/ui-config/UIConfigManager";
+import { UIConfigManager } from "@/app/business/ui-config/UIConfigManager";
 
 
 export default function UIConfigPage() {

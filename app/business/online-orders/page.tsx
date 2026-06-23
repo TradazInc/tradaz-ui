@@ -1,4 +1,4 @@
-import { OnlineOrdersOverview } from "@/app/ui/online-orders/OnlineordersOverview";
+import { OnlineOrdersOverview } from "@/app/business/online-orders/OnlineordersOverview";
 
 
 export default function OnlineOrdersPage() {

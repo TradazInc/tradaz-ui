@@ -1,8 +1,8 @@
 "use client";
 import { Flex, VStack } from "@chakra-ui/react";
-import SignInForm from "../ui/signin/SignInForm";
-import SignInHeader from "../ui/signin/SignInHeader";
-import SigninSidePanel from "../ui/signin/SigninSidePanel";
+import SignInForm from "./SignInForm";
+import SignInHeader from "./SignInHeader";
+import SigninSidePanel from "./SigninSidePanel";
 import BackToHome from "../ui/component/BackToHome";
 import TradazHeader from "../ui/TradazHeader";
 import { authClient } from "@/lib/authClient";

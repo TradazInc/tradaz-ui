@@ -1,4 +1,4 @@
-import { VoucherManager } from "@/app/ui/vouchers/VouchersManager";
+import { VoucherManager } from "@/app/business/vouchers/VouchersManager";
 
 
 export default function VouchersPage() {

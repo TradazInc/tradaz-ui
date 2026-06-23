@@ -1,4 +1,4 @@
-import { AddProductForm } from "@/app/ui/add-product/AddProductForm";
+import { AddProductForm } from "@/app/business/add-product/AddProductForm";
 
 export default async function AddProductPage() {
     

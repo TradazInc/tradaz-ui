@@ -1,4 +1,4 @@
-import { SalesRecordOverview } from "@/app/ui/vendor/sales-record/SalesRecordOverview";
+import { SalesRecordOverview } from "@/app/vendor/sales-record/SalesRecordOverview";
 
 export default async function SalesRecordPage() {
   

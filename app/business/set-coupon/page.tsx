@@ -1,4 +1,4 @@
-import { CouponManager } from "@/app/ui/coupon/CouponManager";
+import { CouponManager } from "@/app/business/set-coupon/CouponManager";
 
 
 export default function CouponsPage() {

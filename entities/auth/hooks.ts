@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/app/lib/authClient";
+import { authClient } from "@/lib/authClient";
 
 // ---- Session ----
 export function useAuthSession() {

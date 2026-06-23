@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authClient } from "@/app/lib/authClient";
+import { authClient } from "@/lib/authClient";
 
 // ---- Queries ----
 export function useListUsers(

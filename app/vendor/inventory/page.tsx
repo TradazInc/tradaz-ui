@@ -1,4 +1,4 @@
-import { InventoryOverview } from "@/app/ui/vendor/inventory/InventoryOverview";
+import { InventoryOverview } from "@/app/vendor/inventory/InventoryOverview";
 
 export default function InventoryPage() {
     return <InventoryOverview />;

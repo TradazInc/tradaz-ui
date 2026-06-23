@@ -9,7 +9,7 @@ import {
 } from "react-icons/lu";
 import Link from "next/link";
 
-import { CheckoutDrawer } from "@/app/ui/store/CheckoutDrawer/CheckoutDrawer";
+import { CheckoutDrawer } from "@/app/store/cart/CheckoutDrawer";
 
 
 type CartItem = {

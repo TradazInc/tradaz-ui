@@ -2,8 +2,8 @@
 import React from "react";
 import { Box, Flex } from "@chakra-ui/react";
 
-import { MobileBottomNav } from "@/app/ui/store/navigation/MobileBottomNav";
-import { Header } from "@/app/ui/store/header/Header";
+import { MobileBottomNav } from "@/app/store/navigation/MobileBottomNav";
+import { Header } from "@/app/store/Header";
 
 export default function StorefrontLayout({ children }: { children: React.ReactNode }) {
     const tenantConfig = { storeName: "OGDior", brandColor: "#5cac7d" };

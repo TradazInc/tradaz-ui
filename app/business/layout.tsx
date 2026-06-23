@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { Flex, Box, IconButton, Icon, Text, Breadcrumb } from "@chakra-ui/react";
 import { LuMenu } from "react-icons/lu";
-import { Sidebar } from "@/app/ui/dashboard/Sidebar";
-import { DashboardHeader } from "@/app/ui/dashboard/DashboardHeader";
+import { Sidebar } from "@/app/business/Sidebar";
+import { DashboardHeader } from "@/app/business/DashboardHeader";
 
 export default function DashboardLayout({
   children,

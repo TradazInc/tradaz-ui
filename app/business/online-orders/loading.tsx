@@ -1,4 +1,4 @@
-import { OnlineOrdersSkeleton } from "@/app/ui/online-orders/OnlineOrdersSkeleton";
+import { OnlineOrdersSkeleton } from "@/app/business/online-orders/OnlineOrdersSkeleton";
 
 export default function Loading() {
     return <OnlineOrdersSkeleton />;

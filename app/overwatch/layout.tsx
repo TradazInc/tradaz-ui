@@ -7,7 +7,7 @@ import {
     LuMenu, LuBell,
 } from "react-icons/lu";
 
-import { AdminSidebar } from "@/app/ui/admin/AdminSidebar";
+import { AdminSidebar } from "@/app/overwatch/AdminSidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
    

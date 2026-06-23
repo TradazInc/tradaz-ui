@@ -2,15 +2,15 @@
 import React from "react";
 import { Box, Container } from "@chakra-ui/react";
 
-import { HeroImage } from "./ui/landingPage/hero/HeroImage";
-import { HeroContent } from "./ui/landingPage/hero/HeroContent";
-import { MotionBox } from "./ui/landingPage/hero/motion";
-import { containerVariants } from "./ui/landingPage/hero/config";
+import { HeroImage } from "./landingPage/landingPage/hero/HeroImage";
+import { HeroContent } from "./landingPage/landingPage/hero/HeroContent";
+import { MotionBox } from "./landingPage/landingPage/hero/motion";
+import { containerVariants } from "./landingPage/landingPage/hero/config";
 
-import HowItWorks from "./ui/how-it-works/HowItWorks";
-import WhatWeOffer from "./ui/landingPage/what-we-offer/WhatWeOffer";
-import Navbar from "./ui/landingPage/navbar/Navbar";
-import { Footer } from "./ui/landingPage/footer/footer";
+import HowItWorks from "./landingPage/how-it-works/HowItWorks";
+import WhatWeOffer from "./landingPage/landingPage/what-we-offer/WhatWeOffer";
+import Navbar from "./landingPage/landingPage/navbar/Navbar";
+import { Footer } from "./landingPage/landingPage/footer/footer";
 
 
 

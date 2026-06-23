@@ -10,7 +10,7 @@ import {
 } from "react-icons/lu";
 
 import { STORE_BANNERS, STORE_PRODUCTS } from "@/data/data";
-import { ProductDetailView } from "../ui/store/productDetail/productDetail";
+import { ProductDetailView } from "./productDetail";
 
 
 // --- TYPES ---

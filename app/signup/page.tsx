@@ -1,9 +1,9 @@
 "use client";
 import { Flex, VStack } from "@chakra-ui/react";
 
-import SignUpForm from "../ui/signup/SignUpForm";
-import SignUpHeader from "../ui/signup/SignUpHeader";
-import SignupSidePanel from "../ui/signup/SignUpSidePanel";
+import SignUpForm from "./SignUpForm";
+import SignUpHeader from "./SignUpHeader";
+import SignupSidePanel from "./SignUpSidePanel";
 import BackToHome from "../ui/component/BackToHome";
 import TradazHeader from "../ui/TradazHeader";
 

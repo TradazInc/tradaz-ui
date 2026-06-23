@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Flex, Box, IconButton, Icon, Text, Avatar, AvatarGroup } from "@chakra-ui/react";
 import { LuMenu, LuBell, LuBuilding2, LuStore, LuUser} from "react-icons/lu"; 
-import { Sidebar } from "@/app/ui/vendor/sidebar"; 
+import { Sidebar } from "@/app/vendor/sidebar"; 
 
 export default function VendorLayout({
   children,

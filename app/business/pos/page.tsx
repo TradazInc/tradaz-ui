@@ -1,4 +1,4 @@
-import { PosOverview } from "@/app/ui/pos/PosOverview";
+import { PosOverview } from "@/app/business/pos/PosOverview";
 
 export default function PosPage() {
     return <PosOverview />;

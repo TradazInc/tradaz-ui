@@ -1,4 +1,4 @@
-import { RefundManager } from "@/app/ui/refunds/RefundsManager";
+import { RefundManager } from "@/app/business/customers-refund/RefundsManager";
 
 
 export default function RefundsPage() {
