@@ -5,7 +5,7 @@ import { Box, SimpleGrid, Skeleton } from "@chakra-ui/react";
 import { DashboardMetrics } from "./DashboardMetrics";
 import { Analytics } from "./Analytics";
 import { RecentActivity } from "./RecentActivity";
-import { useDashboardData } from "@/hooks/useDashboardData"; 
+import { useDashboardData } from "@/hooks-test/useDashboardData"; 
 
 export default function DashboardPage() {
   const { isLoading } = useDashboardData();

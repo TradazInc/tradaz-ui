@@ -27,7 +27,7 @@ import {
   LuUser
 } from "react-icons/lu";
 
-import { useStaffSalaries } from "@/hooks/useStaffSalaries";
+import { useStaffSalaries } from "@/hooks-test/useStaffSalaries";
 import { StaffSalary } from "@/types/definitions";
 
 const controlStyles = {

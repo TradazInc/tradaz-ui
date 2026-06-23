@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Flex, Text, Button, Icon } from "@chakra-ui/react";
 import {  LuTriangle } from "react-icons/lu";
 
-import { useCustomers } from "@/hooks/useCustomer";
+import { useCustomers } from "@/hooks-test/useCustomer";
 import { CustomerGridView } from "./CustomerGridView";
 import { CustomerDetailView } from "./CustomerDetailView";
 import { Customer } from "@/types/definitions";

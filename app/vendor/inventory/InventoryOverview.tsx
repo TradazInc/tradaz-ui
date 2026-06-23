@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useInventory } from "@/hooks/useInventory";
+import { useInventory } from "@/hooks-test/useInventory";
 import { ProductDetailView } from "./ProductDetailView";
 import { InventoryGridView } from "./InventoryGridView";
 
