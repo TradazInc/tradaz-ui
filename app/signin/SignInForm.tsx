@@ -29,6 +29,15 @@ const SignInForm = () => {
   const handleEmailSignin = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+
+    // validate form
+    if (!(formData.has("email") && formData.has("password")))
+      return toaster.create({
+        title: "Incomplete form!",
+        description: "All fields are required",
+        type: "error",
+      });
+
     startEmailTransition(async () => {
       await authClient.signIn.email(
         {
