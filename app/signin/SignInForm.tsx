@@ -31,8 +31,8 @@ const SignInForm = () => {
     startEmailTransition(async () => {
       await authClient.signIn.email(
         {
-          email: formData.get("email") as string,
-          password: formData.get("password") as string,
+          email: formData.get("Email") as string,
+          password: formData.get("Password") as string,
           rememberMe: true,
         },
         {
@@ -99,7 +99,7 @@ const SignInForm = () => {
           {/* Email Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
-              Email Address *
+              Email
             </Field.Label>
             <Input
               placeholder="Enter email address"
@@ -117,7 +117,7 @@ const SignInForm = () => {
           {/* Password Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
-              Password *
+              Password
             </Field.Label>
             <PasswordInput
               placeholder="Enter password"
