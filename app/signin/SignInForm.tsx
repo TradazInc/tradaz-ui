@@ -1,73 +1,75 @@
 "use client";
-
-import { useState } from "react";
+import { toaster } from "@/components/ui/toaster";
+import { OrgRole, Role } from "@/entities/CustomSession";
+import { authClient } from "@/lib/authClient";
 import {
   Box,
+  Button,
   Field,
   HStack,
   Input,
   Stack,
   Text,
   VStack,
-  Button,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useState, useTransition } from "react";
 import { PasswordInput } from "../../components/ui/password-input";
-import { SignInData } from "../../types/definitions";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
-import { authClient } from "@/lib/authClient";
-import { toaster } from "@/components/ui/toaster";
 
 const SignInForm = () => {
   const router = useRouter();
-  const [isEmailLoading, setIsEmailLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isEmailPending, startEmailTransition] = useTransition();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignInData>();
+  const onSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
-  // --- EMAIL SIGN IN ---
-  const onSubmit = handleSubmit(async (data) => {
-    setIsEmailLoading(true);
+    startEmailTransition(async () => {
+      await authClient.signIn.email(
+        {
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+          rememberMe: true,
+        },
+        {
+          onSuccess: async (ctx) => {
+            //redirect to the dashboard or sign in page
+            const { data: session, error } = await authClient.getSession();
+            if (error) {
+              toaster.create({
+                title: "No session found",
+                description: error.message,
+                type: "error",
+              });
+              return;
+            }
 
-    try {
-      const result = await authClient.signIn.email({
-        email: data.email!,
-        password: data.password,
-      });
-
-      if (result.error) {
-        toaster.create({
-          title: "Sign in failed",
-          description: result.error.message || "Invalid credentials.",
-          type: "error",
-        });
-        return;
-      }
-
-      toaster.create({
-        title: "Welcome back!",
-        description: "Redirecting to your dashboard…",
-        type: "success",
-      });
-      router.push("/business");
-    } catch (err) {
-      console.error("Sign in error:", err);
-      toaster.create({
-        title: "Unexpected error",
-        description: "Something went wrong. Please try again.",
-        type: "error",
-      });
-    } finally {
-      setIsEmailLoading(false);
-    }
-  });
+            if (session.user.role === Role.admin) {
+              router.push("/overwatch");
+            } else if (session.user.role === Role.user) {
+              session.member?.role === OrgRole.customer
+                ? router.push("/store")
+                : session.member?.role === OrgRole.vendor
+                  ? router.push("/vendor")
+                  : router.push("/business");
+            }
+          },
+          onError: (ctx) => {
+            // display the error message
+            toaster.create({
+              title: "Sign in failed",
+              description: ctx.error.message || "Invalid credentials.",
+              type: "error",
+            });
+          },
+        },
+      );
+    });
+  };
 
   // --- GOOGLE SIGN IN ---
   const handleGoogleSignIn = async () => {
@@ -95,12 +97,11 @@ const SignInForm = () => {
       <form onSubmit={onSubmit} style={{ width: "100%" }}>
         <Stack gap={4} w={"full"}>
           {/* Email Field */}
-          <Field.Root invalid={!!errors.email} w={"full"}>
+          <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Email Address *
             </Field.Label>
             <Input
-              {...register("email", { required: "Email is required" })}
               placeholder="Enter email address"
               type="email"
               maxH={"45px"}
@@ -111,16 +112,14 @@ const SignInForm = () => {
               color="black"
               _placeholder={{ color: "gray.500" }}
             />
-            <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
           </Field.Root>
 
           {/* Password Field */}
-          <Field.Root invalid={!!errors.password} w={"full"}>
+          <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Password *
             </Field.Label>
             <PasswordInput
-              {...register("password", { required: "Password is required" })}
               placeholder="Enter password"
               maxH={"45px"}
               borderRadius={"7px"}
@@ -130,7 +129,6 @@ const SignInForm = () => {
               color="black"
               _placeholder={{ color: "gray.500" }}
             />
-            <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
           </Field.Root>
 
           {/* Buttons */}
@@ -141,7 +139,7 @@ const SignInForm = () => {
 
             <Button
               type="submit"
-              loading={isEmailLoading}
+              loading={isEmailPending}
               loadingText="Signing in..."
               w="full"
               h="45px"
@@ -150,9 +148,9 @@ const SignInForm = () => {
               _hover={{ bg: "gray.200" }}
               borderRadius="7px"
               fontWeight="600"
-              disabled={isGoogleLoading}
+              disabled={isEmailPending}
             >
-              Sign In
+              {isEmailPending ? "Signing in..." : "Sign in"}
             </Button>
 
             <SeparatorText />
@@ -170,7 +168,7 @@ const SignInForm = () => {
               color="white"
               bg="transparent"
               _hover={{ bg: "whiteAlpha.50" }}
-              disabled={isEmailLoading}
+              disabled={isGoogleLoading}
             >
               <GoogleIcon maxW={"20px"} maxH={"20px"} />
               <Text fontSize={"14px"} fontWeight={"600"} ml={2}>

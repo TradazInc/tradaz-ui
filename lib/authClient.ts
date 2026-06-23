@@ -1,10 +1,21 @@
+import { CustomSession } from "@/entities/CustomSession";
 import { createAuthClient } from "better-auth/client";
 import { organizationClient, adminClient } from "better-auth/client/plugins";
+import { customSessionClient } from "better-auth/client/plugins";
+import { customSession } from "better-auth/plugins";
+
+// Mirror the server's auth shape for type inference.
+type ServerAuth = {
+  options: {
+    plugins: [ReturnType<typeof customSession<CustomSession>>];
+  };
+};
 
 export const authClient = createAuthClient({
   baseURL: process.env.BASE_URL ?? "https://tradaz-ui.vercel.app", // add env later*
   fetchOptions: { credentials: "include" },
   plugins: [
+    customSessionClient<ServerAuth>(),
     adminClient(),
     organizationClient({
       teams: { enabled: true },
