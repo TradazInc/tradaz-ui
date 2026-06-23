@@ -26,7 +26,7 @@ const SignInForm = () => {
   const [isEmailPending, startEmailTransition] = useTransition();
   const [isGooglePending, startGoogleTransition] = useTransition();
 
-  const onSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleEmailSignin = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     startEmailTransition(async () => {
@@ -40,7 +40,7 @@ const SignInForm = () => {
           onSuccess: async (ctx) => signinSuccess(router),
           onError: (ctx) => {
             toaster.create({
-              title: "Sign in failed",
+              title: "Signin failed",
               description: ctx.error.message,
               type: "error",
             });
@@ -50,7 +50,7 @@ const SignInForm = () => {
     });
   };
 
-  const onClick = () => {
+  const handleGoogleSignIn = () => {
     startGoogleTransition(async () => {
       await authClient.signIn.social(
         { provider: "google" },
@@ -58,7 +58,7 @@ const SignInForm = () => {
           onSuccess: async (ctx) => signinSuccess(router),
           onError: (ctx) => {
             toaster.create({
-              title: "Google sign in failed",
+              title: "Google signin failed",
               description: ctx.error.message,
               type: "error",
             });
@@ -70,8 +70,9 @@ const SignInForm = () => {
 
   return (
     <Box w={"full"}>
-      <form onSubmit={onSubmit} style={{ width: "100%" }}>
+      <form onSubmit={handleEmailSignin} style={{ width: "100%" }}>
         <Stack gap={4} w={"full"}>
+          {/* Full Name Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Email <Field.RequiredIndicator />
@@ -90,6 +91,7 @@ const SignInForm = () => {
             />
           </Field.Root>
 
+          {/* Password Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Password <Field.RequiredIndicator />
@@ -133,7 +135,7 @@ const SignInForm = () => {
 
             <Button
               type="button"
-              onClick={onClick}
+              onClick={handleGoogleSignIn}
               loading={isGooglePending}
               variant="outline"
               w="full"

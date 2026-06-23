@@ -1,110 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { toaster } from "@/components/ui/toaster";
+import { OrgRole, Role } from "@/entities/CustomSession";
+import { authClient } from "@/lib/authClient";
 import {
   Box,
+  Button,
   Field,
   HStack,
   Input,
   Stack,
   Text,
   VStack,
-  Button,
 } from "@chakra-ui/react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useTransition } from "react";
 import { PasswordInput } from "../../components/ui/password-input";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
 import SeparatorText from "./SeparatorText";
-import { authClient } from "@/lib/authClient";
-import { SignUpData } from "../../types/definitions";
-import { toaster } from "@/components/ui/toaster";
 
 const SignUpForm = () => {
   const router = useRouter();
-  const [isEmailLoading, setIsEmailLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isEmailPending, startEmailTransition] = useTransition();
+  const [isGooglePending, startGoogleTransition] = useTransition();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignUpData>();
+  const handleEmailSignup = (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    startEmailTransition(async () => {
+      await authClient.signUp.email(
+        {
+          name: formData.get("name") as string,
+          email: formData.get("email") as string,
+          password: formData.get("password") as string,
+        },
+        {
+          onSuccess: async (ctx) => signupSuccess(router),
+          onError: (ctx) => {
+            toaster.create({
+              title: "Signup failed",
+              description: ctx.error.message,
+              type: "error",
+            });
+          },
+        },
+      );
+    });
+  };
 
-  const onSubmit = handleSubmit(async (data) => {
-    setIsEmailLoading(true);
-
-    try {
-      const { error } = await authClient.signUp.email({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      });
-
-      if (error) {
-        toaster.create({
-          title: "Sign up failed",
-          description:
-            error.message || "Please check your details and try again.",
-          type: "error",
-        });
-        return;
-      }
-
-      toaster.create({
-        title: "Account created",
-        description: "Welcome aboard! Redirecting...",
-        type: "success",
-      });
-      router.push("/business");
-    } catch (err) {
-      console.error("Failed to sign up:", err);
-      toaster.create({
-        title: "Unexpected error",
-        description: "Something went wrong. Please try again later.",
-        type: "error",
-      });
-    } finally {
-      setIsEmailLoading(false);
-    }
-  });
-
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/business",
-      });
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to initialize Google sign-up.";
-
-      toaster.create({
-        title: "Google sign‑up error",
-        description: message,
-        type: "error",
-      });
-    } finally {
-      setIsGoogleLoading(false);
-    }
+  const handleGoogleSignup = () => {
+    startGoogleTransition(async () => {
+      await authClient.signIn.social(
+        { provider: "google" },
+        {
+          onSuccess: async (ctx) => signupSuccess(router),
+          onError: (ctx) => {
+            toaster.create({
+              title: "Google sign in failed",
+              description: ctx.error.message,
+              type: "error",
+            });
+          },
+        },
+      );
+    });
   };
 
   return (
     <Box w={"full"}>
-      <form onSubmit={onSubmit} style={{ width: "100%" }}>
+      <form onSubmit={handleEmailSignup} style={{ width: "100%" }}>
         <Stack gap={4} w={"full"}>
           {/* Full Name Field */}
-          <Field.Root invalid={!!errors.name} w={"full"}>
+          <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Full Name *
             </Field.Label>
             <Input
-              {...register("name", { required: "Name is required" })}
+              name="name"
               placeholder="Enter your full name"
               maxH={"45px"}
               borderRadius={"7px"}
@@ -114,16 +88,15 @@ const SignUpForm = () => {
               color="black"
               _placeholder={{ color: "gray.500" }}
             />
-            <Field.ErrorText>{errors.name?.message}</Field.ErrorText>
           </Field.Root>
 
           {/* Email Field */}
-          <Field.Root invalid={!!errors.email} w={"full"}>
+          <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Email Address *
             </Field.Label>
             <Input
-              {...register("email", { required: "Email is required" })}
+              name="email"
               placeholder="Enter email address"
               type="email"
               maxH={"45px"}
@@ -134,22 +107,15 @@ const SignUpForm = () => {
               color="black"
               _placeholder={{ color: "gray.500" }}
             />
-            <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
           </Field.Root>
 
           {/* Password Field */}
-          <Field.Root invalid={!!errors.password} w={"full"}>
+          <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Password *
             </Field.Label>
             <PasswordInput
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-              })}
+              name="password"
               placeholder="Enter password"
               maxH={"45px"}
               borderRadius={"7px"}
@@ -159,14 +125,13 @@ const SignUpForm = () => {
               borderColor={"#292929"}
               _placeholder={{ color: "gray.500" }}
             />
-            <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
           </Field.Root>
 
           {/* Buttons */}
           <VStack w={"full"}>
             <Button
               type="submit"
-              loading={isEmailLoading}
+              loading={isEmailPending}
               loadingText="Signing up..."
               w="full"
               h="45px"
@@ -175,7 +140,7 @@ const SignUpForm = () => {
               _hover={{ bg: "gray.200" }}
               borderRadius="7px"
               fontWeight="600"
-              disabled={isGoogleLoading}
+              disabled={isEmailPending}
             >
               Sign Up
             </Button>
@@ -184,8 +149,8 @@ const SignUpForm = () => {
 
             <Button
               type="button"
-              onClick={handleGoogleSignIn}
-              loading={isGoogleLoading}
+              onClick={handleGoogleSignup}
+              loading={isGooglePending}
               variant="outline"
               w="full"
               h="45px"
@@ -195,7 +160,7 @@ const SignUpForm = () => {
               color="white"
               bg="transparent"
               _hover={{ bg: "whiteAlpha.50" }}
-              disabled={isEmailLoading}
+              disabled={isGooglePending}
             >
               <GoogleIcon maxW={"20px"} maxH={"20px"} />
               <Text fontSize={"14px"} fontWeight={"600"} ml={2}>
@@ -222,3 +187,27 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
+
+const signupSuccess = async (router: AppRouterInstance) => {
+  const { data: session, error } = await authClient.getSession();
+  if (error) {
+    toaster.create({
+      title: "No session found",
+      description: error.message,
+      type: "error",
+    });
+    return;
+  }
+
+  // redirect to the dashboard
+  if (session.user.role === Role.admin) {
+    return router.push("/overwatch");
+  }
+  if (session.member?.role === OrgRole.customer) {
+    return router.push("/store");
+  }
+  if (session.member?.role === OrgRole.vendor) {
+    return router.push("/vendor");
+  }
+  router.push("/business");
+};
