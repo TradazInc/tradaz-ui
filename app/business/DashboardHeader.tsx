@@ -33,7 +33,6 @@ import {
 import { useTeamList, useTeamActions } from "@/entities/stores/hooks";
 import { authClient } from "@/lib/authClient";
 
-
 // Types
 
 interface BreadcrumbMenuItemProps {
@@ -45,7 +44,6 @@ interface BreadcrumbMenuItemProps {
   onAddAction?: () => void;
   emptyMessage?: string;
 }
-
 
 const BreadcrumbMenuItem = ({
   children,

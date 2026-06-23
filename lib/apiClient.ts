@@ -1,69 +1,40 @@
 import { authClient } from "./authClient";
 
-const baseURL = process.env.BASE_URL;
-
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
-
-interface FetchOptions extends RequestInit {
-  method?: HttpMethod;
-  headers?: HeadersInit;
-  body?: BodyInit;
-  params?: Record<string, string | number>;
-}
-
-async function apiFetch<T>(
-  endpoint: string,
-  { method = "GET", params = {}, body, headers = {} }: FetchOptions = {},
-) {
-  // initialize base url and append params
-  const url = new URL(baseURL + endpoint);
-  Object.entries(params).forEach(([key, value]) => {
-    url.searchParams.append(key, String(value));
-  });
-
-  // normalize headers to a Headers instance to satisfy HeadersInit typings
-  const normalizedHeaders = new Headers(headers);
-  if (!normalizedHeaders.has("Content-Type")) {
-    normalizedHeaders.set("Content-Type", "application/json");
-  }
-
-  return authClient.$fetch<T>(url.toString(), {
-    method,
-    credentials: "include",
-    headers: normalizedHeaders,
-    body,
-  });
+enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
 }
 
 export class ApiClient<T> {
-  endpoint: string;
+  constructor(private readonly endpoint: string) {}
 
-  constructor(endpoint: string) {
-    this.endpoint = endpoint;
-  }
-
-  getAll = (params?: Record<string, string | number>) => {
-    return apiFetch<T>(this.endpoint, { params });
+  getAll = (query?: Record<string, string | number>) => {
+    return authClient.$fetch<T>(this.endpoint, { query });
   };
 
   get = (id: number | string) => {
-    return apiFetch<T>(`${this.endpoint}/${id}`);
+    return authClient.$fetch<T>(`${this.endpoint}/${id}`);
   };
 
-  post = (body: BodyInit, params?: Record<string, string | number>) => {
-    return apiFetch<T>(this.endpoint, { method: "POST", body, params });
+  post = (body: BodyInit) => {
+    return authClient.$fetch<T>(this.endpoint, {
+      method: HttpMethod.POST,
+      body,
+    });
   };
 
   update = (id: number | string, body: BodyInit) => {
-    return apiFetch<T>(`${this.endpoint}/${id}`, {
-      method: "PUT",
+    return authClient.$fetch<T>(`${this.endpoint}/${id}`, {
+      method: HttpMethod.PUT,
       body,
     });
   };
 
   delete = (id: number | string) => {
-    return apiFetch<void>(`${this.endpoint}/${id}`, {
-      method: "DELETE",
+    return authClient.$fetch<void>(`${this.endpoint}/${id}`, {
+      method: HttpMethod.DELETE,
     });
   };
 }
