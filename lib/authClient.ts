@@ -2,7 +2,7 @@ import { createAuthClient } from "better-auth/client";
 import { organizationClient, adminClient } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
-  baseURL: "https://tradaz-ui.vercel.app", // add env later*
+  baseURL: process.env.BASE_URL ?? "https://tradaz-ui.vercel.app", // add env later*
   fetchOptions: { credentials: "include" },
   plugins: [
     adminClient(),
