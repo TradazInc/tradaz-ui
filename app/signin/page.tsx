@@ -1,19 +1,12 @@
 "use client";
 import { Flex, VStack } from "@chakra-ui/react";
+import BackToHome from "../ui/component/BackToHome";
+import TradazHeader from "../ui/TradazHeader";
 import SignInForm from "./SignInForm";
 import SignInHeader from "./SignInHeader";
 import SigninSidePanel from "./SigninSidePanel";
-import BackToHome from "../ui/component/BackToHome";
-import TradazHeader from "../ui/TradazHeader";
-import { authClient } from "@/lib/authClient";
-import { useEffect } from "react";
 
 const SigninPage = () => {
-  useEffect(() => {
-    authClient.getSession().then((res) => {
-      console.log("Full session:", res);
-    });
-  }, []);
   return (
     <Flex
       minH="100vh"

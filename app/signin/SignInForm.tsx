@@ -49,16 +49,13 @@ const SignInForm = () => {
             }
 
             if (session.user.role === Role.admin) {
-              router.push("/overwatch");
+              return router.push("/overwatch");
             }
             if (session.member?.role === OrgRole.customer) {
-              router.push("/store");
+              return router.push("/store");
             }
             if (session.member?.role === OrgRole.vendor) {
-              router.push("/vendor");
-            }
-            if (session.member?.role === OrgRole.vendor) {
-              router.push("/vendor");
+              return router.push("/vendor");
             }
             router.push("/business");
           },
