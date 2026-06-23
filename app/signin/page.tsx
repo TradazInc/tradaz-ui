@@ -1,4 +1,3 @@
-"use client";
 import { Flex, VStack } from "@chakra-ui/react";
 import BackToHome from "../ui/component/BackToHome";
 import TradazHeader from "../ui/TradazHeader";
@@ -31,8 +30,6 @@ const SigninPage = () => {
           direction={{ base: "column", lg: "row" }}
         >
           <SigninSidePanel />
-
-          {/* RIGHT SIDE: Your Sign In Form */}
           <Flex
             flex={1}
             align="center"

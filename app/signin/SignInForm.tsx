@@ -1,4 +1,5 @@
 "use client";
+
 import { toaster } from "@/components/ui/toaster";
 import { OrgRole, Role } from "@/entities/CustomSession";
 import { authClient } from "@/lib/authClient";
@@ -12,8 +13,9 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { PasswordInput } from "../../components/ui/password-input";
 import { GoogleIcon } from "./GoogleIcon";
 import LinkText from "./LinkText";
@@ -21,13 +23,12 @@ import SeparatorText from "./SeparatorText";
 
 const SignInForm = () => {
   const router = useRouter();
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isEmailPending, startEmailTransition] = useTransition();
+  const [isGooglePending, startGoogleTransition] = useTransition();
 
   const onSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-
     startEmailTransition(async () => {
       await authClient.signIn.email(
         {
@@ -36,34 +37,11 @@ const SignInForm = () => {
           rememberMe: true,
         },
         {
-          onSuccess: async (ctx) => {
-            //redirect to the dashboard or sign in page
-            const { data: session, error } = await authClient.getSession();
-            if (error) {
-              toaster.create({
-                title: "No session found",
-                description: error.message,
-                type: "error",
-              });
-              return;
-            }
-
-            if (session.user.role === Role.admin) {
-              return router.push("/overwatch");
-            }
-            if (session.member?.role === OrgRole.customer) {
-              return router.push("/store");
-            }
-            if (session.member?.role === OrgRole.vendor) {
-              return router.push("/vendor");
-            }
-            router.push("/business");
-          },
+          onSuccess: async (ctx) => signinSuccess(router),
           onError: (ctx) => {
-            // display the error message
             toaster.create({
               title: "Sign in failed",
-              description: ctx.error.message || "Invalid credentials.",
+              description: ctx.error.message,
               type: "error",
             });
           },
@@ -72,32 +50,28 @@ const SignInForm = () => {
     });
   };
 
-  // --- GOOGLE SIGN IN ---
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/business",
-      });
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Google login failed.";
-      toaster.create({
-        title: "Google sign‑in error",
-        description: message,
-        type: "error",
-      });
-    } finally {
-      setIsGoogleLoading(false);
-    }
+  const onClick = () => {
+    startGoogleTransition(async () => {
+      await authClient.signIn.social(
+        { provider: "google" },
+        {
+          onSuccess: async (ctx) => signinSuccess(router),
+          onError: (ctx) => {
+            toaster.create({
+              title: "Google sign in failed",
+              description: ctx.error.message,
+              type: "error",
+            });
+          },
+        },
+      );
+    });
   };
 
   return (
     <Box w={"full"}>
       <form onSubmit={onSubmit} style={{ width: "100%" }}>
         <Stack gap={4} w={"full"}>
-          {/* Email Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Email <Field.RequiredIndicator />
@@ -116,7 +90,6 @@ const SignInForm = () => {
             />
           </Field.Root>
 
-          {/* Password Field */}
           <Field.Root w={"full"}>
             <Field.Label fontWeight={"400"} fontSize={"14px"}>
               Password <Field.RequiredIndicator />
@@ -160,8 +133,8 @@ const SignInForm = () => {
 
             <Button
               type="button"
-              onClick={handleGoogleSignIn}
-              loading={isGoogleLoading}
+              onClick={onClick}
+              loading={isGooglePending}
               variant="outline"
               w="full"
               h="45px"
@@ -171,7 +144,7 @@ const SignInForm = () => {
               color="white"
               bg="transparent"
               _hover={{ bg: "whiteAlpha.50" }}
-              disabled={isGoogleLoading}
+              disabled={isGooglePending}
             >
               <GoogleIcon maxW={"20px"} maxH={"20px"} />
               <Text fontSize={"14px"} fontWeight={"600"} ml={2}>
@@ -198,3 +171,27 @@ const SignInForm = () => {
 };
 
 export default SignInForm;
+
+const signinSuccess = async (router: AppRouterInstance) => {
+  const { data: session, error } = await authClient.getSession();
+  if (error) {
+    toaster.create({
+      title: "No session found",
+      description: error.message,
+      type: "error",
+    });
+    return;
+  }
+
+  // redirect to the dashboard
+  if (session.user.role === Role.admin) {
+    return router.push("/overwatch");
+  }
+  if (session.member?.role === OrgRole.customer) {
+    return router.push("/store");
+  }
+  if (session.member?.role === OrgRole.vendor) {
+    return router.push("/vendor");
+  }
+  router.push("/business");
+};
