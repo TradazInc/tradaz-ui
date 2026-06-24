@@ -6,5 +6,5 @@ export const businessSchema = z.object({
   description: z.string({ error: "description is required" }).min(5).max(255),
   categoryId: z.cuid2({ error: "select a business category" }),
   phone: z.e164({ error: "phone number is required" }),
-  slug: z.string({ error: "slug is required" }).slugify(),
+  slug: z.string({ error: "slug is required" }).trim().slugify(),
 });
