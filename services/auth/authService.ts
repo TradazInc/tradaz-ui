@@ -8,8 +8,8 @@ class AuthService {
   constructor(private readonly auth: AuthClient) {}
 
   async emailSignUp(formData: FormData, router: AppRouterInstance) {
-    const result = Object.fromEntries(formData.entries());
-    const { data, error } = emailSignUpSchema.safeParse(result);
+    const form = Object.fromEntries(formData.entries());
+    const { data, error } = emailSignUpSchema.safeParse(form);
 
     // validate form
     if (error)
@@ -21,10 +21,10 @@ class AuthService {
 
     return this.auth.signUp.email(data, {
       onSuccess: async (ctx) => this.loginSuccess(router),
-      onError: (ctx) => {
+      onError: ({ error }) => {
         toaster.create({
-          title: "Signup failed",
-          description: ctx.error.message,
+          title: error.name,
+          description: error.message,
           type: "error",
         });
       },
@@ -32,8 +32,8 @@ class AuthService {
   }
 
   async emailSignIn(formData: FormData, router: AppRouterInstance) {
-    const result = Object.fromEntries(formData.entries());
-    const { data, error } = emailSignInSchema.safeParse(result);
+    const form = Object.fromEntries(formData.entries());
+    const { data, error } = emailSignInSchema.safeParse(form);
 
     // validate form
     if (error)
@@ -45,10 +45,10 @@ class AuthService {
 
     return this.auth.signIn.email(data, {
       onSuccess: async (ctx) => this.loginSuccess(router),
-      onError: (ctx) => {
+      onError: ({ error }) => {
         toaster.create({
-          title: "Signin failed",
-          description: ctx.error.message,
+          title: error.name,
+          description: error.message,
           type: "error",
         });
       },
@@ -60,10 +60,10 @@ class AuthService {
       { provider: "google" },
       {
         onSuccess: async (ctx) => this.loginSuccess(router),
-        onError: (ctx) => {
+        onError: ({ error }) => {
           toaster.create({
-            title: "Google signin failed",
-            description: ctx.error.message,
+            title: error.name,
+            description: error.message,
             type: "error",
           });
         },
@@ -73,9 +73,10 @@ class AuthService {
 
   private async loginSuccess(router: AppRouterInstance) {
     const { data: session, error } = await this.auth.getSession();
+
     if (error) {
       toaster.create({
-        title: "No session found",
+        title: error.code,
         description: error.message,
         type: "error",
       });

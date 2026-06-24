@@ -6,8 +6,8 @@ class BusinessService {
   constructor(private readonly auth: AuthClient) {}
 
   async createBusiness(formData: FormData) {
-    const result = Object.fromEntries(formData.entries());
-    const { data, error } = businessSchema.safeParse(result);
+    const form = Object.fromEntries(formData.entries());
+    const { data, error } = businessSchema.safeParse(form);
 
     // validate form
     if (error)
