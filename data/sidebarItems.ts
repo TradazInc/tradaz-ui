@@ -44,6 +44,7 @@ import {
   LuServer,
   LuShieldCheck,
   LuLayers,
+  LuFile,
 } from "react-icons/lu";
 
 export const sideBarItems = [
@@ -251,4 +252,11 @@ export const SUPER_ADMIN_NAV_ITEMS = [
       { label: "Activity Logs", icon: LuFileText, path: "/overwatch/logs" },
     ],
   },
+];
+
+export const VENDOR_NAV_ITEMS = [
+  { label: "Dashboard", icon: LuLayoutDashboard, path: "/vendor" },
+  { label: "Add Product", icon: LuPlus, path: "/vendor/add-product" },
+  { label: "Inventory", icon: LuPackage, path: "/vendor/inventory" },
+  { label: "Sales record", icon: LuFile, path: "/vendor/sales-record" },
 ];

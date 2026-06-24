@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Accordion,
   Box,
@@ -12,34 +12,53 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { LuChevronDown, LuLayoutDashboard } from "react-icons/lu";
-
-// Default data fallbacks
-import { dashboardItems } from "@/data/dashboardItems";
-import { sideBarItems } from "@/data/sidebarItems";
-
-// The newly extracted Logout component
+import { usePathname } from "next/navigation";
+import { LuChevronDown } from "react-icons/lu";
 import { LogoutButton } from "@/app/components/LogoutButton";
 
+export type SidebarItem = {
+  label: string;
+  icon: React.ElementType;
+  path?: string;
+  children?: SidebarItem[];
+};
+
 export interface ReusableSidebarProps {
+  items: SidebarItem[];
+  basePath?: string;
   onClose?: () => void;
-  basePath?: string; // e.g., "/business" or "/overwatch"
-  topSectionItems?: typeof dashboardItems;
-  mainSectionItems?: typeof sideBarItems;
 }
 
 export const Sidebar = ({
+  items,
+  basePath = "",
   onClose,
-  basePath = "/business",
-  topSectionItems = dashboardItems,
-  mainSectionItems = sideBarItems,
 }: ReusableSidebarProps) => {
+  const pathname = usePathname(); // <-- Get the current active route
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
+  // Helper to figure out the correct URL
+  const resolvePath = (item: SidebarItem) => {
+    if (item.path) return item.path;
+    return `${basePath}/${item.label.toLowerCase().replace(/\s+/g, "-")}`;
+  };
+
+  // Automatically open the accordion menu that contains the active child link
+  useEffect(() => {
+    const activeParent = items.find((item) =>
+      item.children?.some((child) => resolvePath(child) === pathname),
+    );
+
+    if (activeParent && !openMenus.includes(activeParent.label)) {
+      setOpenMenus((prev) => [...prev, activeParent.label]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, items]);
+
   const triggerHoverStyle = { bg: "#111111", color: "white" };
   const subItemHoverStyle = { bg: "#111111", color: "white" };
-  const iconStyle = { strokeWidth: "2.5", boxSize: "18px" };
+  const iconStyle = { strokeWidth: "2.5", boxSize: "18px", flexShrink: 0 };
   const subIconStyle = { strokeWidth: "2.5", boxSize: "14px", flexShrink: 0 };
 
   return (
@@ -72,104 +91,59 @@ export const Sidebar = ({
           >
             <Accordion.Root
               collapsible
+              multiple // Allow multiple accordions to be open at once
               variant="plain"
               value={openMenus}
               onValueChange={(e) => setOpenMenus(e.value)}
             >
-              {/* --- Top Section (Dashboard) --- */}
-              <Accordion.Item
-                value="Dashboard"
-                border="none"
-                borderBottom="1px solid #1A1A1A"
-                mb={0}
-              >
-                <Accordion.ItemTrigger
-                  _hover={triggerHoverStyle}
-                  py={3}
-                  px={isCollapsed ? 0 : 6}
-                  rounded="none"
-                  cursor="pointer"
-                  w="full"
-                  display="flex"
-                  justifyContent={isCollapsed ? "center" : "space-between"}
-                  onClick={() => {
-                    if (isCollapsed) setIsCollapsed(false);
-                  }}
-                  color={openMenus.includes("Dashboard") ? "white" : "#A1A1AA"}
-                  transition="all 0.2s"
-                >
-                  <Flex
-                    align="center"
-                    justify={isCollapsed ? "center" : "flex-start"}
-                    gap={3}
-                  >
-                    <Icon as={LuLayoutDashboard} css={iconStyle} />
-                    {!isCollapsed && (
-                      <Text
-                        fontSize="14px"
-                        fontWeight="500"
-                        whiteSpace="nowrap"
-                      >
-                        Dashboard
-                      </Text>
-                    )}
-                  </Flex>
-                  {!isCollapsed && (
-                    <Accordion.ItemIndicator>
-                      <Icon
-                        as={LuChevronDown}
-                        color="#666666"
-                        css={{ strokeWidth: 2 }}
-                      />
-                    </Accordion.ItemIndicator>
-                  )}
-                </Accordion.ItemTrigger>
-                <Accordion.ItemContent
-                  p={0}
-                  pb={1}
-                  display={isCollapsed ? "none" : "block"}
-                >
-                  <VStack align="start" gap={0}>
-                    {topSectionItems.map((child, cIdx) => {
-                      const path =
-                        child.label === "Overview"
-                          ? basePath
-                          : `${basePath}/${child.label.toLowerCase().replace(/\s+/g, "-")}`;
-                      return (
-                        <Link
-                          key={cIdx}
-                          href={path}
-                          style={{ width: "100%", textDecoration: "none" }}
-                          onClick={onClose}
-                        >
-                          <Flex
-                            align="center"
-                            gap={3}
-                            color="#888888"
-                            cursor="pointer"
-                            _hover={subItemHoverStyle}
-                            py={2.5}
-                            pl={isCollapsed ? 0 : 12}
-                            pr={4}
-                            rounded="none"
-                            w="full"
-                            transition="all 0.2s"
-                          >
-                            <Icon as={child.icon} css={subIconStyle} />
-                            <Text fontSize="13px" whiteSpace="nowrap">
-                              {child.label}
-                            </Text>
-                          </Flex>
-                        </Link>
-                      );
-                    })}
-                  </VStack>
-                </Accordion.ItemContent>
-              </Accordion.Item>
+              {items.map((item, idx) => {
+                const hasChildren = item.children && item.children.length > 0;
+                const resolvedItemPath = resolvePath(item);
+                const isItemActive = pathname === resolvedItemPath; // Check if main link is active
+                const isAccordionOpen = openMenus.includes(item.label);
 
-              {/* --- Main Section (Dynamic Nav Items) --- */}
-              {mainSectionItems.map((item, idx) => {
-                const isActive = openMenus.includes(item.label);
+                // IF NO CHILDREN: Render a direct link
+                if (!hasChildren) {
+                  return (
+                    <Box key={idx} borderBottom="1px solid #1A1A1A" mb={0}>
+                      <Link
+                        href={resolvedItemPath}
+                        onClick={onClose}
+                        style={{ display: "block", textDecoration: "none" }}
+                      >
+                        <Flex
+                          align="center"
+                          justify={isCollapsed ? "center" : "flex-start"}
+                          gap={3}
+                          py={3}
+                          px={isCollapsed ? 0 : 6}
+                          // Apply active styling if the route matches
+                          bg={isItemActive ? "#111111" : "transparent"}
+                          color={isItemActive ? "white" : "#A1A1AA"}
+                          borderRight={
+                            isItemActive ? "2px solid white" : "none"
+                          }
+                          _hover={triggerHoverStyle}
+                          transition="all 0.2s"
+                          w="full"
+                        >
+                          <Icon as={item.icon} css={iconStyle} />
+                          {!isCollapsed && (
+                            <Text
+                              fontSize="14px"
+                              fontWeight={isItemActive ? "bold" : "500"}
+                              whiteSpace="nowrap"
+                            >
+                              {item.label}
+                            </Text>
+                          )}
+                        </Flex>
+                      </Link>
+                    </Box>
+                  );
+                }
+
+                // IF IT HAS CHILDREN: Render the Accordion Dropdown
                 return (
                   <Accordion.Item
                     key={idx}
@@ -190,7 +164,7 @@ export const Sidebar = ({
                       onClick={() => {
                         if (isCollapsed) setIsCollapsed(false);
                       }}
-                      color={isActive ? "white" : "#A1A1AA"}
+                      color={isAccordionOpen ? "white" : "#A1A1AA"}
                       transition="all 0.2s"
                     >
                       <Flex
@@ -219,25 +193,33 @@ export const Sidebar = ({
                         </Accordion.ItemIndicator>
                       )}
                     </Accordion.ItemTrigger>
+
                     <Accordion.ItemContent
                       p={0}
                       pb={1}
                       display={isCollapsed ? "none" : "block"}
                     >
                       <VStack align="start" gap={0}>
-                        {item.children.map((child, cIdx) => {
-                          const path = `${basePath}/${child.label.toLowerCase().replace(/\s+/g, "-")}`;
+                        {item.children?.map((child, cIdx) => {
+                          const resolvedChildPath = resolvePath(child);
+                          const isChildActive = pathname === resolvedChildPath; // Check if child link is active
+
                           return (
                             <Link
                               key={cIdx}
-                              href={path}
+                              href={resolvedChildPath}
                               style={{ width: "100%", textDecoration: "none" }}
                               onClick={onClose}
                             >
                               <Flex
                                 align="center"
                                 gap={3}
-                                color="#888888"
+                                // Apply active styling to the child link
+                                bg={isChildActive ? "#111111" : "transparent"}
+                                color={isChildActive ? "white" : "#888888"}
+                                borderRight={
+                                  isChildActive ? "2px solid white" : "none"
+                                }
                                 cursor="pointer"
                                 _hover={subItemHoverStyle}
                                 py={2.5}
@@ -248,7 +230,11 @@ export const Sidebar = ({
                                 transition="all 0.2s"
                               >
                                 <Icon as={child.icon} css={subIconStyle} />
-                                <Text fontSize="13px" whiteSpace="nowrap">
+                                <Text
+                                  fontSize="13px"
+                                  fontWeight={isChildActive ? "bold" : "normal"}
+                                  whiteSpace="nowrap"
+                                >
                                   {child.label}
                                 </Text>
                               </Flex>

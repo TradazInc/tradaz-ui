@@ -9,9 +9,16 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import { LuMenu } from "react-icons/lu";
-import { Sidebar } from "@/app/business/Sidebar";
 
-export const MobileSidebar = () => {
+// Import your shared Sidebar component and types
+import { Sidebar, SidebarItem } from "@/app/components/Sidebar";
+
+export interface MobileSidebarProps {
+  items: SidebarItem[];
+  basePath?: string;
+}
+
+export const MobileSidebar = ({ items, basePath = "" }: MobileSidebarProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -63,7 +70,15 @@ export const MobileSidebar = () => {
                 p={0}
                 css={{ "&::-webkit-scrollbar": { display: "none" } }}
               >
-                <Sidebar onClose={() => {}} />
+                {/* 
+                  We pass down the dynamic data, and MOST IMPORTANTLY, 
+                  we tell it to close the drawer when a link is clicked. 
+                */}
+                <Sidebar
+                  items={items}
+                  basePath={basePath}
+                  onClose={() => setIsOpen(false)}
+                />
               </Drawer.Body>
             </Drawer.Content>
           </Drawer.Positioner>
