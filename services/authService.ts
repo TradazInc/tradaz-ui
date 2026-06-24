@@ -1,64 +1,58 @@
 import { toaster } from "@/components/ui/toaster";
 import { OrgRole, Role } from "@/entities/CustomSession";
 import { authClient, AuthClient } from "@/lib/authClient";
+import { emailSignInSchema, emailSignUpSchema } from "@/types/auth";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 class AuthService {
   constructor(private readonly auth: AuthClient) {}
 
   async emailSignUp(formData: FormData, router: AppRouterInstance) {
-    const name = formData.get("name")?.toString();
-    const email = formData.get("email")?.toString();
-    const password = formData.get("password")?.toString();
+    const result = Object.fromEntries(formData.entries());
+    const { data, error } = emailSignUpSchema.safeParse(result);
 
     // validate form
-    if (!(email && name && password))
+    if (error)
       return toaster.create({
-        title: "Incomplete form!",
-        description: "All fields are required",
+        title: error.name,
+        description: error.message,
         type: "error",
       });
 
-    return this.auth.signUp.email(
-      { name, email, password },
-      {
-        onSuccess: async (ctx) => this.loginSuccess(router),
-        onError: (ctx) => {
-          toaster.create({
-            title: "Signup failed",
-            description: ctx.error.message,
-            type: "error",
-          });
-        },
+    return this.auth.signUp.email(data, {
+      onSuccess: async (ctx) => this.loginSuccess(router),
+      onError: (ctx) => {
+        toaster.create({
+          title: "Signup failed",
+          description: ctx.error.message,
+          type: "error",
+        });
       },
-    );
+    });
   }
 
   async emailSignIn(formData: FormData, router: AppRouterInstance) {
-    const email = formData.get("email")?.toString();
-    const password = formData.get("password")?.toString();
+    const result = Object.fromEntries(formData.entries());
+    const { data, error } = emailSignInSchema.safeParse(result);
 
     // validate form
-    if (!(email && password))
+    if (error)
       return toaster.create({
-        title: "Incomplete form!",
-        description: "All fields are required",
+        title: error.name,
+        description: error.message,
         type: "error",
       });
 
-    return this.auth.signIn.email(
-      { email, password, rememberMe: true },
-      {
-        onSuccess: async (ctx) => this.loginSuccess(router),
-        onError: (ctx) => {
-          toaster.create({
-            title: "Signin failed",
-            description: ctx.error.message,
-            type: "error",
-          });
-        },
+    return this.auth.signIn.email(data, {
+      onSuccess: async (ctx) => this.loginSuccess(router),
+      onError: (ctx) => {
+        toaster.create({
+          title: "Signin failed",
+          description: ctx.error.message,
+          type: "error",
+        });
       },
-    );
+    });
   }
 
   async googleSignIn(router: AppRouterInstance) {

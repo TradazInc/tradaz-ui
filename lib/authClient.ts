@@ -23,6 +23,8 @@ export const authClient = createAuthClient({
         organization: {
           additionalFields: {
             categoryId: { type: "string", input: true, required: true },
+            phone: { type: "string", input: true, required: true },
+            address: { type: "string", input: true, required: true },
           },
         },
         team: {

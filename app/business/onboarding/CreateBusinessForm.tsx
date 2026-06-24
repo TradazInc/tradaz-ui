@@ -24,6 +24,7 @@ import {
 import { useBusinessCategories } from "@/entities/business-categories/hooks";
 import { useBusinessActions } from "@/entities/business/hooks";
 import { inputStyles, labelStyles } from "@/app/ui/style";
+
 interface CreateBusinessFormProps {
   onSuccess: () => void;
   onCancel?: () => void;
