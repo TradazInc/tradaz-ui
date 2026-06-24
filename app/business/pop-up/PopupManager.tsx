@@ -28,7 +28,7 @@ import {
   LuSearch,
   LuX,
 } from "react-icons/lu";
-import { inputStyles, nativeSelectStyle, labelStyles } from "@/app/ui/style";
+import { inputStyles, nativeSelectStyle, labelStyles } from "@/app/style";
 
 import { generateDummyPopups } from "@/data/data";
 import { PopupCampaign } from "@/data/types";

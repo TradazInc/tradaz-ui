@@ -21,7 +21,7 @@ import {
 
 import { useBusinessCategories } from "@/hooks/useBusinessCategories";
 import { useBusinessActions } from "@/hooks/useBusiness";
-import { inputStyles, labelStyles } from "@/app/ui/style";
+import { inputStyles, labelStyles } from "@/app/style";
 
 interface CreateBusinessFormProps {
   onSuccess: () => void;

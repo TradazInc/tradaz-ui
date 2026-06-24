@@ -1,6 +1,6 @@
 import { Flex, VStack } from "@chakra-ui/react";
-import BackToHome from "../ui/component/BackToHome";
-import TradazHeader from "../ui/TradazHeader";
+import BackToHome from "../components/BackToHome";
+import TradazHeader from "../components/TradazHeader";
 import SignInForm from "./SignInForm";
 import SignInHeader from "./SignInHeader";
 import SigninSidePanel from "./SigninSidePanel";

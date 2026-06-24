@@ -23,7 +23,7 @@ import {
   LuLayers,
 } from "react-icons/lu";
 
-import { controlStyles } from "@/app/ui/style";
+import { controlStyles } from "@/app/style";
 
 // --- MOCK DATA ---
 const INITIAL_PRODUCT_TYPES = [

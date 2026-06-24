@@ -35,7 +35,7 @@ import {
   nativeSelectStyle,
   labelStyles,
   inputStyles,
-} from "@/app/ui/style";
+} from "@/app/style";
 import { useExpenses } from "@/hooks/useExpenses";
 import { Expense } from "@/data/types";
 

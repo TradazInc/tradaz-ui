@@ -2,7 +2,7 @@ import { toaster } from "@/components/ui/toaster";
 import { OrgRole, Role } from "@/entities/CustomSession";
 import { authClient, AuthClient } from "@/lib/authClient";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { redirect } from "next/navigation";
+import { forbidden, unauthorized } from "next/navigation";
 import { emailSignInSchema, emailSignUpSchema } from "./authSchema";
 
 class AuthService {
@@ -72,9 +72,14 @@ class AuthService {
     );
   }
 
-  async isAuthenticated() {
+  async isAuthenticated(role: Role, orgRole?: OrgRole) {
     const { data: session } = await this.auth.getSession();
-    if (!session) redirect("/signin");
+
+    if (!session) unauthorized();
+    if (role !== session.user.role) forbidden();
+    if (orgRole && orgRole !== session.member?.role) forbidden();
+
+    return session;
   }
 
   private async loginSuccess(router: AppRouterInstance) {
@@ -91,15 +96,14 @@ class AuthService {
 
     // redirect to the dashboard
     if (session.user.role === Role.admin) {
-      return router.push("/overwatch");
+      router.push("/overwatch");
+    } else if (session.member?.role === OrgRole.customer) {
+      router.push("/store");
+    } else if (session.member?.role === OrgRole.vendor) {
+      router.push("/vendor");
+    } else {
+      router.push("/business");
     }
-    if (session.member?.role === OrgRole.customer) {
-      return router.push("/store");
-    }
-    if (session.member?.role === OrgRole.vendor) {
-      return router.push("/vendor");
-    }
-    router.push("/business");
   }
 }
 

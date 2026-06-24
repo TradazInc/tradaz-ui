@@ -22,7 +22,7 @@ import {
   LuX,
 } from "react-icons/lu";
 import { GridProduct } from "./InventoryOverview";
-import { controlStyles, nativeSelectStyle } from "@/app/ui/style";
+import { controlStyles, nativeSelectStyle } from "@/app/style";
 
 interface InventoryGridViewProps {
   visibleItems: GridProduct[];

@@ -22,7 +22,7 @@ import {
 } from "react-icons/lu";
 import type { Product } from "@/data/types";
 
-import { controlStyles } from "@/app/ui/style";
+import { controlStyles } from "@/app/style";
 
 interface ProductDetailViewProps {
   product: Product;

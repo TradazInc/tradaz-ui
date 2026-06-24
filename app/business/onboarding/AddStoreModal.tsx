@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useActiveBusiness } from "@/hooks/useBusiness";
 import { useTeamActions } from "@/hooks/useStores";
-import { inputStyles, labelStyles } from "@/app/ui/style";
+import { inputStyles, labelStyles } from "@/app/style";
 
 interface AddStoreModalProps {
   isOpen: boolean;

@@ -20,7 +20,7 @@ import {
 } from "react-icons/lu";
 import { Customer } from "@/data/types";
 
-import { customerControlStyles, nativeSelectStyle } from "@/app/ui/style";
+import { customerControlStyles, nativeSelectStyle } from "@/app/style";
 
 interface CustomerGridViewProps {
   visibleItems: Customer[];
