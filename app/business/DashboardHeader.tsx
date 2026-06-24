@@ -24,7 +24,7 @@ import {
   LuStore,
   LuPlus,
 } from "react-icons/lu";
-import { OnboardingModal } from "./onboarding/OnboardingModel";
+import { OnboardingModal } from "./onboarding/OnboardingModal";
 import { AddStoreModal } from "./onboarding/AddStoreModal";
 import { useBusinessList, useActiveBusiness } from "@/hooks/useBusiness";
 import { useTeamList, useTeamActions } from "@/hooks/useStores";
