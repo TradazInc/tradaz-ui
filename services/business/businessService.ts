@@ -19,7 +19,11 @@ class BusinessService {
 
     return this.auth.organization.create({
       ...data,
-      metadata: { description: data.description },
+      metadata: {
+        description: data.description,
+        phone: data.phone,
+        address: data.address,
+      },
       keepCurrentActiveOrganization: false,
     });
   }
