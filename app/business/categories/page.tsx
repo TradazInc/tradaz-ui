@@ -7,8 +7,7 @@ import {
     LuList, LuPlus, LuSearch, LuTrash, LuPen, LuPackage
 } from "react-icons/lu";
 
-// --- REUSABLE STYLES ---
-const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 3, _focus: { outline: "none", borderColor: "white" }, _hover: { bg: "#111111" } };
+import { controlStyles } from "@/app/ui/style";
 
 // --- MOCK DATA ---
 const INITIAL_CATEGORIES = [

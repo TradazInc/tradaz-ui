@@ -21,39 +21,18 @@ import {
   LuMapPin,
 } from "react-icons/lu";
 
-
-import {useBusinessCategories} from "@/entities/business-categories/hooks";
-import {useBusinessActions} from "@/entities/business/hooks";
-
+import { useBusinessCategories } from "@/entities/business-categories/hooks";
+import { useBusinessActions } from "@/entities/business/hooks";
+import { inputStyles, labelStyles } from "@/app/ui/style";
 interface CreateBusinessFormProps {
   onSuccess: () => void;
   onCancel?: () => void;
 }
 
-// Reusable Styles
-const inputStyles = {
-  bg: "#111111",
-  border: "1px solid #333333",
-  color: "white",
-  rounded: "none",
-  h: "44px",
-  px: 4,
-  _focus: { borderColor: "white", outline: "none" },
-  _placeholder: { color: "#555555" },
-};
-const labelStyles = {
-  color: "#888888",
-  fontSize: "10px",
-  fontWeight: "bold",
-  textTransform: "uppercase" as const,
-  letterSpacing: "wider",
-  mb: 2,
-  display: "block",
-};
-
 export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
   const { create } = useBusinessActions();
-  const { data: categories, isLoading: categoriesLoading } = useBusinessCategories(); // 👈 fetch categories
+  const { data: categories, isLoading: categoriesLoading } =
+    useBusinessCategories();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -248,8 +227,12 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
                   <option value="" disabled style={{ background: "#0A0A0A" }}>
                     {categoriesLoading ? "Loading..." : "Select Industry"}
                   </option>
-                  {categories?.map((cat) => (
-                    <option key={cat.id} value={cat.id} style={{ background: "#0A0A0A" }}>
+                  {categories?.map((cat: { id: string; name: string }) => (
+                    <option
+                      key={cat.id}
+                      value={cat.id}
+                      style={{ background: "#0A0A0A" }}
+                    >
                       {cat.name}
                     </option>
                   ))}

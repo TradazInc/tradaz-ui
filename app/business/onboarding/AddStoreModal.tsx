@@ -10,36 +10,18 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { LuX } from "react-icons/lu";
 import { useActiveBusiness } from "@/entities/business/hooks";
 import {useTeamActions} from "@/entities/stores/hooks"
 
+import { inputStyles,labelStyles } from "@/app/ui/style";
 interface AddStoreModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const inputStyles = {
-  bg: "#000000",
-  border: "1px solid",
-  borderColor: "#333333",
-  color: "white",
-  h: "44px",
-  rounded: "none",
-  px: 4,
-  _focus: { outline: "none", borderColor: "white", boxShadow: "none" },
-  _hover: { borderColor: "#555555" },
-};
-const labelStyles = {
-  color: "#888888",
-  fontSize: "10px",
-  fontWeight: "bold",
-  textTransform: "uppercase" as const,
-  letterSpacing: "wider",
-  mb: 2,
-  display: "block",
-};
 
 export const AddStoreModal = ({ isOpen, onClose }: AddStoreModalProps) => {
   const { create } = useTeamActions();

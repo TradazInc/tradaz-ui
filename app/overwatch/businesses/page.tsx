@@ -14,17 +14,10 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  LuSearch,
-  LuEllipsisVertical,
-  LuX,
-  
-} from "react-icons/lu";
-
+import { LuSearch, LuEllipsisVertical, LuX } from "react-icons/lu";
 
 import { useBusinessList, useBusinessActions } from "@/entities/business/hooks";
 import { toaster } from "@/components/ui/toaster";
-
 
 interface OrgData {
   id: string;
@@ -34,8 +27,7 @@ interface OrgData {
   createdAt: Date;
 }
 
-
-// Manage Business Drawer 
+// Manage Business Drawer
 const ManageBusinessDrawer = ({
   business,
   onClose,
@@ -122,10 +114,22 @@ const ManageBusinessDrawer = ({
                   bg="#111111"
                 >
                   <Box>
-                    <Text fontSize="10px" fontWeight="bold" letterSpacing="wider" color="#888888" textTransform="uppercase" mb={1}>
+                    <Text
+                      fontSize="10px"
+                      fontWeight="bold"
+                      letterSpacing="wider"
+                      color="#888888"
+                      textTransform="uppercase"
+                      mb={1}
+                    >
                       Manage Business
                     </Text>
-                    <Text fontSize="xl" fontWeight="black" color="white" letterSpacing="tight">
+                    <Text
+                      fontSize="xl"
+                      fontWeight="black"
+                      color="white"
+                      letterSpacing="tight"
+                    >
                       {business.name}
                     </Text>
                   </Box>
@@ -142,10 +146,23 @@ const ManageBusinessDrawer = ({
                   </IconButton>
                 </Flex>
 
-                <Box flex={1} overflowY="auto" px={6} py={8} css={{ "&::-webkit-scrollbar": { display: "none" } }}>
+                <Box
+                  flex={1}
+                  overflowY="auto"
+                  px={6}
+                  py={8}
+                  css={{ "&::-webkit-scrollbar": { display: "none" } }}
+                >
                   <VStack w="full" gap={6} align="stretch">
                     <Box>
-                      <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>
+                      <Text
+                        color="#888888"
+                        fontSize="10px"
+                        fontWeight="bold"
+                        textTransform="uppercase"
+                        letterSpacing="wider"
+                        mb={2}
+                      >
                         Business Name
                       </Text>
                       <Input
@@ -160,7 +177,14 @@ const ManageBusinessDrawer = ({
                       />
                     </Box>
                     <Box>
-                      <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider" mb={2}>
+                      <Text
+                        color="#888888"
+                        fontSize="10px"
+                        fontWeight="bold"
+                        textTransform="uppercase"
+                        letterSpacing="wider"
+                        mb={2}
+                      >
                         Slug
                       </Text>
                       <Input
@@ -177,7 +201,13 @@ const ManageBusinessDrawer = ({
                   </VStack>
                 </Box>
 
-                <Flex p={6} borderTop="1px solid" borderColor="#1A1A1A" gap={3} bg="#111111">
+                <Flex
+                  p={6}
+                  borderTop="1px solid"
+                  borderColor="#1A1A1A"
+                  gap={3}
+                  bg="#111111"
+                >
                   <Button
                     variant="outline"
                     borderColor="#333333"
@@ -214,12 +244,11 @@ const ManageBusinessDrawer = ({
   );
 };
 
-
 // Main Page
 export default function AdminBusinessesPage() {
   const router = useRouter();
 
-  // Real business 
+  // Real business
   const orgsAtom = useBusinessList() as unknown as { data?: OrgData[] };
   const organizations = useMemo(() => orgsAtom.data ?? [], [orgsAtom.data]);
 
@@ -227,8 +256,12 @@ export default function AdminBusinessesPage() {
 
   // ---- State ----
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"name-asc" | "name-desc" | "date-asc" | "date-desc">("name-asc");
-  const [selectedBusiness, setSelectedBusiness] = useState<OrgData | null>(null);
+  const [sortBy, setSortBy] = useState<
+    "name-asc" | "name-desc" | "date-asc" | "date-desc"
+  >("name-asc");
+  const [selectedBusiness, setSelectedBusiness] = useState<OrgData | null>(
+    null,
+  );
 
   // ---- Derived data ----
   const filteredBusinesses = useMemo(() => {
@@ -238,8 +271,7 @@ export default function AdminBusinessesPage() {
       const q = searchQuery.toLowerCase();
       result = result.filter(
         (b) =>
-          b.name.toLowerCase().includes(q) ||
-          b.slug.toLowerCase().includes(q),
+          b.name.toLowerCase().includes(q) || b.slug.toLowerCase().includes(q),
       );
     }
 
@@ -251,10 +283,16 @@ export default function AdminBusinessesPage() {
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case "date-asc":
-        result.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        result.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        );
         break;
       case "date-desc":
-        result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        result.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
         break;
     }
 
@@ -262,7 +300,10 @@ export default function AdminBusinessesPage() {
   }, [organizations, searchQuery, sortBy]);
 
   // ---- Handlers ----
-  const handleUpdateBusiness = async (id: string, data: { name?: string; slug?: string }) => {
+  const handleUpdateBusiness = async (
+    id: string,
+    data: { name?: string; slug?: string },
+  ) => {
     try {
       await update.mutateAsync({
         organizationId: id,
@@ -278,10 +319,21 @@ export default function AdminBusinessesPage() {
   };
 
   return (
-    <Box p={{ base: 4, lg: 8 }} maxW="1300px" mx="auto" bg="#000000" minH="100vh">
+    <Box
+      p={{ base: 4, lg: 8 }}
+      maxW="1300px"
+      mx="auto"
+      bg="#000000"
+      minH="100vh"
+    >
       {/* Header */}
       <Box mb={8}>
-        <Text fontSize="3xl" fontWeight="black" color="white" letterSpacing="tight">
+        <Text
+          fontSize="3xl"
+          fontWeight="black"
+          color="white"
+          letterSpacing="tight"
+        >
           Businesses
         </Text>
         <Text color="#888888" fontSize="sm">
@@ -343,7 +395,13 @@ export default function AdminBusinessesPage() {
 
       {/* Business list */}
       {filteredBusinesses.length === 0 ? (
-        <Flex justify="center" align="center" py={20} bg="#0A0A0A" border="1px dashed #1A1A1A">
+        <Flex
+          justify="center"
+          align="center"
+          py={20}
+          bg="#0A0A0A"
+          border="1px dashed #1A1A1A"
+        >
           <Text color="#888888">No businesses found.</Text>
         </Flex>
       ) : (
@@ -356,13 +414,31 @@ export default function AdminBusinessesPage() {
             py={2}
             display={{ base: "none", md: "grid" }}
           >
-            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+            <Text
+              color="#888888"
+              fontSize="10px"
+              fontWeight="bold"
+              textTransform="uppercase"
+              letterSpacing="wider"
+            >
               Business
             </Text>
-            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+            <Text
+              color="#888888"
+              fontSize="10px"
+              fontWeight="bold"
+              textTransform="uppercase"
+              letterSpacing="wider"
+            >
               Slug
             </Text>
-            <Text color="#888888" fontSize="10px" fontWeight="bold" textTransform="uppercase" letterSpacing="wider">
+            <Text
+              color="#888888"
+              fontSize="10px"
+              fontWeight="bold"
+              textTransform="uppercase"
+              letterSpacing="wider"
+            >
               Created
             </Text>
             <Text></Text>
@@ -397,22 +473,41 @@ export default function AdminBusinessesPage() {
                   />
                 </Avatar.Root>
                 <Box overflow="hidden">
-                  <Text color="white" fontWeight="bold" fontSize="sm" lineClamp={1} letterSpacing="tight">
+                  <Text
+                    color="white"
+                    fontWeight="bold"
+                    fontSize="sm"
+                    lineClamp={1}
+                    letterSpacing="tight"
+                  >
                     {biz.name}
                   </Text>
-                  <Text color="#888888" fontSize="xs" fontFamily="monospace" mt={0.5}>
+                  <Text
+                    color="#888888"
+                    fontSize="xs"
+                    fontFamily="monospace"
+                    mt={0.5}
+                  >
                     ID: {biz.id}
                   </Text>
                 </Box>
               </Flex>
 
               {/* Slug */}
-              <Text color="#888888" fontSize="sm" display={{ base: "none", md: "block" }}>
+              <Text
+                color="#888888"
+                fontSize="sm"
+                display={{ base: "none", md: "block" }}
+              >
                 /{biz.slug}
               </Text>
 
               {/* Created date */}
-              <Text color="#888888" fontSize="sm" display={{ base: "none", md: "block" }}>
+              <Text
+                color="#888888"
+                fontSize="sm"
+                display={{ base: "none", md: "block" }}
+              >
                 {new Date(biz.createdAt).toLocaleDateString()}
               </Text>
 

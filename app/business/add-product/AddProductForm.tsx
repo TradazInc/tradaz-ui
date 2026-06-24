@@ -38,18 +38,7 @@ import type {
   ProductVariation,
 } from "@/entities/products/types";
 import { productsApi } from "@/entities/products/api";
-
-
-// Reusable styles
-const inputStyles = {
-  bg: "#0A0A0A",
-  border: "1px solid",
-  borderColor: "#1A1A1A",
-  color: "white",
-  rounded: "none",
-  _focus: { borderColor: "white", outline: "none", boxShadow: "0 0 0 1px white" },
-  _hover: { borderColor: "#333333" },
-};
+import { inputStyles } from "@/app/ui/style";
 
 const FormLabel = ({
   children,
@@ -92,7 +81,7 @@ const genderCollection = createListCollection({
 
 
 export const AddProductForm = () => {
-  
+
   const { create } = useProductActions();
 
   // Local form state 
@@ -238,7 +227,7 @@ export const AddProductForm = () => {
     .map((step) => step.name);
   const incompleteSteps = missingSteps.length;
 
-  
+
   return (
     <Box w="full" pb={10} position="relative" bg="#000000">
       {/* Page Header */}
@@ -405,16 +394,16 @@ export const AddProductForm = () => {
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
           <Box>
             <FormLabel required>Product Name</FormLabel>
-            <Input h="48px" placeholder="Enter product name" {...inputStyles} value={basicInfo.name} onChange={(e) => setBasicInfo({ ...basicInfo, name: e.target.value })} />
+            <Input {...inputStyles} h="48px" placeholder="Enter product name" value={basicInfo.name} onChange={(e) => setBasicInfo({ ...basicInfo, name: e.target.value })} />
           </Box>
           <Box>
             <FormLabel required>Brand</FormLabel>
-            <Input h="48px" placeholder="Enter brand name" {...inputStyles} value={basicInfo.brand} onChange={(e) => setBasicInfo({ ...basicInfo, brand: e.target.value })} />
+            <Input {...inputStyles} h="48px" placeholder="Enter brand name" value={basicInfo.brand} onChange={(e) => setBasicInfo({ ...basicInfo, brand: e.target.value })} />
           </Box>
           <Box>
             <FormLabel required>Gender</FormLabel>
             <ChakraSelect.Root collection={genderCollection} value={[gender]} onValueChange={(details) => setGender(details.value[0] as Gender)}>
-              <ChakraSelect.Trigger h="48px" {...inputStyles}>
+              <ChakraSelect.Trigger {...inputStyles} h="48px">
                 <ChakraSelect.ValueText />
               </ChakraSelect.Trigger>
               <ChakraSelect.Content>
@@ -429,12 +418,12 @@ export const AddProductForm = () => {
           <Box>
             <FormLabel>Discount (%)</FormLabel>
             <Input
+              {...inputStyles}
               h="48px"
               type="number"
               min={0}
               max={100}
               placeholder="0"
-              {...inputStyles}
               value={discountPercentage}
               onChange={(e) => setDiscountPercentage(e.target.value)}
             />
@@ -468,7 +457,7 @@ export const AddProductForm = () => {
         <Text color="white" fontWeight="bold" mb={6}>4. Product Details</Text>
         <Box mb={6}>
           <FormLabel required>Description</FormLabel>
-          <Textarea placeholder="Enter comprehensive product description..." {...inputStyles} minH="120px" py={3}
+          <Textarea {...inputStyles} minH="120px" py={3} placeholder="Enter comprehensive product description..."
             value={details.description} onChange={(e) => setDetails({ description: e.target.value })} />
         </Box>
       </Box>
@@ -479,11 +468,11 @@ export const AddProductForm = () => {
         <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
           <Box>
             <FormLabel required>Base Price (₦)</FormLabel>
-            <Input h="48px" type="number" placeholder="0.00" {...inputStyles} value={pricing.price} onChange={(e) => setPricing({ price: e.target.value })} />
+            <Input {...inputStyles} h="48px" type="number" placeholder="0.00" value={pricing.price} onChange={(e) => setPricing({ price: e.target.value })} />
           </Box>
           <Box>
             <FormLabel>Initial Quantity</FormLabel>
-            <Input h="48px" type="number" placeholder="0" {...inputStyles} />
+            <Input {...inputStyles} h="48px" type="number" placeholder="0" />
           </Box>
         </SimpleGrid>
       </Box>
@@ -508,17 +497,17 @@ export const AddProductForm = () => {
                 border="1px solid #1A1A1A" direction={{ base: "column", md: "row" }}>
                 <Box flex={1} w="full">
                   <Text fontSize="xs" color="gray.400" mb={1} fontWeight="bold">Size</Text>
-                  <Input h="40px" placeholder="e.g. XL, 42, One Size" {...inputStyles} value={variation.size}
+                  <Input {...inputStyles} h="40px" placeholder="e.g. XL, 42, One Size" value={variation.size}
                     onChange={(e) => updateVariation(variation.id, "size", e.target.value)} />
                 </Box>
                 <Box flex={1} w="full">
                   <Text fontSize="xs" color="gray.400" mb={1} fontWeight="bold">Color</Text>
-                  <Input h="40px" placeholder="e.g. Red, Matte Black" {...inputStyles} value={variation.color}
+                  <Input {...inputStyles} h="40px" placeholder="e.g. Red, Matte Black" value={variation.color}
                     onChange={(e) => updateVariation(variation.id, "color", e.target.value)} />
                 </Box>
                 <Box flex={1} w="full">
                   <Text fontSize="xs" color="gray.400" mb={1} fontWeight="bold">Specific Price (₦)</Text>
-                  <Input h="40px" type="number" placeholder="Override base price" {...inputStyles} value={variation.price}
+                  <Input {...inputStyles} h="40px" type="number" placeholder="Override base price" value={variation.price}
                     onChange={(e) => updateVariation(variation.id, "price", e.target.value)} />
                 </Box>
                 <IconButton aria-label="Remove Variation" bg="transparent" color="gray.500" rounded="none"
