@@ -1,42 +1,49 @@
 import {
   LuBox,
   LuCalculator,
-  LuCheck,
-  LuFileText,
   LuGift,
   LuHandshake,
   LuHeart,
   LuImage,
-  LuLandmark,
   LuLayoutGrid,
   LuList,
   LuMegaphone,
-  LuMessageSquare,
   LuPackage,
   LuPalette,
   LuPercent,
   LuPlus,
-  LuRefreshCw,
   LuRuler,
-  LuScale,
   LuScanLine,
-  LuSettings,
-  LuShield,
   LuShoppingBag,
   LuStar,
-  LuStore,
   LuTag,
   LuTerminal,
   LuTicket,
   LuTicketPercent,
   LuTrendingDown,
-  LuTrendingUp,
   LuTruck,
-  LuUndo,
-  LuUser,
   LuUserPlus,
+  LuLayoutDashboard,
+  LuStore,
+  LuBriefcase,
+  LuCheck,
+  LuTrendingUp,
   LuUsers,
+  LuUser,
+  LuMessageSquare,
   LuWallet,
+  LuCreditCard,
+  LuLandmark,
+  LuRefreshCw,
+  LuShield,
+  LuScale,
+  LuUndo,
+  LuFileText,
+  LuSettings,
+  LuZap,
+  LuServer,
+  LuShieldCheck,
+  LuLayers,
 } from "react-icons/lu";
 
 export const sideBarItems = [
@@ -137,6 +144,111 @@ export const sideBarItems = [
       { label: "Terms", icon: LuFileText },
       { label: "Conditions & Policies", icon: LuShield },
       { label: "UI config", icon: LuPalette },
+    ],
+  },
+];
+
+export const SUPER_ADMIN_NAV_ITEMS = [
+  {
+    label: "Overview",
+    icon: LuLayoutDashboard,
+    path: "/overwatch",
+  },
+  {
+    label: "Businesses",
+    icon: LuStore,
+    children: [
+      {
+        label: "All Businesses",
+        icon: LuBriefcase,
+        path: "/overwatch/businesses",
+      },
+      { label: "All Shops", icon: LuStore, path: "/overwatch/shops" },
+      {
+        label: "Pending Approvals",
+        icon: LuCheck,
+        path: "/overwatch/approvals",
+      },
+      {
+        label: "Shop Performance",
+        icon: LuTrendingUp,
+        path: "/overwatch/performance",
+      },
+    ],
+  },
+  {
+    label: "Platform Data",
+    icon: LuLayers,
+    children: [
+      { label: "Categories", icon: LuLayers, path: "/overwatch/categories" },
+    ],
+  },
+  {
+    label: "Users",
+    icon: LuUsers,
+    children: [
+      { label: "All Users", icon: LuUser, path: "/overwatch/users" },
+      {
+        label: "Reviews & Feedback",
+        icon: LuMessageSquare,
+        path: "/overwatch/reviews",
+      },
+    ],
+  },
+  {
+    label: "Finances",
+    icon: LuWallet,
+    children: [
+      { label: "Finances", icon: LuWallet, path: "/overwatch/finance" },
+      {
+        label: "Transactions",
+        icon: LuCreditCard,
+        path: "/overwatch/transactions",
+      },
+      { label: "Payouts", icon: LuLandmark, path: "/overwatch/payouts" },
+      {
+        label: "Subscriptions",
+        icon: LuRefreshCw,
+        path: "/overwatch/subscriptions",
+      },
+    ],
+  },
+  {
+    label: "Disputes & Security",
+    icon: LuShield,
+    children: [
+      { label: "Active Disputes", icon: LuScale, path: "/overwatch/disputes" },
+      { label: "Refunds", icon: LuUndo, path: "/overwatch/refunds" },
+      {
+        label: "Flagged Accounts",
+        icon: LuFileText,
+        path: "/overwatch/flagged",
+      },
+    ],
+  },
+  {
+    label: "System Ops",
+    icon: LuServer,
+    children: [
+      {
+        label: "Automation Engine",
+        icon: LuZap,
+        path: "/overwatch/automation",
+      },
+      { label: "API & Health", icon: LuServer, path: "/overwatch/health" },
+      { label: "Staff Roles", icon: LuShieldCheck, path: "/overwatch/staff" },
+    ],
+  },
+  {
+    label: "Settings",
+    icon: LuSettings,
+    children: [
+      {
+        label: "General Settings",
+        icon: LuSettings,
+        path: "/overwatch/settings",
+      },
+      { label: "Activity Logs", icon: LuFileText, path: "/overwatch/logs" },
     ],
   },
 ];
