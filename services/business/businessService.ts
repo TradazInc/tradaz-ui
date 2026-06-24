@@ -12,8 +12,8 @@ class BusinessService {
     // validate form
     if (error)
       return toaster.create({
-        title: error.name,
-        description: error.message,
+        title: error.issues[0].path,
+        description: error.issues[0].message,
         type: "error",
       });
 
