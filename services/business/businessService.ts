@@ -1,6 +1,6 @@
 import { toaster } from "@/components/ui/toaster";
 import { AuthClient, authClient } from "@/lib/authClient";
-import { businessSchema } from "@/types/business";
+import { businessSchema } from "./businessSchema";
 
 class BusinessService {
   constructor(private readonly auth: AuthClient) {}

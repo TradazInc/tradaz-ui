@@ -1,7 +1,7 @@
 import { toaster } from "@/components/ui/toaster";
 import { OrgRole, Role } from "@/entities/CustomSession";
 import { authClient, AuthClient } from "@/lib/authClient";
-import { emailSignInSchema, emailSignUpSchema } from "@/types/auth";
+import { emailSignInSchema, emailSignUpSchema } from "./authSchema";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 class AuthService {
