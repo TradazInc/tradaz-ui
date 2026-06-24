@@ -18,7 +18,7 @@ import {
   LuBan,
   LuTrash2,
 } from "react-icons/lu";
-import { Customer } from "@/types/definitions";
+import { Customer } from "@/data/types";
 
 import { customerControlStyles, nativeSelectStyle } from "@/app/ui/style";
 

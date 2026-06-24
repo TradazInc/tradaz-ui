@@ -27,8 +27,8 @@ import {
   LuUser
 } from "react-icons/lu";
 
-import { useStaffSalaries } from "@/hooks-test/useStaffSalaries";
-import { StaffSalary } from "@/types/definitions";
+import { useStaffSalaries } from "@/hooks/useStaffSalaries";
+import { StaffSalary } from "@/data/types";
 
 const controlStyles = {
   bg: "#0A0A0A",

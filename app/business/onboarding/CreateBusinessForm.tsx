@@ -21,8 +21,8 @@ import {
   LuMapPin,
 } from "react-icons/lu";
 
-import { useBusinessCategories } from "@/entities/business-categories/hooks";
-import { useBusinessActions } from "@/entities/business/hooks";
+import { useBusinessCategories } from "@/hooks/useBusinessCategories";
+import { useBusinessActions } from "@/hooks/useBusiness";
 import { inputStyles, labelStyles } from "@/app/ui/style";
 
 interface CreateBusinessFormProps {

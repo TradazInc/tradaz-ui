@@ -13,8 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { LuSearch, LuEllipsisVertical } from "react-icons/lu";
 
-import { useActiveBusiness } from "@/entities/business/hooks";
-import { useTeamList } from "@/entities/stores/hooks";
+import { useActiveBusiness } from "@/hooks/useBusiness";
+import { useTeamList } from "@/hooks/useStores";
 
 
 const nativeSelectStyle: React.CSSProperties = {

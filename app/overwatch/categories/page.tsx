@@ -18,7 +18,7 @@ import { LuLayers, LuTrash2, LuPlus } from "react-icons/lu";
 import {
   useBusinessCategories,
   useCategoryActions,
-} from "@/entities/business-categories/hooks";
+} from "@/hooks/useBusinessCategories";
 import { controlStyles, labelStyles } from "./style";
 import { authClient } from "@/lib/authClient";
 

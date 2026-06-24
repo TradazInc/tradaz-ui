@@ -24,7 +24,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyReviews } from "@/data/data";
-import { ProductReview } from "@/types/definitions";
+import { ProductReview } from "@/data/types";
 
 export const ReviewsManager = () => {
   const [reviews, setReviews] = useState<ProductReview[]>(

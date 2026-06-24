@@ -7,7 +7,7 @@ import {
     LuGift, LuCopy, LuCheck, LuCreditCard, LuSend, 
 } from "react-icons/lu";
 
-import { GiftCard } from "@/types/definitions";
+import { GiftCard } from "@/data/types";
 import { MOCK_GIFT_CARDS } from "@/data/data";
 
 export default function GiftCardsPage() {

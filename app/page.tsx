@@ -1,24 +1,19 @@
 "use client";
-import React from "react";
+
 import { Box, Container } from "@chakra-ui/react";
-
-import { HeroImage } from "./landingPage/landingPage/hero/HeroImage";
-import { HeroContent } from "./landingPage/landingPage/hero/HeroContent";
-import { MotionBox } from "./landingPage/landingPage/hero/motion";
-import { containerVariants } from "./landingPage/landingPage/hero/config";
-
 import HowItWorks from "./landingPage/how-it-works/HowItWorks";
-import WhatWeOffer from "./landingPage/landingPage/what-we-offer/WhatWeOffer";
-import Navbar from "./landingPage/landingPage/navbar/Navbar";
 import { Footer } from "./landingPage/landingPage/footer/footer";
-
-
+import { containerVariants } from "./landingPage/landingPage/hero/config";
+import { HeroContent } from "./landingPage/landingPage/hero/HeroContent";
+import { HeroImage } from "./landingPage/landingPage/hero/HeroImage";
+import { MotionBox } from "./landingPage/landingPage/hero/motion";
+import Navbar from "./landingPage/landingPage/navbar/Navbar";
+import WhatWeOffer from "./landingPage/landingPage/what-we-offer/WhatWeOffer";
 
 const Hero = () => {
   return (
-    
     <>
-<Navbar/>
+      <Navbar />
       <Box
         as="section"
         position="relative"
@@ -30,7 +25,6 @@ const Hero = () => {
         display="flex"
         alignItems="center"
       >
-        
         <Container maxW="container.xl" px={{ base: 6, md: 12 }} h="full">
           <MotionBox
             display="grid"
@@ -38,21 +32,19 @@ const Hero = () => {
             alignItems="center"
             gap={{ base: 8, lg: 16 }}
             h="full"
-            variants={containerVariants} 
+            variants={containerVariants}
             initial="hidden"
             animate="show"
           >
-            <HeroContent/>
-            <HeroImage/>
+            <HeroContent />
+            <HeroImage />
           </MotionBox>
         </Container>
       </Box>
 
-     
-      <HowItWorks/>
-      <WhatWeOffer/>
-      <Footer/>
-      
+      <HowItWorks />
+      <WhatWeOffer />
+      <Footer />
     </>
   );
 };

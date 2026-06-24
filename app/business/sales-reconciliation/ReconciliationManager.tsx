@@ -7,7 +7,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyReconciliations } from "@/data/data";
-import { ReconciliationRecord } from "@/types/definitions";
+import { ReconciliationRecord } from "@/data/types";
 
 export const ReconciliationManager = () => {
     const [records, setRecords] = useState<ReconciliationRecord[]>(generateDummyReconciliations());

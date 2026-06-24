@@ -21,7 +21,7 @@ import {
   LuTrash2,
   LuX,
 } from "react-icons/lu";
-import { InventoryProduct } from "@/types/definitions";
+import { InventoryProduct } from "@/data/types";
 
 // Brutalist control styles
 const controlStyles = {

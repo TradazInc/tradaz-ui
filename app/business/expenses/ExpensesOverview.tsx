@@ -36,8 +36,8 @@ import {
   labelStyles,
   inputStyles,
 } from "@/app/ui/style";
-import { useExpenses } from "@/hooks-test/useExpenses";
-import { Expense } from "@/types/definitions";
+import { useExpenses } from "@/hooks/useExpenses";
+import { Expense } from "@/data/types";
 
 // --- RECORD EXPENSE MODAL ---
 const RecordExpenseModal = ({

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Box, Flex, Text, SimpleGrid, Icon, Input, Button, IconButton, Spinner } from "@chakra-ui/react";
 import { LuSearch, LuRefreshCw, LuDownload, LuEye, LuPlus } from "react-icons/lu";
-import { SalesRecord } from "@/types/definitions";
+import { SalesRecord } from "@/data/types";
 
 import { SalesPosModal, NewSalePayload } from "./SalesPosModal";
 

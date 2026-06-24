@@ -31,13 +31,13 @@ import {
   LuCheck,
   LuTrash2,
 } from "react-icons/lu";
-import { useProductActions } from "@/entities/products/hooks";
+import { useProductActions } from "@/hooks/useProducts";
 import type {
   CreateProductPayload,
   Gender,
   ProductVariation,
-} from "@/entities/products/types";
-import { productsApi } from "@/entities/products/api";
+} from "@/data/types";
+import { productsApi } from "@/hooks/useProducts";
 import { inputStyles } from "@/app/ui/style";
 
 const FormLabel = ({

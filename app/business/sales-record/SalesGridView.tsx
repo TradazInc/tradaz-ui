@@ -18,7 +18,7 @@ import {
   LuEye,
   LuPlus,
 } from "react-icons/lu";
-import { ExtendedSalesRecord } from "@/types/definitions";
+import { ExtendedSalesRecord } from "@/data/types";
 
 import { SalesPosModal, NewSalePayload } from "./SalesPosModal";
 

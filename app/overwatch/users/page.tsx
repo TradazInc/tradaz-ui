@@ -37,7 +37,7 @@ import { PlatformUser, RawAuthUser, BetterAuthResponse } from "./types";
 import { USER_KPIs, controlStyles, nativeSelectStyle } from "./constants";
 import { ViewUserModal } from "./ViewUserModal";
 import { ManageUserModal } from "./ManageUserModal";
-import { useListUsers, useAdminActions } from "@/app/entities/admin/hooks";
+import { useListUsers, useAdminActions } from "@/hooks/useAdmin";
 
 export default function UsersPage() {
   const { data, isLoading } = useListUsers({ limit: 100 });

@@ -16,7 +16,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { LuSearch, LuEllipsisVertical, LuX } from "react-icons/lu";
 
-import { useBusinessList, useBusinessActions } from "@/entities/business/hooks";
+import { useBusinessList, useBusinessActions } from "@/hooks/useBusiness";
 import { toaster } from "@/components/ui/toaster";
 
 interface OrgData {

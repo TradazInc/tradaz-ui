@@ -12,7 +12,7 @@ import {
     LuHeart, LuTicket, LuTag, LuUser, LuTruck, LuPercent, LuShield, LuPalette,
     LuStore, LuHandshake, LuX, LuList, LuBox, LuRuler
 } from "react-icons/lu";
-import { SidebarProps } from "@/types/definitions";
+import { SidebarProps } from "@/data/types";
 
 const OTHER_NAV_ITEMS = [
     { label: "Point of Sale", icon: LuScanLine, children: [{ label: "POS", icon: LuTerminal }] }, 

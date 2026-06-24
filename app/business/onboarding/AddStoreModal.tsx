@@ -13,8 +13,8 @@ import {
 
 import { motion, AnimatePresence } from "framer-motion";
 import { LuX } from "react-icons/lu";
-import { useActiveBusiness } from "@/entities/business/hooks";
-import {useTeamActions} from "@/entities/stores/hooks"
+import { useActiveBusiness } from "@/hooks/useBusiness";
+import {useTeamActions} from "@/hooks/useStores"
 
 import { inputStyles,labelStyles } from "@/app/ui/style";
 interface AddStoreModalProps {

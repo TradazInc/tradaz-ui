@@ -15,7 +15,7 @@ import { PlatformUser } from "./users/types";
 import { USER_KPIs, controlStyles, nativeSelectStyle } from "./users/constants";
 import { ViewUserModal } from "./users/ViewUserModal";
 import { ManageUserModal } from "./users/ManageUserModal";
-import { useListUsers, useAdminActions } from "@/app/entities/admin/hooks";
+import { useListUsers, useAdminActions } from "@/hooks/useAdmin";
 
 // --- STRICT API TYPE DEFINITION ---
 interface RawAuthUser {

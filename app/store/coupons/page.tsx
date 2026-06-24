@@ -7,7 +7,7 @@ import {
     LuTicket, LuCopy, LuCheck, LuClock, LuPlus, LuInfo 
 } from "react-icons/lu";
 
-import { Coupon } from "@/types/definitions";
+import { Coupon } from "@/data/types";
 import { MOCK_COUPONS } from "@/data/data";
 
 export default function CouponsPage() {

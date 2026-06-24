@@ -7,7 +7,7 @@ import {
     LuHeart, LuShoppingCart, LuArrowLeft, LuTruck, LuShieldCheck, LuUndo2, LuCheck, LuX, LuMinus, LuPlus
 } from "react-icons/lu";
 
-import { ProductDetailViewProps } from "@/types/definitions";
+import { ProductDetailViewProps } from "@/data/types";
 
 type CartItem = {
     id: string;

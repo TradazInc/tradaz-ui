@@ -21,7 +21,7 @@ import {
   LuTrash2,
   LuPencil,
 } from "react-icons/lu";
-import { Customer } from "@/types/definitions";
+import { Customer } from "@/data/types";
 
 interface CustomerDetailViewProps {
   customer: Customer;

@@ -20,7 +20,7 @@ import {
   LuArrowLeft,
   LuX,
 } from "react-icons/lu";
-import { InventoryProduct } from "@/types/definitions";
+import { InventoryProduct } from "@/data/types";
 
 export interface ProductVariation {
   id: string;

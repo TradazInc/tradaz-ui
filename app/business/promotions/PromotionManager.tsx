@@ -8,7 +8,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyPromotions } from "@/data/data";
-import { PromotionCampaign } from "@/types/definitions";
+import { PromotionCampaign } from "@/data/types";
 
 // --- REUSABLE STYLES ---
 const inputStyles = { bg: "#000000", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };

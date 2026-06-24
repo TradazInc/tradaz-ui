@@ -7,7 +7,7 @@ import {
     LuHouse, LuHeart, LuShoppingCart, LuPackage, 
     LuMessageSquare, LuUser, LuStar, LuTicket, LuLogOut 
 } from "react-icons/lu";
-import { CustomerSidebarProps } from "@/types/definitions";
+import { CustomerSidebarProps } from "@/data/types";
 
 const CUSTOMER_NAV_ITEMS = [
     { label: "Home", icon: LuHouse, path: "/store" },

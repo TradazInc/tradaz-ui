@@ -10,7 +10,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyTaxableSales } from "@/data/data";
-import { TaxableSale } from "@/types/definitions";
+import { TaxableSale } from "@/data/types";
 
 type TimeFilter = "1M" | "3M" | "6M" | "1Y" | "ALL";
 

@@ -27,7 +27,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyBanners } from "@/data/data";
-import { PromoBanner } from "@/types/definitions";
+import { PromoBanner } from "@/data/types";
 
 // --- REUSABLE STYLES ---
 const inputStyles = {

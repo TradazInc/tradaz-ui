@@ -24,7 +24,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyRefunds } from "@/data/data";
-import { RefundRequest } from "@/types/definitions";
+import { RefundRequest } from "@/data/types";
 
 export const RefundManager = () => {
   const [refunds, setRefunds] = useState<RefundRequest[]>(

@@ -6,8 +6,8 @@ import {
     LuBan, LuMail, LuCreditCard, LuUser
 } from "react-icons/lu";
 
-import { useVouchers } from "@/hooks-test/useVouchers";
-import { GiftVoucher } from "@/types/definitions";
+import { useVouchers } from "@/hooks/useVouchers";
+import { GiftVoucher } from "@/data/types";
 import { CreateVoucherForm } from "./CreateVoucherForm";
 
 export const VoucherManager = () => {

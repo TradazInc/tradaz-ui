@@ -9,7 +9,7 @@ import {
     LuCircleCheck, LuFilter, LuPackage
 } from "react-icons/lu"; 
 import Link from "next/link";
-import { HeaderProps } from "@/types/definitions";
+import { HeaderProps } from "@/data/types";
 
 import { CustomerSidebar } from "@/app/store/navigation/CustomerSidebar"; 
 

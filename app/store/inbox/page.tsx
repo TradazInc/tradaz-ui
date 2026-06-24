@@ -8,7 +8,7 @@ import {
     LuSend, LuSearch, LuEllipsisVertical, LuPackage, LuPaperclip, LuImage, LuMic, LuVideo 
 } from "react-icons/lu";
 
-import { Message as BaseMessage, ChatSession } from "@/types/definitions";
+import { Message as BaseMessage, ChatSession } from "@/data/types";
 import { MOCK_CHATS, MOCK_MESSAGES } from "@/data/data";
 
 

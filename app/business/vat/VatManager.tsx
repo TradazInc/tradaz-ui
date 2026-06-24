@@ -8,7 +8,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyVatRecords } from "@/data/data";
-import { VatRemittance } from "@/types/definitions";
+import { VatRemittance } from "@/data/types";
 
 export const VatManager = () => {
     const [records, setRecords] = useState<VatRemittance[]>(generateDummyVatRecords());

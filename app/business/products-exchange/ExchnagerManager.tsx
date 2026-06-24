@@ -8,7 +8,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyExchanges } from "@/data/data";
-import { ExchangeRequest } from "@/types/definitions";
+import { ExchangeRequest } from "@/data/types";
 
 export const ExchangeManager = () => {
     const router = useRouter(); 

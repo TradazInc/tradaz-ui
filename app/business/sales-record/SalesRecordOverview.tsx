@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useSales } from "@/hooks-test/useSales";
+import { useSales } from "@/hooks/useSales";
 import { SalesGridView } from "./SalesGridView";
 import { SalesDetailView } from "./SalesDetailView";
 

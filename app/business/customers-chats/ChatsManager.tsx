@@ -24,7 +24,7 @@ import {
 } from "react-icons/lu";
 
 import { generateDummyChats } from "@/data/data";
-import { CustomerChat } from "@/types/definitions";
+import { CustomerChat } from "@/data/types";
 
 // --- INNER COMPONENT ---
 const ChatManagerInner = () => {

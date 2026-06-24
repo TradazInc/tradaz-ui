@@ -2,8 +2,7 @@
 
 import NextError from "next/error";
 import { Alert } from "@chakra-ui/react";
-
-import { Provider } from "../components/ui/provider"; 
+import { Provider } from "../components/ui/provider";
 
 export default function GlobalError({
   error,
@@ -13,9 +12,7 @@ export default function GlobalError({
   return (
     <html>
       <body>
-    
         <Provider>
-   
           <NextError statusCode={0} />
           <Alert.Root status="error">
             <Alert.Indicator />

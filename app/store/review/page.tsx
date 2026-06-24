@@ -7,7 +7,7 @@ import {
     LuStar, LuCheck
 } from "react-icons/lu";
 
-import { PendingReview, PastReview } from "@/types/definitions";
+import { PendingReview, PastReview } from "@/data/types";
 import { MOCK_PENDING_REVIEWS, MOCK_PAST_REVIEWS } from "@/data/data";
 
 export default function ReviewsPage() {

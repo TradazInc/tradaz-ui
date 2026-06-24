@@ -1,17 +1,21 @@
 import { Provider } from "./ui/Provider";
 import { Providers } from "./provider";
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { Toaster } from "@/components/ui/toaster";
+
 interface Props {
   children: React.ReactNode;
 }
 
 export default function RootLayout({ children }: Readonly<Props>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+    >
       <head>
-        
         <style>{`
           * {
             scrollbar-width: none !important;
@@ -24,10 +28,10 @@ export default function RootLayout({ children }: Readonly<Props>) {
       </head>
       <body>
         <Providers>
-        <Provider>
+          <Provider>
             {children}
-             <Toaster />
-        </Provider>
+            <Toaster />
+          </Provider>
         </Providers>
       </body>
     </html>

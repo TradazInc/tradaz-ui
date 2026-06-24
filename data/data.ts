@@ -24,7 +24,7 @@ export const checkSubdomainAvailability = async (
 
 //sales record simulations
 
-import { SalesRecord } from "../types/definitions";
+import { SalesRecord } from "./types";
 
 export const generateDummySales = (count: number): SalesRecord[] => {
   return Array.from({ length: count }).map((_, i) => ({
@@ -41,7 +41,7 @@ export const generateDummySales = (count: number): SalesRecord[] => {
 };
 
 // dummy inventroy data
-import { InventoryProduct } from "../types/definitions";
+import { InventoryProduct } from "./types";
 
 export const generateDummyInventory = (
   count: number,
@@ -92,7 +92,7 @@ export const generateDummyInventory = (
 };
 
 //dummy online order data
-import { OnlineOrder } from "../types/definitions";
+import { OnlineOrder } from "./types";
 
 export const generateDummyOnlineOrders = (
   count: number,
@@ -132,7 +132,7 @@ export const generateDummyOnlineOrders = (
 };
 
 // dummy data for customers
-import { Customer } from "../types/definitions";
+import { Customer } from "./types";
 
 export const generateDummyCustomers = (
   count: number,
@@ -174,7 +174,7 @@ export const generateDummyCustomers = (
   });
 };
 
-import { CartItem } from "../types/definitions";
+import { CartItem } from "./types";
 
 export const initialPosCart: CartItem[] = [
   {
@@ -195,7 +195,7 @@ export const initialPosCart: CartItem[] = [
   },
 ];
 
-import { StaffSalary } from "../types/definitions";
+import { StaffSalary } from "./types";
 
 export const generateDummyStaffSalaries = (
   count: number,
@@ -242,7 +242,7 @@ export const generateDummyStaffSalaries = (
   });
 };
 
-import { Expense } from "../types/definitions";
+import { Expense } from "./types";
 
 export const generateDummyExpenses = (
   count: number,
@@ -279,7 +279,7 @@ export const generateDummyExpenses = (
   });
 };
 
-import { RevenueTransaction } from "../types/definitions";
+import { RevenueTransaction } from "./types";
 
 export const generateDummyRevenue = (
   count: number,
@@ -323,7 +323,7 @@ export const generateDummyRevenue = (
   });
 };
 
-import { TaxableSale } from "../types/definitions";
+import { TaxableSale } from "./types";
 
 export const generateDummyTaxableSales = (count: number): TaxableSale[] => {
   const customers = [
@@ -361,7 +361,7 @@ export const generateDummyTaxableSales = (count: number): TaxableSale[] => {
     .sort((a, b) => b.timestamp - a.timestamp); // Sort newest to oldest
 };
 
-import { ProductReview } from "../types/definitions";
+import { ProductReview } from "./types";
 
 export const generateDummyReviews = (count: number): ProductReview[] => {
   const products = [
@@ -425,7 +425,7 @@ export const generateDummyReviews = (count: number): ProductReview[] => {
     .sort((a, b) => b.timestamp - a.timestamp);
 };
 
-import { DiscountCoupon } from "../types/definitions";
+import { DiscountCoupon } from "./types";
 
 export const generateDummyCoupons = (): DiscountCoupon[] => {
   return [
@@ -482,7 +482,7 @@ export const generateDummyCoupons = (): DiscountCoupon[] => {
   ];
 };
 
-import { GiftVoucher } from "../types/definitions";
+import { GiftVoucher } from "./types";
 
 export const generateDummyVouchers = (): GiftVoucher[] => {
   return [
@@ -544,7 +544,7 @@ export const generateDummyVouchers = (): GiftVoucher[] => {
   ];
 };
 
-import { PromotionCampaign } from "../types/definitions";
+import { PromotionCampaign } from "./types";
 
 export const generateDummyPromotions = (): PromotionCampaign[] => {
   return [
@@ -595,7 +595,7 @@ export const generateDummyPromotions = (): PromotionCampaign[] => {
   ];
 };
 
-import { PopupCampaign } from "../types/definitions";
+import { PopupCampaign } from "./types";
 
 export const generateDummyPopups = (): PopupCampaign[] => {
   return [
@@ -638,7 +638,7 @@ export const generateDummyPopups = (): PopupCampaign[] => {
   ];
 };
 
-import { PromoBanner } from "../types/definitions";
+import { PromoBanner } from "./types";
 
 export const generateDummyBanners = (): PromoBanner[] => {
   return [
@@ -690,7 +690,7 @@ export const generateDummyBanners = (): PromoBanner[] => {
   ];
 };
 
-import { ShippingTier, ShippingZone } from "../types/definitions";
+import { ShippingTier, ShippingZone } from "./types";
 
 export const generateDummyShippingTiers = (): ShippingTier[] => {
   return [
@@ -734,7 +734,7 @@ export const generateDummyShippingZones = (): ShippingZone[] => {
   ];
 };
 
-import { EarningRule, RedemptionRule } from "../types/definitions";
+import { EarningRule, RedemptionRule } from "./types";
 
 export const generateDummyEarningRules = (): EarningRule[] => {
   return [
@@ -795,7 +795,7 @@ export const generateDummyRedemptionRules = (): RedemptionRule[] => {
   ];
 };
 
-import { VatRemittance } from "../types/definitions";
+import { VatRemittance } from "./types";
 
 export const generateDummyVatRecords = (): VatRemittance[] => {
   return [
@@ -845,7 +845,7 @@ export const generateDummyVatRecords = (): VatRemittance[] => {
   ];
 };
 
-import { CustomerChat } from "../types/definitions";
+import { CustomerChat } from "./types";
 
 export const generateDummyChats = (): CustomerChat[] => {
   return [
@@ -915,7 +915,7 @@ export const generateDummyChats = (): CustomerChat[] => {
   ];
 };
 
-import { ExchangeRequest } from "../types/definitions";
+import { ExchangeRequest } from "./types";
 
 export const generateDummyExchanges = (): ExchangeRequest[] => {
   return [
@@ -976,7 +976,7 @@ export const generateDummyExchanges = (): ExchangeRequest[] => {
   ];
 };
 
-import { RefundRequest } from "../types/definitions";
+import { RefundRequest } from "./types";
 
 export const generateDummyRefunds = (): RefundRequest[] => {
   return [
@@ -1031,7 +1031,7 @@ export const generateDummyRefunds = (): RefundRequest[] => {
   ];
 };
 
-import { ReconciliationRecord } from "../types/definitions";
+import { ReconciliationRecord } from "./types";
 
 export const generateDummyReconciliations = (): ReconciliationRecord[] => {
   return [
@@ -1180,7 +1180,7 @@ export const STORE_CATEGORIES = [
 
 //carts data
 
-import { CartItems } from "../types/definitions";
+import { CartItems } from "./types";
 
 export const MOCK_CART_ITEMS: CartItems[] = [
   {
@@ -1208,7 +1208,7 @@ export const MOCK_CART_ITEMS: CartItems[] = [
 ];
 
 // app/lib/data.ts
-import { ChatSession, Message } from "../types/definitions";
+import { ChatSession, Message } from "./types";
 
 export const MOCK_CHATS: ChatSession[] = [
   {
@@ -1247,7 +1247,7 @@ export const MOCK_MESSAGES: Message[] = [
   },
 ];
 
-import { Coupon } from "../types/definitions";
+import { Coupon } from "./types";
 
 export const MOCK_COUPONS: Coupon[] = [
   {
@@ -1286,7 +1286,7 @@ export const MOCK_COUPONS: Coupon[] = [
   },
 ];
 
-import { GiftCard } from "../types/definitions";
+import { GiftCard } from "./types";
 
 export const MOCK_GIFT_CARDS: GiftCard[] = [
   {
@@ -1307,7 +1307,7 @@ export const MOCK_GIFT_CARDS: GiftCard[] = [
   },
 ];
 
-import { PendingReview, PastReview } from "../types/definitions";
+import { PendingReview, PastReview } from "./types";
 
 export const MOCK_PENDING_REVIEWS: PendingReview[] = [
   {

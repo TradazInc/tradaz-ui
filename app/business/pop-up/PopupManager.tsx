@@ -31,7 +31,7 @@ import {
 import { inputStyles, nativeSelectStyle, labelStyles } from "@/app/ui/style";
 
 import { generateDummyPopups } from "@/data/data";
-import { PopupCampaign } from "@/types/definitions";
+import { PopupCampaign } from "@/data/types";
 
 interface CreatePopupModalProps {
   isOpen: boolean;

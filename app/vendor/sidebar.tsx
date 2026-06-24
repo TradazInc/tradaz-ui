@@ -5,7 +5,7 @@ import Link from "next/link";
 import { 
     LuLayoutDashboard, LuFile, LuLogOut, LuPackage, LuPlus, LuX,
 } from "react-icons/lu";
-import { SidebarProps } from "@/types/definitions";
+import { SidebarProps } from "@/data/types";
 
 const VENDOR_NAV_ITEMS = [
     { label: "Dashboard", icon: LuLayoutDashboard, path: "/vendor" },

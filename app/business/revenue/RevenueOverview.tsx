@@ -30,8 +30,8 @@ import {
   LuUser
 } from "react-icons/lu";
 
-import { useRevenue } from "@/hooks-test/useRevenue";
-import { RevenueTransaction } from "@/types/definitions";
+import { useRevenue } from "@/hooks/useRevenue";
+import { RevenueTransaction } from "@/data/types";
 
 const controlStyles = {
   bg: "#0A0A0A",

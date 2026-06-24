@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Box, Flex, Text, Input, Button, Icon, SimpleGrid, VStack } from "@chakra-ui/react";
 import { LuArrowLeft, LuSave, LuDices } from "react-icons/lu";
-import { GiftVoucher } from "@/types/definitions";
+import { GiftVoucher } from "@/data/types";
 
 // --- REUSABLE BRUTALIST STYLES ---
 const controlStyles = { bg: "#0A0A0A", border: "1px solid", borderColor: "#333333", color: "white", h: "44px", rounded: "none", px: 4, _focus: { outline: "none", borderColor: "white", boxShadow: "none" }, _hover: { borderColor: "#555555" } };
