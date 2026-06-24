@@ -1,5 +1,5 @@
-import { InventoryOverview } from "@/app/business/inventory/inventory/InventoryOverview";
+import { InventoryOverview } from "./InventoryOverview";
 
 export default function InventoryPage() {
-    return <InventoryOverview />;
-} 
+  return <InventoryOverview />;
+}

@@ -6,7 +6,6 @@ import { ProductDetailView } from "./productDetailView";
 import { InventoryGridView } from "./inventoryGridView";
 import { InventorySkeleton } from "./InventorySkeleton";
 
-
 export interface GridProduct {
   id: string;
   name: string;
@@ -18,7 +17,6 @@ export interface GridProduct {
   isFeatured: boolean;
   isFavorite: boolean;
 }
-
 
 // Helpers
 
@@ -52,12 +50,17 @@ export const InventoryOverview = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("default");
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(
+    null,
+  );
   const [activeImageIdx, setActiveImageIdx] = useState(0);
 
   const allProducts = useMemo<Product[]>(() => data?.products ?? [], [data]);
 
-  const gridProducts = useMemo(() => allProducts.map(toGridProduct), [allProducts]);
+  const gridProducts = useMemo(
+    () => allProducts.map(toGridProduct),
+    [allProducts],
+  );
 
   const visibleItems = useMemo(() => {
     let result = [...gridProducts];
@@ -66,16 +69,23 @@ export const InventoryOverview = () => {
       const q = searchQuery.toLowerCase();
       result = result.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.sku.toLowerCase().includes(q),
+          p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q),
       );
     }
 
     switch (sortBy) {
-      case "price-asc": result.sort((a, b) => a.price - b.price); break;
-      case "price-desc": result.sort((a, b) => b.price - a.price); break;
-      case "stock-asc": result.sort((a, b) => a.stock - b.stock); break;
-      case "stock-desc": result.sort((a, b) => b.stock - a.stock); break;
+      case "price-asc":
+        result.sort((a, b) => a.price - b.price);
+        break;
+      case "price-desc":
+        result.sort((a, b) => b.price - a.price);
+        break;
+      case "stock-asc":
+        result.sort((a, b) => a.stock - b.stock);
+        break;
+      case "stock-desc":
+        result.sort((a, b) => b.stock - a.stock);
+        break;
     }
 
     return result;
@@ -114,26 +124,17 @@ export const InventoryOverview = () => {
     [remove, selectedProductId, handleBack],
   );
 
-  const handleRestock = useCallback(
-    async (id: string, amount: number) => {
-      console.log(`Restock product ${id} by ${amount}`);
-    },
-    [],
-  );
+  const handleRestock = useCallback(async (id: string, amount: number) => {
+    console.log(`Restock product ${id} by ${amount}`);
+  }, []);
 
-  const handleEdit = useCallback(
-    (id: string) => {
-      console.log(`Edit product ${id}`);
-    },
-    [],
-  );
+  const handleEdit = useCallback((id: string) => {
+    console.log(`Edit product ${id}`);
+  }, []);
 
-  const toggleFavorite = useCallback(
-    (id: string) => {
-      console.log(`Toggle favorite for ${id}`);
-    },
-    [],
-  );
+  const toggleFavorite = useCallback((id: string) => {
+    console.log(`Toggle favorite for ${id}`);
+  }, []);
 
   // ---- Loading state ----
   if (isLoading) {
