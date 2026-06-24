@@ -1,17 +1,12 @@
-"use client";
-import { useState } from "react";
-import { Flex, Box, IconButton, Icon, Text, Breadcrumb } from "@chakra-ui/react";
-import { LuMenu } from "react-icons/lu";
+import { Flex, Box, Text, Breadcrumb } from "@chakra-ui/react";
 import { Sidebar } from "@/app/business/Sidebar";
 import { DashboardHeader } from "@/app/business/DashboardHeader";
-
+import { MobileSidebar } from "./MobileSidebar";
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
       {/* HEADER */}
@@ -27,19 +22,8 @@ export default function DashboardLayout({
         pr={{ base: 4, md: 8 }}
         gap={3}
       >
-        {/* MOBILE MENU */}
-        <IconButton
-          aria-label="Open Menu"
-          variant="ghost"
-          display={{ base: "flex", md: "none" }}
-          onClick={() => setSidebarOpen(true)}
-          color="#888888"
-          _hover={{ color: "white", bg: "#111111" }}
-          size="sm"
-          rounded="none"
-        >
-          <Icon as={LuMenu} boxSize="22px" strokeWidth="2.5" />
-        </IconButton>
+        {/* State-driven Mobile Component */}
+        <MobileSidebar />
 
         <Breadcrumb.Root>
           <Breadcrumb.List gap={3}>
@@ -52,7 +36,10 @@ export default function DashboardLayout({
                 letterSpacing="tight"
                 userSelect="none"
               >
-                Tradaz<Text as="span" color="#888888">.</Text>
+                Tradaz
+                <Text as="span" color="#888888">
+                  .
+                </Text>
               </Text>
             </Breadcrumb.Item>
 
@@ -66,7 +53,7 @@ export default function DashboardLayout({
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
-        {/* DashboardHeader – no props needed */}
+        {/* DashboardHeader */}
         <Flex
           flex={1}
           h="full"
@@ -99,10 +86,10 @@ export default function DashboardLayout({
         minH={0}
         overflow="hidden"
       >
-        <Sidebar
-          isOpen={isSidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
+        {/* Desktop Sidebar - Hidden on mobile, pure server-rendered structure */}
+        <Box display={{ base: "none", md: "block" }} h="full">
+          <Sidebar isOpen={true} onClose={() => {}} />
+        </Box>
 
         <Box
           flex={1}

@@ -1,3 +1,4 @@
+"use client";
 import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuArrowLeft } from "react-icons/lu";

@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
-
+import { Provider } from "@/app/Provider";
 interface Props {
   children: React.ReactNode;
 }
@@ -25,8 +25,10 @@ export default function RootLayout({ children }: Readonly<Props>) {
         `}</style>
       </head>
       <body>
-        {children}
-        <Toaster />
+        <Provider>
+          {children}
+          <Toaster />
+        </Provider>
       </body>
     </html>
   );
