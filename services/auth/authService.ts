@@ -1,8 +1,9 @@
 import { toaster } from "@/components/ui/toaster";
 import { OrgRole, Role } from "@/entities/CustomSession";
 import { authClient, AuthClient } from "@/lib/authClient";
-import { emailSignInSchema, emailSignUpSchema } from "./authSchema";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { redirect } from "next/navigation";
+import { emailSignInSchema, emailSignUpSchema } from "./authSchema";
 
 class AuthService {
   constructor(private readonly auth: AuthClient) {}
@@ -69,6 +70,11 @@ class AuthService {
         },
       },
     );
+  }
+
+  async isAuthenticated() {
+    const { data: session } = await this.auth.getSession();
+    if (!session) redirect("/signin");
   }
 
   private async loginSuccess(router: AppRouterInstance) {
