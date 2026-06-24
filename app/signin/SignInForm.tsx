@@ -1,8 +1,6 @@
 "use client";
 
-import { toaster } from "@/components/ui/toaster";
-import { OrgRole, Role } from "@/entities/CustomSession";
-import { authClient } from "@/lib/authClient";
+import { authService } from "@/services/authService";
 import {
   Box,
   Button,
@@ -13,7 +11,6 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { PasswordInput } from "../../components/ui/password-input";
@@ -28,52 +25,16 @@ const SignInForm = () => {
 
   const handleEmailSignin = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // extract form data
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email")?.toString();
-    const password = formData.get("password")?.toString();
-
-    // validate form
-    if (!(email && password))
-      return toaster.create({
-        title: "Incomplete form!",
-        description: "All fields are required",
-        type: "error",
-      });
 
     startEmailTransition(async () => {
-      await authClient.signIn.email(
-        { email, password, rememberMe: true },
-        {
-          onSuccess: async (ctx) => signinSuccess(router),
-          onError: (ctx) => {
-            toaster.create({
-              title: "Signin failed",
-              description: ctx.error.message,
-              type: "error",
-            });
-          },
-        },
-      );
+      await authService.emailSignIn(formData, router);
     });
   };
 
   const handleGoogleSignIn = () => {
     startGoogleTransition(async () => {
-      await authClient.signIn.social(
-        { provider: "google" },
-        {
-          onSuccess: async (ctx) => signinSuccess(router),
-          onError: (ctx) => {
-            toaster.create({
-              title: "Google signin failed",
-              description: ctx.error.message,
-              type: "error",
-            });
-          },
-        },
-      );
+      await authService.googleSignIn(router);
     });
   };
 
@@ -182,27 +143,3 @@ const SignInForm = () => {
 };
 
 export default SignInForm;
-
-const signinSuccess = async (router: AppRouterInstance) => {
-  const { data: session, error } = await authClient.getSession();
-  if (error) {
-    toaster.create({
-      title: "No session found",
-      description: error.message,
-      type: "error",
-    });
-    return;
-  }
-
-  // redirect to the dashboard
-  if (session.user.role === Role.admin) {
-    return router.push("/overwatch");
-  }
-  if (session.member?.role === OrgRole.customer) {
-    return router.push("/store");
-  }
-  if (session.member?.role === OrgRole.vendor) {
-    return router.push("/vendor");
-  }
-  router.push("/business");
-};
