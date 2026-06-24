@@ -7,6 +7,6 @@ export const emailSignUpSchema = z.object({
 });
 
 export const emailSignInSchema = z.object({
-  email: z.email({ error: "email is required" }).min(3),
+  email: z.email({ error: "email is required" }),
   password: z.string({ error: "password is required" }).min(5),
 });
