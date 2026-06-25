@@ -1,6 +1,5 @@
 import { Flex, Box } from "@chakra-ui/react";
 
-// Import your Client Component wrappers (NO MORE DATA IMPORTS HERE!)
 import { BusinessHeader } from "@/app/business/BusinessHeader";
 import { BusinessSidebar } from "@/app/business/BussinessSidebar";
 
