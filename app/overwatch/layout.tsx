@@ -1,7 +1,7 @@
 import { Flex, Box } from "@chakra-ui/react";
 import { OverwatchHeader } from "./OverwatchHeader";
 import { OverwatchSidebar } from "./OverwatchSidebar";
-import { LayoutContainer } from "../components/LayoutContainer";
+import { LayoutContainer } from "../components/LayoutsContainer";
 import { PageContainer } from "../components/PageContainer";
 import { SidebarContainer } from "../components/SidebarContainer";
 

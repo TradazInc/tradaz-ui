@@ -1,7 +1,7 @@
 import StoreHeader from "@/app/store/StoreHeader";
 import { MobileBottomNav } from "@/app/store/navigation/MobileBottomNav";
 import React from "react";
-import { LayoutContainer } from "../components/LayoutContainer";
+import { LayoutContainer } from "../components/LayoutsContainer";
 import { PageContainer } from "../components/PageContainer";
 
 export default function StorefrontLayout({

@@ -1,6 +1,6 @@
 import { BusinessHeader } from "@/app/business/BusinessHeader";
 import { BusinessSidebar } from "@/app/business/BussinessSidebar";
-import { LayoutContainer } from "@/app/components/LayoutContainer";
+import { LayoutContainer } from "@/app/components/LayoutsContainer";
 import { Box } from "@chakra-ui/react";
 import { PageContainer } from "../components/PageContainer";
 import { SidebarContainer } from "../components/SidebarContainer";
