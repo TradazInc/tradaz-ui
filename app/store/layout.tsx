@@ -1,4 +1,4 @@
-import StoreHeader from "@/app/store/StoreHeader";
+import { StoreNav } from "@/app/store/StoreNav";
 import { MobileBottomNav } from "@/app/store/navigation/MobileBottomNav";
 import React from "react";
 import { LayoutContainer } from "../components/LayoutsContainer";
@@ -13,7 +13,7 @@ export default function StorefrontLayout({
 
   return (
     <LayoutContainer>
-      <StoreHeader />
+      <StoreNav />
       <PageContainer>{children}</PageContainer>
       <MobileBottomNav brandColor={tenantConfig.brandColor} />
     </LayoutContainer>

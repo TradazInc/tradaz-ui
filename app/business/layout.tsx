@@ -1,4 +1,4 @@
-import { BusinessHeader } from "@/app/business/BusinessHeader";
+import { BusinessNav } from "@/app/business/BusinessNav";
 import { BusinessSidebar } from "@/app/business/BussinessSidebar";
 import { LayoutContainer } from "@/app/components/LayoutsContainer";
 import { Box } from "@chakra-ui/react";
@@ -12,7 +12,7 @@ export default async function DashboardLayout({
 }) {
   return (
     <LayoutContainer>
-      <BusinessHeader />
+      <BusinessNav />
       <PageContainer>
         <SidebarContainer>
           <BusinessSidebar />

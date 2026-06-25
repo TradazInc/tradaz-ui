@@ -1,7 +1,7 @@
 import NavContainer from "../components/NavContainer";
 import NavHeading from "../components/NavHeading";
 
-export const OverwatchHeader = () => {
+export const OverwatchNav = () => {
   return (
     <NavContainer>
       <NavHeading>Overwatch</NavHeading>

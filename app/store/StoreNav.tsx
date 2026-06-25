@@ -4,7 +4,7 @@ import NavContainer from "../components/NavContainer";
 import NavHeading from "../components/NavHeading";
 import Search from "../components/Search";
 
-const StoreHeader = async () => {
+export const StoreNav = async () => {
   return (
     <NavContainer>
       <NavHeading>OGTech</NavHeading>
@@ -14,5 +14,3 @@ const StoreHeader = async () => {
     </NavContainer>
   );
 };
-
-export default StoreHeader;

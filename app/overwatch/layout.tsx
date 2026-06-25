@@ -1,5 +1,5 @@
 import { Flex, Box } from "@chakra-ui/react";
-import { OverwatchHeader } from "./OverwatchHeader";
+import { OverwatchNav } from "./OverwatchNav";
 import { OverwatchSidebar } from "./OverwatchSidebar";
 import { LayoutContainer } from "../components/LayoutsContainer";
 import { PageContainer } from "../components/PageContainer";
@@ -12,7 +12,7 @@ export default function AdminLayout({
 }) {
   return (
     <LayoutContainer>
-      <OverwatchHeader />
+      <OverwatchNav />
       <PageContainer>
         <SidebarContainer>
           <OverwatchSidebar />
