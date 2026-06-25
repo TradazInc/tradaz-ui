@@ -1,18 +1,9 @@
-import { OrgRole, Role } from "@/entities/CustomSession";
-import { authService } from "@/services/auth/authService";
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import { Analytics } from "./Analytics";
 import { DashboardMetrics } from "./DashboardMetrics";
 import { RecentActivity } from "./RecentActivity";
 
 export default async function DashboardPage() {
-  const session = await authService.isAuthorized(Role.user, [
-    OrgRole.admin,
-    OrgRole.manager,
-    OrgRole.owner,
-    OrgRole.sales,
-  ]);
-
   return (
     <Box
       w="full"

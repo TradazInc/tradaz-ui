@@ -1,6 +1,9 @@
 import { Flex, Box } from "@chakra-ui/react";
 import { OverwatchHeader } from "./OverwatchHeader";
 import { OverwatchSidebar } from "./OverwatchSidebar";
+import { LayoutContainer } from "../components/layoutContainer";
+import { PageContainer } from "../components/PageContainer";
+import { SidebarContainer } from "../components/SidebarContainer";
 
 export default function AdminLayout({
   children,
@@ -8,27 +11,23 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Flex h={{ base: "100dvh", lg: "100vh" }} bg="#000" overflow="hidden">
-      {/* --- DESKTOP SIDEBAR --- */}
-      <Box display={{ base: "none", lg: "flex" }} h="full">
-        <OverwatchSidebar />
-      </Box>
-
-      {/* --- MAIN CONTENT AREA --- */}
-      <Flex flex={1} direction="column" overflow="hidden">
-        {/* --- HEADER --- */}
-        <OverwatchHeader />
-
-        {/* --- PAGE CONTENT --- */}
-        <Box
-          flex={1}
-          overflowY="auto"
-          id="admin-scroll-container"
-          p={{ base: 4, lg: 8 }}
-        >
-          {children}
-        </Box>
-      </Flex>
-    </Flex>
+    <LayoutContainer>
+      <OverwatchHeader />
+      <PageContainer>
+        <SidebarContainer>
+          <OverwatchSidebar />
+        </SidebarContainer>
+        <Flex flex={1} direction="column" overflow="hidden">
+          <Box
+            flex={1}
+            overflowY="auto"
+            id="admin-scroll-container"
+            p={{ base: 4, lg: 8 }}
+          >
+            {children}
+          </Box>
+        </Flex>
+      </PageContainer>
+    </LayoutContainer>
   );
 }

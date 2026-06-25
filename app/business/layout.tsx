@@ -1,27 +1,22 @@
-import { Flex, Box } from "@chakra-ui/react";
 import { BusinessHeader } from "@/app/business/BusinessHeader";
 import { BusinessSidebar } from "@/app/business/BussinessSidebar";
+import { LayoutContainer } from "@/app/components/layoutContainer";
+import { Box } from "@chakra-ui/react";
+import { PageContainer } from "../components/PageContainer";
+import { SidebarContainer } from "../components/SidebarContainer";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
+    <LayoutContainer>
       <BusinessHeader />
-      {/* MAIN CONTENT AREA */}
-      <Flex
-        flex={1}
-        position="relative"
-        bg="#000000"
-        alignItems="stretch"
-        minH={0}
-        overflow="hidden"
-      >
-        <Box display={{ base: "none", md: "block" }} h="full">
+      <PageContainer>
+        <SidebarContainer>
           <BusinessSidebar />
-        </Box>
+        </SidebarContainer>
         <Box
           flex={1}
           overflowY="auto"
@@ -33,7 +28,7 @@ export default function DashboardLayout({
         >
           {children}
         </Box>
-      </Flex>
-    </Flex>
+      </PageContainer>
+    </LayoutContainer>
   );
 }
