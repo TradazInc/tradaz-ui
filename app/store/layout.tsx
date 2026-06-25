@@ -1,5 +1,5 @@
 "use client";
-import { Header } from "@/app/store/Header";
+import { Header } from "@/app/store/StoreHeader";
 import { MobileBottomNav } from "@/app/store/navigation/MobileBottomNav";
 import React from "react";
 import { LayoutContainer } from "../components/LayoutContainer";
