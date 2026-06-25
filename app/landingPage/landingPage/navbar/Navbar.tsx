@@ -1,18 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import {
   Box,
+  Button,
   Container,
   Flex,
   HStack,
-  Button,
   Text,
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { LuMenu, LuX } from "react-icons/lu";
-import TradazHeader from "../../../components/NavHeading";
+import NavHeading from "../../../components/NavHeading";
 
 const NAV_LINKS = [
   { label: "Home", href: "#" },
@@ -51,7 +51,7 @@ const Navbar = () => {
           <Flex align="center" justify="space-between" h="80px">
             {/* LOGO */}
             <Link href="/" onClick={() => setIsOpen(false)}>
-              <TradazHeader />
+              <NavHeading>Tradaz</NavHeading>
             </Link>
 
             {/* DESKTOP NAVIGATION LINKS */}

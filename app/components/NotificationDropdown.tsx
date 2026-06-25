@@ -1,3 +1,5 @@
+"use client";
+
 import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
 import { LuBell, LuShoppingBag } from "react-icons/lu";
 import { Menu, Portal } from "@chakra-ui/react";

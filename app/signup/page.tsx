@@ -1,11 +1,11 @@
 "use client";
-import { Flex, VStack } from "@chakra-ui/react";
 
+import { Flex, VStack } from "@chakra-ui/react";
+import BackToHome from "../components/BackToHome";
+import NavHeading from "../components/NavHeading";
 import SignUpForm from "./SignUpForm";
 import SignUpHeader from "./SignUpHeader";
 import SignupSidePanel from "./SignUpSidePanel";
-import BackToHome from "../components/BackToHome";
-import TradazHeader from "../components/NavHeading";
 
 const SignupPage = () => {
   return (
@@ -45,7 +45,7 @@ const SignupPage = () => {
             }}
           >
             <VStack w="full" maxW="400px" gap="20px" marginX="auto">
-              <TradazHeader />
+              <NavHeading>Tradaz</NavHeading>
               <SignUpHeader />
               <SignUpForm />
             </VStack>

@@ -1,6 +1,6 @@
 import { Flex, VStack } from "@chakra-ui/react";
 import BackToHome from "../components/BackToHome";
-import TradazHeader from "../components/NavHeading";
+import NavHeading from "../components/NavHeading";
 import SignInForm from "./SignInForm";
 import SignInHeader from "./SignInHeader";
 import SigninSidePanel from "./SigninSidePanel";
@@ -42,7 +42,7 @@ const SigninPage = () => {
             }}
           >
             <VStack w="full" maxW="400px" gap="20px" marginX="auto">
-              <TradazHeader />
+              <NavHeading>Tradaz</NavHeading>
               <SignInHeader />
               <SignInForm />
             </VStack>

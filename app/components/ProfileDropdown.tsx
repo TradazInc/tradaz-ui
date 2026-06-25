@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, Flex, Icon, Menu, Portal, Text } from "@chakra-ui/react";
 import React from "react";
 import { LuLogOut, LuSettings } from "react-icons/lu";
