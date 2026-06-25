@@ -5,8 +5,8 @@ export async function proxy(request: NextRequest) {
   // Optimistic cookie check (Fast & non-blocking)
   const sessionCookie = getSessionCookie(request);
 
-  // if (!sessionCookie)
-  //   return NextResponse.redirect(new URL("/signin", request.url));
+  if (!sessionCookie)
+    return NextResponse.redirect(new URL("/signin", request.url));
 
   return NextResponse.next();
 }
