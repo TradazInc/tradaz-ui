@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { LuMenu, LuX } from "react-icons/lu";
-import TradazHeader from "../../../components/TradazHeader";
+import TradazHeader from "../../../components/NavHeading";
 
 const NAV_LINKS = [
   { label: "Home", href: "#" },

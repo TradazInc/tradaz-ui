@@ -1,6 +1,11 @@
 import { Flex, Text } from "@chakra-ui/react";
+import React from "react";
 
-export default function TradazHeader() {
+export default function NavHeading({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <Flex align="center" gap={3} userSelect="none">
       <Text
@@ -9,7 +14,7 @@ export default function TradazHeader() {
         color="white"
         letterSpacing="tight"
       >
-        Tradaz
+        {children}
         <Text as="span" color="#888888">
           .
         </Text>

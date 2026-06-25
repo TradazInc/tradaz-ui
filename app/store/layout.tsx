@@ -1,5 +1,4 @@
-"use client";
-import { Header } from "@/app/store/StoreHeader";
+import StoreHeader from "@/app/store/StoreHeader";
 import { MobileBottomNav } from "@/app/store/navigation/MobileBottomNav";
 import React from "react";
 import { LayoutContainer } from "../components/LayoutContainer";
@@ -14,11 +13,7 @@ export default function StorefrontLayout({
 
   return (
     <LayoutContainer>
-      <Header
-        onOpenSidebar={() => console.log("Mobile Nav Used")}
-        brandColor={tenantConfig.brandColor}
-        storeName={tenantConfig.storeName}
-      />
+      <StoreHeader />
       <PageContainer>{children}</PageContainer>
       <MobileBottomNav brandColor={tenantConfig.brandColor} />
     </LayoutContainer>

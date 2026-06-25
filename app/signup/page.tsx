@@ -5,7 +5,7 @@ import SignUpForm from "./SignUpForm";
 import SignUpHeader from "./SignUpHeader";
 import SignupSidePanel from "./SignUpSidePanel";
 import BackToHome from "../components/BackToHome";
-import TradazHeader from "../components/TradazHeader";
+import TradazHeader from "../components/NavHeading";
 
 const SignupPage = () => {
   return (
