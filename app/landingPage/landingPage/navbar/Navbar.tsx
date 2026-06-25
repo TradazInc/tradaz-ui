@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LuMenu, LuX } from "react-icons/lu";
-import NavHeading from "../../../components/NavHeading";
+import { LogoContainer } from "@/app/components/LogoContainer";
 
 const NAV_LINKS = [
   { label: "Home", href: "#" },
@@ -51,7 +51,7 @@ const Navbar = () => {
           <Flex align="center" justify="space-between" h="80px">
             {/* LOGO */}
             <Link href="/" onClick={() => setIsOpen(false)}>
-              <NavHeading>Tradaz</NavHeading>
+              <LogoContainer>Tradaz</LogoContainer>
             </Link>
 
             {/* DESKTOP NAVIGATION LINKS */}

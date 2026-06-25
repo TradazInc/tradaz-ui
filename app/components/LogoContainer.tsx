@@ -1,11 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import React from "react";
 
-export default function NavHeading({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const LogoContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <Flex align="center" gap={3} userSelect="none">
       <Text
@@ -21,4 +17,4 @@ export default function NavHeading({
       </Text>
     </Flex>
   );
-}
+};

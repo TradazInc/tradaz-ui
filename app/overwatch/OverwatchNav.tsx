@@ -1,10 +1,10 @@
 import NavContainer from "../components/NavContainer";
-import NavHeading from "../components/NavHeading";
+import { LogoContainer } from "../components/LogoContainer";
 
 export const OverwatchNav = () => {
   return (
     <NavContainer>
-      <NavHeading>Overwatch</NavHeading>
+      <LogoContainer>Overwatch</LogoContainer>
     </NavContainer>
   );
 };

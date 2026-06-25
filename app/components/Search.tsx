@@ -5,7 +5,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { LuSearch } from "react-icons/lu";
 import { useDebouncedCallback } from "use-debounce";
 
-export default function Search({ placeholder }: { placeholder: string }) {
+interface Props {
+  query: string;
+  placeholder: string;
+}
+
+export default function Search({ query, placeholder }: Props) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -13,9 +18,9 @@ export default function Search({ placeholder }: { placeholder: string }) {
   const handleSearch = useDebouncedCallback((term) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
-      params.set("query", term);
+      params.set(query, term);
     } else {
-      params.delete("query");
+      params.delete(query);
     }
     router.replace(`${pathname}?${params.toString()}`);
   }, 300);
@@ -29,7 +34,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
         }}
         color={"white"}
         borderRadius={"full"}
-        defaultValue={searchParams.get("query")?.toString()}
+        defaultValue={searchParams.get(query)?.toString()}
       />
     </InputGroup>
   );
