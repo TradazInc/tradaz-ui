@@ -17,7 +17,6 @@ import {
   LuStore,
   LuPlus,
 } from "react-icons/lu";
-
 import { Header } from "@/app/components/Header";
 import { Logo } from "@/app/components/Logo";
 import { NotificationDropdown } from "@/app/components/NotificationDropdown";

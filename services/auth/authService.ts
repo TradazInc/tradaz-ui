@@ -72,12 +72,20 @@ class AuthService {
     );
   }
 
-  async isAuthenticated(role: Role, orgRole?: OrgRole) {
+  async isAuthorized(role: Role, orgRoles?: OrgRole[]) {
     const { data: session } = await this.auth.getSession();
-
     if (!session) unauthorized();
+
+    // Admin check
     if (role !== session.user.role) forbidden();
-    if (orgRole && orgRole !== session.member?.role) forbidden();
+
+    // Business check
+    if (
+      orgRoles &&
+      session.member?.role &&
+      !orgRoles.includes(session.member?.role)
+    )
+      forbidden();
 
     return session;
   }

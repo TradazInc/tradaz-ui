@@ -1,5 +1,4 @@
 import { Flex, Box } from "@chakra-ui/react";
-
 import { BusinessHeader } from "@/app/business/BusinessHeader";
 import { BusinessSidebar } from "@/app/business/BussinessSidebar";
 
@@ -11,7 +10,6 @@ export default function DashboardLayout({
   return (
     <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
       <BusinessHeader />
-
       {/* MAIN CONTENT AREA */}
       <Flex
         flex={1}
@@ -24,7 +22,6 @@ export default function DashboardLayout({
         <Box display={{ base: "none", md: "block" }} h="full">
           <BusinessSidebar />
         </Box>
-
         <Box
           flex={1}
           overflowY="auto"

@@ -1,63 +1,17 @@
-"use client";
-
-import { Box, SimpleGrid, Skeleton } from "@chakra-ui/react";
-
-import { DashboardMetrics } from "./DashboardMetrics";
+import { OrgRole, Role } from "@/entities/CustomSession";
+import { authService } from "@/services/auth/authService";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import { Analytics } from "./Analytics";
+import { DashboardMetrics } from "./DashboardMetrics";
 import { RecentActivity } from "./RecentActivity";
-import { useDashboardData } from "@/hooks/useDashboardData"; 
 
-export default function DashboardPage() {
-  const { isLoading } = useDashboardData();
-
-  if (isLoading) {
-    return (
-      <Box
-        w="full"
-        minH="100vh"
-        bg="#000000"
-        p={{ base: 4, md: 8 }}
-        animation="fade-in 0.3s ease"
-      >
-        <Skeleton
-          height="28px"
-          width="250px"
-          mb={6}
-          rounded="md"
-          bg="#111111"
-        />
-
-        <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mb={8}>
-          {[1, 2, 3].map((i) => (
-            <Skeleton
-              key={i}
-              height="120px"
-              rounded="lg"
-              bg="#0A0A0A"
-              border="1px solid #1A1A1A"
-            />
-          ))}
-        </SimpleGrid>
-
-        <SimpleGrid columns={{ base: 1, lg: 3 }} gap={4}>
-          <Box gridColumn={{ lg: "span 2" }}>
-            <Skeleton
-              height="400px"
-              rounded="lg"
-              bg="#0A0A0A"
-              border="1px solid #1A1A1A"
-            />
-          </Box>
-          <Skeleton
-            height="400px"
-            rounded="lg"
-            bg="#0A0A0A"
-            border="1px solid #1A1A1A"
-          />
-        </SimpleGrid>
-      </Box>
-    );
-  }
+export default async function DashboardPage() {
+  const session = await authService.isAuthorized(Role.user, [
+    OrgRole.admin,
+    OrgRole.manager,
+    OrgRole.owner,
+    OrgRole.sales,
+  ]);
 
   return (
     <Box
@@ -70,7 +24,6 @@ export default function DashboardPage() {
       <Box mb={8}>
         <DashboardMetrics />
       </Box>
-
       <SimpleGrid columns={{ base: 1, lg: 3 }} gap={4}>
         <Box gridColumn={{ lg: "span 2" }}>
           <Analytics />
