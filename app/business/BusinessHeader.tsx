@@ -23,7 +23,6 @@ import { Logo } from "@/app/components/Logo";
 import { NotificationDropdown } from "@/app/components/NotificationDropdown";
 import { ProfileDropdown } from "@/app/components/ProfileDropdown";
 import { BUSINESS_NAV_ITEMS } from "@/data/sidebarItems";
-
 import { OnboardingModal } from "./onboarding/OnboardingModal";
 import { AddStoreModal } from "./onboarding/AddStoreModal";
 import { useBusinessList, useActiveBusiness } from "@/hooks/useBusiness";
