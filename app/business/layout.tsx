@@ -1,15 +1,8 @@
 import { Flex, Box } from "@chakra-ui/react";
-import { LuLayoutDashboard } from "react-icons/lu";
 
-import { Sidebar } from "@/app/components/Sidebar";
+// Import your Client Component wrappers (NO MORE DATA IMPORTS HERE!)
 import { BusinessHeader } from "@/app/business/BusinessHeader";
-
-import { sideBarItems } from "@/data/sidebarItems";
-
-const businessNavItems = [
-  { label: "Overview", icon: LuLayoutDashboard, path: "/business" },
-  ...sideBarItems,
-];
+import { BusinessSidebar } from "@/app/business/BussinessSidebar";
 
 export default function DashboardLayout({
   children,
@@ -18,7 +11,7 @@ export default function DashboardLayout({
 }) {
   return (
     <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
-      <BusinessHeader navItems={businessNavItems} basePath="/business" />
+      <BusinessHeader />
 
       {/* MAIN CONTENT AREA */}
       <Flex
@@ -30,7 +23,7 @@ export default function DashboardLayout({
         overflow="hidden"
       >
         <Box display={{ base: "none", md: "block" }} h="full">
-          <Sidebar items={businessNavItems} basePath="/business" />
+          <BusinessSidebar />
         </Box>
 
         <Box

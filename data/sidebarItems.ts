@@ -260,3 +260,12 @@ export const VENDOR_NAV_ITEMS = [
   { label: "Inventory", icon: LuPackage, path: "/vendor/inventory" },
   { label: "Sales record", icon: LuFile, path: "/vendor/sales-record" },
 ];
+
+export const BUSINESS_NAV_ITEMS = [
+  {
+    label: "Overview",
+    icon: LuLayoutDashboard,
+    path: "/business",
+  },
+  ...sideBarItems,
+];

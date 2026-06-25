@@ -1,14 +1,11 @@
+"use client";
+
 import { Flex, Box, Text, Breadcrumb } from "@chakra-ui/react";
 import { MobileSidebar } from "@/app/components/MobileSidebar";
 import { DashboardHeader } from "@/app/business/DashboardHeader";
-import { SidebarItem } from "@/app/components/Sidebar";
+import { BUSINESS_NAV_ITEMS } from "@/data/sidebarItems";
 
-interface BusinessHeaderProps {
-  navItems: SidebarItem[];
-  basePath: string;
-}
-
-export const BusinessHeader = ({ navItems, basePath }: BusinessHeaderProps) => {
+export const BusinessHeader = () => {
   return (
     <Flex
       h="50px"
@@ -22,7 +19,7 @@ export const BusinessHeader = ({ navItems, basePath }: BusinessHeaderProps) => {
       pr={{ base: 4, md: 8 }}
       gap={3}
     >
-      <MobileSidebar items={navItems} basePath={basePath} />
+      <MobileSidebar items={BUSINESS_NAV_ITEMS} basePath="/business" />
 
       <Breadcrumb.Root>
         <Breadcrumb.List gap={3}>
