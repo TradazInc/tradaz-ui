@@ -29,11 +29,12 @@ export const ProfileDropdown = () => {
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
-          <Menu.Content>
+          <Menu.Content background={"black"}>
             {profileMenuOptions.map((option, index) => (
               <Menu.Item
+                key={index}
                 value={option.value}
-                color={option?.danger ? "fg.error" : undefined}
+                color={option?.danger ? "fg.error" : "white"}
                 _hover={
                   option?.danger
                     ? { bg: "bg.error", color: "fg.error" }
@@ -57,7 +58,7 @@ export const ProfileDropdown = () => {
 
 const ProfileMenuButton = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Flex px={4} py={3} align="center" gap={3}>
+    <Flex px={4} py={3} align="center" gap={3} w={"full"}>
       {children}
     </Flex>
   );

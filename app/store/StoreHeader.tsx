@@ -4,7 +4,7 @@ import NavContainer from "../components/NavContainer";
 import NavHeading from "../components/NavHeading";
 import Search from "../components/Search";
 
-const StoreHeader = () => {
+const StoreHeader = async () => {
   return (
     <NavContainer>
       <NavHeading>OGTech</NavHeading>

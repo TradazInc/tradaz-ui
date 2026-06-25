@@ -7,16 +7,19 @@ import { Menu, Portal } from "@chakra-ui/react";
 export const NotificationDropdown = () => {
   const notifications = [
     {
+      id: "ertyuioiuhg",
       title: " New order received!",
       description: "Order #POS-8829 needs fulfillment.",
       createdAt: "10 MINS AGO",
     },
     {
+      id: "ertylkmnbvciuhg",
       title: " New order received!",
       description: "Order #POS-8429 needs fulfillment.",
       createdAt: "10 MINS AGO",
     },
     {
+      id: "errtyuhniuhg",
       title: " New order received!",
       description: "Order #POS-8869 needs fulfillment.",
       createdAt: "10 MINS AGO",
@@ -25,25 +28,23 @@ export const NotificationDropdown = () => {
 
   return (
     <Menu.Root>
-      <Menu.Trigger rounded="full" focusRing="outside">
+      <Menu.Trigger rounded="full">
         <Icon
           as={LuBell}
           color="white"
           boxSize="20px"
-          _hover={{ color: "gray.300" }}
-          transition="color 0.2s"
           mt={1}
           strokeWidth={"2.5"}
         />
       </Menu.Trigger>
       <Portal>
         <Menu.Positioner>
-          <Menu.Content>
+          <Menu.Content background={"black"}>
             <Menu.Item value="settings">
               <NotificationHeader />
             </Menu.Item>
             {notifications.map((content, index) => (
-              <Menu.Item value="settings">
+              <Menu.Item value={content.id}>
                 <NotificationContent
                   key={index}
                   createdAt={content.createdAt}
@@ -69,18 +70,13 @@ const NotificationHeader = () => {
       py={3}
       justify="space-between"
       align="center"
+      w={"full"}
       borderBottom="1px solid #1A1A1A"
-      bg="#111111"
     >
       <Text fontSize="13px" fontWeight="bold" color="white">
         Notifications
       </Text>
-      <Text
-        fontSize="12px"
-        color="#888888"
-        cursor="pointer"
-        _hover={{ color: "white" }}
-      >
+      <Text fontSize="12px" color="#888888" cursor="pointer">
         Mark all read
       </Text>
     </Flex>
@@ -92,14 +88,11 @@ const NotificationFooter = () => {
     <Box p={3}>
       <Button
         w="full"
-        bg="#1A1A1A"
-        color="white"
         rounded="none"
         border="1px solid #333"
         fontWeight="bold"
         fontSize="12px"
         size="sm"
-        _hover={{ bg: "#333333" }}
       >
         View All
       </Button>
@@ -126,7 +119,6 @@ const NotificationContent = ({
         px={4}
         py={4}
         gap={4}
-        _hover={{ bg: "#111111" }}
         cursor="pointer"
         borderBottom="1px solid #1A1A1A"
       >
@@ -134,13 +126,11 @@ const NotificationContent = ({
           align="center"
           justify="center"
           boxSize="32px"
-          bg="#1A1A1A"
           color="white"
           border="1px solid #333"
           rounded="none"
-          flexShrink={0}
         >
-          <Icon as={LuShoppingBag} boxSize="14px" strokeWidth={"2.5"} />
+          <Icon as={LuShoppingBag} boxSize="14px" />
         </Flex>
         <Box>
           <Text fontSize="13px" color="white" fontWeight="bold">

@@ -7,7 +7,7 @@ export const LayoutContainer = ({
   children: React.ReactNode;
 }) => {
   return (
-    <Flex direction="column" h="100vh" w="full" bg="#000000" overflow="hidden">
+    <Flex direction="column" w="full" bg="#000000" overflow="hidden">
       {children}
     </Flex>
   );

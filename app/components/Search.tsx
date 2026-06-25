@@ -21,12 +21,14 @@ export default function Search({ placeholder }: { placeholder: string }) {
   }, 300);
 
   return (
-    <InputGroup flex="1" startElement={<LuSearch />}>
+    <InputGroup startElement={<LuSearch />} minWidth={"30vw"}>
       <Input
         placeholder={placeholder}
         onChange={(e) => {
           handleSearch(e.target.value);
         }}
+        color={"white"}
+        borderRadius={"full"}
         defaultValue={searchParams.get("query")?.toString()}
       />
     </InputGroup>
