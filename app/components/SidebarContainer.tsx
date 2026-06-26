@@ -7,7 +7,7 @@ export const SidebarContainer = ({
   children: React.ReactNode;
 }) => {
   return (
-    <Box display={{ base: "none", md: "block" }} h="full" position="fixed">
+    <Box display={{ base: "none", md: "block" }} h="full">
       {" "}
       {children}
     </Box>
