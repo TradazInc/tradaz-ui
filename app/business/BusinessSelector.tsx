@@ -1,6 +1,7 @@
 "use client";
 
 import { toaster } from "@/components/ui/toaster";
+import { Store } from "@/entities/Store";
 import { useBusinesses } from "@/hooks/business";
 import { businessService } from "@/services/business/businessService";
 import { storeService } from "@/services/stores/storeService";
@@ -9,7 +10,7 @@ import React, { useState } from "react";
 import { LuBuilding2, LuChevronDown, LuStore } from "react-icons/lu";
 
 export const BusinessSelector = () => {
-  const [stores, setStores] = useState<any[] | null>([]);
+  const [stores, setStores] = useState<Store[]>();
 
   const {
     data: businesses,
@@ -71,7 +72,7 @@ export const BusinessSelector = () => {
           </BreadcrumbMenuItem>
         </>
 
-        {!stores && (
+        {stores && (
           <>
             <Breadcrumb.Separator />
             <BreadcrumbMenuItem data={stores ?? []} handleClick={handleStore}>
