@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   Box,
@@ -6,22 +8,11 @@ import {
   Input,
   Button,
   Icon,
-  VStack,
+  Stack,
   SimpleGrid,
   Textarea,
 } from "@chakra-ui/react";
-import { toaster } from "@/components/ui/toaster";
-import {
-  LuBuilding2,
-  LuLink,
-  LuLayers,
-  LuPhone,
-  LuMapPin,
-} from "react-icons/lu";
-
-import { useBusinessCategories } from "@/hooks/useBusinessCategories";
-import { useBusinessActions } from "@/hooks/useBusiness";
-import { inputStyles, labelStyles } from "@/app/style";
+import { LuBuilding2, LuLayers, LuPhone, LuMapPin } from "react-icons/lu";
 
 interface CreateBusinessFormProps {
   onSuccess: () => void;
@@ -29,97 +20,50 @@ interface CreateBusinessFormProps {
 }
 
 export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
-  const { create } = useBusinessActions();
-  const { data: categories, isLoading: categoriesLoading } =
-    useBusinessCategories();
+  const mockCategories = [
+    { id: "retail", name: "Retail & E-commerce" },
+    { id: "tech", name: "Technology & Software" },
+    { id: "food", name: "Food & Beverage" },
+    { id: "services", name: "Professional Services" },
+  ];
 
   const [formData, setFormData] = useState({
     name: "",
-    slug: "",
     categoryId: "",
     about: "",
     phone: "",
     address: "",
   });
+
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Auto-generate URL-safe slug whenever the name changes
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newName = e.target.value;
-    const newSlug = newName
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-
-    setFormData((prev) => ({ ...prev, name: newName, slug: newSlug }));
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrorMsg("");
   };
 
-  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const cleanSlug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
-    setFormData((prev) => ({ ...prev, slug: cleanSlug }));
-    setErrorMsg("");
-  };
-
-  const handleFinalSubmit = async (e: React.FormEvent) => {
+  const handleFinalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg("");
 
-    // Manual validation
-    if (formData.name.length < 2)
+    if (formData.name.trim().length < 2)
       return setErrorMsg("Business name must be at least 2 characters.");
-    if (formData.slug.length < 2)
-      return setErrorMsg("Slug must be at least 2 characters.");
     if (formData.categoryId === "")
       return setErrorMsg("Please select an industry category.");
 
-    try {
-      await create.mutateAsync({
-        name: formData.name,
-        slug: formData.slug,
-        keepCurrentActiveOrganization: false,
-        categoryId: formData.categoryId,
-        metadata: {
-          about: formData.about,
-          phone: formData.phone,
-          address: formData.address,
-        },
-      });
-
-      setFormData({
-        name: "",
-        slug: "",
-        categoryId: "",
-        about: "",
-        phone: "",
-        address: "",
-      });
-
-      toaster.create({
-        title: "Business created successfully",
-        description: `${formData.name} has been provisioned.`,
-        type: "success",
-      });
-
-      onSuccess();
-    } catch (error: unknown) {
-      console.error("Workspace provisioning failed:", error);
-
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to create organization. Slug might be taken.";
-
-      setErrorMsg(message);
-
-      toaster.create({
-        title: "Business creation failed",
-        description: message,
-        type: "error",
-      });
-    }
+    // Fire success immediately with no simulation
+    console.log("Business Form Data:", formData);
+    setFormData({
+      name: "",
+      categoryId: "",
+      about: "",
+      phone: "",
+      address: "",
+    });
+    onSuccess();
   };
 
   return (
@@ -130,195 +74,258 @@ export const CreateBusinessForm = ({ onSuccess }: CreateBusinessFormProps) => {
       direction="column"
       h="100%"
     >
-      {/* Scrollable Form Body */}
-      <Box
-        flex={1}
-        overflowY="auto"
-        px={{ base: 6, md: 10 }}
-        py={8}
-        css={{
-          "&::-webkit-scrollbar": { width: "4px" },
-          "&::-webkit-scrollbar-thumb": {
-            background: "#27272A",
-            borderRadius: "4px",
-          },
-        }}
-      >
+      <Box flex={1} overflowY="auto" px={{ base: 6, md: 8 }} py={8}>
         {errorMsg && (
-          <Box bg="#2a0000" border="1px solid red" p={3} mb={6}>
-            <Text color="red.400" fontSize="sm" fontWeight="bold">
+          <Box
+            bg="red.900"
+            borderWidth="1px"
+            borderColor="red.500"
+            p={3}
+            mb={6}
+            rounded="md"
+          >
+            <Text color="red.200" fontSize="sm" fontWeight="bold">
               {errorMsg}
             </Text>
           </Box>
         )}
 
-        <VStack gap={6} align="stretch" maxW="500px" mx="auto">
+        <Stack gap={6} maxW="500px" mx="auto">
+          {/* Business Name */}
           <Box>
-            <Text as="label" {...labelStyles}>
+            <Text
+              as="label"
+              fontSize="sm"
+              fontWeight="medium"
+              color="gray.300"
+              mb={2}
+              display="block"
+            >
               Business Name{" "}
               <Text as="span" color="red.400">
                 *
               </Text>
             </Text>
-            <Flex align="center" {...inputStyles}>
-              <Icon as={LuBuilding2} color="#444" mr={3} />
+            <Flex
+              align="center"
+              bg="#000000"
+              borderWidth="1px"
+              borderColor="#1A1A1A"
+              rounded="md"
+              px={3}
+              h="12"
+              _focusWithin={{ borderColor: "white" }}
+              transition="all 0.2s"
+            >
+              <Icon as={LuBuilding2} color="gray.500" mr={3} boxSize="18px" />
               <Input
+                name="name"
                 border="none"
                 p={0}
-                _focus={{ boxShadow: "none" }}
+                bg="transparent"
+                color="white"
+                _focus={{ boxShadow: "none", outline: "none" }}
                 placeholder="e.g. Tradaz Fashion"
                 value={formData.name}
-                onChange={handleNameChange}
+                onChange={handleChange}
                 required
               />
             </Flex>
           </Box>
 
-          <SimpleGrid columns={{ base: 1, sm: 2 }} gap={4}>
-            <Box>
-              <Text as="label" {...labelStyles}>
-                Store URL Slug{" "}
-                <Text as="span" color="red.400">
-                  *
-                </Text>
-              </Text>
-              <Flex align="center" {...inputStyles}>
-                <Icon as={LuLink} color="#444" mr={3} />
-                <Input
-                  border="none"
-                  p={0}
-                  _focus={{ boxShadow: "none" }}
-                  placeholder="your-store"
-                  value={formData.slug}
-                  onChange={handleSlugChange}
-                  required
-                />
-              </Flex>
-            </Box>
-
-            <Box>
-              <Text as="label" {...labelStyles}>
-                Industry Category{" "}
-                <Text as="span" color="red.400">
-                  *
-                </Text>
-              </Text>
-              <Flex align="center" {...inputStyles} px={2}>
-                <Icon as={LuLayers} color="#444" mx={2} />
-                <select
-                  value={formData.categoryId}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      categoryId: e.target.value,
-                    }))
-                  }
-                  style={{
-                    width: "100%",
-                    background: "transparent",
-                    color: "white",
-                    border: "none",
-                    outline: "none",
-                    cursor: "pointer",
-                  }}
-                  required
-                >
-                  <option value="" disabled style={{ background: "#0A0A0A" }}>
-                    {categoriesLoading ? "Loading..." : "Select Industry"}
-                  </option>
-                  {categories?.map((cat: { id: string; name: string }) => (
-                    <option
-                      key={cat.id}
-                      value={cat.id}
-                      style={{ background: "#0A0A0A" }}
-                    >
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </Flex>
-            </Box>
-          </SimpleGrid>
-
+          {/* Category */}
           <Box>
-            <Text as="label" {...labelStyles}>
+            <Text
+              as="label"
+              fontSize="sm"
+              fontWeight="medium"
+              color="gray.300"
+              mb={2}
+              display="block"
+            >
+              Industry Category{" "}
+              <Text as="span" color="red.400">
+                *
+              </Text>
+            </Text>
+            <Flex
+              align="center"
+              bg="#000000"
+              borderWidth="1px"
+              borderColor="#1A1A1A"
+              rounded="md"
+              px={3}
+              h="12"
+              _focusWithin={{ borderColor: "white" }}
+              transition="all 0.2s"
+            >
+              <Icon as={LuLayers} color="gray.500" mr={3} boxSize="18px" />
+              <Box
+                as="select"
+                flex="1"
+                bg="transparent"
+                color="white"
+                border="none"
+                outline="none"
+                cursor="pointer"
+              >
+                <option value="" disabled style={{ background: "#0A0A0A" }}>
+                  Select Industry
+                </option>
+                {mockCategories.map((cat) => (
+                  <option
+                    key={cat.id}
+                    value={cat.id}
+                    style={{ background: "#0A0A0A" }}
+                  >
+                    {cat.name}
+                  </option>
+                ))}
+              </Box>
+            </Flex>
+          </Box>
+
+          {/* About */}
+          <Box>
+            <Text
+              as="label"
+              fontSize="sm"
+              fontWeight="medium"
+              color="gray.300"
+              mb={2}
+              display="block"
+            >
               Corporate Overview
             </Text>
             <Textarea
-              {...inputStyles}
-              h="auto"
-              minH="80px"
+              name="about"
+              bg="#000000"
+              borderWidth="1px"
+              borderColor="#1A1A1A"
+              rounded="md"
+              color="white"
+              px={4}
               py={3}
+              minH="100px"
               resize="none"
+              _focus={{
+                borderColor: "white",
+                boxShadow: "none",
+                outline: "none",
+              }}
+              transition="all 0.2s"
               placeholder="Brief operational statement regarding the entity..."
               value={formData.about}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, about: e.target.value }))
-              }
+              onChange={handleChange}
             />
           </Box>
 
           <SimpleGrid columns={{ base: 1, sm: 2 }} gap={4}>
+            {/* Phone */}
             <Box>
-              <Text as="label" {...labelStyles}>
+              <Text
+                as="label"
+                fontSize="sm"
+                fontWeight="medium"
+                color="gray.300"
+                mb={2}
+                display="block"
+              >
                 Headquarters Phone
               </Text>
-              <Flex align="center" {...inputStyles}>
-                <Icon as={LuPhone} color="#444" mr={3} />
+              <Flex
+                align="center"
+                bg="#000000"
+                borderWidth="1px"
+                borderColor="#1A1A1A"
+                rounded="md"
+                px={3}
+                h="12"
+                _focusWithin={{ borderColor: "white" }}
+                transition="all 0.2s"
+              >
+                <Icon as={LuPhone} color="gray.500" mr={3} boxSize="18px" />
                 <Input
+                  name="phone"
                   border="none"
                   p={0}
-                  _focus={{ boxShadow: "none" }}
+                  bg="transparent"
+                  color="white"
+                  _focus={{ boxShadow: "none", outline: "none" }}
                   placeholder="+234..."
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, phone: e.target.value }))
-                  }
+                  onChange={handleChange}
                 />
               </Flex>
             </Box>
 
+            {/* Address */}
             <Box>
-              <Text as="label" {...labelStyles}>
+              <Text
+                as="label"
+                fontSize="sm"
+                fontWeight="medium"
+                color="gray.300"
+                mb={2}
+                display="block"
+              >
                 Street Address
               </Text>
-              <Flex align="center" {...inputStyles}>
-                <Icon as={LuMapPin} color="#444" mr={3} />
+              <Flex
+                align="center"
+                bg="#000000"
+                borderWidth="1px"
+                borderColor="#1A1A1A"
+                rounded="md"
+                px={3}
+                h="12"
+                _focusWithin={{ borderColor: "white" }}
+                transition="all 0.2s"
+              >
+                <Icon as={LuMapPin} color="gray.500" mr={3} boxSize="18px" />
                 <Input
+                  name="address"
                   border="none"
                   p={0}
-                  _focus={{ boxShadow: "none" }}
+                  bg="transparent"
+                  color="white"
+                  _focus={{ boxShadow: "none", outline: "none" }}
                   placeholder="Lagos, Nigeria"
                   value={formData.address}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      address: e.target.value,
-                    }))
-                  }
+                  onChange={handleChange}
                 />
               </Flex>
             </Box>
           </SimpleGrid>
-        </VStack>
+        </Stack>
       </Box>
 
       {/* Footer Action */}
-      <Box p={8} borderTop="1px solid #1A1A1A" bg="#111111">
+      <Box
+        px={8}
+        py={6}
+        borderTopWidth="1px"
+        borderColor="#1A1A1A"
+        bg="#111111"
+      >
         <Button
           type="submit"
           form="create-business-form"
           w="full"
-          h="46px"
+          h="12"
           bg="white"
           color="black"
-          rounded="none"
+          rounded="md"
           fontWeight="bold"
-          _hover={{ bg: "#E5E5E5" }}
-          _disabled={{ bg: "#222222", color: "#555555", cursor: "not-allowed" }}
-          loading={create.isPending}
+          _hover={{ bg: "gray.200" }}
+          _disabled={{
+            bg: "gray.800",
+            color: "gray.500",
+            cursor: "not-allowed",
+          }}
+          disabled={!formData.name.trim() || !formData.categoryId}
         >
-          Create business
+          Create Business
         </Button>
       </Box>
     </Flex>
