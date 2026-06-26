@@ -27,24 +27,24 @@ export interface ReusableSidebarProps {
   items: SidebarItem[];
   basePath?: string;
   onClose?: () => void;
+  showSubscription?: boolean;
 }
 
 export const Sidebar = ({
   items,
   basePath = "",
   onClose,
+  showSubscription = false,
 }: ReusableSidebarProps) => {
-  const pathname = usePathname(); // <-- Get the current active route
+  const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openMenus, setOpenMenus] = useState<string[]>([]);
 
-  // Helper to figure out the correct URL
   const resolvePath = (item: SidebarItem) => {
     if (item.path) return item.path;
     return `${basePath}/${item.label.toLowerCase().replace(/\s+/g, "-")}`;
   };
 
-  // Automatically open the accordion menu that contains the active child link
   useEffect(() => {
     const activeParent = items.find((item) =>
       item.children?.some((child) => resolvePath(child) === pathname),
@@ -91,7 +91,7 @@ export const Sidebar = ({
           >
             <Accordion.Root
               collapsible
-              multiple // Allow multiple accordions to be open at once
+              multiple
               variant="plain"
               value={openMenus}
               onValueChange={(e) => setOpenMenus(e.value)}
@@ -99,10 +99,9 @@ export const Sidebar = ({
               {items.map((item, idx) => {
                 const hasChildren = item.children && item.children.length > 0;
                 const resolvedItemPath = resolvePath(item);
-                const isItemActive = pathname === resolvedItemPath; // Check if main link is active
+                const isItemActive = pathname === resolvedItemPath;
                 const isAccordionOpen = openMenus.includes(item.label);
 
-                // IF NO CHILDREN: Render a direct link
                 if (!hasChildren) {
                   return (
                     <Box key={idx} borderBottom="1px solid #1A1A1A" mb={0}>
@@ -117,7 +116,6 @@ export const Sidebar = ({
                           gap={3}
                           py={3}
                           px={isCollapsed ? 0 : 6}
-                          // Apply active styling if the route matches
                           bg={isItemActive ? "#111111" : "transparent"}
                           color={isItemActive ? "white" : "#A1A1AA"}
                           borderRight={
@@ -143,7 +141,6 @@ export const Sidebar = ({
                   );
                 }
 
-                // IF IT HAS CHILDREN: Render the Accordion Dropdown
                 return (
                   <Accordion.Item
                     key={idx}
@@ -202,7 +199,7 @@ export const Sidebar = ({
                       <VStack align="start" gap={0}>
                         {item.children?.map((child, cIdx) => {
                           const resolvedChildPath = resolvePath(child);
-                          const isChildActive = pathname === resolvedChildPath; // Check if child link is active
+                          const isChildActive = pathname === resolvedChildPath;
 
                           return (
                             <Link
@@ -214,7 +211,6 @@ export const Sidebar = ({
                               <Flex
                                 align="center"
                                 gap={3}
-                                // Apply active styling to the child link
                                 bg={isChildActive ? "#111111" : "transparent"}
                                 color={isChildActive ? "white" : "#888888"}
                                 borderRight={
@@ -259,7 +255,7 @@ export const Sidebar = ({
         </ScrollArea.Scrollbar>
       </ScrollArea.Root>
 
-      {/* --- BOTTOM SECTION (PINNED) --- */}
+      {/* --- BOTTOM SECTION --- */}
       <Box
         px={isCollapsed ? 2 : 6}
         pt={4}
@@ -269,7 +265,7 @@ export const Sidebar = ({
         borderTop="1px solid #1A1A1A"
         bg="#000000"
       >
-        {!isCollapsed && (
+        {!isCollapsed && showSubscription && (
           <Box
             p={3}
             bg="#0A0A0A"
