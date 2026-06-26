@@ -1,18 +1,16 @@
 "use client";
+
 import React, { useState } from "react";
 import {
   Box,
-  VStack,
+  Stack,
   Text,
   Input,
   Button,
   Drawer,
-  Portal,
-  CloseButton,
+  Icon,
 } from "@chakra-ui/react";
-import { useActiveBusiness } from "@/hooks/useBusiness";
-import { useTeamActions } from "@/hooks/useStores";
-import { inputStyles, labelStyles } from "@/app/style";
+import { LuX } from "react-icons/lu";
 
 interface AddStoreModalProps {
   isOpen: boolean;
@@ -20,32 +18,29 @@ interface AddStoreModalProps {
 }
 
 export const AddStoreModal = ({ isOpen, onClose }: AddStoreModalProps) => {
-  const { create } = useTeamActions();
-  const activeOrgAtom = useActiveBusiness();
-  const activeOrg = (
-    activeOrgAtom as unknown as { data?: { id: string; name: string } }
-  )?.data;
-
   const [formData, setFormData] = useState({
     name: "",
     address: "",
   });
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!formData.name.trim() || !formData.address.trim()) return;
 
-    await create.mutateAsync({
-      name: formData.name.trim(),
-      address: formData.address.trim(),
-      organizationId: activeOrg?.id,
-    });
+    setIsLoading(true);
 
-    setFormData({ name: "", address: "" });
-    onClose();
+    // Simulated API Call
+    setTimeout(() => {
+      console.log("Saved Store Data:", formData);
+      setFormData({ name: "", address: "" });
+      setIsLoading(false);
+      onClose();
+    }, 1000);
   };
 
   return (
@@ -54,145 +49,182 @@ export const AddStoreModal = ({ isOpen, onClose }: AddStoreModalProps) => {
       onOpenChange={(e) => !e.open && onClose()}
       placement="end"
     >
-      <Portal>
-        <Drawer.Backdrop bg="rgba(0,0,0,0.85)" backdropFilter="blur(4px)" />
-        <Drawer.Positioner zIndex={10001}>
-          <Drawer.Content
-            bg="#0A0A0A"
-            borderLeft="1px solid"
+      <Drawer.Backdrop bg="blackAlpha.800" backdropFilter="blur(4px)" />
+
+      <Drawer.Positioner zIndex={10001}>
+        <Drawer.Content
+          bg="#0A0A0A"
+          borderLeftWidth="1px"
+          borderColor="#1A1A1A"
+          w={{ base: "100%", sm: "400px", md: "450px" }}
+          maxW="none"
+          shadow="2xl"
+        >
+          {/* Header */}
+          <Drawer.Header
+            px={6}
+            py={6}
+            borderBottomWidth="1px"
             borderColor="#1A1A1A"
-            w={{ base: "100%", sm: "400px", md: "450px" }}
-            maxW="none"
-            shadow="-20px 0 50px rgba(0,0,0,0.9)"
+            bg="#111111"
           >
-            {/* Header */}
-            <Drawer.Header
-              px={6}
-              pt={8}
-              pb={6}
-              borderBottom="1px solid"
-              borderColor="#1A1A1A"
-              bg="#111111"
+            <Text
+              fontSize="xs"
+              fontWeight="bold"
+              letterSpacing="wider"
+              color="gray.500"
+              textTransform="uppercase"
+              mb={1}
             >
+              New Location
+            </Text>
+            <Drawer.Title
+              fontSize="xl"
+              fontWeight="bold"
+              color="white"
+              letterSpacing="tight"
+            >
+              Add a New Store
+            </Drawer.Title>
+
+            <Drawer.CloseTrigger asChild>
+              <Box
+                as="button"
+                position="absolute"
+                top={6}
+                right={6}
+                color="gray.500"
+                _hover={{ color: "white" }}
+                transition="color 0.2s"
+              >
+                <Icon as={LuX} boxSize="20px" strokeWidth="2.5" />
+              </Box>
+            </Drawer.CloseTrigger>
+          </Drawer.Header>
+
+          {/* Form Content */}
+          <Drawer.Body px={6} py={8} overflowY="auto">
+            <Stack gap={6}>
               <Box>
                 <Text
-                  fontSize="10px"
-                  fontWeight="bold"
-                  letterSpacing="wider"
-                  color="#888888"
-                  textTransform="uppercase"
-                  mb={1}
+                  as="label"
+                  fontSize="sm"
+                  fontWeight="medium"
+                  color="gray.300"
+                  mb={2}
+                  display="block"
                 >
-                  New Location
+                  Store Name{" "}
+                  <Text as="span" color="red.400">
+                    *
+                  </Text>
                 </Text>
-                <Drawer.Title
-                  fontSize="xl"
-                  fontWeight="black"
+                <Input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="e.g. Downtown Outlet"
+                  bg="#000000"
+                  borderWidth="1px"
+                  borderColor="#1A1A1A"
                   color="white"
-                  letterSpacing="tight"
-                >
-                  Add a New Store
-                </Drawer.Title>
-              </Box>
-              <Drawer.CloseTrigger asChild>
-                <CloseButton
-                  size="sm"
-                  color="#888888"
-                  rounded="none"
-                  _hover={{ bg: "#1A1A1A", color: "white" }}
-                  position="absolute"
-                  top={8}
-                  right={6}
+                  h="12"
+                  px={4}
+                  rounded="md"
+                  _hover={{ borderColor: "gray.700" }}
+                  _focus={{
+                    borderColor: "white",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  transition="all 0.2s"
                 />
-              </Drawer.CloseTrigger>
-            </Drawer.Header>
+              </Box>
 
-            {/* Form Content */}
-            <Drawer.Body
-              px={6}
-              py={8}
-              css={{ "&::-webkit-scrollbar": { display: "none" } }}
-            >
-              <VStack w="full" gap={6} align="stretch">
-                <Box>
-                  <Text as="label" {...labelStyles}>
-                    Store Name{" "}
-                    <Text as="span" color="red.400">
-                      *
-                    </Text>
+              <Box>
+                <Text
+                  as="label"
+                  fontSize="sm"
+                  fontWeight="medium"
+                  color="gray.300"
+                  mb={2}
+                  display="block"
+                >
+                  Address{" "}
+                  <Text as="span" color="red.400">
+                    *
                   </Text>
-                  <Input
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="e.g. Downtown Outlet"
-                    {...inputStyles}
-                  />
-                </Box>
+                </Text>
+                <Input
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder="e.g. 123 Main Street, Lagos"
+                  bg="#000000"
+                  borderWidth="1px"
+                  borderColor="#1A1A1A"
+                  color="white"
+                  h="12"
+                  px={4}
+                  rounded="md"
+                  _hover={{ borderColor: "gray.700" }}
+                  _focus={{
+                    borderColor: "white",
+                    boxShadow: "none",
+                    outline: "none",
+                  }}
+                  transition="all 0.2s"
+                />
+              </Box>
+            </Stack>
+          </Drawer.Body>
 
-                <Box>
-                  <Text as="label" {...labelStyles}>
-                    Address{" "}
-                    <Text as="span" color="red.400">
-                      *
-                    </Text>
-                  </Text>
-                  <Input
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    placeholder="e.g. 123 Main Street, Lagos"
-                    {...inputStyles}
-                  />
-                </Box>
-              </VStack>
-            </Drawer.Body>
-
-            {/* Footer */}
-            <Drawer.Footer
-              p={6}
-              borderTop="1px solid"
-              borderColor="#1A1A1A"
-              gap={3}
-              bg="#111111"
+          {/* Footer */}
+          <Drawer.Footer
+            px={6}
+            py={4}
+            borderTopWidth="1px"
+            borderColor="#1A1A1A"
+            bg="#111111"
+            gap={3}
+          >
+            <Button
+              flex="1"
+              variant="outline"
+              borderColor="gray.800"
+              bg="transparent"
+              color="gray.400"
+              h="12"
+              rounded="md"
+              _hover={{ bg: "gray.900", color: "white" }}
+              onClick={onClose}
             >
-              <Button
-                variant="outline"
-                borderColor="#333333"
-                onClick={onClose}
-                h="44px"
-                rounded="none"
-                color="#888888"
-                bg="#0A0A0A"
-                _hover={{ bg: "#1A1A1A", color: "white" }}
-              >
-                Cancel
-              </Button>
-              <Button
-                flex="1"
-                h="44px"
-                bg="white"
-                color="black"
-                rounded="none"
-                fontWeight="bold"
-                onClick={handleSave}
-                disabled={!formData.name.trim() || !formData.address.trim()}
-                loading={create.isPending}
-                loadingText="Creating..."
-                _hover={{ bg: "#E5E5E5" }}
-                _disabled={{
-                  opacity: 0.5,
-                  cursor: "not-allowed",
-                  bg: "#333333",
-                  color: "#888888",
-                }}
-              >
-                Create Store
-              </Button>
-            </Drawer.Footer>
-          </Drawer.Content>
-        </Drawer.Positioner>
-      </Portal>
+              Cancel
+            </Button>
+            <Button
+              flex="2"
+              bg="white"
+              color="black"
+              h="12"
+              rounded="md"
+              fontWeight="bold"
+              onClick={handleSave}
+              disabled={!formData.name.trim() || !formData.address.trim()}
+              loading={isLoading}
+              loadingText="Creating..."
+              _hover={{ bg: "gray.200" }}
+              _disabled={{
+                opacity: 0.5,
+                cursor: "not-allowed",
+                bg: "gray.800",
+                color: "gray.500",
+              }}
+            >
+              Create Store
+            </Button>
+          </Drawer.Footer>
+        </Drawer.Content>
+      </Drawer.Positioner>
     </Drawer.Root>
   );
 };
