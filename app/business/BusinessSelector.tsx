@@ -22,17 +22,28 @@ export const BusinessSelector = () => {
   const handleBusiness = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const businessId = e.currentTarget.value;
-    await businessService.setActiveBussienss(businessId);
-    const { data, error } = await storeService.getStores();
 
-    if (error)
+    const business = await businessService.setActiveBussienss(businessId);
+    if (business.error) {
       toaster.create({
-        title: error.code,
-        description: error.message,
+        title: business.error.code,
+        description: business.error.message,
         type: "error",
       });
+      return;
+    }
 
-    setStores(data);
+    const store = await storeService.getStores(business.data?.id);
+    if (store.error) {
+      toaster.create({
+        title: store.error.code,
+        description: store.error.message,
+        type: "error",
+      });
+      return;
+    }
+
+    setStores(store.data);
   };
 
   const handleStore = async (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -3,7 +3,7 @@ import { AuthClient, authClient } from "@/lib/authClient";
 class StoreService {
   constructor(private readonly auth: AuthClient) {}
 
-  async getStores(organizationId?: string) {
+  async getStores(organizationId: string) {
     return this.auth.organization.listTeams({ query: { organizationId } });
   }
 
