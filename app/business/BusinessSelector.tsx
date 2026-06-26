@@ -4,7 +4,7 @@ import { toaster } from "@/components/ui/toaster";
 import { useBusinesses } from "@/hooks/business";
 import { businessService } from "@/services/business/businessService";
 import { storeService } from "@/services/stores/storeService";
-import { Breadcrumb, Button, Menu, Portal } from "@chakra-ui/react";
+import { Breadcrumb, Menu, Portal } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { LuBuilding2, LuChevronDown, LuStore } from "react-icons/lu";
 
@@ -19,10 +19,7 @@ export const BusinessSelector = () => {
     refetch,
   } = useBusinesses();
 
-  const handleBusiness = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const businessId = e.currentTarget.value;
-
+  const handleBusiness = async (businessId: string) => {
     const business = await businessService.setActiveBussienss(businessId);
     if (business.error) {
       toaster.create({
@@ -46,9 +43,7 @@ export const BusinessSelector = () => {
     setStores(store.data);
   };
 
-  const handleStore = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const storeId = e.currentTarget.value;
+  const handleStore = async (storeId: string) => {
     const { error } = await storeService.setActiveStore(storeId);
 
     if (error)
@@ -95,7 +90,7 @@ export const BusinessSelector = () => {
 
 interface BreadcrumbMenuItemProps {
   data: Array<{ name: string; id: string }>;
-  handleClick: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
+  handleClick: (id: string) => Promise<void>;
   children: React.ReactNode;
 }
 
@@ -112,8 +107,12 @@ const BreadcrumbMenuItem = ({
           <Menu.Positioner>
             <Menu.Content>
               {data.map((item) => (
-                <Menu.Item key={item.id} value={item.id}>
-                  <Button onClick={handleClick}>{item.name}</Button>
+                <Menu.Item
+                  key={item.id}
+                  value={item.id}
+                  onClick={() => handleClick(item.id)}
+                >
+                  {item.name}
                 </Menu.Item>
               ))}
             </Menu.Content>
