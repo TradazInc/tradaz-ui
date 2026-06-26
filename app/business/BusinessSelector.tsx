@@ -6,7 +6,7 @@ import { businessService } from "@/services/business/businessService";
 import { storeService } from "@/services/stores/storeService";
 import { Breadcrumb, Button, Menu, Portal } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { LuChevronDown } from "react-icons/lu";
+import { LuBuilding2, LuChevronDown, LuStore } from "react-icons/lu";
 
 export const BusinessSelector = () => {
   const [stores, setStores] = useState<any[] | null>([]);
@@ -51,26 +51,27 @@ export const BusinessSelector = () => {
   return (
     <Breadcrumb.Root>
       <Breadcrumb.List gap="4">
-        <Breadcrumb.Item>
-          <Breadcrumb.Link href="#">Docs</Breadcrumb.Link>
-        </Breadcrumb.Item>
-
         <Breadcrumb.Separator />
 
-        <BreadcrumbMenuItem data={businesses ?? []}>
-          <Button onClick={handleBusiness}>
+        <BreadcrumbMenuItem
+          data={businesses ?? []}
+          handleClick={handleBusiness}
+        >
+          <Breadcrumb.Link as="button">
+            <LuBuilding2 />
             Business
             <LuChevronDown />
-          </Button>
+          </Breadcrumb.Link>
         </BreadcrumbMenuItem>
 
         <Breadcrumb.Separator />
 
-        <BreadcrumbMenuItem data={stores ?? []}>
-          <Button onClick={handleStore}>
+        <BreadcrumbMenuItem data={stores ?? []} handleClick={handleStore}>
+          <Breadcrumb.Link as="button">
+            <LuStore />
             Stores
             <LuChevronDown />
-          </Button>
+          </Breadcrumb.Link>
         </BreadcrumbMenuItem>
       </Breadcrumb.List>
     </Breadcrumb.Root>
@@ -79,10 +80,15 @@ export const BusinessSelector = () => {
 
 interface BreadcrumbMenuItemProps {
   data: Array<{ name: string; id: string }>;
+  handleClick: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
   children: React.ReactNode;
 }
 
-const BreadcrumbMenuItem = ({ children, data }: BreadcrumbMenuItemProps) => {
+const BreadcrumbMenuItem = ({
+  children,
+  data,
+  handleClick,
+}: BreadcrumbMenuItemProps) => {
   return (
     <Breadcrumb.Item>
       <Menu.Root>
@@ -92,7 +98,7 @@ const BreadcrumbMenuItem = ({ children, data }: BreadcrumbMenuItemProps) => {
             <Menu.Content>
               {data.map((item) => (
                 <Menu.Item key={item.id} value={item.id}>
-                  {item.name}
+                  <Button onClick={handleClick}>{item.name}</Button>
                 </Menu.Item>
               ))}
             </Menu.Content>
