@@ -27,6 +27,10 @@ class BusinessService {
       keepCurrentActiveOrganization: false,
     });
   }
+
+  async setActiveBussienss(organizationId: string) {
+    return this.auth.organization.setActive({ organizationId });
+  }
 }
 
 export const businessService = new BusinessService(authClient);

@@ -1,5 +1,5 @@
 import { CustomSession } from "@/entities/CustomSession";
-import { createAuthClient } from "better-auth/client";
+import { createAuthClient } from "better-auth/react";
 import { organizationClient, adminClient } from "better-auth/client/plugins";
 import { customSessionClient } from "better-auth/client/plugins";
 import { customSession } from "better-auth/plugins";
