@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Drawer, Text, Box, Portal, CloseButton } from "@chakra-ui/react";
 import { CreateBusinessForm } from "./CreateBusinessForm";

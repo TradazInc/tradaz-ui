@@ -21,6 +21,7 @@ export const BusinessNav = () => {
     <>
       <NavContainer>
         <HStack gap={{ base: 4, md: 6 }}>
+          <Breadcrumb.Separator color="gray.600" />
           <LogoContainer>Tradaz</LogoContainer>
 
           <Breadcrumb.Root>
