@@ -12,7 +12,7 @@ const NavContainer = async ({ children }: { children: React.ReactNode }) => {
       align="center"
       justify="space-between"
       bg={"#000000"}
-      position="relative"
+      position="fixed"
       zIndex={100}
       flexShrink={0}
       px={{ base: 4, lg: 8 }}
