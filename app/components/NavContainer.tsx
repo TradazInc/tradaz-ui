@@ -1,4 +1,3 @@
-import { authService } from "@/services/auth/authService";
 import { Flex, HStack } from "@chakra-ui/react";
 import React from "react";
 import { NotificationDropdown } from "./NotificationDropdown";
