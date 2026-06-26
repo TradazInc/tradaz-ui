@@ -11,6 +11,8 @@ import { LuBuilding2, LuChevronDown, LuStore } from "react-icons/lu";
 
 export const BusinessSelector = () => {
   const [stores, setStores] = useState<Store[]>();
+  const [activeBusiness, setActiveBusiness] = useState("Businesses");
+  const [activeStore, setActiveStore] = useState("Stores");
 
   const {
     data: businesses,
@@ -30,6 +32,7 @@ export const BusinessSelector = () => {
       });
       return;
     }
+    setActiveBusiness(business.data.name);
 
     const store = await storeService.getStores(business.data?.id);
     if (store.error) {
@@ -45,14 +48,18 @@ export const BusinessSelector = () => {
   };
 
   const handleStore = async (storeId: string) => {
-    const { error } = await storeService.setActiveStore(storeId);
+    const { data, error } = await storeService.setActiveStore(storeId);
 
-    if (error)
+    if (error) {
       toaster.create({
         title: error.code,
         description: error.message,
         type: "error",
       });
+      return;
+    }
+
+    setActiveStore(data.name);
   };
 
   return (
@@ -66,7 +73,7 @@ export const BusinessSelector = () => {
           >
             <Breadcrumb.Link as="button">
               <LuBuilding2 />
-              Business
+              {activeBusiness}
               <LuChevronDown />
             </Breadcrumb.Link>
           </BreadcrumbMenuItem>
@@ -78,7 +85,7 @@ export const BusinessSelector = () => {
             <BreadcrumbMenuItem data={stores ?? []} handleClick={handleStore}>
               <Breadcrumb.Link as="button">
                 <LuStore />
-                Stores
+                {activeStore}
                 <LuChevronDown />
               </Breadcrumb.Link>
             </BreadcrumbMenuItem>
