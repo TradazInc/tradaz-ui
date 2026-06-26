@@ -1,7 +1,7 @@
 "use client";
 
 import { toaster } from "@/components/ui/toaster";
-import { useBusinesses } from "@/hooks/businesses";
+import { useBusinesses } from "@/hooks/business";
 import { businessService } from "@/services/business/businessService";
 import { storeService } from "@/services/stores/storeService";
 import { Breadcrumb, Button, Menu, Portal } from "@chakra-ui/react";
@@ -62,28 +62,32 @@ export const BusinessSelector = () => {
   return (
     <Breadcrumb.Root>
       <Breadcrumb.List gap="4">
-        <Breadcrumb.Separator />
+        <>
+          <Breadcrumb.Separator />
+          <BreadcrumbMenuItem
+            data={businesses ?? []}
+            handleClick={handleBusiness}
+          >
+            <Breadcrumb.Link as="button">
+              <LuBuilding2 />
+              Business
+              <LuChevronDown />
+            </Breadcrumb.Link>
+          </BreadcrumbMenuItem>
+        </>
 
-        <BreadcrumbMenuItem
-          data={businesses ?? []}
-          handleClick={handleBusiness}
-        >
-          <Breadcrumb.Link as="button">
-            <LuBuilding2 />
-            Business
-            <LuChevronDown />
-          </Breadcrumb.Link>
-        </BreadcrumbMenuItem>
-
-        <Breadcrumb.Separator />
-
-        <BreadcrumbMenuItem data={stores ?? []} handleClick={handleStore}>
-          <Breadcrumb.Link as="button">
-            <LuStore />
-            Stores
-            <LuChevronDown />
-          </Breadcrumb.Link>
-        </BreadcrumbMenuItem>
+        {!stores && (
+          <>
+            <Breadcrumb.Separator />
+            <BreadcrumbMenuItem data={stores ?? []} handleClick={handleStore}>
+              <Breadcrumb.Link as="button">
+                <LuStore />
+                Stores
+                <LuChevronDown />
+              </Breadcrumb.Link>
+            </BreadcrumbMenuItem>
+          </>
+        )}
       </Breadcrumb.List>
     </Breadcrumb.Root>
   );
