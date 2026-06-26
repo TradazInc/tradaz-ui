@@ -258,11 +258,13 @@ export const Sidebar = ({
       {/* --- BOTTOM SECTION --- */}
       <Box
         px={isCollapsed ? 2 : 6}
-        pt={4}
+        pt={!isCollapsed && showSubscription ? 4 : 2}
         pb={4}
         mt="auto"
         flexShrink={0}
-        borderTop="1px solid #1A1A1A"
+        borderTop={
+          !isCollapsed && showSubscription ? "1px solid #1A1A1A" : "none"
+        }
         bg="#000000"
       >
         {!isCollapsed && showSubscription && (
