@@ -5,14 +5,7 @@ import { Store } from "@/entities/Store";
 import { useBusinesses } from "@/hooks/business";
 import { businessService } from "@/services/business/businessService";
 import { storeService } from "@/services/stores/storeService";
-import {
-  Box,
-  Breadcrumb,
-  Center,
-  Menu,
-  Portal,
-  Spinner,
-} from "@chakra-ui/react";
+import { Breadcrumb, Menu, Portal, Spinner } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { LuBuilding2, LuChevronDown, LuStore } from "react-icons/lu";
 
