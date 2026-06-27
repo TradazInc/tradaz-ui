@@ -14,13 +14,7 @@ export const BusinessSelector = () => {
   const [activeBusiness, setActiveBusiness] = useState("Businesses");
   const [activeStore, setActiveStore] = useState("Stores");
 
-  const {
-    data: businesses,
-    error,
-    isPending,
-    isRefetching,
-    refetch,
-  } = useBusinesses();
+  const { data: businesses, error, isPending } = useBusinesses();
 
   const handleBusiness = async (businessId: string) => {
     const business = await businessService.setActiveBussienss(businessId);
