@@ -71,8 +71,11 @@ export const BusinessSelector = () => {
             <Breadcrumb.Link as="button">
               <LuBuilding2 />
               {activeBusiness}
-              {isPending && <OverlaySpinner />}
-              <LuChevronDown />
+              {isPending ? (
+                <Spinner size="sm" borderWidth="4px" />
+              ) : (
+                <LuChevronDown />
+              )}
             </Breadcrumb.Link>
           </BreadcrumbMenuItem>
         </>
@@ -126,15 +129,5 @@ const BreadcrumbMenuItem = ({
         </Portal>
       </Menu.Root>
     </Breadcrumb.Item>
-  );
-};
-
-const OverlaySpinner = () => {
-  return (
-    <Box pos="absolute" inset="0" bg="bg/80">
-      <Center h="full">
-        <Spinner size="sm" borderWidth="4px" />
-      </Center>
-    </Box>
   );
 };
