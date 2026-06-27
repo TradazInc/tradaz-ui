@@ -57,10 +57,7 @@ export const BusinessSelector = () => {
       <Breadcrumb.List gap="4">
         <>
           <Breadcrumb.Separator />
-          <BreadcrumbMenuItem
-            data={businesses ?? []}
-            handleClick={handleBusiness}
-          >
+          <BreadcrumbMenuItem data={businesses} handleClick={handleBusiness}>
             <Breadcrumb.Link as="button">
               <LuBuilding2 />
               {activeBusiness}
@@ -76,7 +73,7 @@ export const BusinessSelector = () => {
         {stores && (
           <>
             <Breadcrumb.Separator />
-            <BreadcrumbMenuItem data={stores ?? []} handleClick={handleStore}>
+            <BreadcrumbMenuItem data={stores} handleClick={handleStore}>
               <Breadcrumb.Link as="button">
                 <LuStore />
                 {activeStore}
@@ -91,15 +88,15 @@ export const BusinessSelector = () => {
 };
 
 interface BreadcrumbMenuItemProps {
-  data: Array<{ name: string; id: string }>;
+  data: Array<{ name: string; id: string }> | null;
   handleClick: (id: string) => Promise<unknown>;
   children: React.ReactNode;
 }
 
 const BreadcrumbMenuItem = ({
-  children,
   data,
   handleClick,
+  children,
 }: BreadcrumbMenuItemProps) => {
   return (
     <Breadcrumb.Item>
@@ -108,15 +105,19 @@ const BreadcrumbMenuItem = ({
         <Portal>
           <Menu.Positioner>
             <Menu.Content>
-              {data.map((item) => (
-                <Menu.Item
-                  key={item.id}
-                  value={item.id}
-                  onClick={() => handleClick(item.id)}
-                >
-                  {item.name}
-                </Menu.Item>
-              ))}
+              {data && data.length > 0 ? (
+                data.map((item) => (
+                  <Menu.Item
+                    key={item.id}
+                    value={item.id}
+                    onClick={() => handleClick(item.id)}
+                  >
+                    {item.name}
+                  </Menu.Item>
+                ))
+              ) : (
+                <Menu.Item value="">Nothing found</Menu.Item>
+              )}
             </Menu.Content>
           </Menu.Positioner>
         </Portal>
