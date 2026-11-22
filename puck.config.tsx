@@ -1,56 +1,38 @@
-import { Box, Button, Card, Grid, Heading } from "@chakra-ui/react";
-import { Config, Slot } from "@puckeditor/core";
+import type { CardProps } from "@/components/puck/Card";
+import { Card } from "@/components/puck/Card";
+import type { CTAProps } from "@/components/puck/CTA";
+import { CTA } from "@/components/puck/CTA";
+import type { FeatureGridProps } from "@/components/puck/FeatureGrid";
+import { FeatureGrid } from "@/components/puck/FeatureGrid";
+import type { HeroProps } from "@/components/puck/Hero";
+import { Hero } from "@/components/puck/Hero";
+import type { StatsProps } from "@/components/puck/Stats";
+import { Stats } from "@/components/puck/Stats";
+import { Config } from "@puckeditor/core";
 
-interface Props {
-  HeadingBlock: { title: string };
-  GridBlock: { children: Slot };
-  CardBlock: { title: string; description: string; padding: number };
+export interface PuckProps {
+  Hero: HeroProps;
+  FeatureGrid: FeatureGridProps;
+  Card: CardProps;
+  Stats: StatsProps;
+  CTA: CTAProps;
 }
 
-export const puckConfig: Config<Props> = {
-  components: {
-    HeadingBlock: {
-      fields: { title: { type: "text" } },
-      defaultProps: { title: "Heading" },
-      render: ({ title }) => {
-        return (
-          <Box>
-            <Heading>{title}</Heading>
-          </Box>
-        );
-      },
-    },
-    GridBlock: {
-      fields: { children: { type: "slot" } },
-      render: ({ children }) => {
-        return <Grid>{children()}</Grid>;
-      },
-    },
-    CardBlock: {
-      fields: {
-        title: { type: "text" },
-        description: { type: "textarea" },
-        padding: { type: "number" },
-      },
-      defaultProps: {
-        title: "Title",
-        description: "This is a description...",
-        padding: 16,
-      },
-      render: ({ description, padding, title }) => {
-        return (
-          <Card.Root width="320px" p={padding}>
-            <Card.Body gap="2">
-              <Card.Title mt="2">{title}</Card.Title>
-              <Card.Description>{description}</Card.Description>
-            </Card.Body>
-            <Card.Footer justifyContent="flex-end">
-              <Button variant="outline">View</Button>
-              <Button>Join</Button>
-            </Card.Footer>
-          </Card.Root>
-        );
-      },
-    },
+export interface PuckRootProps {
+  title: string;
+}
+
+export const puckConfig: Config<PuckProps, PuckRootProps> = {
+  root: {
+    fields: { title: { type: "text" } },
+    defaultProps: { title: "Home" },
   },
+  categories: {
+    sections: {
+      title: "Sections",
+      components: ["Hero", "FeatureGrid", "Stats", "CTA"],
+    },
+    content: { title: "Content", components: ["Card"] },
+  },
+  components: { Hero, FeatureGrid, Card, Stats, CTA },
 };

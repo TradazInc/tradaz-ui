@@ -1,7 +1,7 @@
 import { PageContainer } from "@/components/shared/PageContainer";
 import { PageEditor } from "@/components/shared/PageEditor";
 import PageHeader from "@/components/shared/PageHeader";
-import { emptyPage } from "@/schema/uiConfig";
+import { puckTemplate } from "@/data/puckTemplate";
 import { getUIConfig } from "@/server/uiConfig";
 
 interface Props {
@@ -18,7 +18,7 @@ export default async function page({ params }: Props) {
 
       <PageEditor
         businessId={businessId}
-        initialData={uiConfig?.page ?? emptyPage}
+        initialData={uiConfig?.page ?? puckTemplate}
       />
     </PageContainer>
   );
