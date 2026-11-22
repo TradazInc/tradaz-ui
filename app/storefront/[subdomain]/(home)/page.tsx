@@ -7,11 +7,11 @@ import { getStorefrontUIConfig } from "@/server/uiConfig";
 import { Render } from "@puckeditor/core";
 import type { Metadata } from "next";
 
-export async function generateMetadata({
-  params,
-}: {
+interface Props {
   params: Promise<{ subdomain: string }>;
-}): Promise<Metadata> {
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { subdomain } = await params;
   const subdomainData = await Promise.resolve(subdomain); // fetch business data
 
@@ -23,10 +23,6 @@ export async function generateMetadata({
     title: `${subdomain}.${rootDomain}`,
     description: `Subdomain page for ${subdomain}.${rootDomain}`,
   };
-}
-
-interface Props {
-  params: Promise<{ subdomain: string }>;
 }
 
 export default async function page({ params }: Props) {
