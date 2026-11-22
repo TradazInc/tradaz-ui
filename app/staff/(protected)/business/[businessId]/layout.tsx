@@ -10,8 +10,9 @@ export default async function RoleLayout({
 }>) {
   const { businessId } = await params;
 
-  await requireRole({ organizationId: businessId }, (role) =>
-    hasRole(role, "staff"),
+  await requireRole(
+    { organizationId: businessId },
+    (role) => !hasRole(role, "customer"),
   );
 
   return <>{children}</>;
