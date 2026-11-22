@@ -32,6 +32,34 @@ const config = defineConfig({
     'iframe[src^="https://upload-widget.cloudinary.com/"]': {
       colorScheme: "light",
     },
+    /* Dark mode for the Puck editor (it has no built-in dark theme). */
+    ".dark": {
+      "--puck-color-surface": "var(--puck-color-grey-01) !important",
+      "--puck-color-surface-subtle": "var(--puck-color-grey-02) !important",
+      "--puck-color-surface-muted": "var(--puck-color-grey-03) !important",
+      "--puck-color-surface-inverse": "var(--puck-color-grey-12) !important",
+
+      "--puck-color-text": "var(--puck-color-grey-12) !important",
+      "--puck-color-text-secondary": "var(--puck-color-grey-08) !important",
+      "--puck-color-text-muted": "var(--puck-color-grey-07) !important",
+      "--puck-color-text-subtle": "var(--puck-color-grey-06) !important",
+      "--puck-color-text-disabled": "var(--puck-color-grey-05) !important",
+      "--puck-color-text-inverse": "var(--puck-color-grey-01) !important",
+
+      "--puck-color-border": "var(--puck-color-grey-03) !important",
+      "--puck-color-border-muted": "var(--puck-color-grey-02) !important",
+      "--puck-color-border-hover": "var(--puck-color-grey-05) !important",
+      "--puck-color-border-inverse": "var(--puck-color-grey-08) !important",
+      "--puck-color-bg-disabled": "var(--puck-color-grey-03) !important",
+
+      "--puck-color-interactive-neutral-hover":
+        "var(--puck-color-grey-03) !important",
+      "--puck-color-interactive-subtle":
+        "var(--puck-color-azure-02) !important",
+      "--puck-color-interactive-soft": "var(--puck-color-azure-02) !important",
+      "--puck-color-interactive-soft-hover":
+        "var(--puck-color-azure-03) !important",
+    },
   },
 });
 
