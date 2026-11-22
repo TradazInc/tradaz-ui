@@ -1,21 +1,17 @@
-import { Box, Button, Card, Heading, Text } from "@chakra-ui/react";
-import { Config, DropZone } from "@puckeditor/core";
+import { Box, Button, Card, Grid, Heading } from "@chakra-ui/react";
+import { Config, Slot } from "@puckeditor/core";
 
 interface Props {
   HeadingBlock: { title: string };
-  GridBlock: {};
+  GridBlock: { children: Slot };
   CardBlock: { title: string; description: string; padding: number };
 }
 
 export const puckConfig: Config<Props> = {
   components: {
     HeadingBlock: {
-      fields: {
-        title: { type: "text" },
-      },
-      defaultProps: {
-        title: "Heading",
-      },
+      fields: { title: { type: "text" } },
+      defaultProps: { title: "Heading" },
       render: ({ title }) => {
         return (
           <Box>
@@ -25,13 +21,9 @@ export const puckConfig: Config<Props> = {
       },
     },
     GridBlock: {
-      render: () => {
-        return (
-          <DropZone
-            zone="products"
-            style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)" }}
-          />
-        );
+      fields: { children: { type: "slot" } },
+      render: ({ children }) => {
+        return <Grid>{children()}</Grid>;
       },
     },
     CardBlock: {
