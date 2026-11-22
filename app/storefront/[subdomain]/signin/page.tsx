@@ -4,7 +4,7 @@ import { Center, Heading, Tabs, VStack } from "@chakra-ui/react";
 import { IoIosLogIn } from "react-icons/io";
 import { IoCreateOutline } from "react-icons/io5";
 
-// Customers sign in on the storefront host (shop.root.com/signin → /s/shop/signin),
+// Customers sign in on the storefront host (shop.root.com/signin → /storefront/shop/signin),
 // so "/" is the storefront home on that same host.
 const CustomerSigninPage = async ({
   params,

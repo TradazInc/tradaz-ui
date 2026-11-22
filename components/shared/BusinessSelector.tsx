@@ -2,6 +2,7 @@
 
 import { toaster } from "@/components/ui/toaster";
 import { useBusinesses } from "@/hooks/business";
+import { useComputePath } from "@/hooks/useComputePath";
 import {
   useSession,
   useSetActiveBusiness,
@@ -20,6 +21,7 @@ import { BusinessSelectorMenu } from "./BusinessSelectorMenu";
 import TradazLogo from "./TradazLogo";
 
 export const BusinessSelector = () => {
+  const computePath = useComputePath();
   const { data: session } = useSession();
   const activeBusinessId = session?.session.activeOrganizationId ?? undefined;
   const activeStoreId = session?.session.activeTeamId ?? undefined;
@@ -80,7 +82,7 @@ export const BusinessSelector = () => {
   return (
     <Breadcrumb.Root>
       <Breadcrumb.List>
-        <Link href={"/dashboard"}>
+        <Link href={computePath()}>
           <TradazLogo h={3} />
         </Link>
 

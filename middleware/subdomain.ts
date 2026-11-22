@@ -1,16 +1,15 @@
 import { extractSubdomain } from "@/utilities/extractSubdomain";
+import { sectionOf } from "@/utilities/section";
 import { NextRequest, NextResponse } from "next/server";
 import { protocol, rootDomain } from "../ini/configs";
-
-const ROOT_ONLY = ["/overwatch", "/merchant", "/staff"];
 
 export function subdomainRedirect(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const subdomain = extractSubdomain(request);
 
   if (subdomain) {
-    // Redirect to admin/business/staff page from subdomains (eg shop.root.com/signin reaches the real sign-in page)
-    if (ROOT_ONLY.some((p) => pathname.startsWith(p)))
+    // Overwatch, merchant and staff live on the root domain only (eg shop.root.com/staff → root.com/staff)
+    if (sectionOf(pathname))
       return NextResponse.redirect(
         `${protocol}://${rootDomain}${pathname}${search}`,
       );

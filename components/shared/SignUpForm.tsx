@@ -27,7 +27,7 @@ interface Props {
   redirectTo?: string;
 }
 
-const SignUpForm = ({ redirectTo = "/dashboard?signup=true" }: Props) => {
+const SignUpForm = ({ redirectTo = "/merchant?signup=true" }: Props) => {
   const { trigger: emailTrigger, isMutating: emailMutating } = useEmailSignup();
   const { trigger, isMutating } = useGoogleSignin();
 

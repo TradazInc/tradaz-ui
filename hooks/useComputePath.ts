@@ -1,12 +1,13 @@
 "use client";
 
 import { AppBase, computePath } from "@/utilities/computePath";
+import { sectionOf } from "@/utilities/section";
 import { usePathname } from "next/navigation";
 import { useCallback } from "react";
 
-/** "portal" on the staff portal, "dashboard" on the merchant dashboard. */
+// "staff" on the staff portal, "merchant" on the merchant dashboard
 export function useAppBase(): AppBase {
-  return usePathname().startsWith("/portal") ? "staff" : "merchant";
+  return sectionOf(usePathname()) === "/staff" ? "staff" : "merchant";
 }
 
 export function useComputePath() {
