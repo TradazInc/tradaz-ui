@@ -15,16 +15,24 @@ interface EmotionIframeProps {
 }
 
 function EmotionIframe({ children, document }: EmotionIframeProps) {
-  const cache = useMemo(
-    () =>
-      document &&
-      createCache({
-        key: "puck-frame",
-        container: document.head,
-        prepend: true, // declare Chakra's layer order before any other iframe styles
-      }),
-    [document],
-  );
+  const cache = useMemo(() => {
+    if (!document) return undefined;
+
+    // Chakra's layer order must be the iframe's first style, or the reset outranks recipes
+    let layerOrder = document.getElementById("chakra-layer-order");
+    if (!layerOrder) {
+      layerOrder = document.createElement("style");
+      layerOrder.id = "chakra-layer-order";
+      layerOrder.textContent = system.layers.atRule;
+      document.head.prepend(layerOrder);
+    }
+
+    return createCache({
+      key: "puck-frame",
+      container: document.head,
+      insertionPoint: layerOrder, // insert emotion styles after the layer order
+    });
+  }, [document]);
 
   if (!cache) return <>{children}</>;
 
