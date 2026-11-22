@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${subdomain}.${rootDomain}`,
+    title: subdomain,
     description: `Subdomain page for ${subdomain}.${rootDomain}`,
   };
 }
