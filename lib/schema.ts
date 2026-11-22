@@ -175,6 +175,8 @@ import {
   CreateUIConfigInputSchema,
   CreateUIConfigOutputSchema,
   DeleteUIConfigOutputSchema,
+  GetStorefrontUIConfigOutputSchema,
+  GetStorefrontUIConfigParamsSchema,
   GetUIConfigOutputSchema,
 } from "@/schema/uiConfig";
 import { createSchema } from "@better-fetch/fetch";
@@ -442,6 +444,10 @@ export const schema = createSchema(
     // UI configs
     "@get/api/ui-configs": {
       output: GetUIConfigOutputSchema,
+    },
+    "@get/api/ui-configs/storefront/:slug": {
+      params: GetStorefrontUIConfigParamsSchema,
+      output: GetStorefrontUIConfigOutputSchema,
     },
     "@post/api/ui-configs": {
       input: CreateUIConfigInputSchema,

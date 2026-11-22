@@ -5,18 +5,12 @@ import { puckConfig } from "@/puck.config";
 import { Data, Puck } from "@puckeditor/core";
 
 interface Props {
-  initialData: Partial<Data>;
+  initialData: Data;
   businessId: string | undefined;
 }
 
 export function PageEditor({ businessId, initialData }: Props) {
   const { trigger } = useAddUIConfig(businessId);
 
-  return (
-    <Puck
-      config={puckConfig}
-      data={initialData}
-      onPublish={(data: any) => trigger(data)}
-    />
-  );
+  return <Puck config={puckConfig} data={initialData} onPublish={trigger} />;
 }

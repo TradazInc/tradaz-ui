@@ -1,8 +1,9 @@
 import { PageContainer } from "@/components/shared/PageContainer";
-import { Data, Render } from "@puckeditor/core";
+import { Render } from "@puckeditor/core";
 import { puckConfig } from "@/puck.config";
 import HeaderText from "@/components/shared/HeaderText";
-import { getUIConfig } from "@/server/uiConfig";
+import { emptyPage } from "@/schema/uiConfig";
+import { getStorefrontUIConfig } from "@/server/uiConfig";
 
 interface Props {
   params: Promise<{ subdomain: string }>;
@@ -10,13 +11,13 @@ interface Props {
 
 export default async function page({ params }: Props) {
   const { subdomain } = await params;
-  const data = (await getUIConfig(subdomain)) as unknown as Data;
+  const uiConfig = await getStorefrontUIConfig(subdomain);
 
   return (
     <PageContainer>
       <HeaderText>{subdomain.toUpperCase()} Home Page</HeaderText>
 
-      <Render config={puckConfig} data={data} />
+      <Render config={puckConfig} data={uiConfig?.page ?? emptyPage} />
     </PageContainer>
   );
 }

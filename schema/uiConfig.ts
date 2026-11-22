@@ -1,50 +1,66 @@
+import type { Data } from "@puckeditor/core";
 import { z } from "zod";
 
-// Get (the API returns the organization's single config, or null)
-export const GetUIConfigOutputSchema = z
-  .object({
-    id: z.cuid2(),
-    primaryColor: z.string().nullable(),
-    secondaryColor: z.string().nullable(),
-    tertiaryColor: z.string().nullable(),
-    createdAt: z.iso.datetime(),
-    organizationId: z.cuid2(),
-  })
-  .nullable();
-export type GetUIConfigOutputData = z.infer<typeof GetUIConfigOutputSchema>;
-
-// Create
-export const CreateUIConfigInputSchema = z.object({
-  primaryColor: z
-    .string({ error: "primary color is required" })
-    .regex(/^#[0-9a-fA-F]{6}$/, { error: "select a valid color" }),
-
-  secondaryColor: z
-    .string({ error: "secondary color is required" })
-    .regex(/^#[0-9a-fA-F]{6}$/, { error: "select a valid color" }),
-
-  tertiaryColor: z
-    .string({ error: "tertiary color is required" })
-    .regex(/^#[0-9a-fA-F]{6}$/, { error: "select a valid color" }),
+type PuckComponentData = Data["content"][number];
+const PuckComponentDataSchema = z.toZod<PuckComponentData>()(
+  z.object({
+    type: z.string(),
+    props: z.any(), // component props are typed `any` by Puck
+    readOnly: z
+      .partialRecord(z.union([z.string(), z.number(), z.symbol()]), z.boolean())
+      .optional(),
+  }),
+);
+const PuckRootDataSchema = z.object({
+  title: z.string().optional(),
+  props: z.object({ title: z.string().optional() }).optional(),
+  readOnly: z.object({ title: z.boolean().optional() }).optional(),
 });
-export type CreateUIConfigInputData = z.input<typeof CreateUIConfigInputSchema>;
+const PuckContentSchema = z.toZod<Data["content"]>()(
+  z.array(PuckComponentDataSchema),
+);
+const PuckZonesSchema = z.toZod<NonNullable<Data["zones"]>>()(
+  z.record(z.string(), PuckContentSchema),
+);
+export const PuckDataSchema = z
+  .toZod<Omit<Data, "zones">>()(
+    z.object({ root: PuckRootDataSchema, content: PuckContentSchema }),
+  )
+  .extend({ zones: PuckZonesSchema.optional() });
+export type PuckData = z.infer<typeof PuckDataSchema>;
 
-export const CreateUIConfigOutputSchema = z.object({
+const UIConfigOutputSchema = z.object({
   id: z.cuid2(),
-  primaryColor: z.string().nullable(),
-  secondaryColor: z.string().nullable(),
-  tertiaryColor: z.string().nullable(),
+  page: PuckDataSchema.nullable(),
   createdAt: z.iso.datetime(),
   organizationId: z.cuid2(),
 });
+
+// Get (by business id)
+export const GetUIConfigOutputSchema = UIConfigOutputSchema.nullable();
+export type GetUIConfigOutputData = z.infer<typeof GetUIConfigOutputSchema>;
+
+// Get storefront (public, by business slug)
+export const GetStorefrontUIConfigParamsSchema = z.object({
+  slug: z.string(),
+});
+
+export const GetStorefrontUIConfigOutputSchema = UIConfigOutputSchema.pick({
+  page: true,
+}).nullable();
+export type GetStorefrontUIConfigOutputData = z.infer<
+  typeof GetStorefrontUIConfigOutputSchema
+>;
+
+// Create (upsert)
+export const CreateUIConfigInputSchema = z.object({ page: PuckDataSchema });
+export type CreateUIConfigInputData = z.input<typeof CreateUIConfigInputSchema>;
+
+export const CreateUIConfigOutputSchema = UIConfigOutputSchema;
 
 // Delete
 export const DeleteUIConfigOutputSchema = CreateUIConfigOutputSchema.pick({
   id: true,
 });
 
-export const emptyUIConfig: CreateUIConfigInputData = {
-  primaryColor: "#000000",
-  secondaryColor: "#000000",
-  tertiaryColor: "#000000",
-};
+export const emptyPage = { root: { props: {} }, content: [] } satisfies Data;

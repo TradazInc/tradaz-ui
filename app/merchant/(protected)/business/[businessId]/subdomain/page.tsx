@@ -1,8 +1,8 @@
 import { PageContainer } from "@/components/shared/PageContainer";
 import { PageEditor } from "@/components/shared/PageEditor";
 import PageHeader from "@/components/shared/PageHeader";
+import { emptyPage } from "@/schema/uiConfig";
 import { getUIConfig } from "@/server/uiConfig";
-import { Data } from "@puckeditor/core";
 
 interface Props {
   params: Promise<{ businessId?: string }>;
@@ -10,13 +10,16 @@ interface Props {
 
 export default async function page({ params }: Props) {
   const { businessId } = await params;
-  const data = (await getUIConfig(businessId)) as unknown as Data;
+  const uiConfig = await getUIConfig(businessId);
 
   return (
     <PageContainer>
       <PageHeader>Subdomain</PageHeader>
 
-      <PageEditor businessId={businessId} initialData={data} />
+      <PageEditor
+        businessId={businessId}
+        initialData={uiConfig?.page ?? emptyPage}
+      />
     </PageContainer>
   );
 }
