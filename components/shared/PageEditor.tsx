@@ -2,9 +2,11 @@
 
 import { useAddUIConfig } from "@/hooks/uiConfig";
 import { puckConfig } from "@/puck.config";
+import { system } from "@/theme";
+import { ChakraProvider } from "@chakra-ui/react";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
-import { Data, Puck, UiState } from "@puckeditor/core";
+import { Data, Puck } from "@puckeditor/core";
 import { ReactNode, useMemo } from "react";
 
 interface EmotionIframeProps {
@@ -15,21 +17,24 @@ interface EmotionIframeProps {
 function EmotionIframe({ children, document }: EmotionIframeProps) {
   const cache = useMemo(
     () =>
-      document && createCache({ key: "puck-frame", container: document.head }),
+      document &&
+      createCache({
+        key: "puck-frame",
+        container: document.head,
+        prepend: true, // declare Chakra's layer order before any other iframe styles
+      }),
     [document],
   );
 
   if (!cache) return <>{children}</>;
-  return <CacheProvider value={cache}>{children}</CacheProvider>;
-}
 
-const initialUi = {
-  viewports: {
-    current: { width: "100%", height: "auto" },
-    options: [],
-    controlsVisible: true,
-  },
-} satisfies Partial<UiState>;
+  // Chakra globals in the iframe, so the reset can't override Container's margin and padding
+  return (
+    <CacheProvider value={cache}>
+      <ChakraProvider value={system}>{children}</ChakraProvider>
+    </CacheProvider>
+  );
+}
 
 interface Props {
   initialData: Data;
@@ -44,7 +49,6 @@ export function PageEditor({ businessId, initialData }: Props) {
     <Puck
       config={puckConfig}
       data={initialData}
-      ui={initialUi}
       onPublish={(page) => trigger({ page })}
       overrides={{ iframe: EmotionIframe }}
     />
