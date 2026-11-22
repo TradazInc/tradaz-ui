@@ -1,3 +1,5 @@
+"use client";
+
 import { useAddUIConfig } from "@/hooks/uiConfig";
 import { puckConfig } from "@/puck.config";
 import { Data, Puck } from "@puckeditor/core";
