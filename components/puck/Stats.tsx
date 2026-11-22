@@ -1,17 +1,15 @@
-import { Box, Heading, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { SimpleGrid, Stack, Text } from "@chakra-ui/react";
 import type { ComponentConfig } from "@puckeditor/core";
+import { ButtonItem, buttonsField } from "./Buttons";
 import {
-  ButtonItem,
-  Buttons,
   Layout,
   Section,
   SectionProps,
-  buttonsField,
   layoutField,
-  mutedColor,
   sectionDefaults,
   sectionFields,
-} from "./shared";
+} from "./Section";
+import { SectionHeader } from "./SectionHeader";
 
 export interface StatsProps extends SectionProps {
   layout: Layout;
@@ -49,72 +47,36 @@ export const Stats: ComponentConfig<StatsProps> = {
     ],
     buttons: [],
   },
-  render: ({
-    layout,
-    background,
-    backdrop,
-    padding,
-    title,
-    description,
-    items,
-    buttons,
-  }) => {
-    const centered = layout === "centered";
-    const muted = mutedColor(background);
+  render: ({ layout, background, backdrop, padding, title, description, items, buttons }) => {
+    const split = layout === "split";
 
     return (
       <Section background={background} backdrop={backdrop} padding={padding}>
-        <SimpleGrid
-          columns={{ base: 1, md: centered ? 1 : 2 }}
-          gap={{ base: 10, md: 16 }}
-          alignItems="center"
-        >
-          <Stack
-            gap="5"
-            align={centered ? "center" : "flex-start"}
-            textAlign={centered ? "center" : "start"}
-            maxW={centered ? "2xl" : undefined}
-            mx={centered ? "auto" : undefined}
-          >
-            <Heading as="h2" size={{ base: "3xl", md: "4xl" }}>
-              {title}
-            </Heading>
-            <Text fontSize="lg" color={muted}>
-              {description}
-            </Text>
-            <Buttons
-              buttons={buttons}
-              background={background}
-              justify={centered ? "center" : "flex-start"}
-            />
-          </Stack>
-          <SimpleGrid
-            columns={{ base: 2, md: centered ? Math.min(items.length, 4) : 2 }}
-            gap="0"
-            borderTopWidth="1px"
-            borderLeftWidth="1px"
-            borderColor="currentColor/15"
-          >
+        <SimpleGrid columns={{ base: 1, lg: split ? 2 : 1 }} gap="16" alignItems="start">
+          <SectionHeader center={!split} title={title} description={description} buttons={buttons} />
+          <SimpleGrid columns={{ base: 2, md: split ? 2 : Math.min(items.length, 4) }} columnGap="6">
             {items.map((item, i) => (
-              <Box
+              <Stack
                 key={i}
-                p={{ base: 6, md: 8 }}
-                borderRightWidth="1px"
-                borderBottomWidth="1px"
+                direction="column-reverse"
+                gap="2"
+                py="6"
+                borderTopWidth="1px"
                 borderColor="currentColor/15"
-                textAlign={centered ? "center" : "start"}
+                textAlign={split ? "start" : "center"}
               >
                 <Text
-                  fontFamily="heading"
-                  fontSize={{ base: "3xl", md: "5xl" }}
+                  fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
+                  fontWeight="extrabold"
+                  letterSpacing="tighter"
                   lineHeight="1"
                 >
                   {item.value}
                 </Text>
-                <Text mt="2" color={muted}>
+                <Text fontWeight="medium" color="currentColor/70">
                   {item.label}
                 </Text>
-              </Box>
+              </Stack>
             ))}
           </SimpleGrid>
         </SimpleGrid>

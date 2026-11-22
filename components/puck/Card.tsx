@@ -1,4 +1,4 @@
-import { Box, GridItem, Heading, Icon, Stack, Text } from "@chakra-ui/react";
+import { Flex, GridItem, Icon, Stack, Text } from "@chakra-ui/react";
 import type { ComponentConfig } from "@puckeditor/core";
 import type { IconType } from "react-icons";
 import {
@@ -13,6 +13,7 @@ import {
   LuUsers,
   LuZap,
 } from "react-icons/lu";
+import { surfaces } from "./Section";
 
 export const cardIcons = {
   "git-merge": LuGitMerge,
@@ -83,45 +84,36 @@ export const Card: ComponentConfig<CardProps> = {
     layout: { grow: true, spanCol: 1, spanRow: 1, padding: "0px" },
   },
   render: ({ title, description, icon, mode, layout }) => {
-    const IconComponent = cardIcons[icon] ?? LuSparkles;
     const isCard = mode === "card";
 
     return (
       <GridItem
         colSpan={{ base: 1, md: layout?.spanCol ?? 1 }}
         rowSpan={layout?.spanRow ?? 1}
-        height={layout?.grow ? "full" : undefined}
-        p={layout?.padding}
+        py={layout?.padding}
       >
         <Stack
-          gap="4"
-          height={layout?.grow ? "full" : undefined}
-          {...(isCard && {
-            p: "6",
-            rounded: "xl",
-            borderWidth: "1px",
-            bg: "bg.panel",
-            color: "fg",
-            shadow: "xs",
-          })}
+          gap="2"
+          height="full"
+          {...(isCard
+            ? {
+                ...surfaces.default,
+                bg: "bg.panel",
+                p: "8",
+                rounded: "2xl",
+                borderWidth: "1px",
+                transition: "all 0.2s",
+                _hover: { transform: "translateY(-4px)", shadow: "xl", borderColor: "border.emphasized" },
+              }
+            : { align: "center", textAlign: "center" })}
         >
-          <Box
-            display="inline-flex"
-            alignItems="center"
-            justifyContent="center"
-            boxSize="10"
-            rounded="lg"
-            borderWidth="1px"
-            borderColor="currentColor/20"
-          >
-            <Icon as={IconComponent} boxSize="5" />
-          </Box>
-          <Heading as="h3" size="md">
+          <Flex boxSize="12" mb="4" align="center" justify="center" rounded="xl" bg="var(--accent)" color="var(--on-accent)">
+            <Icon as={cardIcons[icon] ?? LuSparkles} boxSize="6" />
+          </Flex>
+          <Text fontSize="xl" fontWeight="bold" lineHeight="short" letterSpacing="tight">
             {title}
-          </Heading>
-          <Text color={isCard ? "fg.muted" : "currentColor/70"}>
-            {description}
           </Text>
+          <Text color="currentColor/70">{description}</Text>
         </Stack>
       </GridItem>
     );

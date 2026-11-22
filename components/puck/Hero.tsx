@@ -1,17 +1,15 @@
-import { Box, Image, SimpleGrid, Stack, Text, Heading } from "@chakra-ui/react";
+import { Box, Image, SimpleGrid, Stack } from "@chakra-ui/react";
 import type { ComponentConfig, RichText, Slot } from "@puckeditor/core";
+import { ButtonItem, buttonsField } from "./Buttons";
 import {
-  ButtonItem,
-  Buttons,
   Layout,
   Section,
   SectionProps,
-  buttonsField,
   layoutField,
-  mutedColor,
   sectionDefaults,
   sectionFields,
-} from "./shared";
+} from "./Section";
+import { SectionHeader } from "./SectionHeader";
 
 export interface HeroProps extends SectionProps {
   layout: Layout;
@@ -66,84 +64,43 @@ export const Hero: ComponentConfig<HeroProps> = {
     buttons: [{ label: "Get started", href: "#", variant: "primary" }],
     image: { mode: "none", source: { src: "", alt: "" }, content: [] },
   },
-  render: ({
-    layout,
-    background,
-    backdrop,
-    padding,
-    eyebrow,
-    title,
-    description,
-    buttons,
-    image,
-  }) => {
-    const centered = layout === "centered";
+  render: ({ layout, background, backdrop, padding, eyebrow, title, description, buttons, image }) => {
+    const split = layout === "split";
     const Content = image?.content;
-    const hasMedia =
-      (image?.mode === "image" && image.source?.src) ||
-      image?.mode === "custom";
 
-    const text = (
-      <Stack
-        gap="6"
-        align={centered ? "center" : "flex-start"}
-        textAlign={centered ? "center" : "start"}
-        maxW={centered ? "3xl" : undefined}
-        mx={centered ? "auto" : undefined}
-      >
-        {eyebrow && (
-          <Text
-            fontSize="sm"
-            fontWeight="semibold"
-            letterSpacing="wider"
-            textTransform="uppercase"
-            color={mutedColor(background)}
-          >
-            {eyebrow}
-          </Text>
-        )}
-        <Heading as="h1" size={{ base: "4xl", md: "6xl" }} lineHeight="1.1">
-          {title}
-        </Heading>
-        <Box fontSize={{ base: "md", md: "lg" }} color={mutedColor(background)}>
-          {description}
-        </Box>
-        <Buttons
-          buttons={buttons}
-          background={background}
-          justify={centered ? "center" : "flex-start"}
-        />
-      </Stack>
-    );
-
-    const media = hasMedia ? (
-      image.mode === "image" ? (
+    const media =
+      image?.mode === "image" && image.source?.src ? (
         <Image
           src={image.source.src}
           alt={image.source.alt}
           width="full"
-          height={{ base: "280px", md: "460px" }}
+          aspectRatio={split ? 4 / 3 : 16 / 9}
           objectFit="cover"
           rounded="2xl"
+          shadow="2xl"
         />
-      ) : (
-        Content && <Content as={Box} minHeight="120px" />
-      )
-    ) : null;
+      ) : image?.mode === "custom" && Content ? (
+        <Content as={Box} width="full" rounded="2xl" />
+      ) : null;
 
     return (
       <Section background={background} backdrop={backdrop} padding={padding}>
-        {centered || !media ? (
-          <Stack gap="12">
-            {text}
-            {media}
-          </Stack>
-        ) : (
-          <SimpleGrid columns={{ base: 1, md: 2 }} gap="12" alignItems="center">
-            {text}
-            {media}
-          </SimpleGrid>
-        )}
+        <Stack
+          as={split ? SimpleGrid : undefined}
+          columns={{ base: 1, lg: 2 }}
+          gap={{ base: 12, lg: split ? 16 : 12 }}
+          alignItems="center"
+        >
+          <SectionHeader
+            display
+            center={!split}
+            eyebrow={eyebrow}
+            title={title}
+            description={description}
+            buttons={buttons}
+          />
+          {media}
+        </Stack>
       </Section>
     );
   },

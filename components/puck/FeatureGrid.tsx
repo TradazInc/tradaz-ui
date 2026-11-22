@@ -1,16 +1,14 @@
-import { Grid, Heading, Stack, Text } from "@chakra-ui/react";
+import { Grid, Stack } from "@chakra-ui/react";
 import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { CardMode } from "./Card";
+import { ButtonItem, Buttons, buttonsField } from "./Buttons";
 import {
-  ButtonItem,
-  Buttons,
   Section,
   SectionProps,
-  buttonsField,
-  mutedColor,
   sectionDefaults,
   sectionFields,
-} from "./shared";
+} from "./Section";
+import { SectionHeader } from "./SectionHeader";
 
 export interface FeatureGridProps extends SectionProps {
   title: string;
@@ -60,37 +58,16 @@ export const FeatureGrid: ComponentConfig<FeatureGridProps> = {
       },
     };
   },
-  render: ({
-    background,
-    backdrop,
-    padding,
-    title,
-    description,
-    columns,
-    cards: Cards,
-    buttons,
-  }) => (
+  render: ({ background, backdrop, padding, title, description, columns, cards: Cards, buttons }) => (
     <Section background={background} backdrop={backdrop} padding={padding}>
-      <Stack gap={{ base: 10, md: 16 }}>
-        <Stack gap="4" maxW="2xl">
-          <Heading as="h2" size={{ base: "3xl", md: "4xl" }}>
-            {title}
-          </Heading>
-          <Text fontSize="lg" color={mutedColor(background)}>
-            {description}
-          </Text>
-        </Stack>
+      <Stack gap="14">
+        <SectionHeader center title={title} description={description} />
         <Cards
           as={Grid}
-          templateColumns={{
-            base: "1fr",
-            md: `repeat(${Math.min(columns, 2)}, minmax(0, 1fr))`,
-            lg: `repeat(${columns}, minmax(0, 1fr))`,
-          }}
-          gap={{ base: 8, md: 10 }}
-          minHeight="80px"
+          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: `repeat(${columns}, 1fr)` }}
+          gap="6"
         />
-        <Buttons buttons={buttons} background={background} />
+        <Buttons buttons={buttons} justify="center" />
       </Stack>
     </Section>
   ),
