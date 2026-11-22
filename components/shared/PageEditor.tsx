@@ -4,7 +4,7 @@ import { useAddUIConfig } from "@/hooks/uiConfig";
 import { puckConfig } from "@/puck.config";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
-import { Data, Puck } from "@puckeditor/core";
+import { Data, Puck, UiState } from "@puckeditor/core";
 import { ReactNode, useMemo } from "react";
 
 interface EmotionIframeProps {
@@ -23,6 +23,14 @@ function EmotionIframe({ children, document }: EmotionIframeProps) {
   return <CacheProvider value={cache}>{children}</CacheProvider>;
 }
 
+const initialUi = {
+  viewports: {
+    current: { width: "100%", height: "auto" },
+    options: [],
+    controlsVisible: true,
+  },
+} satisfies Partial<UiState>;
+
 interface Props {
   initialData: Data;
   businessId: string | undefined;
@@ -36,6 +44,7 @@ export function PageEditor({ businessId, initialData }: Props) {
     <Puck
       config={puckConfig}
       data={initialData}
+      ui={initialUi}
       onPublish={(page) => trigger({ page })}
       overrides={{ iframe: EmotionIframe }}
     />

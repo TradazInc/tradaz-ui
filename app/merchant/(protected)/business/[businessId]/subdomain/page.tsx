@@ -13,7 +13,7 @@ export default async function page({ params }: Props) {
   const uiConfig = await getUIConfig(businessId);
 
   return (
-    <PageContainer>
+    <PageContainer alignItems="stretch">
       <PageHeader>Subdomain</PageHeader>
 
       <PageEditor
