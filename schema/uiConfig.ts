@@ -1,8 +1,7 @@
 import type { Data } from "@puckeditor/core";
 import { z } from "zod";
 
-type PuckComponentData = Data["content"][number];
-const PuckComponentDataSchema = z.toZod<PuckComponentData>()(
+const PuckComponentDataSchema = z.toZod<Data["content"][number]>()(
   z.object({
     type: z.string(),
     props: z.any(), // component props are typed `any` by Puck
