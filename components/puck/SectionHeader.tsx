@@ -1,81 +1,42 @@
-import { Box, HStack, Heading, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Heading, Show, Stack } from "@chakra-ui/react";
 import type { ReactNode } from "react";
 import { ButtonItem, Buttons } from "./Buttons";
+
+const headings = {
+  page: { as: "h1", size: { base: "4xl", md: "6xl" } },
+  section: { as: "h2", size: { base: "3xl", md: "5xl" } },
+} as const;
+
+interface SectionHeaderProps {
+  eyebrow?: string;
+  title: string;
+  description: ReactNode;
+  buttons?: ButtonItem[];
+  align?: "start" | "center";
+  /** "page" is the larger h1 used by the Hero. */
+  variant?: keyof typeof headings;
+}
 
 export function SectionHeader({
   eyebrow,
   title,
   description,
   buttons,
-  center = false,
-  display = false,
-}: {
-  eyebrow?: string;
-  title: string;
-  description?: ReactNode;
-  buttons?: ButtonItem[];
-  center?: boolean;
-  /** Larger page-title styling used by the Hero. */
-  display?: boolean;
-}) {
+  align = "start",
+  variant = "section",
+}: SectionHeaderProps) {
   return (
-    <Stack
-      gap="6"
-      align={center ? "center" : "flex-start"}
-      textAlign={center ? "center" : "start"}
-    >
-      {eyebrow &&
-        (display ? (
-          <HStack
-            gap="2"
-            px="3.5"
-            py="1.5"
-            rounded="full"
-            borderWidth="1px"
-            borderColor="currentColor/20"
-            fontSize="sm"
-            fontWeight="semibold"
-          >
-            <Box boxSize="1.5" rounded="full" bg="currentColor" />
-            {eyebrow}
-          </HStack>
-        ) : (
-          <Text
-            fontSize="sm"
-            fontWeight="bold"
-            letterSpacing="widest"
-            textTransform="uppercase"
-            color="currentColor/75"
-          >
-            {eyebrow}
-          </Text>
-        ))}
-      <Heading
-        as={display ? "h1" : "h2"}
-        fontSize={
-          display
-            ? { base: "5xl", md: "7xl", lg: "8xl" }
-            : { base: "4xl", md: "5xl", lg: "6xl" }
-        }
-        lineHeight={display ? "1" : "1.05"}
-        letterSpacing={display ? "tighter" : "tight"}
-        fontWeight="extrabold"
-        textTransform="none"
-        textWrap="balance"
-      >
-        {title}
-      </Heading>
-      {description && (
-        <Box
-          maxW="40rem"
-          fontSize={{ base: "lg", md: "xl" }}
-          color="currentColor/70"
-          textWrap="pretty"
-        >
-          {description}
-        </Box>
-      )}
-      <Buttons buttons={buttons} justify={center ? "center" : "flex-start"} />
+    <Stack gap="5" align={align} textAlign={align}>
+      <Show when={eyebrow}>
+        <Badge size="lg" variant="outline" rounded="full">
+          {eyebrow}
+        </Badge>
+      </Show>
+      <Heading {...headings[variant]}>{title}</Heading>
+      <Box maxW="2xl" fontSize="lg" color="fg.muted">
+        {description}
+      </Box>
+      <Buttons buttons={buttons} justify={align} />
     </Stack>
   );
 }

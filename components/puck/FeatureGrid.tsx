@@ -1,4 +1,4 @@
-import { Grid, Stack } from "@chakra-ui/react";
+import { SimpleGrid, Stack } from "@chakra-ui/react";
 import type { ComponentConfig, Slot } from "@puckeditor/core";
 import type { CardMode } from "./Card";
 import { ButtonItem, Buttons, buttonsField } from "./Buttons";
@@ -48,15 +48,12 @@ export const FeatureGrid: ComponentConfig<FeatureGridProps> = {
   resolveData: ({ props }, { changed }) => {
     if (!changed.cardMode) return { props };
 
-    return {
-      props: {
-        ...props,
-        cards: props.cards.map((card) => ({
-          ...card,
-          props: { ...card.props, mode: props.cardMode },
-        })),
-      },
-    };
+    const cards = props.cards.map((card) => ({
+      ...card,
+      props: { ...card.props, mode: props.cardMode },
+    }));
+
+    return { props: { ...props, cards } };
   },
   render: ({
     background,
@@ -69,16 +66,13 @@ export const FeatureGrid: ComponentConfig<FeatureGridProps> = {
     buttons,
   }) => (
     <Section background={background} backdrop={backdrop} padding={padding}>
-      <Stack gap="14">
-        <SectionHeader center title={title} description={description} />
+      <Stack gap="12" align="center">
+        <SectionHeader align="center" title={title} description={description} />
         <Cards
-          as={Grid}
-          templateColumns={{
-            base: "1fr",
-            md: "repeat(2, 1fr)",
-            lg: `repeat(${columns}, 1fr)`,
-          }}
+          as={SimpleGrid}
+          columns={{ base: 1, md: 2, lg: columns }}
           gap="6"
+          width="full"
         />
         <Buttons buttons={buttons} justify="center" />
       </Stack>

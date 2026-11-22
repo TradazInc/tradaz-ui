@@ -1,4 +1,4 @@
-import { Box, Image, SimpleGrid, Stack } from "@chakra-ui/react";
+import { Image, Show, SimpleGrid } from "@chakra-ui/react";
 import type { ComponentConfig, RichText, Slot } from "@puckeditor/core";
 import { ButtonItem, buttonsField } from "./Buttons";
 import {
@@ -23,6 +23,9 @@ export interface HeroProps extends SectionProps {
     content: Slot;
   };
 }
+
+const columns = { split: 2, centered: 1 };
+const alignments = { split: "start", centered: "center" } as const;
 
 export const Hero: ComponentConfig<HeroProps> = {
   fields: {
@@ -75,42 +78,36 @@ export const Hero: ComponentConfig<HeroProps> = {
     buttons,
     image,
   }) => {
-    const split = layout === "split";
-    const Content = image?.content;
-
-    const media =
-      image?.mode === "image" && image.source?.src ? (
-        <Image
-          src={image.source.src}
-          alt={image.source.alt}
-          width="full"
-          aspectRatio={split ? 4 / 3 : 16 / 9}
-          objectFit="cover"
-          rounded="2xl"
-          shadow="2xl"
-        />
-      ) : image?.mode === "custom" && Content ? (
-        <Content as={Box} width="full" rounded="2xl" />
-      ) : null;
+    const Content = image.content;
 
     return (
       <Section background={background} backdrop={backdrop} padding={padding}>
-        <Stack
-          as={split ? SimpleGrid : undefined}
-          columns={{ base: 1, lg: 2 }}
-          gap={{ base: 12, lg: split ? 16 : 12 }}
+        <SimpleGrid
+          columns={{ base: 1, lg: columns[layout] }}
+          gap="12"
           alignItems="center"
         >
           <SectionHeader
-            display
-            center={!split}
+            variant="page"
+            align={alignments[layout]}
             eyebrow={eyebrow}
             title={title}
             description={description}
             buttons={buttons}
           />
-          {media}
-        </Stack>
+          <Show when={image.mode === "image"}>
+            <Image
+              src={image.source.src}
+              alt={image.source.alt}
+              aspectRatio="landscape"
+              rounded="l3"
+              shadow="lg"
+            />
+          </Show>
+          <Show when={image.mode === "custom"}>
+            <Content />
+          </Show>
+        </SimpleGrid>
       </Section>
     );
   },

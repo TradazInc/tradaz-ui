@@ -1,6 +1,5 @@
-import { Button, HStack, Link } from "@chakra-ui/react";
+import { Button, HStack } from "@chakra-ui/react";
 import type { Fields } from "@puckeditor/core";
-import { LuArrowRight } from "react-icons/lu";
 
 export interface ButtonItem {
   label: string;
@@ -10,7 +9,7 @@ export interface ButtonItem {
 
 export const buttonsField: Fields<{ buttons: ButtonItem[] }>["buttons"] = {
   type: "array",
-  getItemSummary: (item) => item.label || "Button",
+  getItemSummary: (item) => item.label,
   defaultItemProps: { label: "Button", href: "#", variant: "primary" },
   arrayFields: {
     label: { type: "text" },
@@ -25,49 +24,21 @@ export const buttonsField: Fields<{ buttons: ButtonItem[] }>["buttons"] = {
   },
 };
 
-export function Buttons({
-  buttons,
-  justify = "flex-start",
-}: {
-  buttons?: ButtonItem[];
-  justify?: "flex-start" | "center";
-}) {
-  if (!buttons?.length) return null;
+const variants = { primary: "solid", secondary: "outline" } as const;
 
+interface ButtonsProps {
+  buttons?: ButtonItem[];
+  justify?: "start" | "center";
+}
+
+export function Buttons({ buttons = [], justify = "start" }: ButtonsProps) {
   return (
-    <HStack gap="3" mt="3" wrap="wrap" justify={justify}>
-      {buttons.map((button, i) => {
-        const primary = button.variant !== "secondary";
-        return (
-          <Button
-            key={i}
-            asChild
-            size="xl"
-            rounded="lg"
-            fontWeight="semibold"
-            {...(primary
-              ? {
-                  bg: "var(--accent)",
-                  color: "var(--on-accent)",
-                  _hover: { opacity: 0.85 },
-                }
-              : {
-                  variant: "outline",
-                  color: "inherit",
-                  borderColor: "currentColor/20",
-                  _hover: {
-                    bg: "currentColor/5",
-                    borderColor: "currentColor/40",
-                  },
-                })}
-          >
-            <Link href={button.href} textDecoration="none">
-              {button.label}
-              {primary && <LuArrowRight />}
-            </Link>
-          </Button>
-        );
-      })}
+    <HStack gap="3" wrap="wrap" justify={justify}>
+      {buttons.map((button, index) => (
+        <Button key={index} asChild size="lg" variant={variants[button.variant]}>
+          <a href={button.href}>{button.label}</a>
+        </Button>
+      ))}
     </HStack>
   );
 }

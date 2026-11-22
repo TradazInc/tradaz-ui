@@ -1,4 +1,4 @@
-import { SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { SimpleGrid, Stat } from "@chakra-ui/react";
 import type { ComponentConfig } from "@puckeditor/core";
 import { ButtonItem, buttonsField } from "./Buttons";
 import {
@@ -19,6 +19,10 @@ export interface StatsProps extends SectionProps {
   buttons: ButtonItem[];
 }
 
+const columns = { split: 2, centered: 1 };
+const statColumns = { split: 2, centered: 4 };
+const alignments = { split: "start", centered: "center" } as const;
+
 export const Stats: ComponentConfig<StatsProps> = {
   fields: {
     layout: layoutField,
@@ -26,7 +30,7 @@ export const Stats: ComponentConfig<StatsProps> = {
     description: { type: "textarea", contentEditable: true },
     items: {
       type: "array",
-      getItemSummary: (item) => `${item.value} ${item.label}`.trim() || "Stat",
+      getItemSummary: (item) => item.label,
       defaultItemProps: { value: "100+", label: "Label" },
       arrayFields: {
         value: { type: "text" },
@@ -56,52 +60,24 @@ export const Stats: ComponentConfig<StatsProps> = {
     description,
     items,
     buttons,
-  }) => {
-    const split = layout === "split";
-
-    return (
-      <Section background={background} backdrop={backdrop} padding={padding}>
-        <SimpleGrid
-          columns={{ base: 1, lg: split ? 2 : 1 }}
-          gap="16"
-          alignItems="start"
-        >
-          <SectionHeader
-            center={!split}
-            title={title}
-            description={description}
-            buttons={buttons}
-          />
-          <SimpleGrid
-            columns={{ base: 2, md: split ? 2 : Math.min(items.length, 4) }}
-            columnGap="6"
-          >
-            {items.map((item, i) => (
-              <Stack
-                key={i}
-                direction="column-reverse"
-                gap="2"
-                py="6"
-                borderTopWidth="1px"
-                borderColor="currentColor/15"
-                textAlign={split ? "start" : "center"}
-              >
-                <Text
-                  fontSize={{ base: "4xl", md: "5xl", lg: "6xl" }}
-                  fontWeight="extrabold"
-                  letterSpacing="tighter"
-                  lineHeight="1"
-                >
-                  {item.value}
-                </Text>
-                <Text fontWeight="medium" color="currentColor/70">
-                  {item.label}
-                </Text>
-              </Stack>
-            ))}
-          </SimpleGrid>
+  }) => (
+    <Section background={background} backdrop={backdrop} padding={padding}>
+      <SimpleGrid columns={{ base: 1, lg: columns[layout] }} gap="12">
+        <SectionHeader
+          align={alignments[layout]}
+          title={title}
+          description={description}
+          buttons={buttons}
+        />
+        <SimpleGrid columns={{ base: 2, md: statColumns[layout] }} gap="6">
+          {items.map((item, index) => (
+            <Stat.Root key={index} size="lg" borderTopWidth="1px" pt="6">
+              <Stat.Label>{item.label}</Stat.Label>
+              <Stat.ValueText fontSize="5xl">{item.value}</Stat.ValueText>
+            </Stat.Root>
+          ))}
         </SimpleGrid>
-      </Section>
-    );
-  },
+      </SimpleGrid>
+    </Section>
+  ),
 };

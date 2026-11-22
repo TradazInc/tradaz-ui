@@ -17,6 +17,8 @@ export interface CTAProps extends SectionProps {
   buttons: ButtonItem[];
 }
 
+const alignments = { split: "start", centered: "center" } as const;
+
 export const CTA: ComponentConfig<CTAProps> = {
   fields: {
     layout: layoutField,
@@ -43,7 +45,7 @@ export const CTA: ComponentConfig<CTAProps> = {
   }) => (
     <Section background={background} backdrop={backdrop} padding={padding}>
       <SectionHeader
-        center={layout === "centered"}
+        align={alignments[layout]}
         title={title}
         description={description}
         buttons={buttons}
