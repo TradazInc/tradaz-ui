@@ -85,6 +85,7 @@ export const Card: ComponentConfig<CardProps> = {
   },
   render: ({ title, description, icon, mode, layout }) => {
     const isCard = mode === "card";
+    const CardIcon = cardIcons[icon] ?? LuSparkles;
 
     return (
       <GridItem
@@ -103,14 +104,33 @@ export const Card: ComponentConfig<CardProps> = {
                 rounded: "2xl",
                 borderWidth: "1px",
                 transition: "all 0.2s",
-                _hover: { transform: "translateY(-4px)", shadow: "xl", borderColor: "border.emphasized" },
+                _hover: {
+                  transform: "translateY(-4px)",
+                  shadow: "xl",
+                  borderColor: "border.emphasized",
+                },
               }
             : { align: "center", textAlign: "center" })}
         >
-          <Flex boxSize="12" mb="4" align="center" justify="center" rounded="xl" bg="var(--accent)" color="var(--on-accent)">
-            <Icon as={cardIcons[icon] ?? LuSparkles} boxSize="6" />
+          <Flex
+            boxSize="12"
+            mb="4"
+            align="center"
+            justify="center"
+            rounded="xl"
+            bg="var(--accent)"
+            color="var(--on-accent)"
+          >
+            <Icon boxSize="6">
+              <CardIcon />
+            </Icon>
           </Flex>
-          <Text fontSize="xl" fontWeight="bold" lineHeight="short" letterSpacing="tight">
+          <Text
+            fontSize="xl"
+            fontWeight="bold"
+            lineHeight="short"
+            letterSpacing="tight"
+          >
             {title}
           </Text>
           <Text color="currentColor/70">{description}</Text>

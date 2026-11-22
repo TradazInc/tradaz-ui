@@ -32,7 +32,15 @@ export const CTA: ComponentConfig<CTAProps> = {
     description: "Ready when you are.",
     buttons: [{ label: "Get started", href: "#", variant: "primary" }],
   },
-  render: ({ layout, background, backdrop, padding, title, description, buttons }) => (
+  render: ({
+    layout,
+    background,
+    backdrop,
+    padding,
+    title,
+    description,
+    buttons,
+  }) => (
     <Section background={background} backdrop={backdrop} padding={padding}>
       <SectionHeader
         center={layout === "centered"}

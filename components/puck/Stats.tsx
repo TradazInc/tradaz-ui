@@ -47,14 +47,35 @@ export const Stats: ComponentConfig<StatsProps> = {
     ],
     buttons: [],
   },
-  render: ({ layout, background, backdrop, padding, title, description, items, buttons }) => {
+  render: ({
+    layout,
+    background,
+    backdrop,
+    padding,
+    title,
+    description,
+    items,
+    buttons,
+  }) => {
     const split = layout === "split";
 
     return (
       <Section background={background} backdrop={backdrop} padding={padding}>
-        <SimpleGrid columns={{ base: 1, lg: split ? 2 : 1 }} gap="16" alignItems="start">
-          <SectionHeader center={!split} title={title} description={description} buttons={buttons} />
-          <SimpleGrid columns={{ base: 2, md: split ? 2 : Math.min(items.length, 4) }} columnGap="6">
+        <SimpleGrid
+          columns={{ base: 1, lg: split ? 2 : 1 }}
+          gap="16"
+          alignItems="start"
+        >
+          <SectionHeader
+            center={!split}
+            title={title}
+            description={description}
+            buttons={buttons}
+          />
+          <SimpleGrid
+            columns={{ base: 2, md: split ? 2 : Math.min(items.length, 4) }}
+            columnGap="6"
+          >
             {items.map((item, i) => (
               <Stack
                 key={i}

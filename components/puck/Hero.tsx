@@ -64,7 +64,17 @@ export const Hero: ComponentConfig<HeroProps> = {
     buttons: [{ label: "Get started", href: "#", variant: "primary" }],
     image: { mode: "none", source: { src: "", alt: "" }, content: [] },
   },
-  render: ({ layout, background, backdrop, padding, eyebrow, title, description, buttons, image }) => {
+  render: ({
+    layout,
+    background,
+    backdrop,
+    padding,
+    eyebrow,
+    title,
+    description,
+    buttons,
+    image,
+  }) => {
     const split = layout === "split";
     const Content = image?.content;
 

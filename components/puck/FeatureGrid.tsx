@@ -58,13 +58,26 @@ export const FeatureGrid: ComponentConfig<FeatureGridProps> = {
       },
     };
   },
-  render: ({ background, backdrop, padding, title, description, columns, cards: Cards, buttons }) => (
+  render: ({
+    background,
+    backdrop,
+    padding,
+    title,
+    description,
+    columns,
+    cards: Cards,
+    buttons,
+  }) => (
     <Section background={background} backdrop={backdrop} padding={padding}>
       <Stack gap="14">
         <SectionHeader center title={title} description={description} />
         <Cards
           as={Grid}
-          templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: `repeat(${columns}, 1fr)` }}
+          templateColumns={{
+            base: "1fr",
+            md: "repeat(2, 1fr)",
+            lg: `repeat(${columns}, 1fr)`,
+          }}
           gap="6"
         />
         <Buttons buttons={buttons} justify="center" />
