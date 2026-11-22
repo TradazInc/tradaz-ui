@@ -1,4 +1,3 @@
-import HeaderText from "@/components/shared/HeaderText";
 import { PageContainer } from "@/components/shared/PageContainer";
 import { rootDomain } from "@/ini/configs";
 import { puckConfig } from "@/puck.config";
@@ -31,8 +30,6 @@ export default async function page({ params }: Props) {
 
   return (
     <PageContainer>
-      <HeaderText>{subdomain.toUpperCase()} Home Page</HeaderText>
-
       <Render config={puckConfig} data={uiConfig?.page ?? emptyPage} />
     </PageContainer>
   );
