@@ -12,5 +12,11 @@ interface Props {
 export function PageEditor({ businessId, initialData }: Props) {
   const { trigger } = useAddUIConfig(businessId);
 
-  return <Puck config={puckConfig} data={initialData} onPublish={trigger} />;
+  return (
+    <Puck
+      config={puckConfig}
+      data={initialData}
+      onPublish={(page) => trigger({ page })}
+    />
+  );
 }

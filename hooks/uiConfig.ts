@@ -18,9 +18,9 @@ export const useUIConfig = (organizationId: string | undefined) => {
 export const useAddUIConfig = (organizationId: string | undefined) => {
   return useSWRMutation(
     cache.scopedKey(UI_CONFIG_KEY, organizationId),
-    (key, { arg }: { arg: CreateUIConfigInputData["page"] }) =>
+    (key, { arg }: { arg: CreateUIConfigInputData }) =>
       apiClient("@post/api/ui-configs", {
-        body: { page: arg },
+        body: arg,
         headers: scopeHeaders(organizationId),
         ...apiConfig,
       }),
