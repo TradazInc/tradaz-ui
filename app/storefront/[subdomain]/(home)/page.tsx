@@ -1,9 +1,29 @@
-import { PageContainer } from "@/components/shared/PageContainer";
-import { Render } from "@puckeditor/core";
-import { puckConfig } from "@/puck.config";
 import HeaderText from "@/components/shared/HeaderText";
+import { PageContainer } from "@/components/shared/PageContainer";
+import { rootDomain } from "@/ini/configs";
+import { puckConfig } from "@/puck.config";
 import { emptyPage } from "@/schema/uiConfig";
 import { getStorefrontUIConfig } from "@/server/uiConfig";
+import { Render } from "@puckeditor/core";
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ subdomain: string }>;
+}): Promise<Metadata> {
+  const { subdomain } = await params;
+  const subdomainData = await Promise.resolve(subdomain); // fetch business data
+
+  if (!subdomainData) {
+    return { title: rootDomain };
+  }
+
+  return {
+    title: `${subdomain}.${rootDomain}`,
+    description: `Subdomain page for ${subdomain}.${rootDomain}`,
+  };
+}
 
 interface Props {
   params: Promise<{ subdomain: string }>;
