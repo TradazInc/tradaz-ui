@@ -8,7 +8,7 @@ const StaffSigninPage = () => {
       <VStack gap={8} w={"lg"}>
         <TradazLogo />
         <Heading size={"lg"}>Staff Sign In</Heading>
-        <SignInForm redirectTo={"/portal"} />
+        <SignInForm redirectTo={"/staff"} />
       </VStack>
     </Center>
   );

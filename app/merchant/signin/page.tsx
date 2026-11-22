@@ -34,10 +34,10 @@ const BusinessSigninPage = () => {
           </Tabs.List>
 
           <Tabs.Content value="signin">
-            <SignInForm redirectTo={"/dashboard"} />
+            <SignInForm redirectTo={"/merchant"} />
           </Tabs.Content>
           <Tabs.Content value="signup">
-            <SignUpForm redirectTo={"/dashboard?signup=true"} />
+            <SignUpForm redirectTo={"/merchant?signup=true"} />
           </Tabs.Content>
         </Tabs.Root>
       </VStack>
