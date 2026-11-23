@@ -1,12 +1,14 @@
 "use client";
 
+import { toaster } from "@/components/ui/toaster";
 import { useAddUIConfig } from "@/hooks/uiConfig";
-import { puckConfig } from "@/puck.config";
+import { puckConfig, PuckProps, PuckRootProps } from "@/puck.config";
 import { system } from "@/theme";
+import { errorToastOptions } from "@/utilities/errorToastOptions";
 import { ChakraProvider } from "@chakra-ui/react";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
-import { Data, Puck } from "@puckeditor/core";
+import { Data, Puck, WithDefaultRootFieldProps } from "@puckeditor/core";
 import { ReactNode, useMemo } from "react";
 
 interface EmotionIframeProps {
@@ -52,12 +54,32 @@ interface Props {
 export function PageEditor({ businessId, initialData }: Props) {
   const { trigger } = useAddUIConfig(businessId);
 
+  const onPublish = async (
+    page: Data<PuckProps, WithDefaultRootFieldProps<PuckRootProps>>,
+  ) => {
+    const promise = toaster.promise(trigger({ page }), {
+      loading: {
+        title: "Creating storefront...",
+        description: "Please wait",
+      },
+      success: {
+        title: "Creation successful",
+        description: "Storefront has been created",
+      },
+      error: errorToastOptions,
+    });
+    if (!promise) return;
+    try {
+      await promise.unwrap();
+    } catch {} // Error displayed by toaster
+  };
+
   // Render Emotion styles into the preview iframe; Puck can't mirror them in production.
   return (
     <Puck
       config={puckConfig}
       data={initialData}
-      onPublish={(page) => trigger({ page })}
+      onPublish={onPublish}
       overrides={{ iframe: EmotionIframe }}
     />
   );
