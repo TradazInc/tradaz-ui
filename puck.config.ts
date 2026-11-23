@@ -1,13 +1,8 @@
-import type { CardProps } from "@/components/puck/Card";
-import { Card } from "@/components/puck/Card";
-import type { CTAProps } from "@/components/puck/CTA";
-import { CTA } from "@/components/puck/CTA";
-import type { FeatureGridProps } from "@/components/puck/FeatureGrid";
-import { FeatureGrid } from "@/components/puck/FeatureGrid";
-import type { HeroProps } from "@/components/puck/Hero";
-import { Hero } from "@/components/puck/Hero";
-import type { StatsProps } from "@/components/puck/Stats";
-import { Stats } from "@/components/puck/Stats";
+import { Card, CardProps } from "@/components/puck/Card";
+import { CTA, CTAProps } from "@/components/puck/CTA";
+import { FeatureGrid, FeatureGridProps } from "@/components/puck/FeatureGrid";
+import { Hero, HeroProps } from "@/components/puck/Hero";
+import { Stats, StatsProps } from "@/components/puck/Stats";
 import { Config } from "@puckeditor/core";
 
 export interface PuckProps {
