@@ -1,4 +1,4 @@
-import { resources, RoleResource, roleStatements } from "@/lib/accessControl";
+import { resources, OrgResource, orgStatements } from "@/lib/accessControl";
 import { getRoles } from "@/server/role";
 import { z } from "zod";
 
@@ -24,7 +24,7 @@ export const CreateRoleInputSchema = z.object({
 
       for (const [resource, actions] of Object.entries(permission)) {
         const allowed: readonly string[] =
-          roleStatements[resource as RoleResource];
+          orgStatements[resource as OrgResource];
         for (const action of actions ?? []) {
           if (!allowed.includes(action)) {
             ctx.addIssue({

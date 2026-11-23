@@ -97,15 +97,15 @@ export const vendor = orgAc.newRole({
 // Resources a business can grant to a custom role.
 // `ac` (managing roles themselves) is deliberately not grantable from the UI.
 const { ac: _ac, ...grantable } = orgAc.statements;
-export const roleStatements = grantable;
+export const orgStatements = grantable;
 
-export type RoleStatements = typeof roleStatements;
-export type RoleResource = keyof RoleStatements;
-export type RoleAction<R extends RoleResource = RoleResource> =
-  RoleStatements[R][number];
-export type RolePermission = { [R in RoleResource]?: RoleAction<R>[] };
+export type OrgStatements = typeof orgStatements;
+export type OrgResource = keyof OrgStatements;
+export type OrgAction<R extends OrgResource = OrgResource> =
+  OrgStatements[R][number];
+export type OrgPermission = { [R in OrgResource]?: OrgAction<R>[] };
 
-export const resources = Object.keys(roleStatements) as [
-  RoleResource,
-  ...RoleResource[],
+export const resources = Object.keys(orgStatements) as [
+  OrgResource,
+  ...OrgResource[],
 ];
