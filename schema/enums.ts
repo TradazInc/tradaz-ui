@@ -1,8 +1,3 @@
-export enum Role {
-  admin = "admin",
-  user = "user",
-}
-
 export enum TransactionStatus {
   pending = "pending",
   paid = "paid",

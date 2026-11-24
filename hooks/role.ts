@@ -1,7 +1,8 @@
 import { ROLE_KEY } from "@/data/cacheKeys";
 import { authClient, authConfig } from "@/lib/authClient";
-import { CreateRoleInputData, toPermission } from "@/schema/role";
+import { CreateRoleInputData } from "@/schema/role";
 import { cache } from "@/utilities/cacheKey";
+import { toPermission } from "@/utilities/toPermission";
 import useSWR, { SWRConfiguration } from "swr";
 import useSWRMutation from "swr/mutation";
 
