@@ -12,7 +12,7 @@ import {
   formProduct,
   GetProductOutputData,
 } from "@/schema/product";
-import { useComputePath } from "@/hooks/useComputePath";
+import { computePath } from "@/utilities/computePath";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import { parseCursorData } from "@/utilities/parsePageData";
 import {
@@ -53,7 +53,6 @@ const ProductForm = ({ product }: Props) => {
   const categories = useProductCategories(businessId);
   const sizeTypes = useSizeTypes(businessId);
   const { push } = useRouter();
-  const computePath = useComputePath();
   const categoryScrollId = useId();
   const sizetypeScrollId = useId();
 

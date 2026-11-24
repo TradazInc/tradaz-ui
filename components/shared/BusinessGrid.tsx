@@ -3,7 +3,7 @@
 import { useBusinesses } from "@/hooks/business";
 import { GetAllBusinessOutputData } from "@/schema/business";
 import { useClientSearch } from "@/hooks/useClientSearch";
-import { useComputePath } from "@/hooks/useComputePath";
+import { computePath } from "@/utilities/computePath";
 import { For } from "@chakra-ui/react";
 import BusinessCard from "./BusinessCard";
 import EmptyPage from "./EmptyPage";
@@ -14,7 +14,6 @@ interface Props {
 }
 
 const BusinessGrid = ({ initialBusinesses }: Props) => {
-  const computePath = useComputePath();
   const { data } = useBusinesses({
     fallbackData: initialBusinesses,
   });

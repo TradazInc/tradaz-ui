@@ -3,7 +3,7 @@
 import { toaster } from "@/components/ui/toaster";
 import { useAddStore } from "@/hooks/store";
 import { CreateStoreInputSchema } from "@/schema/store";
-import { useComputePath } from "@/hooks/useComputePath";
+import { computePath } from "@/utilities/computePath";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import {
   Button,
@@ -25,7 +25,6 @@ export const storeDialog = createOverlay((props) => {
   const { businessId } = useParams<{ businessId?: string }>();
   const { trigger, isMutating } = useAddStore(businessId);
   const { push } = useRouter();
-  const computePath = useComputePath();
 
   const {
     register,

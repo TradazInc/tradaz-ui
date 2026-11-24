@@ -3,7 +3,7 @@
 import EmptyPage from "@/components/shared/EmptyPage";
 import { useProducts } from "@/hooks/product";
 import { GetAllProductOutputData } from "@/schema/product";
-import { useComputePath } from "@/hooks/useComputePath";
+import { computePath } from "@/utilities/computePath";
 import { parseCursorData } from "@/utilities/parsePageData";
 import { Button, For, Spinner, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
@@ -17,7 +17,6 @@ interface Props {
 }
 
 const ProductGrid = ({ businessId, initialProducts }: Props) => {
-  const computePath = useComputePath();
   const { data, size, setSize, error, mutate } = useProducts(
     businessId,
     undefined, // business-level page, all stores

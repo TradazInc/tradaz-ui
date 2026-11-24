@@ -29,7 +29,7 @@ export default async function page({ params }: Props) {
         </Suspense>
         <Spacer />
         <FormButton asChild>
-          <NextLink href={`${computePath("merchant", businessId)}/revenue/new`}>
+          <NextLink href={`${computePath(businessId)}/revenue/new`}>
             <LuPlus />
             Create Revenue
           </NextLink>

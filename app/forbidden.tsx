@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { PiLockKeyDuotone } from "react-icons/pi";
 
 export default function Forbidden() {
-  // Back to the home of the section the user is in (merchant, staff, overwatch)
+  // Back to the home of the section the user is in (merchant or overwatch)
   const section = sectionOf(usePathname());
 
   return (

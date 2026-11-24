@@ -2,7 +2,7 @@
 
 import { useCarts, useRemoveCart } from "@/hooks/cart";
 import { GetAllCartsOutputData } from "@/schema/cart";
-import { useComputePath } from "@/hooks/useComputePath";
+import { computePath } from "@/utilities/computePath";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import { parseCursorData } from "@/utilities/parsePageData";
 import { Box, Button, For, GridItem, Spinner, Text } from "@chakra-ui/react";
@@ -21,7 +21,6 @@ interface Props {
 }
 
 const CartGrid = ({ initialCarts, businessId, storeId }: Props) => {
-  const computePath = useComputePath();
   const { data, error, mutate, setSize, size, isLoading } = useCarts(
     businessId,
     storeId,

@@ -5,7 +5,7 @@ import { MAX_FILE_SIZE } from "@/data/constants";
 import { useAddRevenue } from "@/hooks/revenue";
 import { useStores } from "@/hooks/store";
 import { CreateRevenueInputSchema, emptyRevenue } from "@/schema/revenue";
-import { useComputePath } from "@/hooks/useComputePath";
+import { computePath } from "@/utilities/computePath";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import {
   Button,
@@ -33,7 +33,6 @@ const RevenueForm = () => {
   const { trigger, isMutating } = useAddRevenue(businessId);
   const { data, isLoading, error, mutate } = useStores(businessId);
   const { push } = useRouter();
-  const computePath = useComputePath();
 
   const storeCollection = useMemo(
     () =>

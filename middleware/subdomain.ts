@@ -8,7 +8,7 @@ export function subdomainRedirect(request: NextRequest) {
   const subdomain = extractSubdomain(request);
 
   if (subdomain) {
-    // Overwatch, merchant and staff live on the root domain only (eg shop.root.com/staff → root.com/staff)
+    // Overwatch and merchant live on the root domain only (eg shop.root.com/merchant → root.com/merchant)
     if (sectionOf(pathname))
       return NextResponse.redirect(
         `${protocol}://${rootDomain}${pathname}${search}`,

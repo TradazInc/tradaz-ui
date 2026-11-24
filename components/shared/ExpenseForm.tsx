@@ -5,7 +5,7 @@ import { MAX_FILE_SIZE } from "@/data/constants";
 import { useAddExpense } from "@/hooks/expense";
 import { useStores } from "@/hooks/store";
 import { CreateExpenseInputSchema, emptyExpense } from "@/schema/expense";
-import { useComputePath } from "@/hooks/useComputePath";
+import { computePath } from "@/utilities/computePath";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import {
   Button,
@@ -33,7 +33,6 @@ const ExpenseForm = () => {
   const { trigger, isMutating } = useAddExpense(businessId);
   const { data, isLoading, error, mutate } = useStores(businessId);
   const { push } = useRouter();
-  const computePath = useComputePath();
 
   const storeCollection = useMemo(
     () =>

@@ -7,6 +7,7 @@ import {
 import { toaster } from "@/components/ui/toaster";
 import { useEmailSignup, useGoogleSignin } from "@/hooks/auth";
 import { EmailSignUpSchema } from "@/schema/auth";
+import { destination } from "@/utilities/destination";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import { Button, Field, Fieldset, Input, Stack, Text } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,12 +60,12 @@ const SignUpForm = ({ redirectTo = "/merchant?signup=true" }: Props) => {
     try {
       await promise.unwrap();
       // full load so the section layout's guard reads the new session cookie
-      window.location.assign(redirectTo); // review after emailVerification
+      window.location.assign(destination(redirectTo)); // review after emailVerification
     } catch {} // Error displayed by toaster
   });
 
   const handleGoogleSignup = async () => {
-    const callbackURL = `${window.location.origin}${redirectTo}`;
+    const callbackURL = `${window.location.origin}${destination(redirectTo)}`;
     const promise = toaster.promise(trigger(callbackURL), {
       loading: { title: "Redirecting…", description: "Please wait" },
       success: {

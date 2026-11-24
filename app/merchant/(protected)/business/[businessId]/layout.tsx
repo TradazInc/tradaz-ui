@@ -10,8 +10,11 @@ export default async function RoleLayout({
 }>) {
   const { businessId } = await params;
 
-  await requireRole({ organizationId: businessId }, (role) =>
-    hasRole(role, "owner"),
+  // Any member except customers (owner, manager, staff, vendor, custom roles).
+  // Pages and features check their own permissions.
+  await requireRole(
+    { organizationId: businessId },
+    (role) => !hasRole(role, "customer"),
   );
 
   return <>{children}</>;

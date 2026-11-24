@@ -50,16 +50,6 @@ export default function page() {
                   Business
                 </Button>
               </Link>
-              <Link href="/staff/signin">
-                <Button
-                  variant="ghost"
-                  colorScheme="blue"
-                  size="sm"
-                  rounded="full"
-                >
-                  Staff
-                </Button>
-              </Link>
             </HStack>
           </HStack>
         </Flex>

@@ -1,14 +1,11 @@
-export type AppBase = "merchant" | "staff";
-
-export function computePath<B extends AppBase>(
-  base: B,
+export function computePath(
   businessId?: string,
   storeId?: string,
 ):
-  | `/${B}`
-  | `/${B}/business/${string}`
-  | `/${B}/business/${string}/store/${string}` {
-  if (!businessId) return `/${base}`;
-  if (!storeId) return `/${base}/business/${businessId}`;
-  return `/${base}/business/${businessId}/store/${storeId}`;
+  | "/merchant"
+  | `/merchant/business/${string}`
+  | `/merchant/business/${string}/store/${string}` {
+  if (!businessId) return "/merchant";
+  if (!storeId) return `/merchant/business/${businessId}`;
+  return `/merchant/business/${businessId}/store/${storeId}`;
 }
