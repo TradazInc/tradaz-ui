@@ -1,23 +1,25 @@
 import { authClient } from "@/lib/authClient";
-import { OrgRole } from "@/schema/enums";
 import { z } from "zod";
 
+// Invitable roles (dynamic roles are merged in UI)
+export const INVITABLE_ROLES = ["manager", "staff", "vendor"] as const;
+
 // Create
-const CreateInvitationInputSchema = z.object({
-  email: z.string(),
-  role: z.enum(OrgRole),
-  organizationId: z.string(),
+export const CreateInvitationInputSchema = z.object({
+  email: z.email({ error: "enter a valid email address" }),
+  role: z
+    .string({ error: "role is required" })
+    .min(1, { error: "role is required" }),
   teamId: z.string().optional(),
 });
-export type CreateInvitationInputData = z.infer<
+export type CreateInvitationInputData = z.input<
   typeof CreateInvitationInputSchema
 >;
 
 export const emptyInvitation: CreateInvitationInputData = {
   email: "",
-  role: OrgRole.member,
-  organizationId: "",
-  teamId: "",
+  role: "staff",
+  teamId: undefined,
 };
 
 export type GetInvitationOutputData = typeof authClient.$Infer.Invitation;

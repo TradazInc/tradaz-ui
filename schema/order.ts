@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { Gateway, OrderStatus, OrgRole, TransactionStatus } from "./enums";
 import { createFetchResponseSchema } from "../utilities/fetchResponse";
+import { Gateway, OrderStatus, TransactionStatus } from "./enums";
 
 /* Output Base Schemas */
 const OrderOutputBaseSchema = z.object({
@@ -57,7 +57,7 @@ export const GetOrderOutputSchema = OrderOutputBaseSchema.extend({
   transactions: z.array(TransactionOutputSchema),
   member: z.object({
     id: z.cuid2(),
-    role: z.enum(OrgRole),
+    role: z.string(),
     approved: z.boolean(),
     createdAt: z.iso.datetime(),
     organizationId: z.cuid2(),

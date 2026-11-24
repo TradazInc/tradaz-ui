@@ -45,7 +45,9 @@ export default async function page({ searchParams }: Props) {
         <RevenueStat />
       </PageItemContainer>
 
-      <BusinessGrid initialBusinesses={businesses} />
+      <Suspense>
+        <BusinessGrid initialBusinesses={businesses} />
+      </Suspense>
       <BusinessFormViewport />
     </PageContainer>
   );

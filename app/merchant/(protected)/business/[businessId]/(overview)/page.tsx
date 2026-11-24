@@ -42,7 +42,9 @@ export default async function page({ params }: Props) {
         <RevenueStat />
       </PageItemContainer>
 
-      <StoreGrid initialStores={stores} businessId={businessId} />
+      <Suspense>
+        <StoreGrid initialStores={stores} businessId={businessId} />
+      </Suspense>
       <StoreFormViewport />
     </PageContainer>
   );
