@@ -72,21 +72,28 @@ export const manager = orgAc.newRole({
 });
 
 export const staff = orgAc.newRole({
+  ac: ["read"],
+  cart: ["create", "read", "update", "delete"],
   checkout: ["pos"],
   products: ["read"],
   sizeTypes: ["read"],
   orders: ["read"],
   supportChats: ["create", "update", "auth"],
+  transactions: ["read"],
 });
 
 export const customer = orgAc.newRole({
   cart: ["create", "read", "update", "delete"],
   checkout: ["web"],
   orders: ["read"],
+  pointsConfig: ["read"],
+  shippingConfigs: ["read"],
   supportChats: ["create", "auth"],
+  uiConfig: ["read"],
 });
 
 export const vendor = orgAc.newRole({
+  ac: ["read"],
   products: ["create", "read"],
   productEdits: ["create", "read", "update", "delete"],
   sizeTypes: ["read"],
