@@ -12,6 +12,7 @@ import {
   LuLandmark,
   LuLayoutGrid,
   LuList,
+  LuMail,
   LuMegaphone,
   LuMessageSquare,
   LuPackage,
@@ -144,6 +145,7 @@ export const businessItems: SideMenuItem[] = [
       { label: "Vendors", icon: <LuStore />, path: "/vendors" },
       { label: "Partners", icon: <LuHandshake />, path: "/partners" },
       { label: "Staff Members", icon: <LuUser />, path: "/staff" },
+      { label: "Invitations", icon: <LuMail />, path: "/invitations" },
     ],
   },
   {
