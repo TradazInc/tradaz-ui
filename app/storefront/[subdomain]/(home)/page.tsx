@@ -5,6 +5,7 @@ import { emptyPage } from "@/schema/uiConfig";
 import { getStorefrontUIConfig } from "@/server/uiConfig";
 import { Render } from "@puckeditor/core";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 interface Props {
   params: Promise<{ subdomain: string }>;
@@ -27,6 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function page({ params }: Props) {
   const { subdomain } = await params;
   const uiConfig = await getStorefrontUIConfig(subdomain);
+
+  if (!uiConfig) notFound();
 
   return (
     <PageContainer>
