@@ -8,6 +8,7 @@ import {
   useSendInvitation,
 } from "@/hooks/invitation";
 import { useStores } from "@/hooks/store";
+import { useClientSearch } from "@/hooks/useClientSearch";
 import {
   GetAllInvitationOutputData,
   GetInvitationOutputData,
@@ -25,7 +26,6 @@ import {
   Table,
   Text,
 } from "@chakra-ui/react";
-import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { LuSend } from "react-icons/lu";
 import DeleteIconButton from "./DeleteIconButton";
@@ -44,7 +44,6 @@ const statusColor: Record<string, BadgeProps["colorPalette"]> = {
 };
 
 const InvitationTable = ({ initialInvitations, businessId }: Props) => {
-  const search = useSearchParams().get("search")?.trim().toLowerCase();
   const { data, error, mutate } = useInvitations(businessId, {
     fallbackData: initialInvitations,
   });
@@ -59,14 +58,7 @@ const InvitationTable = ({ initialInvitations, businessId }: Props) => {
     [stores],
   );
 
-  // The full list is loaded at once, so search on the client
-  const invitations = useMemo(
-    () =>
-      (data ?? []).filter(
-        (i) => !search || i.email.toLowerCase().includes(search),
-      ),
-    [data, search],
-  );
+  const { results: invitations } = useClientSearch(data, "email");
 
   const handleCancel = (id: string) => {
     toaster.promise(cancel(id), {

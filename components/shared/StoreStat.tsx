@@ -2,6 +2,7 @@
 
 import { useBusinesses } from "@/hooks/business";
 import { useStores } from "@/hooks/store";
+import { useClientSearch } from "@/hooks/useClientSearch";
 import { GetAllStoresOutputData } from "@/schema/store";
 import {
   FormatNumber,
@@ -30,9 +31,10 @@ export const StoreStat = ({
 
   if (businesses && !business) notFound();
 
-  const { data: stores } = useStores(businessId, {
+  const { data } = useStores(businessId, {
     fallbackData: initialStores,
   });
+  const { results: stores } = useClientSearch(data, "name");
 
   return (
     <StatContainer {...props}>
@@ -45,7 +47,7 @@ export const StoreStat = ({
 
       <Stat.ValueText>
         <FormatNumber
-          value={stores?.length ?? 0}
+          value={stores.length}
           notation={"compact"}
           compactDisplay={"short"}
         />

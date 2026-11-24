@@ -36,7 +36,9 @@ export default async function page({ params }: Props) {
       </PageItemContainer>
 
       <PageItemContainer my={2}>
-        <StoreStat initialStores={stores} businessId={businessId} />
+        <Suspense>
+          <StoreStat initialStores={stores} businessId={businessId} />
+        </Suspense>
         <VisitorsStat />
         <SalesStat />
         <RevenueStat />

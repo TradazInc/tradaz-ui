@@ -1,6 +1,7 @@
 "use client";
 
 import { useBusinesses } from "@/hooks/business";
+import { useClientSearch } from "@/hooks/useClientSearch";
 import { GetAllBusinessOutputData } from "@/schema/business";
 import {
   FormatNumber,
@@ -22,9 +23,10 @@ export const BusinessStat = ({
   initialBusinesses,
   ...props
 }: Props & StatRootProps) => {
-  const { data: businesses } = useBusinesses({
+  const { data } = useBusinesses({
     fallbackData: initialBusinesses,
   });
+  const { results: businesses } = useClientSearch(data, "name");
 
   const { data: session } = useSession();
 
@@ -39,7 +41,7 @@ export const BusinessStat = ({
 
       <Stat.ValueText>
         <FormatNumber
-          value={businesses?.length ?? 0}
+          value={businesses.length}
           notation={"compact"}
           compactDisplay={"short"}
         />

@@ -2,10 +2,9 @@
 
 import { useBusinesses } from "@/hooks/business";
 import { GetAllBusinessOutputData } from "@/schema/business";
+import { useClientSearch } from "@/hooks/useClientSearch";
 import { useComputePath } from "@/hooks/useComputePath";
 import { For } from "@chakra-ui/react";
-import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
 import BusinessCard from "./BusinessCard";
 import EmptyPage from "./EmptyPage";
 import GridContainer from "./GridContainer";
@@ -16,19 +15,10 @@ interface Props {
 
 const BusinessGrid = ({ initialBusinesses }: Props) => {
   const computePath = useComputePath();
-  const search = useSearchParams().get("search")?.trim().toLowerCase();
   const { data } = useBusinesses({
     fallbackData: initialBusinesses,
   });
-
-  // The full list is loaded at once, so search on the client
-  const businesses = useMemo(
-    () =>
-      (data ?? []).filter(
-        (b) => !search || b.name.toLowerCase().includes(search),
-      ),
-    [data, search],
-  );
+  const { results: businesses, search } = useClientSearch(data, "name");
 
   if (data && businesses.length === 0) {
     return search ? (

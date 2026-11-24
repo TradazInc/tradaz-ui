@@ -8,6 +8,7 @@ import { ShowMore } from "@/components/shared/ShowMore";
 import { StoreStat } from "@/components/shared/StoreStat";
 import { VisitorsStat } from "@/components/shared/VisitorsStat";
 import { getStores } from "@/server/store";
+import { Suspense } from "react";
 
 interface Props {
   params: Promise<{ businessId: string }>;
@@ -23,30 +24,32 @@ export default async function page({ params }: Props) {
         <BusinessName businessId={businessId} suffix={"Analytics"} />
       </PageHeader>
 
-      <ShowMore
-        initial={
+      <Suspense>
+        <ShowMore
+          initial={
+            <PageItemContainer>
+              <StoreStat initialStores={stores} businessId={businessId} />
+              <VisitorsStat />
+              <SalesStat />
+              <RevenueStat />
+            </PageItemContainer>
+          }
+        >
           <PageItemContainer>
             <StoreStat initialStores={stores} businessId={businessId} />
             <VisitorsStat />
             <SalesStat />
             <RevenueStat />
           </PageItemContainer>
-        }
-      >
-        <PageItemContainer>
-          <StoreStat initialStores={stores} businessId={businessId} />
-          <VisitorsStat />
-          <SalesStat />
-          <RevenueStat />
-        </PageItemContainer>
 
-        <PageItemContainer>
-          <StoreStat initialStores={stores} businessId={businessId} />
-          <VisitorsStat />
-          <SalesStat />
-          <RevenueStat />
-        </PageItemContainer>
-      </ShowMore>
+          <PageItemContainer>
+            <StoreStat initialStores={stores} businessId={businessId} />
+            <VisitorsStat />
+            <SalesStat />
+            <RevenueStat />
+          </PageItemContainer>
+        </ShowMore>
+      </Suspense>
     </PageContainer>
   );
 }

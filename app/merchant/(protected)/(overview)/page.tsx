@@ -39,7 +39,9 @@ export default async function page({ searchParams }: Props) {
       </PageItemContainer>
 
       <PageItemContainer my={2}>
-        <BusinessStat initialBusinesses={businesses} />
+        <Suspense>
+          <BusinessStat initialBusinesses={businesses} />
+        </Suspense>
         <VisitorsStat />
         <SalesStat />
         <RevenueStat />
