@@ -26,7 +26,7 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { LuUserPlus } from "react-icons/lu";
+import { LuPlus } from "react-icons/lu";
 import FormButton from "./FormButton";
 import RoleSelect from "./RoleSelect";
 
@@ -221,7 +221,7 @@ export const InvitationForm = (props: ButtonProps) => {
         invitationDialog.open("invitation-form", {});
       }}
     >
-      <LuUserPlus />
+      <LuPlus />
       Invite Staff
     </FormButton>
   );

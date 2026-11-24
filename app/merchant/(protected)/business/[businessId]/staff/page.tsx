@@ -25,7 +25,6 @@ export default async function page({ params }: Props) {
           <Search placeholder={"Search for a staff"} searchField={"search"} />
         </Suspense>
         <Spacer />
-        <InvitationForm />
       </PageItemContainer>
 
       <MemberTable initialMembers={members} businessId={businessId} />
