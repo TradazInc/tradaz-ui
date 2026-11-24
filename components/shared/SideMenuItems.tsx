@@ -16,7 +16,6 @@ import {
   LuMegaphone,
   LuMessageSquare,
   LuPackage,
-  LuPalette,
   LuPercent,
   LuPlus,
   LuRefreshCw,
