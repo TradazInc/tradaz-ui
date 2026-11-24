@@ -5,7 +5,7 @@ import { toaster } from "@/components/ui/toaster";
 import { apiClient, apiConfig } from "@/lib/apiClient";
 import { system } from "@/theme";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
-import { selectorSafeId } from "@/utilities/selectorSafeId";
+import { generateElementId } from "@/utilities/generateElementId";
 import {
   Box,
   Button,
@@ -175,8 +175,7 @@ const InlineUploadWidget = ({
 }: InlineUploadWidgetProps) => {
   const palette = useColorModeValue(lightModePalette, darkModePalette);
   const toastId = useId();
-  const id = useId();
-  const containerId = selectorSafeId(id);
+  const containerId = generateElementId();
 
   return (
     <CldUploadWidget
