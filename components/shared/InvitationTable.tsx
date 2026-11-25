@@ -13,8 +13,8 @@ import {
   GetAllInvitationOutputData,
   GetInvitationOutputData,
 } from "@/schema/invitation";
-import { displayStatus } from "@/utilities/displayStatus";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
+import { invitationStatus } from "@/utilities/invitationStatus";
 import {
   Badge,
   BadgeProps,
@@ -124,7 +124,7 @@ const InvitationTable = ({ initialInvitations, businessId }: Props) => {
             }
           >
             {(invitation) => {
-              const status = displayStatus(invitation);
+              const status = invitationStatus(invitation);
               const isPending = status === "pending";
               const canResend = isPending || status === "expired";
               return (

@@ -1,10 +1,10 @@
 import { GetInvitationOutputData } from "@/schema/invitation";
 
-export type DisplayStatus = GetInvitationOutputData["status"] | "expired";
+export type InvitationStatus = GetInvitationOutputData["status"] | "expired";
 
-export const displayStatus = (
+export const invitationStatus = (
   invitation: GetInvitationOutputData,
-): DisplayStatus =>
+): InvitationStatus =>
   invitation.status === "pending" &&
   new Date(invitation.expiresAt).getTime() < Date.now()
     ? "expired"
