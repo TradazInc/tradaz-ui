@@ -1,4 +1,4 @@
-import { ROLE_KEY } from "@/data/cacheKeys";
+import { MEMBER_ROLE_KEY, ROLE_KEY } from "@/data/cacheKeys";
 import { authClient, authConfig } from "@/lib/authClient";
 import { CreateRoleInputData } from "@/schema/role";
 import { cache } from "@/utilities/cacheKey";
@@ -18,6 +18,15 @@ export const useRoles = (
         fetchOptions: authConfig,
       }),
     config,
+  );
+};
+
+export const useMemberRole = (organizationId: string | undefined) => {
+  return useSWR(cache.scopedKey(MEMBER_ROLE_KEY, organizationId), () =>
+    authClient.organization.getActiveMemberRole({
+      query: { organizationId },
+      fetchOptions: authConfig,
+    }),
   );
 };
 

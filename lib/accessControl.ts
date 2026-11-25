@@ -113,6 +113,13 @@ export const defaultRoles = Object.entries(orgRoles).map(
   }),
 );
 
+// Export all resources
+export type AllOrgStatements = typeof orgAc.statements;
+export type AllOrgResource = keyof AllOrgStatements;
+export type AllOrgAction<R extends AllOrgResource = AllOrgResource> =
+  AllOrgStatements[R][number];
+export type AllOrgPermission = { [R in AllOrgResource]?: AllOrgAction<R>[] };
+
 // Export grantable resources
 // `ac` (managing roles themselves) is deliberately not grantable from the UI.
 const { ac: _ac, ...grantable } = orgAc.statements;

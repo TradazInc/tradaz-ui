@@ -1,11 +1,11 @@
 "use client";
 
+import { useSideItems } from "@/hooks/useSideItems";
 import { computePath } from "@/utilities/computePath";
 import { Accordion, Icon, Spacer } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
-import { businessItems, dashboardItems, storeItems } from "./SideMenuItems";
 
 export const SideMenuList = () => {
   // Tracks url changes
@@ -19,11 +19,7 @@ export const SideMenuList = () => {
     [businessId, storeId],
   );
 
-  const sideItems = useMemo(() => {
-    if (storeId) return storeItems;
-    if (businessId) return businessItems;
-    return dashboardItems;
-  }, [businessId, storeId]);
+  const sideItems = useSideItems();
 
   return (
     <Accordion.Root collapsible>

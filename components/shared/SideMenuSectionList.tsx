@@ -1,10 +1,10 @@
 "use client";
 
+import { useSideItems } from "@/hooks/useSideItems";
 import { computePath } from "@/utilities/computePath";
 import { StackSeparator, VStack } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
-import { businessItems, dashboardItems, storeItems } from "./SideMenuItems";
 import { SideMenuSection } from "./SideMenuSection";
 
 export const SideMenuSectionList = () => {
@@ -19,11 +19,7 @@ export const SideMenuSectionList = () => {
     [businessId, storeId],
   );
 
-  const sideItems = useMemo(() => {
-    if (storeId) return storeItems;
-    if (businessId) return businessItems;
-    return dashboardItems;
-  }, [businessId, storeId]);
+  const sideItems = useSideItems();
 
   return (
     <VStack

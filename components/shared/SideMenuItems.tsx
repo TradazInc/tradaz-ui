@@ -1,3 +1,4 @@
+import { AllOrgPermission } from "@/lib/accessControl";
 import React from "react";
 import { AiOutlineAccountBook } from "react-icons/ai";
 import { BsCashCoin } from "react-icons/bs";
@@ -54,6 +55,7 @@ import { RxDashboard } from "react-icons/rx";
 export interface SideMenuItem {
   label: string;
   icon: React.ReactNode;
+  permission?: AllOrgPermission; // none = everyone sees it
   children?: (SideMenuItem & { path: string })[];
 }
 
@@ -117,51 +119,138 @@ export const businessItems: SideMenuItem[] = [
     icon: <LuUser />,
     children: [
       { label: "Overview", icon: <RxDashboard />, path: "/" },
-      { label: "Analytics", icon: <MdOutlineAnalytics />, path: "/analytics" },
+      {
+        label: "Analytics",
+        icon: <MdOutlineAnalytics />,
+        path: "/analytics",
+        permission: { organization: ["update"] },
+      },
     ],
   },
   {
     label: "Catalog & Inventory",
     icon: <LuShoppingBag />,
     children: [
-      { label: "Add Product", icon: <LuPlus />, path: "/products/new" },
-      { label: "Inventory", icon: <LuPackage />, path: "/products" },
+      {
+        label: "Add Product",
+        icon: <LuPlus />,
+        path: "/products/new",
+        permission: { products: ["create"] },
+      },
+      {
+        label: "Inventory",
+        icon: <LuPackage />,
+        path: "/products",
+        permission: { products: ["read"] },
+      },
       {
         label: "Vendor Inventory",
         icon: <LuStore />,
         path: "/vendor-inventory",
+        permission: { organization: ["update"] },
       },
-      { label: "Categories", icon: <LuList />, path: "/product-categories" },
-      { label: "Sizes", icon: <LuRuler />, path: "/product-sizes" },
+      {
+        label: "Categories",
+        icon: <LuList />,
+        path: "/product-categories",
+        permission: { productCategories: ["create"] },
+      },
+      {
+        label: "Sizes",
+        icon: <LuRuler />,
+        path: "/product-sizes",
+        permission: { sizeTypes: ["create"] },
+      },
     ],
   },
   {
     label: "Directory & CRM",
     icon: <LuUsers />,
     children: [
-      { label: "Customers", icon: <LuUsers />, path: "/customers" },
-      { label: "Customer Reviews", icon: <LuStar />, path: "/reviews" },
-      { label: "Vendors", icon: <LuStore />, path: "/vendors" },
+      {
+        label: "Customers",
+        icon: <LuUsers />,
+        path: "/customers",
+        permission: { member: ["update"] },
+      },
+      {
+        label: "Customer Reviews",
+        icon: <LuStar />,
+        path: "/reviews",
+        permission: { organization: ["update"] },
+      },
+      {
+        label: "Vendors",
+        icon: <LuStore />,
+        path: "/vendors",
+        permission: { member: ["update"] },
+      },
       // { label: "Partners", icon: <LuHandshake />, path: "/partners" },
-      { label: "Staff Members", icon: <LuUser />, path: "/staff" },
-      { label: "Invitations", icon: <LuMail />, path: "/invitations" },
+      {
+        label: "Staff Members",
+        icon: <LuUser />,
+        path: "/staff",
+        permission: { member: ["update"] },
+      },
+      {
+        label: "Invitations",
+        icon: <LuMail />,
+        path: "/invitations",
+        permission: { invitation: ["create"] },
+      },
     ],
   },
   {
     label: "Finance & Sales",
     icon: <LuLandmark />,
     children: [
-      { label: "Sales Record", icon: <LuFileText />, path: "/sales-record" },
-      { label: "Vendor Sales", icon: <LuStore />, path: "/vendor-sales" },
-      { label: "Partner Sales", icon: <LuHandshake />, path: "/partner-sales" },
-      { label: "Revenue", icon: <LuTrendingUp />, path: "/revenue" },
-      { label: "Expenses", icon: <LuTrendingDown />, path: "/expenses" },
-      { label: "Staff Payroll", icon: <LuWallet />, path: "/payroll" },
-      { label: "Tax Calculations", icon: <LuCalculator />, path: "/taxes" },
+      {
+        label: "Sales Record",
+        icon: <LuFileText />,
+        path: "/sales-record",
+        permission: { orders: ["read"] },
+      },
+      {
+        label: "Vendor Sales",
+        icon: <LuStore />,
+        path: "/vendor-sales",
+        permission: { vendors: ["read"] },
+      },
+      {
+        label: "Partner Sales",
+        icon: <LuHandshake />,
+        path: "/partner-sales",
+        permission: { organization: ["update"] },
+      },
+      {
+        label: "Revenue",
+        icon: <LuTrendingUp />,
+        path: "/revenue",
+        permission: { revenue: ["read"] },
+      },
+      {
+        label: "Expenses",
+        icon: <LuTrendingDown />,
+        path: "/expenses",
+        permission: { expense: ["read"] },
+      },
+      {
+        label: "Staff Payroll",
+        icon: <LuWallet />,
+        path: "/payroll",
+        permission: { organization: ["update"] },
+      },
+      {
+        label: "Tax Calculations",
+        icon: <LuCalculator />,
+        path: "/taxes",
+        permission: { organization: ["update"] },
+      },
       {
         label: "Subaccounts",
         icon: <AiOutlineAccountBook />,
         path: "/subaccounts",
+        permission: { subaccounts: ["read"] },
       },
     ],
   },
@@ -169,13 +258,29 @@ export const businessItems: SideMenuItem[] = [
     label: "Support & Disputes",
     icon: <LuScale />,
     children: [
-      { label: "Customer Chats", icon: <LuMessageSquare />, path: "/chats" },
-      { label: "Product Exchanges", icon: <LuRefreshCw />, path: "/exchanges" },
-      { label: "Refund Requests", icon: <LuUndo />, path: "/disputes" },
+      {
+        label: "Customer Chats",
+        icon: <LuMessageSquare />,
+        path: "/chats",
+        permission: { supportChats: ["update"] },
+      },
+      {
+        label: "Product Exchanges",
+        icon: <LuRefreshCw />,
+        path: "/exchanges",
+        permission: { organization: ["update"] },
+      },
+      {
+        label: "Refund Requests",
+        icon: <LuUndo />,
+        path: "/disputes",
+        permission: { organization: ["update"] },
+      },
       {
         label: "Sales Reconciliation",
         icon: <LuCheck />,
         path: "/reconciliation",
+        permission: { organization: ["update"] },
       },
     ],
   },
@@ -187,10 +292,26 @@ export const businessItems: SideMenuItem[] = [
         label: "Promotional Campaigns",
         icon: <LuTicketPercent />,
         path: "/promos",
+        permission: { organization: ["update"] },
       },
-      { label: "Loyalty Points", icon: <LuHeart />, path: "/loyalty-points" },
-      { label: "Discount Coupons", icon: <LuTag />, path: "/coupons" },
-      { label: "Gift Vouchers", icon: <LuTicket />, path: "/vouchers" },
+      {
+        label: "Loyalty Points",
+        icon: <LuHeart />,
+        path: "/loyalty-points",
+        permission: { pointsConfig: ["read"] },
+      },
+      {
+        label: "Discount Coupons",
+        icon: <LuTag />,
+        path: "/coupons",
+        permission: { coupons: ["read"] },
+      },
+      {
+        label: "Gift Vouchers",
+        icon: <LuTicket />,
+        path: "/vouchers",
+        permission: { organization: ["update"] },
+      },
       // { label: "Promo Banners", icon: <LuImage />, path: "/banners" },
       // { label: "Hero Banner", icon: <LuImage />, path: "/hero-banner" },
       // { label: "Pop-up Modals", icon: <LuLayoutGrid />, path: "/pop-ups" },
@@ -200,9 +321,24 @@ export const businessItems: SideMenuItem[] = [
     label: "Configuration",
     icon: <LuSettings />,
     children: [
-      { label: "Storefront Themes", icon: <CgWebsite />, path: "/storefront" },
-      { label: "Logistics & Shipping", icon: <LuTruck />, path: "/shipping" },
-      { label: "Roles & Permissions", icon: <LuShield />, path: "/roles" },
+      {
+        label: "Storefront Themes",
+        icon: <CgWebsite />,
+        path: "/storefront",
+        permission: { uiConfig: ["upsert"] },
+      },
+      {
+        label: "Logistics & Shipping",
+        icon: <LuTruck />,
+        path: "/shipping",
+        permission: { shippingConfigs: ["read"] },
+      },
+      {
+        label: "Roles & Permissions",
+        icon: <LuShield />,
+        path: "/roles",
+        permission: { ac: ["create"] },
+      },
       // { label: "VAT Settings", icon: <LuPercent />, path: "/vat" },
     ],
   },
@@ -214,7 +350,12 @@ export const storeItems: SideMenuItem[] = [
     icon: <LuUser />,
     children: [
       { label: "Overview", icon: <RxDashboard />, path: "/" },
-      { label: "Analytics", icon: <MdOutlineAnalytics />, path: "/analytics" },
+      {
+        label: "Analytics",
+        icon: <MdOutlineAnalytics />,
+        path: "/analytics",
+        permission: { organization: ["update"] },
+      },
     ],
   },
   {
@@ -225,6 +366,7 @@ export const storeItems: SideMenuItem[] = [
         label: "Cart Checkout",
         icon: <MdOutlineShoppingCartCheckout />,
         path: "/carts",
+        permission: { cart: ["read"] },
       },
     ],
   },
@@ -232,12 +374,42 @@ export const storeItems: SideMenuItem[] = [
     label: "Operations & Finance",
     icon: <LuLandmark />,
     children: [
-      { label: "Sales Record", icon: <LuFileText />, path: "/sales-record" },
-      { label: "Revenue", icon: <LuTrendingUp />, path: "/revenue" },
-      { label: "Expenses", icon: <LuTrendingDown />, path: "/expenses" },
-      { label: "Staff Payroll", icon: <LuWallet />, path: "/payroll" },
-      { label: "Staff Members", icon: <LuUserPlus />, path: "/staff" },
-      { label: "Tax Breakdown", icon: <LuCalculator />, path: "/taxes" },
+      {
+        label: "Sales Record",
+        icon: <LuFileText />,
+        path: "/sales-record",
+        permission: { orders: ["read"] },
+      },
+      {
+        label: "Revenue",
+        icon: <LuTrendingUp />,
+        path: "/revenue",
+        permission: { revenue: ["read"] },
+      },
+      {
+        label: "Expenses",
+        icon: <LuTrendingDown />,
+        path: "/expenses",
+        permission: { expense: ["read"] },
+      },
+      {
+        label: "Staff Payroll",
+        icon: <LuWallet />,
+        path: "/payroll",
+        permission: { organization: ["update"] },
+      },
+      {
+        label: "Staff Members",
+        icon: <LuUserPlus />,
+        path: "/staff",
+        permission: { member: ["update"] },
+      },
+      {
+        label: "Tax Breakdown",
+        icon: <LuCalculator />,
+        path: "/taxes",
+        permission: { organization: ["update"] },
+      },
     ],
   },
   {
@@ -248,6 +420,7 @@ export const storeItems: SideMenuItem[] = [
         label: "Terminal (POS)",
         icon: <MdOutlinePointOfSale />,
         path: "/point-of-sale",
+        permission: { posConfig: ["read"] },
       },
     ],
   },

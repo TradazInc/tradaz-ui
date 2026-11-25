@@ -47,3 +47,5 @@ export const FINANCE_KEY = "finanace";
 export const CART_KEY = "carts";
 
 export const ROLE_KEY = "roles";
+
+export const MEMBER_ROLE_KEY = "member-role";
