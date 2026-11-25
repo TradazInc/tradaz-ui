@@ -2,7 +2,7 @@
 
 import { useSideItems } from "@/hooks/useSideItems";
 import { computePath } from "@/utilities/computePath";
-import { Accordion, Icon, Spacer } from "@chakra-ui/react";
+import { Accordion, Box, Icon, Spacer } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
@@ -19,9 +19,11 @@ export const SideMenuList = () => {
     [businessId, storeId],
   );
 
-  const sideItems = useSideItems();
+  const { sideItems, isLoading } = useSideItems();
 
-  return (
+  return isLoading ? (
+    <Box>Loading...</Box>
+  ) : (
     <Accordion.Root collapsible>
       {sideItems.map((item, index) => (
         <Accordion.Item key={index} value={item.label}>

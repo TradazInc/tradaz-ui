@@ -12,23 +12,28 @@ export const useSideItems = () => {
     businessId?: string;
     storeId?: string;
   }>();
-  const { data: memberRole } = useMemberRole(businessId);
-  const { data: customRoles } = useRoles(businessId);
+  if (!businessId) return { sideItems: dashboardItems };
 
-  if (!businessId) return dashboardItems;
+  const memberRole = useMemberRole(businessId);
+  const customRoles = useRoles(businessId);
 
-  return (
-    (storeId ? storeItems : businessItems)
+  return {
+    sideItems: (storeId ? storeItems : businessItems)
       .map((sideMenuItem) => ({
         ...sideMenuItem,
         // filter item children
         children: sideMenuItem.children?.filter(
           ({ permission }) =>
             !permission ||
-            checkRolePermission(memberRole?.role, permission, customRoles),
+            checkRolePermission(
+              memberRole?.data?.role,
+              permission,
+              customRoles.data,
+            ),
         ),
       }))
       // drop empty items
-      .filter((sideMenuItem) => sideMenuItem.children?.length)
-  );
+      .filter((sideMenuItem) => sideMenuItem.children?.length),
+    isLoading: memberRole.isLoading || customRoles.isLoading,
+  };
 };

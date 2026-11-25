@@ -2,7 +2,7 @@
 
 import { useSideItems } from "@/hooks/useSideItems";
 import { computePath } from "@/utilities/computePath";
-import { StackSeparator, VStack } from "@chakra-ui/react";
+import { Box, StackSeparator, VStack } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { SideMenuSection } from "./SideMenuSection";
@@ -19,9 +19,11 @@ export const SideMenuSectionList = () => {
     [businessId, storeId],
   );
 
-  const sideItems = useSideItems();
+  const { sideItems, isLoading } = useSideItems();
 
-  return (
+  return isLoading ? (
+    <Box>Loading...</Box>
+  ) : (
     <VStack
       p={5}
       gapY={2}
