@@ -30,11 +30,13 @@ export const SideMenuSectionList = () => {
       borderRightWidth={"1px"}
       separator={<StackSeparator />}
     >
-      {isLoading
-        ? "Loading..."
-        : sideItems.map((item, index) => (
-            <SideMenuSection basePath={basePath} menuItem={item} key={index} />
-          ))}
+      {isLoading ? (
+        <>Loading...</>
+      ) : (
+        sideItems.map((item, index) => (
+          <SideMenuSection basePath={basePath} menuItem={item} key={index} />
+        ))
+      )}
     </VStack>
   );
 };
