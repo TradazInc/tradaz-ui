@@ -2,7 +2,7 @@
 
 import { useSideItems } from "@/hooks/useSideItems";
 import { computePath } from "@/utilities/computePath";
-import { Box, StackSeparator, VStack } from "@chakra-ui/react";
+import { StackSeparator, VStack } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { SideMenuSection } from "./SideMenuSection";
@@ -21,9 +21,7 @@ export const SideMenuSectionList = () => {
 
   const { sideItems, isLoading } = useSideItems();
 
-  return isLoading ? (
-    <Box>Loading...</Box>
-  ) : (
+  return (
     <VStack
       p={5}
       gapY={2}
@@ -32,9 +30,11 @@ export const SideMenuSectionList = () => {
       borderRightWidth={"1px"}
       separator={<StackSeparator />}
     >
-      {sideItems.map((item, index) => (
-        <SideMenuSection basePath={basePath} menuItem={item} key={index} />
-      ))}
+      {isLoading
+        ? "Loading..."
+        : sideItems.map((item, index) => (
+            <SideMenuSection basePath={basePath} menuItem={item} key={index} />
+          ))}
     </VStack>
   );
 };
