@@ -17,16 +17,15 @@ import {
   For,
   FormatNumber,
   HStack,
-  IconButton,
   Spinner,
   Stack,
   Table,
   Text,
 } from "@chakra-ui/react";
 import { useMemo } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
-import { MdDeleteOutline } from "react-icons/md";
 import InfiniteScroll from "react-infinite-scroll-component";
+import DeleteIconButton from "./DeleteIconButton";
+import EditIconButton from "./EditIconButton";
 
 interface Props {
   initialShippingConfigs: Promise<GetAllShippingConfigOutputData[]>;
@@ -122,18 +121,12 @@ const ShippingConfigTable = ({ initialShippingConfigs, businessId }: Props) => {
                   </Table.Cell>
                   <Table.Cell textAlign="end">
                     <ButtonGroup size="sm" variant="outline">
-                      <IconButton aria-label="Edit shipping config">
-                        <AiOutlineEdit />
-                      </IconButton>
-                      <IconButton
+                      <EditIconButton aria-label="Edit shipping config" />
+                      <DeleteIconButton
                         aria-label="Delete shipping config"
-                        color={"fg.error"}
-                        _hover={{ bg: "bg.error", color: "fg.error" }}
                         onClick={() => handleDelete(shippingConfig.id)}
                         disabled={isMutating}
-                      >
-                        <MdDeleteOutline />
-                      </IconButton>
+                      />
                     </ButtonGroup>
                   </Table.Cell>
                 </Table.Row>

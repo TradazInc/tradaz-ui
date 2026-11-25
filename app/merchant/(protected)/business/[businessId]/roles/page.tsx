@@ -16,7 +16,7 @@ export default async function page({ params }: Props) {
 
   return (
     <PageContainer>
-      <PageHeader>Staff Roles</PageHeader>
+      <PageHeader>Roles & Permissisons</PageHeader>
 
       <PageItemContainer>
         <Spacer />

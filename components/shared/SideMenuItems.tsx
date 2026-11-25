@@ -200,10 +200,10 @@ export const businessItems: SideMenuItem[] = [
     label: "Configuration",
     icon: <LuSettings />,
     children: [
-      { label: "Logistics & Shipping", icon: <LuTruck />, path: "/shipping" },
-      // { label: "VAT Settings", icon: <LuPercent />, path: "/vat" },
-      { label: "Roles & Permissions", icon: <LuShield />, path: "/roles" },
       { label: "Storefront Themes", icon: <CgWebsite />, path: "/storefront" },
+      { label: "Logistics & Shipping", icon: <LuTruck />, path: "/shipping" },
+      { label: "Roles & Permissions", icon: <LuShield />, path: "/roles" },
+      // { label: "VAT Settings", icon: <LuPercent />, path: "/vat" },
     ],
   },
 ];

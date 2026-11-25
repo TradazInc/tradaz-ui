@@ -7,6 +7,7 @@ import { GetAllRolesOutputData } from "@/schema/role";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import { Box, Button, ButtonGroup, For, Table, Text } from "@chakra-ui/react";
 import DeleteIconButton from "./DeleteIconButton";
+import EditIconButton from "./EditIconButton";
 import PermissionBadges from "./PermissionBadges";
 
 interface Props {
@@ -76,6 +77,10 @@ const RoleTable = ({ initialRoles, businessId }: Props) => {
                 </Table.Cell>
                 <Table.Cell textAlign="end">
                   <ButtonGroup size="sm" variant="outline">
+                    <EditIconButton
+                      aria-label="Edit role"
+                      disabled={isMutating || !role.createdAt}
+                    />
                     <DeleteIconButton
                       aria-label="Delete role"
                       onClick={() => handleDelete(role.role)}
