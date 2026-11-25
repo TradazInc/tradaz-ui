@@ -14,7 +14,7 @@ export default async function page({ params }: Props) {
 
   return (
     <PageContainer alignItems="stretch">
-      <PageHeader>Subdomain</PageHeader>
+      <PageHeader>Storefront</PageHeader>
 
       <PageEditor
         businessId={businessId}
