@@ -39,7 +39,6 @@ export const useSideItems = () => {
       }))
       // drop empty items
       .filter((sideMenuItem) => sideMenuItem.children?.length),
-    isLoading:
-      memberRole.isLoading || (organizationId && customRoles.isLoading),
+    isLoading: memberRole.isLoading || customRoles.isLoading,
   };
 };
