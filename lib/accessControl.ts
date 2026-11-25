@@ -101,7 +101,16 @@ export const vendor = orgAc.newRole({
   supportChats: ["create", "auth"],
 });
 
-// Resources a business can grant to a custom role.
+// Export default roles
+export const orgRoles = { owner, manager, staff, customer, vendor };
+export const defaultRoles = Object.entries(orgRoles)
+  .filter(([role]) => role !== "customer") // storefront role, not staff
+  .map(([role, { statements }]) => ({
+    role,
+    permission: statements as Record<string, readonly string[]>,
+  }));
+
+// Export grantable resources
 // `ac` (managing roles themselves) is deliberately not grantable from the UI.
 const { ac: _ac, ...grantable } = orgAc.statements;
 export const orgStatements = grantable;

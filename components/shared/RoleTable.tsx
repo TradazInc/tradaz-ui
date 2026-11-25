@@ -1,21 +1,13 @@
 "use client";
 
-import EmptyPage from "@/components/shared/EmptyPage";
 import { toaster } from "@/components/ui/toaster";
 import { useRemoveRole, useRoles } from "@/hooks/role";
+import { defaultRoles } from "@/lib/accessControl";
 import { GetAllRolesOutputData } from "@/schema/role";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
-import {
-  Badge,
-  Box,
-  Button,
-  ButtonGroup,
-  For,
-  Table,
-  Text,
-  Wrap,
-} from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, For, Table, Text } from "@chakra-ui/react";
 import DeleteIconButton from "./DeleteIconButton";
+import PermissionBadges from "./PermissionBadges";
 
 interface Props {
   initialRoles: Promise<GetAllRolesOutputData>;
@@ -41,9 +33,15 @@ const RoleTable = ({ initialRoles, businessId }: Props) => {
     });
   };
 
-  if (roles && roles.length === 0) {
-    return <EmptyPage title="No roles found" description="Create a new role" />;
-  }
+  // Combine dynamic and default roles
+  const allRoles = [
+    ...defaultRoles.map((role) => ({
+      ...role,
+      id: `default-${role.role}`,
+      createdAt: null,
+    })),
+    ...(roles ?? []),
+  ];
 
   return (
     <Box w={"full"}>
@@ -58,7 +56,7 @@ const RoleTable = ({ initialRoles, businessId }: Props) => {
         </Table.Header>
         <Table.Body>
           <For
-            each={roles ?? []}
+            each={allRoles}
             fallback={
               <Table.Row>
                 <Table.Cell colSpan={4}>No roles available</Table.Cell>
@@ -69,25 +67,19 @@ const RoleTable = ({ initialRoles, businessId }: Props) => {
               <Table.Row key={role.id} w={"full"}>
                 <Table.Cell>{role.role}</Table.Cell>
                 <Table.Cell>
-                  <Wrap gap={1}>
-                    {Object.entries(role.permission).map(
-                      ([resource, actions]) => (
-                        <Badge key={resource} variant={"subtle"}>
-                          {resource}: {actions.join(", ")}
-                        </Badge>
-                      ),
-                    )}
-                  </Wrap>
+                  <PermissionBadges permission={role.permission} />
                 </Table.Cell>
                 <Table.Cell>
-                  {new Date(role.createdAt).toDateString()}
+                  {role.createdAt
+                    ? new Date(role.createdAt).toDateString()
+                    : "-"}
                 </Table.Cell>
                 <Table.Cell textAlign="end">
                   <ButtonGroup size="sm" variant="outline">
                     <DeleteIconButton
                       aria-label="Delete role"
                       onClick={() => handleDelete(role.role)}
-                      disabled={isMutating}
+                      disabled={isMutating || !role.createdAt}
                     />
                   </ButtonGroup>
                 </Table.Cell>
