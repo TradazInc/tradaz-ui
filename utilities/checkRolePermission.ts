@@ -20,10 +20,10 @@ export function checkRolePermission(
 
   // custom roles
   return role.split(",").some((name) => {
-    const custom = customRoles.find((r) => r.role === name);
+    const customRole = customRoles.find((r) => r.role === name);
     return (
-      !!custom &&
-      orgAc.newRole(custom.permission).authorize(permissions).success
+      !!customRole &&
+      orgAc.newRole(customRole.permission).authorize(permissions).success
     );
   });
 }
