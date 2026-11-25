@@ -1,9 +1,6 @@
 import { authClient } from "@/lib/authClient";
 import { z } from "zod";
 
-// Invitable roles (dynamic roles are merged in UI)
-export const INVITABLE_ROLES = ["manager", "staff", "vendor"] as const;
-
 // Create
 export const CreateInvitationInputSchema = z.object({
   email: z.email({ error: "enter a valid email address" }),

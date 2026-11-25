@@ -1,4 +1,9 @@
-import { resources, OrgResource, orgStatements } from "@/lib/accessControl";
+import {
+  defaultRoles,
+  OrgResource,
+  orgStatements,
+  resources,
+} from "@/lib/accessControl";
 import { getRoles } from "@/server/role";
 import { z } from "zod";
 
@@ -15,6 +20,9 @@ export const CreateRoleInputSchema = z.object({
     .max(50, { error: "role name must be at most 50 characters long" })
     .regex(/^[a-z0-9-]+$/, {
       error: "use lowercase letters, numbers and hyphens only",
+    })
+    .refine((name) => !defaultRoles.some(({ role }) => role === name), {
+      error: "this name is reserved for a default role",
     }),
 
   permission: z

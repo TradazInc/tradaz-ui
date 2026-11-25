@@ -103,12 +103,15 @@ export const vendor = orgAc.newRole({
 
 // Export default roles
 export const orgRoles = { owner, manager, staff, customer, vendor };
-export const defaultRoles = Object.entries(orgRoles)
-  .filter(([role]) => role !== "customer") // storefront role, not staff
-  .map(([role, { statements }]) => ({
+export const invitableRoles = Object.keys(orgRoles).filter(
+  (role) => role !== "owner" && role !== "customer",
+);
+export const defaultRoles = Object.entries(orgRoles).map(
+  ([role, { statements }]) => ({
     role,
     permission: statements as Record<string, readonly string[]>,
-  }));
+  }),
+);
 
 // Export grantable resources
 // `ac` (managing roles themselves) is deliberately not grantable from the UI.

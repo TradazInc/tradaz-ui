@@ -1,7 +1,7 @@
 "use client";
 
 import { useRoles } from "@/hooks/role";
-import { INVITABLE_ROLES } from "@/schema/invitation";
+import { invitableRoles } from "@/lib/accessControl";
 import {
   Button,
   createListCollection,
@@ -24,7 +24,7 @@ const RoleSelect = ({ businessId, name, value, onChange, onBlur }: Props) => {
 
   const roleCollection = useMemo(() => {
     const customRoles = (data ?? []).map((r) => r.role);
-    const roles = Array.from(new Set([...INVITABLE_ROLES, ...customRoles]));
+    const roles = Array.from(new Set([...invitableRoles, ...customRoles]));
     return createListCollection({
       items: roles.map((role) => ({ label: role, value: role })),
     });
