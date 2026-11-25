@@ -4,6 +4,7 @@ import {
   storeItems,
 } from "@/components/shared/SideMenuItems";
 import { checkRolePermission } from "@/utilities/checkRolePermission";
+import { hasCustomRole } from "@/utilities/hasRole";
 import { useParams } from "next/navigation";
 import { useMemberRole, useRoles } from "./role";
 
@@ -12,10 +13,14 @@ export const useSideItems = () => {
     businessId?: string;
     storeId?: string;
   }>();
-  if (!businessId) return { sideItems: dashboardItems };
 
   const memberRole = useMemberRole(businessId);
-  const customRoles = useRoles(businessId);
+  const organizationId = hasCustomRole(memberRole.data?.role)
+    ? businessId
+    : undefined;
+  const customRoles = useRoles(organizationId);
+
+  if (!businessId) return { sideItems: dashboardItems, isLoading: false };
 
   return {
     sideItems: (storeId ? storeItems : businessItems)
