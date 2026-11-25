@@ -14,7 +14,7 @@ export default async function page({ params }: Props) {
 
   return (
     <PageContainer alignItems="stretch">
-      <PageHeader>Storefront</PageHeader>
+      <PageHeader>Storefront Themes</PageHeader>
 
       <PageEditor
         businessId={businessId}
