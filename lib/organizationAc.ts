@@ -1,37 +1,9 @@
 import { createAccessControl } from "better-auth/plugins/access";
-import {
-  adminAc as platformAdminAc,
-  defaultStatements as platformStatements,
-  userAc,
-} from "better-auth/plugins/admin/access";
-import { defaultStatements as organizationStatements } from "better-auth/plugins/organization/access";
-
-/* Platform-level Resources */
-const platformStatement = {
-  ...platformStatements,
-  businessCategories: ["create", "read", "delete"],
-  banks: ["read"],
-  country: ["read"],
-  media: ["upload"],
-} as const;
-
-export const platformAc = createAccessControl(platformStatement);
-
-/* Platform-level Roles */
-export const admin = platformAc.newRole({
-  ...platformAc.statements,
-  ...platformAdminAc.statements,
-});
-
-export const user = platformAc.newRole({
-  ...platformAc.statements,
-  ...userAc.statements,
-  businessCategories: ["read"],
-});
+import { defaultStatements } from "better-auth/plugins/organization/access";
 
 /* Organization-level Resources */
 const organizationStatement = {
-  ...organizationStatements,
+  ...defaultStatements,
   // Product related
   products: ["create", "read", "update", "update-status", "delete"],
   productCategories: ["create", "delete"],

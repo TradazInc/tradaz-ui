@@ -1,7 +1,7 @@
 "use client";
 
 import { useRoles } from "@/hooks/role";
-import { invitableRoles } from "@/lib/accessControl";
+import { invitableRoles } from "@/lib/organizationAc";
 import {
   Button,
   createListCollection,

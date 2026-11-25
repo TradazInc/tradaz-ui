@@ -1,15 +1,13 @@
 import { serverUrl } from "@/ini/configs";
 import {
-  admin,
   customer,
   manager,
   orgAc,
   owner,
-  platformAc,
   staff,
-  user,
   vendor,
-} from "@/lib/accessControl";
+} from "@/lib/organizationAc";
+import { admin, platformAc, user } from "@/lib/platformAc";
 import { CustomSession } from "@/schema/session";
 import { setServerCookie } from "@/utilities/setServerCookie";
 import { logger } from "@better-fetch/logger";

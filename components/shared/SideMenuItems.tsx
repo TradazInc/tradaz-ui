@@ -1,4 +1,4 @@
-import { AllOrgPermission } from "@/lib/accessControl";
+import { AllOrgPermission } from "@/lib/organizationAc";
 import React from "react";
 import { AiOutlineAccountBook } from "react-icons/ai";
 import { BsCashCoin } from "react-icons/bs";

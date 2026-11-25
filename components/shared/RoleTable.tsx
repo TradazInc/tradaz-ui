@@ -2,7 +2,7 @@
 
 import { toaster } from "@/components/ui/toaster";
 import { useRemoveRole, useRoles } from "@/hooks/role";
-import { defaultRoles } from "@/lib/accessControl";
+import { defaultRoles } from "@/lib/organizationAc";
 import { GetAllRolesOutputData } from "@/schema/role";
 import { errorToastOptions } from "@/utilities/errorToastOptions";
 import { Box, Button, ButtonGroup, For, Table, Text } from "@chakra-ui/react";

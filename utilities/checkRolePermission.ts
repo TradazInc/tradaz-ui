@@ -1,4 +1,4 @@
-import { AllOrgPermission, orgAc, orgRoles } from "@/lib/accessControl";
+import { AllOrgPermission, orgAc, orgRoles } from "@/lib/organizationAc";
 import { authClient } from "@/lib/authClient";
 import { GetAllRolesOutputData } from "@/schema/role";
 

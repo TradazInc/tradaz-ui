@@ -3,7 +3,7 @@ import {
   OrgResource,
   orgStatements,
   resources,
-} from "@/lib/accessControl";
+} from "@/lib/organizationAc";
 import { getRoles } from "@/server/role";
 import { z } from "zod";
 

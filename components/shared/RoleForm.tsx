@@ -20,7 +20,7 @@ import { Controller, useForm } from "react-hook-form";
 import { LuPlus } from "react-icons/lu";
 import FormButton from "./FormButton";
 import { PermissionPicker } from "./PermissionPicker";
-import { orgStatements } from "@/lib/accessControl";
+import { orgStatements } from "@/lib/organizationAc";
 
 export const roleDialog = createOverlay((props) => {
   const { businessId } = useParams<{ businessId?: string }>();
