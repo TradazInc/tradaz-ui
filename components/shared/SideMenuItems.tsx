@@ -191,9 +191,9 @@ export const businessItems: SideMenuItem[] = [
       { label: "Loyalty Points", icon: <LuHeart />, path: "/loyalty-points" },
       { label: "Discount Coupons", icon: <LuTag />, path: "/coupons" },
       { label: "Gift Vouchers", icon: <LuTicket />, path: "/vouchers" },
-      { label: "Promo Banners", icon: <LuImage />, path: "/banners" },
+      // { label: "Promo Banners", icon: <LuImage />, path: "/banners" },
       // { label: "Hero Banner", icon: <LuImage />, path: "/hero-banner" },
-      { label: "Pop-up Modals", icon: <LuLayoutGrid />, path: "/pop-ups" },
+      // { label: "Pop-up Modals", icon: <LuLayoutGrid />, path: "/pop-ups" },
     ],
   },
   {
