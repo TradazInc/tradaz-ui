@@ -17,7 +17,6 @@ import {
   LuMegaphone,
   LuMessageSquare,
   LuPackage,
-  LuPercent,
   LuPlus,
   LuRefreshCw,
   LuRuler,
@@ -346,7 +345,6 @@ export const businessItems: SideMenuItem[] = [
         path: "/roles",
         permission: { ac: ["create"] },
       },
-      // { label: "VAT Settings", icon: <LuPercent />, path: "/vat" },
     ],
   },
 ];
