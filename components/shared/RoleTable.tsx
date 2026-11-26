@@ -34,7 +34,7 @@ const RoleTable = ({ initialRoles, businessId }: Props) => {
     });
   };
 
-  // Combine dynamic and default roles
+  // Merge dynamic and default roles
   const allRoles = [
     ...defaultRoles.map((role) => ({
       ...role,
