@@ -1,4 +1,4 @@
-import { INVITATION_KEY } from "@/data/cacheKeys";
+import { BUSINESS_KEY, INVITATION_KEY } from "@/data/cacheKeys";
 import { authClient, authConfig } from "@/lib/authClient";
 import {
   CreateInvitationInputData,
@@ -29,6 +29,17 @@ export const useInvitation = (id: string) => {
       query: { id },
       fetchOptions: authConfig,
     }),
+  );
+};
+
+export const useAcceptInvitation = () => {
+  return useSWRMutation(
+    cache.key(BUSINESS_KEY),
+    (key, { arg }: { arg: string }) =>
+      authClient.organization.acceptInvitation({
+        invitationId: arg,
+        fetchOptions: authConfig,
+      }),
   );
 };
 
@@ -70,7 +81,7 @@ export const useSendInvitation = (organizationId: string | undefined) => {
       }),
   );
 
-  // Map response into cache to prevent duplicate when resent
+  // Map response into cache to prevent duplication when resent
   const trigger = (data: CreateInvitationInputData) =>
     mutation.trigger<GetAllInvitationOutputData>(data, {
       populateCache: (invitation, current = []) => {
