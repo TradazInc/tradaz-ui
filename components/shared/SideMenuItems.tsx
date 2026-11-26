@@ -63,7 +63,14 @@ export const dashboardItems: SideMenuItem[] = [
   {
     label: "Dashboard",
     icon: <LuUser />,
-    children: [{ label: "Overview", icon: <RxDashboard />, path: "/" }],
+    children: [
+      { label: "Overview", icon: <RxDashboard />, path: "/" },
+      {
+        label: "Invitations",
+        icon: <LuMail />,
+        path: "/invitations",
+      },
+    ],
   },
   {
     label: "Account & Security",
