@@ -43,6 +43,17 @@ export const useAcceptInvitation = () => {
   );
 };
 
+export const useRejectInvitation = () => {
+  return useSWRMutation(
+    cache.key(BUSINESS_KEY),
+    (key, { arg }: { arg: string }) =>
+      authClient.organization.rejectInvitation({
+        invitationId: arg,
+        fetchOptions: authConfig,
+      }),
+  );
+};
+
 export const useCancelInvitation = (organizationId: string | undefined) => {
   const mutation = useSWRMutation(
     cache.scopedKey(INVITATION_KEY, organizationId),
