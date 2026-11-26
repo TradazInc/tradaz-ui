@@ -1,7 +1,14 @@
 "use client";
 
 import { CreateBusinessInputData } from "@/schema/business";
-import { Field, Fieldset, Input, InputGroup } from "@chakra-ui/react";
+import {
+  Field,
+  Fieldset,
+  HStack,
+  Input,
+  InputGroup,
+  Spinner,
+} from "@chakra-ui/react";
 import { UseFormReturn } from "react-hook-form";
 import { useHookFormMask } from "use-mask-input";
 
@@ -12,21 +19,34 @@ interface Props {
 const ContactStep = ({
   form: {
     register,
-    formState: { errors },
+    formState: { errors, validatingFields },
   },
 }: Props) => {
   const withMask = useHookFormMask(register);
+  const isCheckingSlug = !!validatingFields.slug;
 
   return (
     <Fieldset.Root>
-      <Field.Root required invalid={!!errors.slug}>
+      <Field.Root required invalid={!isCheckingSlug && !!errors.slug}>
         <Field.Label>
           Subdomain <Field.RequiredIndicator />
         </Field.Label>
-        <InputGroup startAddon={"www."} endAddon={".tradaz.com"}>
+        <InputGroup
+          startAddon={"www."}
+          endAddon={
+            <HStack gap={2}>
+              {isCheckingSlug && <Spinner size={"xs"} />}
+              .tradaz.com
+            </HStack>
+          }
+        >
           <Input placeholder="yoursite" {...register("slug")} />
         </InputGroup>
-        <Field.HelperText>Pick a subdomain for your business website</Field.HelperText>
+        <Field.HelperText>
+          {isCheckingSlug
+            ? "Checking availability…"
+            : "Pick a subdomain for your business website"}
+        </Field.HelperText>
         <Field.ErrorText>
           <Field.ErrorIcon />
           {errors.slug?.message}
