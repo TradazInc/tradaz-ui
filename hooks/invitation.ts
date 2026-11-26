@@ -5,7 +5,7 @@ import {
   GetAllInvitationOutputData,
 } from "@/schema/invitation";
 import { cache } from "@/utilities/cacheKey";
-import useSWR, { SWRConfiguration } from "swr";
+import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 import useSWRMutation from "swr/mutation";
 
 export const useInvitations = (
@@ -23,6 +23,12 @@ export const useInvitations = (
   );
 };
 
+export const useUserInvitations = () => {
+  return useSWR(cache.key(INVITATION_KEY), () =>
+    authClient.organization.listUserInvitations(),
+  );
+};
+
 export const useInvitation = (id: string) => {
   return useSWR(cache.scopedKey(INVITATION_KEY, id), () =>
     authClient.organization.getInvitation({
@@ -33,24 +39,34 @@ export const useInvitation = (id: string) => {
 };
 
 export const useAcceptInvitation = () => {
+  const { mutate } = useSWRConfig();
+
   return useSWRMutation(
-    cache.key(BUSINESS_KEY),
+    cache.key(INVITATION_KEY),
     (key, { arg }: { arg: string }) =>
       authClient.organization.acceptInvitation({
         invitationId: arg,
         fetchOptions: authConfig,
       }),
+    {
+      onSuccess: () => mutate(cache.key(BUSINESS_KEY)),
+    },
   );
 };
 
 export const useRejectInvitation = () => {
+  const { mutate } = useSWRConfig();
+
   return useSWRMutation(
-    cache.key(BUSINESS_KEY),
+    cache.key(INVITATION_KEY),
     (key, { arg }: { arg: string }) =>
       authClient.organization.rejectInvitation({
         invitationId: arg,
         fetchOptions: authConfig,
       }),
+    {
+      onSuccess: () => mutate(cache.key(BUSINESS_KEY)),
+    },
   );
 };
 
